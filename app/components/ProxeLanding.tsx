@@ -246,19 +246,19 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
   {
     name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
     messages: [
-      { from: 'customer', text: 'I came across your product — curious about pricing.', time: '2:31 PM' },
+      { from: 'customer', text: 'I saw your product online. Curious about pricing.', time: '2:31 PM' },
       { from: 'ai',       text: 'Happy to help! Starter is $99/mo for 1,000 conversations. How many leads do you get monthly?', time: '2:31 PM' },
-      { from: 'customer', text: 'Around 200–300 a month.', time: '2:32 PM' },
-      { from: 'ai',       text: "Starter covers that easily. Want me to set up your free trial right now? Takes 2 minutes.", time: '2:32 PM' },
+      { from: 'customer', text: 'Around 200 to 300 a month.', time: '2:32 PM' },
+      { from: 'ai',       text: 'Starter covers that easily. Want me to set up your free trial right now? Takes 2 minutes.', time: '2:32 PM' },
     ],
   },
   {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
     messages: [
       { from: 'customer', text: 'Hi, I filled a form 3 days ago but no one called me.', time: '10:14 AM' },
-      { from: 'ai',       text: "Hi! I can see your enquiry from May 6th. Are you free for a quick call today at 3pm or 5pm?", time: '10:14 AM' },
+      { from: 'ai',       text: 'Hi! I can see your enquiry from May 6th. Are you free for a quick call today at 3pm or 5pm?', time: '10:14 AM' },
       { from: 'customer', text: '3pm works!', time: '10:15 AM' },
-      { from: 'ai',       text: "Confirmed! Booked you in at 3pm — you'll get a reminder 15 min before. 🎯", time: '10:15 AM' },
+      { from: 'ai',       text: "Confirmed! Booked you in at 3pm. You'll get a reminder 15 min before. 🎯", time: '10:15 AM' },
     ],
   },
   {
@@ -266,26 +266,26 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
     messages: [
       { from: 'customer', text: 'Do you offer a free trial?', time: '4:02 PM' },
       { from: 'ai',       text: "Yes! 14-day free trial, no card needed. I can start you in 5 minutes. What's your business email?", time: '4:02 PM' },
-      { from: 'customer', text: "Great — it's john@acme.com", time: '4:03 PM' },
-      { from: 'ai',       text: "Trial account created! Check your inbox — login link and setup guide sent. 🎉", time: '4:03 PM' },
+      { from: 'customer', text: "Great. It's john@acme.com", time: '4:03 PM' },
+      { from: 'ai',       text: 'Trial account created! Check your inbox. Login link and setup guide sent. 🎉', time: '4:03 PM' },
     ],
   },
   {
     name: 'Instagram', icon: <SiInstagram />, accent: '#E1306C',
     messages: [
-      { from: 'customer', text: 'Saw your reel — how does this actually work?', time: '7:18 PM' },
+      { from: 'customer', text: 'Saw your reel. How does this actually work?', time: '7:18 PM' },
       { from: 'ai',       text: 'PROXe catches every DM, replies in seconds, qualifies leads, and follows up until they buy. Want a live demo?', time: '7:18 PM' },
       { from: 'customer', text: 'Yes! How do I sign up?', time: '7:19 PM' },
-      { from: 'ai',       text: "Drop your email here or tap the link in bio — you'll be set up in 2 minutes. 🚀", time: '7:19 PM' },
+      { from: 'ai',       text: "Drop your email here or tap the link in bio. You'll be set up in 2 minutes. 🚀", time: '7:19 PM' },
     ],
   },
   {
     name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
     messages: [
       { from: 'customer', text: 'What channels do you support?', time: '11:45 AM' },
-      { from: 'ai',       text: 'WhatsApp, Instagram, Messenger, Voice, web chat, and email — all from one dashboard with shared memory.', time: '11:45 AM' },
+      { from: 'ai',       text: 'WhatsApp, Instagram, Messenger, Voice, web chat, and email. All from one dashboard with shared memory.', time: '11:45 AM' },
       { from: 'customer', text: 'Does it sync with HubSpot?', time: '11:46 AM' },
-      { from: 'ai',       text: 'Yes — native HubSpot integration. Every conversation and lead score syncs automatically. Want to see it live?', time: '11:46 AM' },
+      { from: 'ai',       text: 'Yes. Native HubSpot integration. Every conversation and lead score syncs automatically. Want to see it live?', time: '11:46 AM' },
     ],
   },
 ];
@@ -293,14 +293,28 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
 function ChannelCoverflow() {
   const [active, setActive] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [manualLock, setManualLock] = useState(false);
   const dragRef = useRef<{ startX: number; startActive: number; pointerId: number } | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const len = CHANNELS.length;
   const STEP_PX = 70;
 
+  // After a manual nav (arrow click), pause scroll-driven cycling so the user
+  // can read the chat they selected.
+  const lockManual = () => {
+    setManualLock(true);
+    if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+    lockTimerRef.current = setTimeout(() => setManualLock(false), 6000);
+  };
+  const goPrev = () => { setActive((a) => (a - 1 + len) % len); lockManual(); };
+  const goNext = () => { setActive((a) => (a + 1) % len); lockManual(); };
+
+  useEffect(() => () => { if (lockTimerRef.current) clearTimeout(lockTimerRef.current); }, []);
+
   useEffect(() => {
-    if (dragging) return;
+    if (dragging || manualLock) return;
     const el = containerRef.current;
     if (!el) return;
     const update = () => {
@@ -309,14 +323,16 @@ function ChannelCoverflow() {
       const center = rect.top + rect.height / 2;
       const progress = 1 - center / vh;
       const clamped = Math.max(0, Math.min(0.9999, progress));
-      const next = Math.floor(clamped * len * 1.4) % len;
+      // 0.45 multiplier means a full pass through the section advances ~2 channels.
+      // Slow enough to read each scenario without forcing manual nav.
+      const next = Math.floor(clamped * len * 0.45) % len;
       setActive(next);
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
     return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
-  }, [dragging, len]);
+  }, [dragging, manualLock, len]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
@@ -340,56 +356,275 @@ function ChannelCoverflow() {
 
   return (
     <div ref={containerRef} className="proxe-coverflow-wrap" aria-label={`PROXe on ${CHANNELS.map(c => c.name).join(', ')}`}>
-      {/* Icon picker */}
-      <div className="proxe-coverflow" data-dragging={dragging}
-        onPointerDown={handlePointerDown} onPointerMove={handlePointerMove}
-        onPointerUp={endDrag} onPointerCancel={endDrag}
-      >
-        <div className="proxe-coverflow-stage">
-          {CHANNELS.map((c, i) => {
-            let offset = i - active;
-            if (offset > len / 2) offset -= len;
-            if (offset < -len / 2) offset += len;
-            const visible = Math.abs(offset) <= 2;
-            return (
-              <div key={c.name} className="proxe-coverflow-tile" data-offset={offset} data-visible={visible} aria-hidden={offset !== 0}>
-                {c.icon}
-              </div>
-            );
-          })}
+      {/* Icon picker with cycle arrows */}
+      <div className="proxe-coverflow-row">
+        <button type="button" className="proxe-coverflow-arrow" onClick={goPrev} aria-label="Previous channel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <div className="proxe-coverflow" data-dragging={dragging}
+          onPointerDown={handlePointerDown} onPointerMove={handlePointerMove}
+          onPointerUp={endDrag} onPointerCancel={endDrag}
+        >
+          <div className="proxe-coverflow-stage">
+            {CHANNELS.map((c, i) => {
+              let offset = i - active;
+              if (offset > len / 2) offset -= len;
+              if (offset < -len / 2) offset += len;
+              const visible = Math.abs(offset) <= 2;
+              return (
+                <div key={c.name} className="proxe-coverflow-tile" data-offset={offset} data-visible={visible} aria-hidden={offset !== 0}>
+                  {c.icon}
+                </div>
+              );
+            })}
+          </div>
+          <div className="proxe-coverflow-label" aria-live="polite">{channel.name.toUpperCase()}</div>
         </div>
-        <div className="proxe-coverflow-label" aria-live="polite">{channel.name.toUpperCase()}</div>
+        <button type="button" className="proxe-coverflow-arrow" onClick={goNext} aria-label="Next channel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
       </div>
 
-      {/* Live chat preview — key on active so it re-mounts and re-animates */}
-      <div key={active} className="proxe-channel-chat" style={{ '--ch-accent': channel.accent } as React.CSSProperties}>
-        <div className="proxe-channel-chat-header">
-          <span className="proxe-channel-chat-icon">{channel.icon}</span>
-          <span className="proxe-channel-chat-name">{channel.name}</span>
-          <span className="proxe-channel-chat-live">
-            <span className="proxe-channel-chat-dot" />
-            Live
-          </span>
+      {/* Native-looking chat preview — re-mounts on channel change to re-animate */}
+      <div key={active} className="proxe-chat-shell" data-channel={channel.name.toLowerCase()}>
+        <PlatformChat channel={channel} />
+      </div>
+    </div>
+  );
+}
+
+/* ============ Platform-native chat UIs ============
+   Each platform mimics its real-world app chrome — WhatsApp Web, Instagram DM,
+   Messenger, Voice call, web widget. Wrapped by .proxe-chat-shell which adds
+   the PROXe glass-card outer chrome (electric violet shadow + frosted edge). */
+
+function PlatformChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  switch (channel.name) {
+    case 'WhatsApp':  return <WhatsAppChat channel={channel} />;
+    case 'Instagram': return <InstagramChat channel={channel} />;
+    case 'Messenger': return <MessengerChat channel={channel} />;
+    case 'Voice':     return <VoiceChat channel={channel} />;
+    case 'Web':       return <WebChat channel={channel} />;
+    default:          return null;
+  }
+}
+
+/* ===== WhatsApp Web ===== */
+function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  return (
+    <div className="wa-chat">
+      <div className="wa-header">
+        <div className="wa-avatar"><SiWhatsapp /></div>
+        <div className="wa-meta">
+          <div className="wa-name">PROXe</div>
+          <div className="wa-status">typing<span className="wa-typing-ellipsis"><span /><span /><span /></span></div>
         </div>
-        <div className="proxe-channel-chat-body">
-          {channel.messages.map((msg, i) => (
-            <div key={i} className={`proxe-ch-msg proxe-ch-msg--${msg.from}`} style={{ '--i': i } as React.CSSProperties}>
-              {msg.from === 'ai' && (
-                <div className="proxe-ch-msg-avatar">
-                  <img src="/proxe/brand/proxe-icon-white.webp" alt="PROXe" width={18} height={18} />
+      </div>
+      <div className="wa-body">
+        <div className="wa-day">TODAY</div>
+        {channel.messages.map((m, i) => (
+          <div key={i} className={`wa-row wa-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+            <div className="wa-bubble">
+              <span className="wa-text">{m.text}</span>
+              <span className="wa-meta-line">
+                <span className="wa-time">{m.time}</span>
+                {m.from === 'customer' && (
+                  <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
+                    <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
+                    <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
+                  </svg>
+                )}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="wa-input">
+        <span className="wa-input-pill">Type a message</span>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Instagram DM (dark) ===== */
+function InstagramChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  return (
+    <div className="ig-chat">
+      <div className="ig-header">
+        <div className="ig-avatar"><SiInstagram /></div>
+        <div className="ig-meta">
+          <div className="ig-name">proxe.ai <span className="ig-verified">✓</span></div>
+          <div className="ig-status">Active now</div>
+        </div>
+      </div>
+      <div className="ig-body">
+        {channel.messages.map((m, i) => (
+          <div key={i} className={`ig-row ig-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+            <div className="ig-bubble">{m.text}</div>
+          </div>
+        ))}
+        <div className="ig-row ig-row--ai" style={{ '--i': channel.messages.length } as React.CSSProperties}>
+          <div className="ig-bubble ig-bubble--typing"><span /><span /><span /></div>
+        </div>
+      </div>
+      <div className="ig-input">
+        <span className="ig-input-pill">Message…</span>
+        <span className="ig-actions">♡  ⌃</span>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Messenger (matches real Messenger: avatar-on-bubble + grouping) ===== */
+function MessengerChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  // Group consecutive same-sender messages so bubble corners read as a thread,
+  // and only the LAST bubble in an AI run carries the avatar.
+  const isLastInRun = (i: number, from: ChatMsg['from']) =>
+    i === channel.messages.length - 1 || channel.messages[i + 1].from !== from;
+  const isFirstInRun = (i: number, from: ChatMsg['from']) =>
+    i === 0 || channel.messages[i - 1].from !== from;
+
+  return (
+    <div className="ms-chat">
+      <div className="ms-header">
+        <div className="ms-h-left">
+          <svg className="ms-h-back" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          <div className="ms-h-avatar">
+            <SiMessenger />
+            <span className="ms-h-online" />
+          </div>
+          <div className="ms-meta">
+            <div className="ms-name">PROXe</div>
+            <div className="ms-status">Active now</div>
+          </div>
+        </div>
+        <div className="ms-icons">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+      </div>
+      <div className="ms-body">
+        {channel.messages.map((m, i) => {
+          const last = isLastInRun(i, m.from);
+          const first = isFirstInRun(i, m.from);
+          return (
+            <div
+              key={i}
+              className={`ms-row ms-row--${m.from} ${last ? 'is-last' : ''} ${first ? 'is-first' : ''}`}
+              style={{ '--i': i } as React.CSSProperties}
+            >
+              {m.from === 'ai' && (
+                <div className="ms-bubble-avatar">
+                  {last && <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>}
                 </div>
               )}
-              <div className="proxe-ch-msg-bubble">
-                <span className="proxe-ch-msg-text">{msg.text}</span>
-                <span className="proxe-ch-msg-time">{msg.time}</span>
-              </div>
+              <div className="ms-bubble">{m.text}</div>
             </div>
-          ))}
+          );
+        })}
+        <div className="ms-row ms-row--ai is-last is-first" style={{ '--i': channel.messages.length } as React.CSSProperties}>
+          <div className="ms-bubble-avatar">
+            <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>
+          </div>
+          <div className="ms-bubble ms-bubble--typing"><span /><span /><span /></div>
         </div>
-        <div className="proxe-channel-chat-footer">
-          <span className="proxe-channel-chat-typing"><span /><span /><span /></span>
-          <span className="proxe-channel-chat-footer-label">PROXe is replying…</span>
+      </div>
+      <div className="ms-input">
+        <span className="ms-plus">+</span>
+        <span className="ms-input-pill">Aa</span>
+        <span className="ms-thumb">👍</span>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Voice call ===== */
+function VoiceChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  return (
+    <div className="vc-chat">
+      <div className="vc-header">
+        <span className="vc-eyebrow">ON CALL</span>
+        <span className="vc-timer">00:42</span>
+      </div>
+      <div className="vc-stage">
+        <div className="vc-orb">
+          <div className="vc-orb-pulse" />
+          <div className="vc-orb-pulse vc-orb-pulse--2" />
+          <div className="vc-orb-core">
+            <FiPhone />
+          </div>
         </div>
+        <div className="vc-name">PROXe Voice</div>
+        <div className="vc-sub">AI agent · Live transcript</div>
+      </div>
+      <div className="vc-transcript">
+        {channel.messages.map((m, i) => (
+          <div key={i} className={`vc-line vc-line--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+            <span className="vc-speaker">{m.from === 'ai' ? 'PROXe' : 'Caller'}</span>
+            <span className="vc-text">{m.text}</span>
+          </div>
+        ))}
+        <div className="vc-line vc-line--ai vc-line--speaking" style={{ '--i': channel.messages.length } as React.CSSProperties}>
+          <span className="vc-speaker">PROXe is speaking</span>
+          <div className="vc-wave">
+            {Array.from({ length: 14 }).map((_, i) => <span key={i} style={{ '--bar-i': i } as React.CSSProperties} />)}
+          </div>
+        </div>
+      </div>
+      <div className="vc-controls">
+        <button className="vc-btn" aria-label="Mute"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
+        <button className="vc-btn vc-btn--end" aria-label="End"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+        <button className="vc-btn" aria-label="Speaker"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Web chat widget (matches the real PROXe deploy widget) ===== */
+function WebChat({ channel }: { channel: typeof CHANNELS[number] }) {
+  return (
+    <div className="web-chat">
+      <div className="web-header">
+        <div className="web-brand">
+          <img src="/proxe/brand/proxe-icon-white.webp" alt="" width={20} height={20} />
+          <div className="web-name">PROXe</div>
+        </div>
+        <div className="web-header-actions">
+          <button className="web-icon-btn" aria-label="Toggle theme">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          </button>
+          <button className="web-icon-btn" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div className="web-body">
+        {channel.messages.map((m, i) => (
+          <div key={i} className={`web-row web-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+            <div className="web-bubble">{m.text}</div>
+          </div>
+        ))}
+        <div className="web-quick">
+          <button className="web-pill">Book a Demo</button>
+          <button className="web-pill">Pricing</button>
+        </div>
+        <div className="web-row web-row--ai" style={{ '--i': channel.messages.length + 1 } as React.CSSProperties}>
+          <div className="web-bubble web-bubble--typing"><span /><span /><span /></div>
+        </div>
+      </div>
+      <div className="web-powered">Powered by <strong>PROXe</strong></div>
+      <div className="web-input">
+        <button className="web-circle-btn web-circle-btn--phone" aria-label="Call">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
+        <span className="web-input-pill">Type your message…</span>
+        <button className="web-circle-btn web-circle-btn--send" aria-label="Send">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
       </div>
     </div>
   );
@@ -707,18 +942,6 @@ export default function ProxeLanding() {
             </button>
           </div>
         </div>
-      </section>
-
-      {/* ===== Integration Hub ===== */}
-      <section className="proxe-section proxe-hub-section">
-        <div className="proxe-container" style={{ textAlign: 'center' }}>
-          <div className="proxe-section-label">How It Works</div>
-          <h2 className="proxe-hub-heading">One AI. Every Channel.</h2>
-          <p className="proxe-hub-sub">
-            PROXe sits at the center — capturing, nurturing, and closing leads across every channel through a single intelligent brain.
-          </p>
-        </div>
-        <IntegrationHub />
       </section>
 
       {/* ===== 6. Channel dial ===== */}
