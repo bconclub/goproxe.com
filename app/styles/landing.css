@@ -2352,6 +2352,12 @@ body:has(.proxe-root) {
   z-index: 1;
 }
 
+.proxe-feature-icon {
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 0;
+}
+
 .proxe-feature-label {
   font-family: var(--proxe-font-mono);
   font-size: 10px;
