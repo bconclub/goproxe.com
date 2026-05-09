@@ -1885,8 +1885,8 @@ body:has(.proxe-root) {
 .proxe-problem {
   padding: 0;
   text-align: center;
-  /* tall section gives scroll room for channel cycling */
-  height: 500vh;
+  /* scroll room for channel cycling — ~40vh per channel */
+  height: 220vh;
   position: relative;
 }
 .proxe-problem .proxe-container {
