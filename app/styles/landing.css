@@ -2672,62 +2672,83 @@ body:has(.proxe-root) {
 
 .proxe-usecase-card {
   border: 1px solid var(--proxe-border);
-  border-radius: 14px;
-  padding: 24px;
+  border-radius: 16px;
+  overflow: hidden;
   background: var(--proxe-glass);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: 260px;
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.25);
 }
 .proxe-usecase-card:hover {
   border-color: var(--proxe-border-strong);
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.4);
 }
 
-.proxe-usecase-icon {
-  width: 40px;
-  height: 40px;
+.proxe-usecase-img {
+  height: 120px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  border: 1px solid var(--proxe-border-strong);
-  color: var(--proxe-accent);
-  background: var(--proxe-accent-soft);
+  position: relative;
+}
+.proxe-usecase-img-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+  backdrop-filter: blur(6px);
+}
+
+.proxe-usecase-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
 
 .proxe-usecase-title {
   font-family: var(--proxe-font-serif);
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 20px;
+  line-height: 1.15;
   font-weight: 400;
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .proxe-usecase-desc {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13.5px;
   line-height: 1.55;
   margin: 0;
   flex: 1;
 }
 
 .proxe-usecase-stat {
-  font-family: var(--proxe-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--proxe-accent);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
   padding-top: 14px;
   border-top: 1px solid var(--proxe-border);
+}
+.proxe-usecase-stat-num {
+  font-family: var(--proxe-font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.proxe-usecase-stat-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 1023px) {
