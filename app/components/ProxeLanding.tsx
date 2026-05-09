@@ -1121,48 +1121,56 @@ export default function ProxeLanding() {
             {[
               {
                 img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#4F46E5,#A855F7)',
                 title: 'Coaching Academies',
                 desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
                 stat: '4.2×', statLabel: 'more enrollments',
               },
               {
                 img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#0EA5E9,#6366F1)',
                 title: 'Clinics & Healthcare',
                 desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
                 stat: '68%', statLabel: 'fewer no-shows',
               },
               {
                 img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#059669,#0EA5E9)',
                 title: 'Real Estate',
                 desc: 'Qualify buyers, book site visits, follow up until the deal closes.',
                 stat: '3×', statLabel: 'more site visits booked',
               },
               {
                 img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#F59E0B,#EF4444)',
                 title: 'D2C & E-commerce',
                 desc: 'Recover abandoned carts, answer product questions, nudge hesitant buyers.',
                 stat: '32%', statLabel: 'cart recovery rate',
               },
               {
                 img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#DB2777,#7C3AED)',
                 title: 'Fitness & Wellness',
                 desc: 'Convert trial signups, reduce no-shows, re-engage lapsed members.',
                 stat: '55%', statLabel: 'reduction in no-shows',
               },
               {
                 img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#1D4ED8,#06B6D4)',
                 title: 'Professional Services',
                 desc: 'Qualify leads, book discovery calls, route hot prospects to partners.',
                 stat: '2.8×', statLabel: 'more discovery calls',
               },
               {
                 img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#334155,#7C3AED)',
                 title: 'Auto Dealerships',
                 desc: 'Answer inventory questions around the clock, book test drives, reactivate cold leads.',
                 stat: '47%', statLabel: 'more test drives booked',
               },
               {
                 img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=280&fit=crop&q=80',
+                tint: 'linear-gradient(135deg,#D97706,#DC2626)',
                 title: 'Home Services',
                 desc: 'Dispatch jobs fast. Capture, qualify, and schedule every service request.',
                 stat: '5×', statLabel: 'faster lead response',
@@ -1171,6 +1179,7 @@ export default function ProxeLanding() {
               <article key={u.title} className="proxe-usecase-card">
                 <div className="proxe-usecase-img">
                   <img src={u.img} alt={u.title} className="proxe-usecase-img-photo" />
+                  <div className="proxe-usecase-img-overlay" style={{ background: u.tint }} />
                 </div>
                 <div className="proxe-usecase-body">
                   <h3 className="proxe-usecase-title">{u.title}</h3>
