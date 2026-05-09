@@ -1,0 +1,2644 @@
+/* ==========================================================================
+   PROXe Landing — Light cream theme (Comet direction).
+   Forced light mode, no dark-mode flicker.
+   ========================================================================== */
+
+.proxe-root {
+  /* Design tokens — Comet-style cream */
+  --proxe-bg: #2e1e6b;          /* fallback deep purple */
+  --proxe-bg-raised: rgba(255, 255, 255, 0.08);   /* glass surface */
+  --proxe-fg: #ffffff;
+  --proxe-muted: rgba(255, 255, 255, 0.65);
+  --proxe-accent: #ffffff;
+  --proxe-accent-strong: #ffffff;
+  --proxe-accent-soft: rgba(255, 255, 255, 0.14);
+  --proxe-border: rgba(255, 255, 255, 0.18);
+  --proxe-border-strong: rgba(255, 255, 255, 0.35);
+  --proxe-glass: rgba(255, 255, 255, 0.1);
+
+  --proxe-font-sans: var(--font-proxe-sans), 'Inter', system-ui, -apple-system, sans-serif;
+  --proxe-font-heading: var(--font-proxe-heading), 'Instrument Serif', Georgia, serif;
+  /* Back-compat alias: older rules still reference --proxe-font-serif */
+  --proxe-font-serif: var(--proxe-font-heading);
+  --proxe-font-mono: var(--font-proxe-mono), 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  color: var(--proxe-fg);
+  background: var(--proxe-bg);
+  font-family: var(--proxe-font-sans);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  min-height: 100vh;
+  color-scheme: light;
+  scroll-behavior: smooth;
+  isolation: isolate;
+}
+
+.proxe-root *,
+.proxe-root *::before,
+.proxe-root *::after {
+  box-sizing: border-box;
+}
+
+.proxe-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.proxe-root button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* Override globals.css black body when PROXe is on screen — midnight indigo
+   fallback so there's no flash before the WebGL gradient renders */
+html:has(.proxe-root),
+body:has(.proxe-root) {
+  background: #14102e !important;
+  scroll-behavior: smooth;
+}
+
+/* ===== Typography helpers ===== */
+.proxe-serif {
+  font-family: var(--proxe-font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.proxe-mono {
+  font-family: var(--proxe-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--proxe-muted);
+}
+
+.proxe-muted {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== Layout ===== */
+.proxe-main {
+  width: 100%;
+  overflow-x: clip;
+  position: relative;
+  background: transparent;
+}
+
+/* Site-wide animated gradient — fixed to viewport, renders under all content */
+.proxe-page-grainient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.proxe-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.proxe-section {
+  padding: 96px 0;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .proxe-section {
+    padding: 64px 0;
+  }
+}
+
+.proxe-section-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* ===== 1. Floating logo + CTA (no header container, Comet direction) ===== */
+/* Boxed header: logo + CTA live inside a centered, max-width row */
+.proxe-float-header {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* More breathing room on the sides — 64px combined inset */
+  width: calc(100% - 64px);
+  max-width: 1160px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.proxe-float-header > * {
+  pointer-events: auto;
+}
+
+.proxe-float-logo {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  color: var(--proxe-fg);
+}
+
+/* Deploy pill — glass-blur in both states. Top: full label "Deploy PROXe".
+   Scrolled: short label "Deploy" (collapse mirrors the logo→icon swap). */
+.proxe-float-header .proxe-float-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  min-height: 34px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px -8px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.proxe-float-header .proxe-float-cta:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+/* Two labels stack on each other; only one is visible at a time. */
+.proxe-float-cta-full,
+.proxe-float-cta-short {
+  display: inline-block;
+  transition: opacity 0.2s ease;
+}
+.proxe-float-cta-short {
+  display: none;
+}
+
+/* Scrolled — only difference is the label collapses to "Deploy".
+   Both states share the same glass-blur treatment. */
+.proxe-float-header[data-scrolled='true'] .proxe-float-cta-full {
+  display: none;
+}
+.proxe-float-header[data-scrolled='true'] .proxe-float-cta-short {
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .proxe-float-header {
+    width: calc(100% - 32px);
+  }
+  .proxe-float-header .proxe-float-cta {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+}
+
+.proxe-nav-logo {
+  display: inline-flex;
+  align-items: center;
+  color: var(--proxe-fg);
+  white-space: nowrap;
+  line-height: 0;
+  position: relative;
+}
+.proxe-nav-logo img {
+  width: auto;
+  display: block;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.proxe-nav-logo-full {
+  height: 26px;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* Default (over hero, not scrolled) → white wordmark visible */
+.proxe-float-header[data-scrolled='false'] .proxe-nav-logo--light {
+  opacity: 1;
+  position: relative;
+  transform: none;
+}
+/* Scrolled → black icon visible */
+.proxe-float-header[data-scrolled='true'] .proxe-nav-logo-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.proxe-nav-logo-icon {
+  height: 26px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scale(0.8);
+  opacity: 0;
+}
+
+.proxe-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.proxe-nav-links a {
+  transition: color 0.2s ease;
+}
+.proxe-nav-links a:hover {
+  color: var(--proxe-fg);
+}
+
+.proxe-nav-cta {
+  padding: 9px 18px;
+  background: var(--proxe-accent);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+.proxe-nav-cta:hover {
+  background: var(--proxe-accent-strong);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .proxe-nav {
+    padding: 16px 20px;
+    gap: 12px;
+  }
+  .proxe-nav-links {
+    display: none;
+  }
+  .proxe-nav-logo-full,
+  .proxe-nav-logo-icon {
+    height: 22px;
+  }
+  .proxe-nav-cta {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+}
+
+/* ===== 2. Hero (flat — sits on site-wide gradient) ===== */
+.proxe-hero {
+  position: relative;
+  padding: 180px 0 140px;
+  text-align: center;
+  isolation: isolate;
+}
+
+@media (max-width: 768px) {
+  .proxe-hero {
+    padding: 140px 0 100px;
+  }
+}
+
+.proxe-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.proxe-hero-bg video,
+.proxe-hero-bg .proxe-hero-bg-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.proxe-hero-bg video {
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
+
+.proxe-hero-bg-fallback {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(107, 91, 214, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #faf7f0 0%, #f6f4ef 100%);
+  opacity: 1;
+}
+
+.proxe-hero-grainient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.proxe-hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(17, 17, 17, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9), transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9), transparent 70%);
+  animation: proxeDriftDots 40s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes proxeDriftDots {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 140px 140px;
+  }
+}
+
+.proxe-hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.proxe-hero-eyebrow {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 28px;
+  text-shadow: 0 1px 3px rgba(10, 20, 60, 0.55);
+}
+
+.proxe-hero-title {
+  font-family: var(--proxe-font-heading);
+  font-weight: 400;
+  font-size: clamp(56px, 11vw, 156px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  margin: 0;
+  max-width: 1200px;
+  color: #ffffff;
+  /* Layered shadow: soft wide halo + tight crisp edge → keeps white
+     readable even when gradient behind it gets bright */
+  text-shadow:
+    0 2px 30px rgba(10, 20, 60, 0.45),
+    0 1px 2px rgba(10, 20, 60, 0.35);
+}
+
+.proxe-hero-subtitle {
+  margin: 28px auto 0;
+  max-width: 64ch;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 17px;
+  line-height: 1.7;
+  text-shadow: 0 1px 4px rgba(10, 20, 60, 0.5);
+}
+
+/* ===== Channel coverflow — auto-rotating carousel =========
+   Center tile is focused, ±1 are smaller and dimmer, ±2 are peripheral.
+   Tiles position themselves from `data-offset` (0 = active, ±1 = side,
+   ±2 = peripheral). Auto-rotates via setInterval; hover pauses it. */
+.proxe-coverflow {
+  margin: 36px auto 0;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.proxe-coverflow-stage {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  /* Off-stage siblings can sit beyond the 460px max-width as they fade out. */
+  overflow: visible;
+}
+
+/* No tile chrome — pure icons. Size, position, opacity per offset. */
+.proxe-coverflow-tile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.proxe-coverflow-tile svg {
+  width: 76px;
+  height: 76px;
+  stroke: currentColor;
+  pointer-events: none;
+}
+
+/* Hidden outside the visible window (any |offset| > 2). */
+.proxe-coverflow-tile[data-visible='false'] {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+}
+
+/* Centre — scaled up, fully bright */
+.proxe-coverflow-tile[data-offset='0'] {
+  transform: translate(-50%, -50%) scale(1.2);
+  opacity: 1;
+  z-index: 4;
+}
+
+/* ±1 — smaller, dimmer */
+.proxe-coverflow-tile[data-offset='-1'],
+.proxe-coverflow-tile[data-offset='1'] {
+  opacity: 0.4;
+  z-index: 3;
+}
+.proxe-coverflow-tile[data-offset='-1'] {
+  transform: translate(calc(-50% - 110px), -50%) scale(0.7);
+}
+.proxe-coverflow-tile[data-offset='1'] {
+  transform: translate(calc(-50% + 110px), -50%) scale(0.7);
+}
+
+/* ±2 — tiny peripheral hint (desktop only) */
+.proxe-coverflow-tile[data-offset='-2'],
+.proxe-coverflow-tile[data-offset='2'] {
+  opacity: 0.18;
+  z-index: 2;
+}
+.proxe-coverflow-tile[data-offset='-2'] {
+  transform: translate(calc(-50% - 200px), -50%) scale(0.5);
+}
+.proxe-coverflow-tile[data-offset='2'] {
+  transform: translate(calc(-50% + 200px), -50%) scale(0.5);
+}
+
+.proxe-coverflow-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  min-height: 1em;
+  transition: color 0.3s ease;
+  margin-top: 8px;
+}
+
+/* ===== Channel coverflow outer wrap ===== */
+.proxe-coverflow-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  margin-top: 36px;
+  width: 100%;
+}
+
+/* ===== Live chat interface preview ===== */
+.proxe-channel-chat {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 20px 60px -20px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  animation: proxeChatIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes proxeChatIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.proxe-channel-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.proxe-channel-chat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ch-accent, #fff);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.proxe-channel-chat-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  flex: 1;
+}
+
+.proxe-channel-chat-live {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--proxe-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.proxe-channel-chat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ee06a;
+  box-shadow: 0 0 8px rgba(46, 224, 106, 0.7);
+  animation: proxeOrbLiveDot 1.4s ease-out infinite;
+}
+
+.proxe-channel-chat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+
+/* Message row */
+.proxe-ch-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  animation: proxeMsgIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 100ms);
+}
+
+@keyframes proxeMsgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.proxe-ch-msg--customer {
+  flex-direction: row-reverse;
+}
+
+.proxe-ch-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #4c1d95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.proxe-ch-msg-bubble {
+  max-width: 72%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+}
+
+.proxe-ch-msg--ai .proxe-ch-msg-bubble {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 4px 16px 16px 16px;
+}
+
+.proxe-ch-msg--customer .proxe-ch-msg-bubble {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.55), rgba(76, 29, 149, 0.6));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px 4px 16px 16px;
+}
+
+.proxe-ch-msg-text {
+  font-size: 13px;
+  line-height: 1.48;
+  color: rgba(255, 255, 255, 0.92);
+  display: block;
+}
+
+.proxe-ch-msg-time {
+  font-family: var(--proxe-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+  display: block;
+}
+
+.proxe-ch-msg--ai .proxe-ch-msg-time { text-align: left; }
+.proxe-ch-msg--customer .proxe-ch-msg-time { text-align: right; }
+
+/* Typing footer */
+.proxe-channel-chat-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.proxe-channel-chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.proxe-channel-chat-typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  animation: proxeTypingDot 1.2s ease-in-out infinite;
+}
+.proxe-channel-chat-typing span:nth-child(2) { animation-delay: 0.18s; }
+.proxe-channel-chat-typing span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes proxeTypingDot {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.85); }
+  30%            { opacity: 1;   transform: scale(1.2); }
+}
+
+.proxe-channel-chat-footer-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 640px) {
+  .proxe-coverflow {
+    max-width: 320px;
+  }
+  .proxe-coverflow-stage {
+    height: 110px;
+  }
+  .proxe-coverflow-tile svg {
+    width: 60px;
+    height: 60px;
+  }
+  .proxe-coverflow-tile[data-offset='-1'] {
+    transform: translate(calc(-50% - 85px), -50%) scale(0.7);
+  }
+  .proxe-coverflow-tile[data-offset='1'] {
+    transform: translate(calc(-50% + 85px), -50%) scale(0.7);
+  }
+  /* Mobile shows just 3 icons: hide ±2. */
+  .proxe-coverflow-tile[data-offset='-2'],
+  .proxe-coverflow-tile[data-offset='2'] {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-coverflow-tile {
+    transition: opacity 0.2s ease;
+  }
+}
+
+.proxe-hero-ctas {
+  display: flex;
+  gap: 12px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+/* "What's PROXe?" — secondary CTA. Height-matched to the Deploy pill. */
+.proxe-hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-family: var(--proxe-font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.proxe-hero-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 480px) {
+  .proxe-hero-cta-secondary {
+    height: 50px;
+    padding: 0 20px;
+    font-size: 14px;
+  }
+}
+
+/* The single, oversized Deploy PROXe CTA — white pill, dark chip */
+.proxe-hero-ctas .proxe-hero-big-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px 14px 30px;
+  background: #EDE9FE; /* faded violet */
+  color: #0a0a0a;
+  font-family: var(--proxe-font-sans);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 20px 60px -15px rgba(124, 58, 237, 0.5),
+    0 0 0 10px rgba(237, 233, 254, 0.22);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.proxe-hero-ctas .proxe-hero-big-cta:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow:
+    0 28px 70px -15px rgba(30, 10, 80, 0.6),
+    0 0 0 12px rgba(255, 255, 255, 0.22);
+}
+
+
+.proxe-hero-big-cta-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #0a0a0a;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.proxe-hero-big-cta:hover .proxe-hero-big-cta-icon {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .proxe-hero-big-cta {
+    padding: 16px 26px 16px 22px;
+    font-size: 16px;
+  }
+  .proxe-hero-big-cta-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .proxe-hero-big-cta-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.proxe-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--proxe-font-sans);
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.proxe-root .proxe-btn-primary {
+  background: #EDE9FE; /* faded violet */
+  color: #0a0a0a;
+}
+.proxe-root .proxe-btn-primary:hover {
+  background: #ffffff;
+  color: #7C3AED;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px -12px rgba(124, 58, 237, 0.5);
+}
+
+.proxe-btn-ghost {
+  border-color: var(--proxe-border-strong);
+  color: var(--proxe-fg);
+  background: transparent;
+}
+.proxe-btn-ghost:hover {
+  border-color: var(--proxe-fg);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ===== 3. Sticky note voice demo ===== */
+.proxe-stickynote {
+  position: absolute;
+  top: 140px;
+  right: max(24px, 5vw);
+  z-index: 3;
+  width: 220px;
+  background: #fff8d5;
+  color: #1a1a1a;
+  padding: 22px 18px 18px;
+  border-radius: 2px;
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: rotate(4deg);
+  transition: transform 0.3s ease;
+  font-family: var(--proxe-font-sans);
+}
+.proxe-stickynote:hover {
+  transform: rotate(2deg) translateY(-2px);
+}
+
+.proxe-stickynote::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 80px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.proxe-stickynote-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 14px;
+}
+
+.proxe-stickynote-row svg {
+  flex-shrink: 0;
+}
+
+.proxe-stickynote-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--proxe-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.2s ease;
+}
+.proxe-stickynote-cta:hover {
+  background: var(--proxe-accent);
+}
+
+@media (max-width: 1023px) {
+  .proxe-stickynote {
+    display: none;
+  }
+}
+
+/* ===== Hero video — 3D landing reveal ===== */
+.proxe-hero-video {
+  position: relative;
+  padding: 0 24px 120px;
+  display: flex;
+  justify-content: center;
+  perspective: 1400px;
+  perspective-origin: 50% 0%;
+}
+
+.proxe-hero-video-frame {
+  width: 100%;
+  max-width: 1200px;
+  aspect-ratio: 16 / 9;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--proxe-border);
+  border-radius: 28px;
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.5);
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform: rotateX(0deg) scale(1);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.9s ease,
+              box-shadow 1.2s ease;
+}
+
+/* Applied by JS when video frame is below the fold; removed on intersection → triggers landing transition */
+.proxe-hero-video-frame.proxe-landing-ready {
+  transform: rotateX(38deg) scale(0.82) translateY(60px);
+  opacity: 0.55;
+  box-shadow: 0 80px 140px -40px rgba(0, 0, 0, 0.75);
+}
+
+.proxe-hero-video-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* inner radius = outer radius (28) - padding (10) = 18 for concentric curves */
+  border-radius: 18px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.proxe-hero-video-inner iframe {
+  position: absolute;
+  /* Overscale slightly to hide Vimeo's letterbox seam on the edges */
+  inset: -2%;
+  width: 104%;
+  height: 104%;
+  border: 0;
+  display: block;
+  background: transparent;
+}
+
+/* Unmute / mute toggle pinned bottom-right of the video frame.
+   Specificity scoped with .proxe-root prefix to beat the
+   `.proxe-root button { background: none; border: none; color: inherit }`
+   reset earlier in this file. */
+.proxe-root .proxe-hero-video-mute {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 0 12px;
+  height: 40px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+  font-family: var(--proxe-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  /* Escape the parent's preserve-3d context so the pill doesn't warp */
+  transform: translateZ(0);
+  transform-style: flat;
+  backface-visibility: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.proxe-root .proxe-hero-video-mute:hover {
+  background: #1a1a1a;
+  border-color: #ffffff;
+  transform: translateZ(0) translateY(-1px);
+}
+
+.proxe-root .proxe-hero-video-mute span {
+  white-space: nowrap;
+}
+
+.proxe-hero-video-mute:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.proxe-hero-video-mute svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .proxe-hero-video-mute {
+    right: 12px;
+    bottom: 12px;
+    padding: 8px 12px 8px 10px;
+    font-size: 12px;
+  }
+  .proxe-hero-video-mute span {
+    display: none;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .proxe-hero-video {
+    padding: 0 12px 80px;
+  }
+  .proxe-hero-video-frame {
+    padding: 6px;
+    border-radius: 20px;
+  }
+  .proxe-hero-video-inner {
+    border-radius: 14px;
+  }
+}
+
+/* ===== 4. Channel scroll strip (unused — kept for back-compat) ===== */
+.proxe-channel-strip {
+  border-top: 1px solid var(--proxe-border);
+  border-bottom: 1px solid var(--proxe-border);
+  overflow: hidden;
+  padding: 14px 0;
+  position: relative;
+  background: var(--proxe-bg);
+}
+
+.proxe-channel-track {
+  display: flex;
+  gap: 48px;
+  animation: proxeMarquee 40s linear infinite;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.proxe-channel-item {
+  font-family: var(--proxe-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.proxe-channel-item::after {
+  content: '·';
+  color: rgba(255, 255, 255, 0.45);
+}
+
+@keyframes proxeMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ===== 5. Trust strip ===== */
+.proxe-trust {
+  padding: 72px 0;
+  text-align: center;
+}
+
+.proxe-trust-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--proxe-muted);
+  margin-bottom: 32px;
+}
+
+.proxe-trust-logos {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.proxe-trust-placeholder {
+  height: 40px;
+  border: 1px dashed var(--proxe-border-strong);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .proxe-trust-logos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== 6. Problem statement ===== */
+.proxe-problem {
+  padding: 160px 24px;
+  text-align: center;
+}
+
+.proxe-problem-line {
+  font-family: var(--proxe-font-heading);
+  font-weight: 300;
+  font-size: clamp(34px, 5.6vw, 72px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--proxe-fg);
+}
+
+.proxe-problem-sub {
+  margin: 28px auto 0;
+  max-width: 50ch;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* ===== 7. Three pillars — sticky stacking glass cards ===== */
+.proxe-pillars-section {
+  padding-bottom: 0;
+}
+
+.proxe-pillars-list {
+  display: block;
+  position: relative;
+  /* Just enough runway for the stack to form + a brief dwell. No more dead space. */
+  padding-bottom: 12vh;
+}
+
+/* The next section after pillars releases the stack — pull it up to remove the gap. */
+.proxe-pillars-section + .proxe-section {
+  padding-top: 32px;
+}
+
+/* Each card pins with a fixed 88px peek — exactly the same strip visible
+   for every earlier card in the stack. 88px = 40px top-padding + 48px icon. */
+.proxe-pillar-row {
+  position: sticky;
+  top: calc(76px + var(--pillar-index, 0) * 88px);
+  z-index: calc(var(--pillar-index, 0) + 1);
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 44px;
+  min-height: 300px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  box-shadow:
+    0 2px 0 0 rgba(255, 255, 255, 0.14) inset,
+    0 24px 64px -20px rgba(0, 0, 0, 0.38),
+    0 1px 0 0 rgba(0, 0, 0, 0.12);
+}
+
+.proxe-pillar-row:last-child {
+  margin-bottom: 0;
+}
+
+.proxe-pillar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.proxe-pillar-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.proxe-pillar-title {
+  font-family: var(--proxe-font-heading);
+  font-size: clamp(38px, 4.8vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.proxe-pillar-desc {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 38ch;
+}
+
+/* Video panel */
+.proxe-pillar-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.55);
+}
+
+.proxe-pillar-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.proxe-pillar-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.proxe-pillar-video-play {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  padding-left: 3px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.proxe-pillar-video-placeholder:hover .proxe-pillar-video-play {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.06);
+}
+
+.proxe-pillar-video-caption {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 900px) {
+  .proxe-pillar-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 28px;
+    min-height: auto;
+    /* Fixed 72px peek on tablet: 28px padding-top + 44px icon */
+    top: calc(70px + var(--pillar-index, 0) * 72px);
+  }
+  .proxe-pillar-title {
+    font-size: clamp(30px, 6vw, 44px);
+  }
+}
+
+@media (max-width: 640px) {
+  .proxe-pillars-list {
+    padding-bottom: 50vh;
+  }
+  .proxe-pillar-row {
+    padding: 22px 20px;
+    border-radius: 20px;
+    /* Fixed 66px peek on mobile: 22px padding-top + 44px icon */
+    top: calc(64px + var(--pillar-index, 0) * 66px);
+    margin-bottom: 12px;
+    gap: 18px;
+  }
+  .proxe-pillar-title {
+    font-size: 28px;
+  }
+  .proxe-pillar-desc {
+    font-size: 15px;
+    max-width: none;
+  }
+  .proxe-pillar-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  .proxe-pillars-section {
+    padding-bottom: 0;
+  }
+}
+
+/* ===== Reveal-on-scroll primitive ===== */
+.proxe-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.proxe-reveal[data-revealed='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ===== 8. Scroll popup ===== */
+.proxe-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+  animation: proxePopupIn 0.25s ease-out;
+}
+
+@keyframes proxePopupIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.proxe-popup-card {
+  background: rgba(30, 20, 70, 0.55);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  color: var(--proxe-fg);
+  border: 1px solid var(--proxe-border-strong);
+  border-radius: 18px;
+  max-width: 520px;
+  width: 100%;
+  padding: 32px;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.5);
+  animation: proxePopupCardIn 0.3s ease-out;
+}
+
+@keyframes proxePopupCardIn {
+  from { transform: translateY(12px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.proxe-popup-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--proxe-accent);
+  margin-bottom: 10px;
+}
+
+.proxe-popup-title {
+  font-family: var(--proxe-font-serif);
+  font-size: 30px;
+  font-weight: 400;
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+}
+
+.proxe-popup-media {
+  border: 1px solid var(--proxe-border);
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  background:
+    linear-gradient(135deg, rgba(107, 91, 214, 0.10), rgba(107, 91, 214, 0.02)),
+    repeating-linear-gradient(0deg, rgba(17, 17, 17, 0.04) 0 1px, transparent 1px 20px),
+    #fafaf7;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.proxe-popup-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===== 9. Feature grid ===== */
+.proxe-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  border: none;
+}
+
+.proxe-feature-card {
+  padding: 32px;
+  background: var(--proxe-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--proxe-border);
+  border-radius: 16px;
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 240px;
+}
+
+.proxe-feature-card:hover {
+  border-color: var(--proxe-border-strong);
+  transform: scale(1.01);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 1;
+}
+
+.proxe-feature-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--proxe-muted);
+}
+
+.proxe-feature-title {
+  font-family: var(--proxe-font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.proxe-feature-desc {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 1023px) {
+  .proxe-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .proxe-feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 10. Voice demo — click-to-talk orb ===== */
+.proxe-voice {
+  text-align: center;
+}
+
+.proxe-voice-orb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px 0;
+}
+
+.proxe-voice-orb {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.proxe-voice-orb:hover {
+  transform: scale(1.05);
+}
+
+.proxe-voice-orb:active {
+  transform: scale(0.98);
+}
+
+.proxe-voice-orb:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 14px;
+  border-radius: 50%;
+}
+
+/* Outer soft glowing ring — pulses gently, tinted royal-purple to match palette */
+.proxe-voice-orb-ring {
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.5) 0%, transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(76, 29, 149, 0.45) 0%, transparent 60%);
+  filter: blur(16px);
+  animation: proxeOrbPulse 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* The main sphere — live Grainient shader inside a circular mask */
+.proxe-voice-orb-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    inset 0 -30px 50px rgba(30, 27, 75, 0.7),
+    inset 0 30px 50px rgba(255, 255, 255, 0.18),
+    0 30px 80px -20px rgba(76, 29, 149, 0.55);
+  /* Subtle slow rotation on the shader window gives extra fluid motion */
+  animation: proxeOrbSpin 24s linear infinite;
+}
+
+.proxe-voice-orb-inner > .grainient-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Top specular highlight — static, sells the "sphere" read */
+.proxe-voice-orb-shine {
+  position: absolute;
+  top: 10%;
+  left: 18%;
+  width: 38%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0) 62%
+  );
+  pointer-events: none;
+  filter: blur(6px);
+  z-index: 2;
+}
+
+/* Rim darken — inner border-shadow ring to crisp up the sphere edge */
+.proxe-voice-orb-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    inset 0 0 40px rgba(30, 27, 75, 0.5);
+  z-index: 1;
+}
+
+@keyframes proxeOrbSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes proxeOrbPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-voice-orb-inner,
+  .proxe-voice-orb-ring {
+    animation: none;
+  }
+}
+
+.proxe-voice-orb-label {
+  font-family: var(--proxe-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  min-height: 1.2em;
+  transition: color 0.2s ease;
+}
+
+/* Voice call state visuals — pulse faster while listening, hot ring while speaking */
+.proxe-voice-orb[data-vapi-state='connecting'] .proxe-voice-orb-ring {
+  animation-duration: 1.2s;
+}
+.proxe-voice-orb[data-vapi-state='listening'] .proxe-voice-orb-ring {
+  animation-duration: 1.6s;
+  filter: blur(20px);
+}
+/* SPEAKING — exaggerated, the whole orb reacts.
+   Halo colour now follows data-speaker so user (cool cyan) and assistant
+   (warm magenta) each get their own glow. */
+.proxe-voice-orb[data-vapi-state='speaking'],
+.proxe-voice-orb[data-speaker='user'] {
+  animation: proxeOrbBreathe 0.85s ease-in-out infinite;
+}
+
+/* Assistant talking — warm magenta/pink halo */
+.proxe-voice-orb[data-speaker='assistant'] .proxe-voice-orb-ring {
+  inset: -55px;
+  animation: proxeOrbPulseLoud 0.85s ease-in-out infinite;
+  background:
+    radial-gradient(circle, rgba(255, 80, 200, 0.85) 0%, rgba(255, 80, 200, 0) 60%),
+    radial-gradient(circle, rgba(180, 90, 255, 0.7) 20%, transparent 70%);
+  filter: blur(28px);
+}
+
+/* User talking — cool cyan/aqua halo, slightly slower pulse */
+.proxe-voice-orb[data-speaker='user'] .proxe-voice-orb-ring {
+  inset: -50px;
+  animation: proxeOrbPulseLoud 1s ease-in-out infinite;
+  background:
+    radial-gradient(circle, rgba(40, 200, 255, 0.78) 0%, rgba(40, 200, 255, 0) 60%),
+    radial-gradient(circle, rgba(110, 200, 255, 0.55) 20%, transparent 70%);
+  filter: blur(26px);
+}
+.proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-inner {
+  animation-duration: 4s; /* swirl twice as fast */
+  box-shadow:
+    inset 0 -30px 50px rgba(60, 0, 90, 0.7),
+    inset 0 30px 50px rgba(255, 200, 240, 0.32),
+    0 0 80px rgba(255, 110, 199, 0.55),
+    0 30px 100px -10px rgba(180, 60, 220, 0.75);
+}
+.proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-shine {
+  animation: proxeOrbShineFlicker 1.7s ease-in-out infinite;
+}
+
+@keyframes proxeOrbPulseLoud {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+@keyframes proxeOrbBreathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+@keyframes proxeOrbShineFlicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+
+.proxe-voice-orb[data-vapi-state='connecting'],
+.proxe-voice-orb[data-vapi-state='ending'] {
+  cursor: wait;
+}
+.proxe-voice-orb[data-vapi-state='connecting']:disabled,
+.proxe-voice-orb[data-vapi-state='ending']:disabled {
+  opacity: 0.9;
+}
+
+/* ===== Connecting ring — progressive load arc =============================
+   Neon-lime arc fills 0 → 100% over 2.4s at a constant rate (no easing
+   tricks, no rotation) so it reads as a real "connecting…" progress
+   indicator rather than a snappy sweep. Once full, it settles into a
+   steady glow pulse until call-start fires and the SVG unmounts. */
+.proxe-voice-orb-connecting {
+  position: absolute;
+  inset: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  pointer-events: none;
+  z-index: 3;
+  filter: drop-shadow(0 0 12px rgba(205, 252, 46, 0.55));
+  /* Pulse only kicks in after the fill completes (delay matches fill duration). */
+  animation: proxeOrbConnectingPulse 1.8s ease-in-out 2.4s infinite;
+}
+.proxe-voice-orb-connecting-arc {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: proxeOrbConnectingFill 2.4s linear forwards;
+}
+@keyframes proxeOrbConnectingFill {
+  0%   { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes proxeOrbConnectingPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(205, 252, 46, 0.45));
+    opacity: 0.95;
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(205, 252, 46, 0.85));
+    opacity: 1;
+  }
+}
+
+/* ===== Speaking wave overlay (sits inside orb, masks via the inner radius) ===== */
+.proxe-voice-orb-wave {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: proxeOrbWaveFadeIn 0.4s ease-out forwards;
+}
+@keyframes proxeOrbWaveFadeIn {
+  to { opacity: 1; }
+}
+
+/* While speaking, soften the Grainient swirl so the wave reads cleanly */
+.proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-inner > .grainient-container {
+  opacity: 0.45;
+  transition: opacity 0.4s ease;
+}
+
+/* ===== LIVE indicator + green dot ===== */
+.proxe-voice-orb-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.proxe-voice-orb-label[data-live='true'] {
+  color: #ffffff;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+}
+.proxe-voice-orb-livedot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #2ee06a;
+  box-shadow:
+    0 0 0 0 rgba(46, 224, 106, 0.6),
+    0 0 14px rgba(46, 224, 106, 0.7);
+  animation: proxeOrbLiveDot 1.4s ease-out infinite;
+}
+@keyframes proxeOrbLiveDot {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(46, 224, 106, 0.55),
+      0 0 14px rgba(46, 224, 106, 0.7);
+  }
+  70% {
+    box-shadow:
+      0 0 0 12px rgba(46, 224, 106, 0),
+      0 0 14px rgba(46, 224, 106, 0.7);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(46, 224, 106, 0),
+      0 0 14px rgba(46, 224, 106, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-voice-orb-connecting,
+  .proxe-voice-orb-connecting-arc,
+  .proxe-voice-orb-livedot {
+    animation: none;
+  }
+}
+
+.proxe-voice-orb-error {
+  margin-top: 8px;
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 180, 180, 0.95);
+  background: rgba(80, 0, 30, 0.4);
+  border: 1px solid rgba(255, 120, 140, 0.35);
+  padding: 6px 12px;
+  border-radius: 999px;
+  max-width: 360px;
+  text-align: center;
+}
+
+.proxe-voice-orb-alt {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.proxe-voice-orb-alt a {
+  color: #ffffff;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+}
+.proxe-voice-orb-alt a:hover {
+  border-bottom-color: #ffffff;
+}
+
+.proxe-voice-title {
+  font-family: var(--proxe-font-heading);
+  font-size: clamp(32px, 4.4vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 12px auto 40px;
+  max-width: 18ch;
+}
+
+.proxe-voice-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .proxe-voice-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.proxe-voice-card {
+  border: 1px solid var(--proxe-border);
+  border-radius: 14px;
+  padding: 28px;
+  background: var(--proxe-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.25);
+}
+
+.proxe-voice-player {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.proxe-voice-play {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--proxe-accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.proxe-voice-play:hover {
+  background: var(--proxe-accent-strong);
+  transform: scale(1.05);
+}
+
+.proxe-voice-wave {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+
+.proxe-voice-wave span {
+  flex: 1;
+  background: var(--proxe-accent);
+  border-radius: 2px;
+  opacity: 0.8;
+  animation: proxeWave 1.4s ease-in-out infinite;
+}
+
+@keyframes proxeWave {
+  0%, 100% { height: 20%; }
+  50%      { height: 90%; }
+}
+
+.proxe-voice-phone {
+  font-family: var(--proxe-font-mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: var(--proxe-fg);
+}
+
+.proxe-voice-note {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ===== 11. Use cases ===== */
+.proxe-usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.proxe-usecase-card {
+  border: 1px solid var(--proxe-border);
+  border-radius: 14px;
+  padding: 24px;
+  background: var(--proxe-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 260px;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.25);
+}
+.proxe-usecase-card:hover {
+  border-color: var(--proxe-border-strong);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.35);
+}
+
+.proxe-usecase-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--proxe-border-strong);
+  color: var(--proxe-accent);
+  background: var(--proxe-accent-soft);
+}
+
+.proxe-usecase-title {
+  font-family: var(--proxe-font-serif);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.proxe-usecase-desc {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+.proxe-usecase-stat {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--proxe-accent);
+  padding-top: 14px;
+  border-top: 1px solid var(--proxe-border);
+}
+
+@media (max-width: 1023px) {
+  .proxe-usecase-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .proxe-usecase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 12. Pricing ===== */
+.proxe-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.proxe-pricing-card {
+  position: relative;
+  border: 1px solid var(--proxe-border);
+  border-radius: 16px;
+  padding: 36px 32px;
+  background: var(--proxe-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.25);
+}
+
+.proxe-pricing-card:hover {
+  border-color: var(--proxe-border-strong);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.4);
+}
+
+.proxe-pricing-card.popular {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.proxe-pricing-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--proxe-accent);
+  color: #fff;
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.proxe-pricing-name {
+  font-family: var(--proxe-font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.proxe-pricing-price {
+  font-family: var(--proxe-font-serif);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.proxe-pricing-price small {
+  font-family: var(--proxe-font-sans);
+  font-size: 14px;
+  color: var(--proxe-muted);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.proxe-pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.proxe-pricing-features li {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.proxe-pricing-features li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--proxe-accent);
+  flex-shrink: 0;
+}
+
+.proxe-pricing-note {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--proxe-muted);
+}
+.proxe-pricing-note a {
+  color: var(--proxe-accent);
+  border-bottom: 1px dotted currentColor;
+}
+
+@media (max-width: 768px) {
+  .proxe-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 13. Testimonials ===== */
+.proxe-testimonials-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+.proxe-testimonials-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.proxe-testimonials-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+}
+
+.proxe-testimonial-card {
+  flex: 0 0 min(420px, 85vw);
+  border: 1px solid var(--proxe-border);
+  border-radius: 14px;
+  padding: 28px;
+  background: var(--proxe-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 240px;
+  box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.25);
+}
+
+.proxe-testimonial-quote {
+  font-family: var(--proxe-font-serif);
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 400;
+  margin: 0;
+  color: var(--proxe-fg);
+}
+
+.proxe-testimonial-author {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--proxe-muted);
+}
+
+.proxe-placeholder-tag {
+  display: inline-block;
+  font-family: var(--proxe-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--proxe-accent-soft);
+  color: var(--proxe-accent-strong);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* ===== 14. FAQ ===== */
+.proxe-faq {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.proxe-faq-item {
+  border-bottom: 1px solid var(--proxe-border);
+}
+.proxe-faq-item:first-child {
+  border-top: 1px solid var(--proxe-border);
+}
+
+.proxe-faq-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 4px;
+  text-align: left;
+  font-family: var(--proxe-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--proxe-fg);
+  transition: color 0.2s ease;
+}
+.proxe-faq-trigger:hover {
+  color: var(--proxe-accent);
+}
+
+.proxe-faq-plus {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  flex-shrink: 0;
+}
+.proxe-faq-plus::before,
+.proxe-faq-plus::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: currentColor;
+  transition: transform 0.25s ease;
+}
+.proxe-faq-plus::before {
+  width: 100%;
+  height: 1px;
+}
+.proxe-faq-plus::after {
+  width: 1px;
+  height: 100%;
+}
+.proxe-faq-item[data-open='true'] .proxe-faq-plus::after {
+  transform: rotate(90deg);
+}
+
+.proxe-faq-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.proxe-faq-item[data-open='true'] .proxe-faq-body {
+  max-height: 360px;
+}
+
+.proxe-faq-answer {
+  padding: 0 4px 22px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 65ch;
+}
+
+/* ===== 15. Footer CTA ===== */
+.proxe-footer-cta {
+  padding: 160px 0;
+  text-align: center;
+  border-top: 1px solid var(--proxe-border);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(107, 91, 214, 0.08) 0%, transparent 55%),
+    var(--proxe-bg);
+}
+
+.proxe-footer-cta-title {
+  font-family: var(--proxe-font-heading);
+  font-size: clamp(38px, 6vw, 84px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 auto 40px;
+  max-width: 16ch;
+}
+
+/* ===== 16. Footer ===== */
+.proxe-footer {
+  border-top: 1px solid var(--proxe-border);
+  padding: 64px 0 32px;
+  background: var(--proxe-bg);
+}
+
+.proxe-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.proxe-footer-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.proxe-footer-brand-tagline {
+  color: var(--proxe-muted);
+  font-size: 14px;
+  line-height: 1.55;
+  margin-top: 14px;
+  max-width: 28ch;
+}
+
+.proxe-footer-col-title {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--proxe-muted);
+  margin-bottom: 16px;
+}
+
+.proxe-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+.proxe-footer-links a {
+  color: rgba(255, 255, 255, 0.82);
+  transition: color 0.2s ease;
+}
+.proxe-footer-links a:hover {
+  color: var(--proxe-fg);
+}
+
+.proxe-footer-socials {
+  display: flex;
+  gap: 12px;
+}
+.proxe-footer-socials a {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--proxe-border-strong);
+  color: rgba(255, 255, 255, 0.8);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  font-size: 12px;
+}
+.proxe-footer-socials a:hover {
+  border-color: var(--proxe-accent);
+  color: var(--proxe-accent);
+  background: var(--proxe-accent-soft);
+}
+
+.proxe-footer-copyright {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--proxe-border);
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--proxe-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .proxe-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .proxe-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Integration Hub section ===== */
+.proxe-hub-section {
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+
+.proxe-hub-heading {
+  font-family: var(--proxe-font-heading);
+  font-weight: 300;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 auto 20px;
+}
+
+.proxe-hub-sub {
+  margin: 0 auto 0;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Outer wrapper — constrains height on mobile via scale */
+.proxe-hub-outer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  overflow: visible;
+}
+
+/* Fixed-coordinate canvas — 600×500 at full size */
+.proxe-hub-canvas {
+  position: relative;
+  width: 600px;
+  height: 500px;
+  flex-shrink: 0;
+}
+
+/* SVG overlay for lines + animated dots */
+.proxe-hub-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Orbit channel nodes — bare brand-colored icons, no container */
+.proxe-hub-node {
+  position: absolute;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: proxeHubFloat 4s ease-in-out infinite;
+  animation-delay: var(--hub-delay, 0s);
+}
+
+.proxe-hub-node-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Color inherits from parent .proxe-hub-node `style.color` (brand color),
+     react-icons SVGs use `currentColor` so they pick this up automatically */
+  filter: drop-shadow(0 6px 22px currentColor) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
+  transition: transform 0.25s ease;
+}
+
+.proxe-hub-node-icon svg {
+  width: 64px;
+  height: 64px;
+}
+
+.proxe-hub-node:hover .proxe-hub-node-icon {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.proxe-hub-node-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+@keyframes proxeHubFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+
+/* Floating feature chip pills */
+.proxe-hub-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  font-size: 12px;
+  font-family: var(--proxe-font-sans);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  animation: proxeHubFloat 5s ease-in-out infinite;
+  animation-delay: var(--hub-delay, 0s);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.proxe-hub-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 1);
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(167, 139, 250, 0.8);
+}
+
+/* Center Proxe icon */
+.proxe-hub-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 88px;
+  height: 88px;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #7c3aed 0%, #4c1d95 60%, #2e1065 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 14px rgba(124, 58, 237, 0.1),
+    0 0 0 28px rgba(124, 58, 237, 0.05),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: proxeHubCenterPulse 3.5s ease-in-out infinite;
+  z-index: 2;
+}
+
+.proxe-hub-center img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
+
+@keyframes proxeHubCenterPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 14px rgba(124, 58, 237, 0.1),
+      0 0 0 28px rgba(124, 58, 237, 0.05),
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 18px rgba(124, 58, 237, 0.14),
+      0 0 0 36px rgba(124, 58, 237, 0.07),
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hub-node,
+  .proxe-hub-chip,
+  .proxe-hub-center {
+    animation: none;
+  }
+}
+
+/* Mobile: scale down the canvas to fit viewport */
+@media (max-width: 640px) {
+  .proxe-hub-outer {
+    /* Scale the 600px canvas to ~95vw */
+    --hub-s: calc(95vw / 600px);
+    height: calc(500px * var(--hub-s));
+    align-items: flex-start;
+  }
+  .proxe-hub-canvas {
+    transform: scale(var(--hub-s));
+    transform-origin: top center;
+  }
+}

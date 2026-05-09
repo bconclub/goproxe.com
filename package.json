@@ -1,0 +1,32 @@
+{
+  "name": "goproxe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PROXe — The AI Customer Acquisition System (goproxe.com)",
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "@vapi-ai/web": "^2.5.2",
+    "lottie-react": "^2.4.1",
+    "motion": "^12.23.24",
+    "next": "^15.0.0",
+    "ogl": "^1.0.11",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.6.0",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.1",
+    "typescript": "^5"
+  }
+}
