@@ -240,7 +240,16 @@ function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement |
 }
 
 /* ============ Channel Coverflow + Live Chat Preview ============ */
-interface ChatMsg { from: 'customer' | 'ai'; text: string; time: string; }
+interface WaCard { gradient: string; title: string; subtitle: string; btns: string[]; }
+interface ChatMsg {
+  from: 'customer' | 'ai';
+  text?: string;
+  time: string;
+  type?: 'text' | 'carousel' | 'quickreplies';
+  cards?: WaCard[];
+  quickReplies?: string[];
+  selected?: string;
+}
 
 const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ChatMsg[] }> = [
   {
@@ -255,10 +264,19 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
   {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
     messages: [
-      { from: 'customer', text: 'Hi, I filled a form 3 days ago but no one called me.', time: '10:14 AM' },
-      { from: 'ai',       text: 'Hi! I can see your enquiry from May 6th. Are you free for a quick call today at 3pm or 5pm?', time: '10:14 AM' },
-      { from: 'customer', text: '3pm works!', time: '10:15 AM' },
-      { from: 'ai',       text: "Confirmed! Booked you in at 3pm. You'll get a reminder 15 min before. 🎯", time: '10:15 AM' },
+      { from: 'customer', text: "Hi, what services do you offer?", time: '10:13 AM' },
+      {
+        from: 'ai', time: '10:13 AM', type: 'carousel',
+        cards: [
+          { gradient: 'linear-gradient(135deg,#075E54,#25D366)', title: 'Lead Capture', subtitle: 'Capture & qualify leads 24/7 across every channel automatically.', btns: ['Learn More', 'Get Started'] },
+          { gradient: 'linear-gradient(135deg,#1565C0,#42A5F5)', title: 'Appointment Booking', subtitle: 'Let customers self-book. Reminders sent automatically.', btns: ['Learn More', 'Book Now'] },
+          { gradient: 'linear-gradient(135deg,#6A1B9A,#CE93D8)', title: 'Campaign Broadcast', subtitle: 'Send rich carousels, offers & promos to thousands instantly.', btns: ['Learn More', 'Try It'] },
+        ],
+      },
+      { from: 'customer', text: 'Book Now', time: '10:14 AM', type: 'quickreplies', selected: 'Book Now' },
+      { from: 'ai', text: 'Great choice! When works for you?', time: '10:14 AM', quickReplies: ['Today 3pm', 'Today 5pm', 'Tomorrow 10am'] },
+      { from: 'customer', text: 'Today 3pm', time: '10:15 AM', type: 'quickreplies', selected: 'Today 3pm' },
+      { from: 'ai', text: "Confirmed! Booked for 3pm today. You'll get a reminder 15 min before. 🎯", time: '10:15 AM' },
     ],
   },
   {
@@ -426,22 +444,72 @@ function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
       </div>
       <div className="wa-body">
         <div className="wa-day">TODAY</div>
-        {channel.messages.map((m, i) => (
-          <div key={i} className={`wa-row wa-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
-            <div className="wa-bubble">
-              <span className="wa-text">{m.text}</span>
-              <span className="wa-meta-line">
-                <span className="wa-time">{m.time}</span>
-                {m.from === 'customer' && (
-                  <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
-                    <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
-                    <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
-                  </svg>
+        {channel.messages.map((m, i) => {
+          if (m.type === 'carousel' && m.cards) {
+            return (
+              <div key={i} className="wa-row wa-row--ai" style={{ '--i': i } as React.CSSProperties}>
+                <div className="wa-carousel-wrap">
+                  <div className="wa-carousel">
+                    {m.cards.map((card, ci) => (
+                      <div key={ci} className="wa-card">
+                        <div className="wa-card-img" style={{ background: card.gradient }} />
+                        <div className="wa-card-body">
+                          <div className="wa-card-title">{card.title}</div>
+                          <div className="wa-card-sub">{card.subtitle}</div>
+                        </div>
+                        <div className="wa-card-actions">
+                          {card.btns.map((btn, bi) => (
+                            <button key={bi} className="wa-card-btn">{btn}</button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <span className="wa-time wa-carousel-time">{m.time}</span>
+                </div>
+              </div>
+            );
+          }
+          if (m.type === 'quickreplies' && m.selected) {
+            return (
+              <div key={i} className="wa-row wa-row--customer" style={{ '--i': i } as React.CSSProperties}>
+                <div className="wa-bubble wa-bubble--qr-selected">
+                  <span className="wa-text">{m.selected}</span>
+                  <span className="wa-meta-line">
+                    <span className="wa-time">{m.time}</span>
+                    <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
+                      <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
+                      <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div key={i} className={`wa-row wa-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+              <div className="wa-bubble">
+                {m.text && <span className="wa-text">{m.text}</span>}
+                {m.quickReplies && (
+                  <div className="wa-qr-row">
+                    {m.quickReplies.map((qr, qi) => (
+                      <span key={qi} className="wa-qr-btn">{qr}</span>
+                    ))}
+                  </div>
                 )}
-              </span>
+                <span className="wa-meta-line">
+                  <span className="wa-time">{m.time}</span>
+                  {m.from === 'customer' && (
+                    <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
+                      <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
+                      <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
+                    </svg>
+                  )}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="wa-input">
         <span className="wa-input-pill">Type a message</span>
