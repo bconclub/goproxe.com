@@ -336,14 +336,13 @@ function ChannelCoverflow() {
     const el = containerRef.current;
     if (!el) return;
     const update = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const center = rect.top + rect.height / 2;
-      const progress = 1 - center / vh;
-      const clamped = Math.max(0, Math.min(0.9999, progress));
-      // 0.45 multiplier means a full pass through the section advances ~2 channels.
-      // Slow enough to read each scenario without forcing manual nav.
-      const next = Math.floor(clamped * len * 0.45) % len;
+      const section = el.closest('.proxe-problem') as HTMLElement | null;
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      const scrollable = section.scrollHeight - window.innerHeight;
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+      const next = Math.min(len - 1, Math.floor(progress * len));
       setActive(next);
     };
     update();

@@ -523,10 +523,10 @@ body:has(.proxe-root) {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 40px;
-  margin-top: 36px;
+  gap: 56px;
+  margin-top: 40px;
   width: 100%;
-  max-width: 860px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -534,22 +534,22 @@ body:has(.proxe-root) {
 .proxe-channel-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
-  width: 200px;
+  width: 220px;
 }
 
 .proxe-channel-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 14px;
   border: 1px solid transparent;
   background: transparent;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.4);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   text-align: left;
   position: relative;
 }
@@ -560,27 +560,33 @@ body:has(.proxe-root) {
 .proxe-channel-item[data-active='true'] {
   color: #fff;
   background: rgba(255,255,255,0.10);
-  border-color: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.2);
 }
 .proxe-channel-item-icon {
-  font-size: 20px;
+  font-size: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+.proxe-channel-item[data-active='true'] .proxe-channel-item-icon {
+  font-size: 30px;
 }
 .proxe-channel-item-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   flex: 1;
 }
 .proxe-channel-item-dot {
-  width: 6px; height: 6px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--proxe-accent);
   flex-shrink: 0;
-  box-shadow: 0 0 8px var(--proxe-accent);
+  box-shadow: 0 0 10px var(--proxe-accent);
 }
 
 /* ============ Platform-native chat preview ============
@@ -1853,8 +1859,21 @@ body:has(.proxe-root) {
 
 /* ===== 6. Problem statement ===== */
 .proxe-problem {
-  padding: 160px 24px;
+  padding: 0;
   text-align: center;
+  /* tall section gives scroll room for channel cycling */
+  height: 500vh;
+  position: relative;
+}
+.proxe-problem .proxe-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
 }
 
 .proxe-problem-line {
