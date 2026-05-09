@@ -241,69 +241,114 @@ function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement |
 
 /* ============ Channel Coverflow + Live Chat Preview ============ */
 interface WaCard { gradient: string; icon: string; title: string; subtitle: string; btns: Array<{ label: string; icon: string }> }
-interface ChatMsg {
-  from: 'customer' | 'ai';
+interface ConvMsg {
+  from: 'lead' | 'proxe';
   text?: string;
-  time: string;
-  type?: 'text' | 'carousel' | 'quickreplies';
+  time?: string;
+  type?: 'carousel' | 'bookdemo';
   cards?: WaCard[];
   quickReplies?: string[];
-  selected?: string;
+  delay?: number;
+  noTyping?: boolean;
 }
 
-const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ChatMsg[] }> = [
+/* Reveals messages sequentially with typing indicator before proxe replies. Loops. */
+function useConversationPlayer(msgs: ConvMsg[], isActive: boolean) {
+  const [shownCount, setShownCount] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (!isActive) { setShownCount(0); setIsTyping(false); return; }
+
+    let stopped = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    function run() {
+      if (stopped) return;
+      setShownCount(0); setIsTyping(false);
+      let t = 500;
+      timers.push(setTimeout(() => { if (!stopped) setShownCount(1); }, t));
+
+      for (let i = 0; i < msgs.length - 1; i++) {
+        t += msgs[i].delay ?? 1200;
+        const next = msgs[i + 1];
+        if (next.from === 'proxe' && !next.noTyping) {
+          const tt = t;
+          timers.push(setTimeout(() => { if (!stopped) setIsTyping(true); }, tt));
+          t += 950;
+        }
+        const tr = t; const count = i + 2;
+        timers.push(setTimeout(() => { if (!stopped) { setIsTyping(false); setShownCount(count); } }, tr));
+      }
+      t += (msgs[msgs.length - 1].delay ?? 1200) + 4000;
+      timers.push(setTimeout(() => { if (!stopped) run(); }, t));
+    }
+
+    run();
+    return () => { stopped = true; timers.forEach(clearTimeout); };
+  }, [isActive]);
+
+  return { shownCount, isTyping };
+}
+
+const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ConvMsg[] }> = [
+  {
+    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
+    messages: [
+      { from: 'lead',  text: 'Hi, I saw your ad online. What do you guys do exactly?', delay: 1500 },
+      { from: 'proxe', text: 'Hey, thanks for calling. We help service businesses never miss a lead. Every inquiry on WhatsApp, your website, and calls gets handled instantly. Want me to walk you through how it works for your business?', delay: 1500 },
+      { from: 'lead',  text: 'Yeah sure, we run a clinic.', delay: 1500 },
+      { from: 'proxe', text: 'Perfect. For clinics we handle appointment bookings, patient inquiries, and follow ups automatically. How many calls do you miss on a typical day?', delay: 1500 },
+      { from: 'lead',  text: 'Honestly maybe 10 to 15.', delay: 1500 },
+      { from: 'proxe', text: 'That is a lot of lost patients. Want to book a quick demo? I can check availability right now.', delay: 1500 },
+      { from: 'lead',  text: 'Yes please.', delay: 1500 },
+      { from: 'proxe', text: 'Great. I have tomorrow 11am and 3pm open. Which works?', delay: 1500 },
+    ],
+  },
   {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
     messages: [
-      { from: 'customer', text: "Hi, what services do you offer?", time: '10:13 AM' },
-      {
-        from: 'ai', time: '10:13 AM', type: 'carousel',
-        cards: [
-          { gradient: 'linear-gradient(135deg,#0a4a3a,#1a8a5a)', icon: '🎯', title: 'Lead Capture', subtitle: 'Capture & qualify leads 24/7 across every channel — automatically.', btns: [{ label: 'Get Started', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
-          { gradient: 'linear-gradient(135deg,#0d3a6e,#1565C0)', icon: '📅', title: 'Appointment Booking', subtitle: 'Let customers self-book. Confirmations & reminders sent instantly.', btns: [{ label: 'Book Now', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
-          { gradient: 'linear-gradient(135deg,#4a1060,#9c27b0)', icon: '📢', title: 'Campaign Broadcast', subtitle: 'Send rich carousels and promos to thousands in one click.', btns: [{ label: 'Try It Free', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
-        ],
-      },
-      { from: 'customer', text: 'Book Now', time: '10:14 AM', type: 'quickreplies', selected: 'Book Now' },
-      { from: 'ai', text: 'Great choice! When works for you?', time: '10:14 AM', quickReplies: ['Today 3pm', 'Today 5pm', 'Tomorrow 10am'] },
-      { from: 'customer', text: 'Today 3pm', time: '10:15 AM', type: 'quickreplies', selected: 'Today 3pm' },
-      { from: 'ai', text: "Confirmed! Booked for 3pm today. You'll get a reminder 15 min before. 🎯", time: '10:15 AM' },
-    ],
-  },
-  {
-    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
-    messages: [
-      { from: 'customer', text: 'What channels do you support?', time: '11:45 AM' },
-      { from: 'ai',       text: 'WhatsApp, Instagram, Messenger, Voice, web chat, and email. All from one dashboard with shared memory.', time: '11:45 AM' },
-      { from: 'customer', text: 'Does it sync with HubSpot?', time: '11:46 AM' },
-      { from: 'ai',       text: 'Yes. Native HubSpot integration. Every conversation and lead score syncs automatically. Want to see it live?', time: '11:46 AM' },
-    ],
-  },
-  {
-    name: 'Instagram', icon: <SiInstagram />, accent: '#E1306C',
-    messages: [
-      { from: 'customer', text: 'Saw your reel. How does this actually work?', time: '7:18 PM' },
-      { from: 'ai',       text: 'PROXe catches every DM, replies in seconds, qualifies leads, and follows up until they buy. Want a live demo?', time: '7:18 PM' },
-      { from: 'customer', text: 'Yes! How do I sign up?', time: '7:19 PM' },
-      { from: 'ai',       text: "Drop your email here or tap the link in bio. You'll be set up in 2 minutes. 🚀", time: '7:19 PM' },
+      { from: 'lead',  text: 'Hi, what services do you offer?', time: '10:13 AM' },
+      { from: 'proxe', text: 'Hey! We help businesses capture every lead and never lose a follow up. Are you looking for help with your website, WhatsApp, or calls?', time: '10:13 AM' },
+      { from: 'proxe', type: 'carousel', noTyping: true, time: '10:13 AM', cards: [
+        { gradient: 'linear-gradient(135deg,#0a4a3a,#1a8a5a)', icon: '🎯', title: 'Lead Capture', subtitle: 'Capture and qualify leads 24/7 across every channel automatically.', btns: [{ label: 'Learn More', icon: '↗' }, { label: 'Get Started', icon: '→' }] },
+        { gradient: 'linear-gradient(135deg,#0d3a6e,#1565C0)', icon: '📅', title: 'Appointment Booking', subtitle: 'Let customers self-book. Reminders sent automatically.', btns: [{ label: 'Learn More', icon: '↗' }, { label: 'Book Now', icon: '→' }] },
+      ]},
+      { from: 'lead',  text: 'Book Now', time: '10:14 AM' },
+      { from: 'proxe', text: 'Great choice! When works for you?', time: '10:14 AM', quickReplies: ['Today 3pm', 'Today 5pm', 'Tomorrow 10am'] },
     ],
   },
   {
     name: 'Messenger', icon: <SiMessenger />, accent: '#0084FF',
     messages: [
-      { from: 'customer', text: 'Do you offer a free trial?', time: '4:02 PM' },
-      { from: 'ai',       text: "Yes! 14-day free trial, no card needed. I can start you in 5 minutes. What's your business email?", time: '4:02 PM' },
-      { from: 'customer', text: "Great. It's john@acme.com", time: '4:03 PM' },
-      { from: 'ai',       text: 'Trial account created! Check your inbox. Login link and setup guide sent. 🎉', time: '4:03 PM' },
+      { from: 'lead',  text: 'Hey I saw your Facebook ad. Is this real or just another chatbot?' },
+      { from: 'proxe', text: 'Completely real. PROXe is a full AI system, not a chatbot. It captures leads, follows up for days, and books calls for you. What kind of business do you run?' },
+      { from: 'lead',  text: 'Real estate. We miss leads all the time after hours.' },
+      { from: 'proxe', text: 'That is exactly what PROXe fixes. Responds in under 30 seconds at 3am if needed. Want to see a quick demo?' },
+      { from: 'lead',  text: 'Sure send me something' },
+      { from: 'proxe', text: 'Booking link sent. Pick any slot that works and we will show you the whole thing live.' },
     ],
   },
   {
-    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
+    name: 'Instagram', icon: <SiInstagram />, accent: '#E1306C',
     messages: [
-      { from: 'customer', text: 'I saw your product online. Curious about pricing.', time: '2:31 PM' },
-      { from: 'ai',       text: 'Happy to help! Starter is $99/mo for 1,000 conversations. How many leads do you get monthly?', time: '2:31 PM' },
-      { from: 'customer', text: 'Around 200 to 300 a month.', time: '2:32 PM' },
-      { from: 'ai',       text: 'Starter covers that easily. Want me to set up your free trial right now? Takes 2 minutes.', time: '2:32 PM' },
+      { from: 'lead',  text: 'Just commented on your post. Do you work with coaching businesses?' },
+      { from: 'proxe', text: 'Yes absolutely. Most coaches we work with were losing leads in their DMs. PROXe handles Instagram, WhatsApp, and website all in one. How many DMs do you get a week roughly?' },
+      { from: 'lead',  text: 'Maybe 30 to 40' },
+      { from: 'proxe', text: 'And how many convert right now?' },
+      { from: 'lead',  text: 'Maybe 5 or 6' },
+      { from: 'proxe', text: 'PROXe typically gets that to 15 plus. Want to see how?', type: 'bookdemo' },
+    ],
+  },
+  {
+    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
+    messages: [
+      { from: 'lead',  text: 'Hi, I visited your site at 2am. Just checking if anyone is there.' },
+      { from: 'proxe', text: 'Hey, always here. What can I help you with?' },
+      { from: 'lead',  text: 'We run a travel agency and lose a lot of inquiries overnight.' },
+      { from: 'proxe', text: 'That is exactly the problem PROXe solves. Every overnight inquiry gets a reply in seconds. By morning your team wakes up to qualified leads. Want a quick walkthrough?' },
+      { from: 'lead',  text: 'Yes please' },
+      { from: 'proxe', text: 'Done. Booking link sent to your email. See you tomorrow.' },
     ],
   },
 ];
@@ -421,7 +466,7 @@ function ChannelCoverflow() {
               </div>
               {/* Screen area */}
               <div className="proxe-chat-shell">
-                <PlatformChat channel={ch} />
+                <PlatformChat channel={ch} isActive={i === active} />
               </div>
               {/* Home indicator */}
               <div className="proxe-phone-home">
@@ -440,36 +485,43 @@ function ChannelCoverflow() {
    Messenger, Voice call, web widget. Wrapped by .proxe-chat-shell which adds
    the PROXe glass-card outer chrome (electric violet shadow + frosted edge). */
 
-function PlatformChat({ channel }: { channel: typeof CHANNELS[number] }) {
+function PlatformChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
   switch (channel.name) {
-    case 'WhatsApp':  return <WhatsAppChat channel={channel} />;
-    case 'Instagram': return <InstagramChat channel={channel} />;
-    case 'Messenger': return <MessengerChat channel={channel} />;
-    case 'Voice':     return <VoiceChat channel={channel} />;
-    case 'Web':       return <WebChat channel={channel} />;
+    case 'WhatsApp':  return <WhatsAppChat channel={channel} isActive={isActive} />;
+    case 'Instagram': return <InstagramChat channel={channel} isActive={isActive} />;
+    case 'Messenger': return <MessengerChat channel={channel} isActive={isActive} />;
+    case 'Voice':     return <VoiceChat channel={channel} isActive={isActive} />;
+    case 'Web':       return <WebChat channel={channel} isActive={isActive} />;
     default:          return null;
   }
 }
 
 /* ===== WhatsApp Web ===== */
-function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
+function WhatsAppChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
+  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
+  const visible = channel.messages.slice(0, shownCount);
+
   return (
     <div className="wa-chat">
       <div className="wa-header">
         <div className="wa-avatar"><SiWhatsapp /></div>
         <div className="wa-meta">
           <div className="wa-name">PROXe</div>
-          <div className="wa-status">typing<span className="wa-typing-ellipsis"><span /><span /><span /></span></div>
+          <div className="wa-status">
+            {isTyping
+              ? <>typing<span className="wa-typing-ellipsis"><span /><span /><span /></span></>
+              : 'online'}
+          </div>
         </div>
       </div>
       <div className="wa-body">
         <div className="wa-day">TODAY</div>
-        {channel.messages.map((m, i) => {
+        {visible.map((m, i) => {
           if (m.type === 'carousel' && m.cards) {
             return (
-              <div key={i} className="wa-row wa-row--ai" style={{ '--i': i } as React.CSSProperties}>
+              <div key={i} className="wa-row wa-row--ai conv-msg-in">
                 <div className="wa-carousel-wrap">
-                  <div className="wa-carousel">
+                  <div className="wa-carousel wa-carousel--duo">
                     {m.cards.map((card, ci) => (
                       <div key={ci} className="wa-card">
                         <div className="wa-card-img" style={{ background: card.gradient }}>
@@ -481,50 +533,30 @@ function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
                         </div>
                         <div className="wa-card-actions">
                           {card.btns.map((btn, bi) => (
-                            <button key={bi} className="wa-card-btn">
-                              <span className="wa-card-btn-icon">{btn.icon}</span>
-                              {btn.label}
-                            </button>
+                            <button key={bi} className="wa-card-btn">{btn.label}</button>
                           ))}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <span className="wa-time wa-carousel-time">{m.time}</span>
+                  {m.time && <span className="wa-time wa-carousel-time">{m.time}</span>}
                 </div>
               </div>
             );
           }
-          if (m.type === 'quickreplies' && m.selected) {
-            return (
-              <div key={i} className="wa-row wa-row--customer" style={{ '--i': i } as React.CSSProperties}>
-                <div className="wa-bubble wa-bubble--qr-selected">
-                  <span className="wa-text">{m.selected}</span>
-                  <span className="wa-meta-line">
-                    <span className="wa-time">{m.time}</span>
-                    <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
-                      <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
-                      <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            );
-          }
+          const side = m.from === 'proxe' ? 'ai' : 'customer';
           return (
-            <div key={i} className={`wa-row wa-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+            <div key={i} className={`wa-row wa-row--${side} conv-msg-in`}>
               <div className="wa-bubble">
                 {m.text && <span className="wa-text">{m.text}</span>}
                 {m.quickReplies && (
                   <div className="wa-qr-row">
-                    {m.quickReplies.map((qr, qi) => (
-                      <span key={qi} className="wa-qr-btn">{qr}</span>
-                    ))}
+                    {m.quickReplies.map((qr, qi) => <span key={qi} className="wa-qr-btn">{qr}</span>)}
                   </div>
                 )}
                 <span className="wa-meta-line">
-                  <span className="wa-time">{m.time}</span>
-                  {m.from === 'customer' && (
+                  {m.time && <span className="wa-time">{m.time}</span>}
+                  {m.from === 'lead' && (
                     <svg className="wa-ticks" viewBox="0 0 16 11" fill="none" aria-hidden="true">
                       <path d="M11.07.6 5.42 6.27 3.2 4.05l-.95.95 3.17 3.17L12.02 1.55z" fill="#53BDEB"/>
                       <path d="M15.06.6 9.41 6.27 7.18 4.04l-.95.95 3.18 3.18L16.01 1.55z" fill="#53BDEB"/>
@@ -535,6 +567,13 @@ function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
             </div>
           );
         })}
+        {isTyping && (
+          <div className="wa-row wa-row--ai conv-msg-in">
+            <div className="wa-bubble wa-bubble--typing">
+              <span className="wa-typing-ellipsis"><span /><span /><span /></span>
+            </div>
+          </div>
+        )}
       </div>
       <div className="wa-input">
         <span className="wa-input-pill">Type a message</span>
@@ -544,7 +583,11 @@ function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
 }
 
 /* ===== Instagram DM (dark) ===== */
-function InstagramChat({ channel }: { channel: typeof CHANNELS[number] }) {
+function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
+  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
+  const visible = channel.messages.slice(0, shownCount);
+  const lastMsg = visible[visible.length - 1];
+
   return (
     <div className="ig-chat">
       <div className="ig-header">
@@ -555,14 +598,21 @@ function InstagramChat({ channel }: { channel: typeof CHANNELS[number] }) {
         </div>
       </div>
       <div className="ig-body">
-        {channel.messages.map((m, i) => (
-          <div key={i} className={`ig-row ig-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+        {visible.map((m, i) => (
+          <div key={i} className={`ig-row ig-row--${m.from === 'proxe' ? 'ai' : 'customer'} conv-msg-in`}>
             <div className="ig-bubble">{m.text}</div>
           </div>
         ))}
-        <div className="ig-row ig-row--ai" style={{ '--i': channel.messages.length } as React.CSSProperties}>
-          <div className="ig-bubble ig-bubble--typing"><span /><span /><span /></div>
-        </div>
+        {lastMsg?.type === 'bookdemo' && (
+          <div className="ig-row ig-row--ai conv-msg-in">
+            <button className="ig-book-btn">Book a Demo</button>
+          </div>
+        )}
+        {isTyping && (
+          <div className="ig-row ig-row--ai conv-msg-in">
+            <div className="ig-bubble ig-bubble--typing"><span /><span /><span /></div>
+          </div>
+        )}
       </div>
       <div className="ig-input">
         <span className="ig-input-pill">Message…</span>
@@ -572,24 +622,19 @@ function InstagramChat({ channel }: { channel: typeof CHANNELS[number] }) {
   );
 }
 
-/* ===== Messenger (matches real Messenger: avatar-on-bubble + grouping) ===== */
-function MessengerChat({ channel }: { channel: typeof CHANNELS[number] }) {
-  // Group consecutive same-sender messages so bubble corners read as a thread,
-  // and only the LAST bubble in an AI run carries the avatar.
-  const isLastInRun = (i: number, from: ChatMsg['from']) =>
-    i === channel.messages.length - 1 || channel.messages[i + 1].from !== from;
-  const isFirstInRun = (i: number, from: ChatMsg['from']) =>
-    i === 0 || channel.messages[i - 1].from !== from;
+/* ===== Messenger ===== */
+function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
+  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
+  const visible = channel.messages.slice(0, shownCount);
+
+  const isLastInRun = (arr: ConvMsg[], i: number) => i === arr.length - 1 || arr[i + 1].from !== arr[i].from;
 
   return (
     <div className="ms-chat">
       <div className="ms-header">
         <div className="ms-h-left">
           <svg className="ms-h-back" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-          <div className="ms-h-avatar">
-            <SiMessenger />
-            <span className="ms-h-online" />
-          </div>
+          <div className="ms-h-avatar"><SiMessenger /><span className="ms-h-online" /></div>
           <div className="ms-meta">
             <div className="ms-name">PROXe</div>
             <div className="ms-status">Active now</div>
@@ -601,16 +646,12 @@ function MessengerChat({ channel }: { channel: typeof CHANNELS[number] }) {
         </div>
       </div>
       <div className="ms-body">
-        {channel.messages.map((m, i) => {
-          const last = isLastInRun(i, m.from);
-          const first = isFirstInRun(i, m.from);
+        {visible.map((m, i) => {
+          const side = m.from === 'proxe' ? 'ai' : 'customer';
+          const last = isLastInRun(visible, i);
           return (
-            <div
-              key={i}
-              className={`ms-row ms-row--${m.from} ${last ? 'is-last' : ''} ${first ? 'is-first' : ''}`}
-              style={{ '--i': i } as React.CSSProperties}
-            >
-              {m.from === 'ai' && (
+            <div key={i} className={`ms-row ms-row--${side} ${last ? 'is-last' : ''} is-first conv-msg-in`}>
+              {m.from === 'proxe' && (
                 <div className="ms-bubble-avatar">
                   {last && <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>}
                 </div>
@@ -619,12 +660,14 @@ function MessengerChat({ channel }: { channel: typeof CHANNELS[number] }) {
             </div>
           );
         })}
-        <div className="ms-row ms-row--ai is-last is-first" style={{ '--i': channel.messages.length } as React.CSSProperties}>
-          <div className="ms-bubble-avatar">
-            <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>
+        {isTyping && (
+          <div className="ms-row ms-row--ai is-last is-first conv-msg-in">
+            <div className="ms-bubble-avatar">
+              <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>
+            </div>
+            <div className="ms-bubble ms-bubble--typing"><span /><span /><span /></div>
           </div>
-          <div className="ms-bubble ms-bubble--typing"><span /><span /><span /></div>
-        </div>
+        )}
       </div>
       <div className="ms-input">
         <span className="ms-plus">+</span>
@@ -636,37 +679,48 @@ function MessengerChat({ channel }: { channel: typeof CHANNELS[number] }) {
 }
 
 /* ===== Voice call ===== */
-function VoiceChat({ channel }: { channel: typeof CHANNELS[number] }) {
+function VoiceChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
+  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
+  const visible = channel.messages.slice(0, shownCount);
+
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    if (!isActive) { setSeconds(0); return; }
+    const t = setInterval(() => setSeconds(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [isActive]);
+  const timerStr = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+
   return (
     <div className="vc-chat">
       <div className="vc-header">
         <span className="vc-eyebrow">ON CALL</span>
-        <span className="vc-timer">00:42</span>
+        <span className="vc-timer">{timerStr}</span>
       </div>
       <div className="vc-stage">
         <div className="vc-orb">
           <div className="vc-orb-pulse" />
           <div className="vc-orb-pulse vc-orb-pulse--2" />
-          <div className="vc-orb-core">
-            <FiPhone />
-          </div>
+          <div className="vc-orb-core"><FiPhone /></div>
         </div>
         <div className="vc-name">PROXe Voice</div>
-        <div className="vc-sub">AI agent · Live transcript</div>
+        <div className="vc-sub">AI Agent - Live Transcript</div>
       </div>
       <div className="vc-transcript">
-        {channel.messages.map((m, i) => (
-          <div key={i} className={`vc-line vc-line--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
-            <span className="vc-speaker">{m.from === 'ai' ? 'PROXe' : 'Caller'}</span>
+        {visible.map((m, i) => (
+          <div key={i} className={`vc-line vc-line--${m.from === 'proxe' ? 'ai' : 'customer'} conv-msg-in`}>
+            <span className="vc-speaker">{m.from === 'proxe' ? 'PROXE' : 'CALLER'}</span>
             <span className="vc-text">{m.text}</span>
           </div>
         ))}
-        <div className="vc-line vc-line--ai vc-line--speaking" style={{ '--i': channel.messages.length } as React.CSSProperties}>
-          <span className="vc-speaker">PROXe is speaking</span>
-          <div className="vc-wave">
-            {Array.from({ length: 14 }).map((_, i) => <span key={i} style={{ '--bar-i': i } as React.CSSProperties} />)}
+        {isTyping && (
+          <div className="vc-line vc-line--ai vc-line--speaking conv-msg-in">
+            <span className="vc-speaker">PROXE IS SPEAKING</span>
+            <div className="vc-wave">
+              {Array.from({ length: 14 }).map((_, i) => <span key={i} style={{ '--bar-i': i } as React.CSSProperties} />)}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="vc-controls">
         <button className="vc-btn" aria-label="Mute"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
@@ -677,8 +731,11 @@ function VoiceChat({ channel }: { channel: typeof CHANNELS[number] }) {
   );
 }
 
-/* ===== Web chat widget (matches the real PROXe deploy widget) ===== */
-function WebChat({ channel }: { channel: typeof CHANNELS[number] }) {
+/* ===== Web chat widget ===== */
+function WebChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
+  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
+  const visible = channel.messages.slice(0, shownCount);
+
   return (
     <div className="web-chat">
       <div className="web-header">
@@ -696,18 +753,16 @@ function WebChat({ channel }: { channel: typeof CHANNELS[number] }) {
         </div>
       </div>
       <div className="web-body">
-        {channel.messages.map((m, i) => (
-          <div key={i} className={`web-row web-row--${m.from}`} style={{ '--i': i } as React.CSSProperties}>
+        {visible.map((m, i) => (
+          <div key={i} className={`web-row web-row--${m.from === 'proxe' ? 'ai' : 'customer'} conv-msg-in`}>
             <div className="web-bubble">{m.text}</div>
           </div>
         ))}
-        <div className="web-quick">
-          <button className="web-pill">Book a Demo</button>
-          <button className="web-pill">Pricing</button>
-        </div>
-        <div className="web-row web-row--ai" style={{ '--i': channel.messages.length + 1 } as React.CSSProperties}>
-          <div className="web-bubble web-bubble--typing"><span /><span /><span /></div>
-        </div>
+        {isTyping && (
+          <div className="web-row web-row--ai conv-msg-in">
+            <div className="web-bubble web-bubble--typing"><span /><span /><span /></div>
+          </div>
+        )}
       </div>
       <div className="web-powered">Powered by <strong>PROXe</strong></div>
       <div className="web-input">

@@ -685,6 +685,15 @@ body:has(.proxe-root) {
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
+/* Conversation player fade-in — applied when a message is newly revealed */
+.conv-msg-in {
+  animation: convMsgIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes convMsgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ===== WhatsApp Web ===== */
 .wa-chat {
   display: flex; flex-direction: column;
@@ -797,6 +806,14 @@ body:has(.proxe-root) {
   display: flex; gap: 8px;
   overflow-x: auto; scroll-snap-type: x mandatory;
   padding-bottom: 4px;
+}
+/* Two-card side-by-side layout */
+.wa-carousel--duo {
+  overflow-x: visible;
+}
+.wa-carousel--duo .wa-card {
+  flex: 0 0 148px;
+  min-width: 148px;
   scrollbar-width: none;
 }
 .wa-carousel::-webkit-scrollbar { display: none; }
@@ -905,6 +922,20 @@ body:has(.proxe-root) {
   margin-top: 4px; padding: 0 4px;
   animation: proxeMsgFlyIn 0.4s ease-out 0.7s both;
 }
+.ig-book-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  background: transparent;
+  color: #fff;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  margin: 4px 0 0 0;
+  transition: background 0.2s ease;
+}
+.ig-book-btn:hover { background: rgba(255,255,255,0.1); }
+
 .ig-input {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px 14px;
