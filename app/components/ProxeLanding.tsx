@@ -410,12 +410,23 @@ function ChannelCoverflow() {
           return (
             <div
               key={ch.name}
-              className="proxe-chat-shell"
+              className="proxe-phone-outer"
               data-channel={ch.name.toLowerCase()}
               aria-hidden={offset !== 0}
               style={style}
             >
-              <PlatformChat channel={ch} />
+              {/* Dynamic island / camera pill */}
+              <div className="proxe-phone-notch">
+                <span className="proxe-phone-cam-pill" />
+              </div>
+              {/* Screen area */}
+              <div className="proxe-chat-shell">
+                <PlatformChat channel={ch} />
+              </div>
+              {/* Home indicator */}
+              <div className="proxe-phone-home">
+                <span className="proxe-phone-home-bar" />
+              </div>
             </div>
           );
         })}
