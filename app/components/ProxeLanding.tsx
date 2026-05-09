@@ -448,10 +448,8 @@ function ChannelCoverflow() {
           const offset = (i - active + len) % len;
           const style: React.CSSProperties =
             offset === 0
-              ? { transform: 'translateX(0px) rotateY(0deg) scale(1)', opacity: 1, filter: 'none', zIndex: 3, pointerEvents: 'auto' }
-              : offset === 1
-              ? { transform: 'translateX(330px) rotateY(-28deg) scale(0.72)', opacity: 0.5, filter: 'blur(0.5px)', zIndex: 2, pointerEvents: 'none' }
-              : { transform: 'translateX(680px) rotateY(-40deg) scale(0.55)', opacity: 0, filter: 'blur(2px)', zIndex: 1, pointerEvents: 'none' };
+              ? { opacity: 1, transform: 'translateX(-50%) translateY(0px) scale(1)', zIndex: 2, pointerEvents: 'auto', filter: 'none' }
+              : { opacity: 0, transform: 'translateX(-50%) translateY(16px) scale(0.96)', zIndex: 1, pointerEvents: 'none', filter: 'blur(2px)' };
           return (
             <div
               key={ch.name}

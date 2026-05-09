@@ -542,10 +542,8 @@ body:has(.proxe-root) {
 /* stacked mocks container */
 .proxe-mocks-stack {
   position: relative;
-  flex: 0 0 460px;
+  flex: 0 0 370px;
   height: 680px;
-  perspective: 1100px;
-  perspective-origin: 30% 40%;
   overflow: hidden;
 }
 
@@ -623,12 +621,12 @@ body:has(.proxe-root) {
   display: flex;
   flex-direction: column;
   pointer-events: none;
+  left: 50%;
   transition:
-    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    opacity   0.55s ease,
-    filter    0.55s ease;
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity   0.45s ease,
+    filter    0.45s ease;
   will-change: transform, opacity;
-  transform-origin: left center;
 }
 
 /* Camera pill / dynamic island */
@@ -1545,7 +1543,6 @@ body:has(.proxe-root) {
     flex: none;
     width: 300px;
     height: 560px;
-    perspective: 800px;
   }
   .proxe-phone-outer {
     width: 300px;
@@ -1556,10 +1553,7 @@ body:has(.proxe-root) {
   .proxe-phone-cam-pill { width: 80px; height: 26px; }
   .proxe-phone-home { height: 28px; }
 
-  /* Hide non-active mocks — inline transforms can't be overridden, just remove them */
-  .proxe-phone-outer[aria-hidden="true"] {
-    display: none !important;
-  }
+  /* inactive mocks are opacity:0 via inline style, no extra rule needed */
 }
 
 @media (prefers-reduced-motion: reduce) {
