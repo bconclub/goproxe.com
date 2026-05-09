@@ -542,10 +542,11 @@ body:has(.proxe-root) {
 /* stacked mocks container */
 .proxe-mocks-stack {
   position: relative;
-  flex: 0 0 420px;
+  flex: 0 0 460px;
   height: 520px;
   perspective: 1100px;
-  perspective-origin: 50% 40%;
+  perspective-origin: 30% 40%;
+  overflow: hidden;
 }
 
 .proxe-channel-item {
@@ -610,7 +611,7 @@ body:has(.proxe-root) {
 .proxe-chat-shell {
   position: absolute;
   top: 0; left: 0;
-  width: 390px;
+  width: 370px;
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.06);
@@ -621,42 +622,14 @@ body:has(.proxe-root) {
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
   overflow: hidden;
   text-align: left;
-  /* spring transition — all mocks slide/rotate smoothly */
-  transition:
-    transform 0.65s cubic-bezier(0.34, 1.15, 0.64, 1),
-    opacity   0.55s ease,
-    filter    0.55s ease;
-  will-change: transform, opacity;
   pointer-events: none;
-}
-
-/* Active mock — flat, front, fully interactive */
-.proxe-chat-shell[data-offset='0'] {
-  transform: translateX(0) rotateY(0deg) scale(1);
-  opacity: 1;
-  z-index: 3;
-  pointer-events: auto;
-  filter: none;
-}
-
-/* Next mock — offset right, tilted back in 3D space */
-.proxe-chat-shell[data-offset='1'] {
-  transform: translateX(310px) rotateY(-26deg) scale(0.82);
+  /* Inline styles drive transform/opacity — this transition fires on every value change */
+  transition:
+    transform 0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+    opacity   0.6s ease,
+    filter    0.6s ease;
+  will-change: transform, opacity;
   transform-origin: left center;
-  opacity: 0.48;
-  z-index: 2;
-  filter: blur(0.5px);
-}
-
-/* All off-stage mocks — parked far right, invisible */
-.proxe-chat-shell[data-offset='2'],
-.proxe-chat-shell[data-offset='3'],
-.proxe-chat-shell[data-offset='4'] {
-  transform: translateX(560px) rotateY(-40deg) scale(0.65);
-  transform-origin: left center;
-  opacity: 0;
-  z-index: 1;
-  filter: blur(2px);
 }
 
 @keyframes proxeChatShellIn {

@@ -396,18 +396,24 @@ function ChannelCoverflow() {
         })}
       </div>
 
-      {/* Right: all mocks rendered with stable keys so CSS transitions work.
-          data-offset drives position/opacity: 0=active, 1=peek, 2-4=offstage. */}
+      {/* Right: all 5 mocks always mounted (stable keys = no remount = real CSS
+          transitions). Inline styles drive the values so transition fires. */}
       <div className="proxe-mocks-stack">
         {CHANNELS.map((ch, i) => {
           const offset = (i - active + len) % len;
+          const style: React.CSSProperties =
+            offset === 0
+              ? { transform: 'translateX(0px) rotateY(0deg) scale(1)', opacity: 1, filter: 'none', zIndex: 3, pointerEvents: 'auto' }
+              : offset === 1
+              ? { transform: 'translateX(330px) rotateY(-28deg) scale(0.72)', opacity: 0.5, filter: 'blur(0.5px)', zIndex: 2, pointerEvents: 'none' }
+              : { transform: 'translateX(680px) rotateY(-40deg) scale(0.55)', opacity: 0, filter: 'blur(2px)', zIndex: 1, pointerEvents: 'none' };
           return (
             <div
               key={ch.name}
               className="proxe-chat-shell"
-              data-offset={offset}
               data-channel={ch.name.toLowerCase()}
               aria-hidden={offset !== 0}
+              style={style}
             >
               <PlatformChat channel={ch} />
             </div>
