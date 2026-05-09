@@ -293,19 +293,6 @@ function useConversationPlayer(msgs: ConvMsg[], isActive: boolean) {
 
 const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ConvMsg[] }> = [
   {
-    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
-    messages: [
-      { from: 'lead',  text: 'Hi, I saw your ad online. What do you guys do exactly?', delay: 1500 },
-      { from: 'proxe', text: 'Hey, thanks for calling. We help service businesses never miss a lead. Every inquiry on WhatsApp, your website, and calls gets handled instantly. Want me to walk you through how it works for your business?', delay: 1500 },
-      { from: 'lead',  text: 'Yeah sure, we run a clinic.', delay: 1500 },
-      { from: 'proxe', text: 'Perfect. For clinics we handle appointment bookings, patient inquiries, and follow ups automatically. How many calls do you miss on a typical day?', delay: 1500 },
-      { from: 'lead',  text: 'Honestly maybe 10 to 15.', delay: 1500 },
-      { from: 'proxe', text: 'That is a lot of lost patients. Want to book a quick demo? I can check availability right now.', delay: 1500 },
-      { from: 'lead',  text: 'Yes please.', delay: 1500 },
-      { from: 'proxe', text: 'Great. I have tomorrow 11am and 3pm open. Which works?', delay: 1500 },
-    ],
-  },
-  {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
     messages: [
       { from: 'lead',  text: 'Hi, what services do you offer?', time: '10:13 AM' },
@@ -319,14 +306,14 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
     ],
   },
   {
-    name: 'Messenger', icon: <SiMessenger />, accent: '#0084FF',
+    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
     messages: [
-      { from: 'lead',  text: 'Hey I saw your Facebook ad. Is this real or just another chatbot?' },
-      { from: 'proxe', text: 'Completely real. PROXe is a full AI system, not a chatbot. It captures leads, follows up for days, and books calls for you. What kind of business do you run?' },
-      { from: 'lead',  text: 'Real estate. We miss leads all the time after hours.' },
-      { from: 'proxe', text: 'That is exactly what PROXe fixes. Responds in under 30 seconds at 3am if needed. Want to see a quick demo?' },
-      { from: 'lead',  text: 'Sure send me something' },
-      { from: 'proxe', text: 'Booking link sent. Pick any slot that works and we will show you the whole thing live.' },
+      { from: 'lead',  text: 'Hi, I visited your site at 2am. Just checking if anyone is there.' },
+      { from: 'proxe', text: 'Hey, always here. What can I help you with?' },
+      { from: 'lead',  text: 'We run a travel agency and lose a lot of inquiries overnight.' },
+      { from: 'proxe', text: 'That is exactly the problem PROXe solves. Every overnight inquiry gets a reply in seconds. By morning your team wakes up to qualified leads. Want a quick walkthrough?' },
+      { from: 'lead',  text: 'Yes please' },
+      { from: 'proxe', text: 'Done. Booking link sent to your email. See you tomorrow.' },
     ],
   },
   {
@@ -341,14 +328,27 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
     ],
   },
   {
-    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
+    name: 'Messenger', icon: <SiMessenger />, accent: '#0084FF',
     messages: [
-      { from: 'lead',  text: 'Hi, I visited your site at 2am. Just checking if anyone is there.' },
-      { from: 'proxe', text: 'Hey, always here. What can I help you with?' },
-      { from: 'lead',  text: 'We run a travel agency and lose a lot of inquiries overnight.' },
-      { from: 'proxe', text: 'That is exactly the problem PROXe solves. Every overnight inquiry gets a reply in seconds. By morning your team wakes up to qualified leads. Want a quick walkthrough?' },
-      { from: 'lead',  text: 'Yes please' },
-      { from: 'proxe', text: 'Done. Booking link sent to your email. See you tomorrow.' },
+      { from: 'lead',  text: 'Hey I saw your Facebook ad. Is this real or just another chatbot?' },
+      { from: 'proxe', text: 'Completely real. PROXe is a full AI system, not a chatbot. It captures leads, follows up for days, and books calls for you. What kind of business do you run?' },
+      { from: 'lead',  text: 'Real estate. We miss leads all the time after hours.' },
+      { from: 'proxe', text: 'That is exactly what PROXe fixes. Responds in under 30 seconds at 3am if needed. Want to see a quick demo?' },
+      { from: 'lead',  text: 'Sure send me something' },
+      { from: 'proxe', text: 'Booking link sent. Pick any slot that works and we will show you the whole thing live.' },
+    ],
+  },
+  {
+    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
+    messages: [
+      { from: 'lead',  text: 'Hi, I saw your ad online. What do you guys do exactly?', delay: 1500 },
+      { from: 'proxe', text: 'Hey, thanks for calling. We help service businesses never miss a lead. Every inquiry on WhatsApp, your website, and calls gets handled instantly. Want me to walk you through how it works for your business?', delay: 1500 },
+      { from: 'lead',  text: 'Yeah sure, we run a clinic.', delay: 1500 },
+      { from: 'proxe', text: 'Perfect. For clinics we handle appointment bookings, patient inquiries, and follow ups automatically. How many calls do you miss on a typical day?', delay: 1500 },
+      { from: 'lead',  text: 'Honestly maybe 10 to 15.', delay: 1500 },
+      { from: 'proxe', text: 'That is a lot of lost patients. Want to book a quick demo? I can check availability right now.', delay: 1500 },
+      { from: 'lead',  text: 'Yes please.', delay: 1500 },
+      { from: 'proxe', text: 'Great. I have tomorrow 11am and 3pm open. Which works?', delay: 1500 },
     ],
   },
 ];
