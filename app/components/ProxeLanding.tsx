@@ -240,7 +240,7 @@ function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement |
 }
 
 /* ============ Channel Coverflow + Live Chat Preview ============ */
-interface WaCard { gradient: string; title: string; subtitle: string; btns: string[]; }
+interface WaCard { gradient: string; icon: string; title: string; subtitle: string; btns: Array<{ label: string; icon: string }> }
 interface ChatMsg {
   from: 'customer' | 'ai';
   text?: string;
@@ -253,24 +253,15 @@ interface ChatMsg {
 
 const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ChatMsg[] }> = [
   {
-    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
-    messages: [
-      { from: 'customer', text: 'I saw your product online. Curious about pricing.', time: '2:31 PM' },
-      { from: 'ai',       text: 'Happy to help! Starter is $99/mo for 1,000 conversations. How many leads do you get monthly?', time: '2:31 PM' },
-      { from: 'customer', text: 'Around 200 to 300 a month.', time: '2:32 PM' },
-      { from: 'ai',       text: 'Starter covers that easily. Want me to set up your free trial right now? Takes 2 minutes.', time: '2:32 PM' },
-    ],
-  },
-  {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
     messages: [
       { from: 'customer', text: "Hi, what services do you offer?", time: '10:13 AM' },
       {
         from: 'ai', time: '10:13 AM', type: 'carousel',
         cards: [
-          { gradient: 'linear-gradient(135deg,#075E54,#25D366)', title: 'Lead Capture', subtitle: 'Capture & qualify leads 24/7 across every channel automatically.', btns: ['Learn More', 'Get Started'] },
-          { gradient: 'linear-gradient(135deg,#1565C0,#42A5F5)', title: 'Appointment Booking', subtitle: 'Let customers self-book. Reminders sent automatically.', btns: ['Learn More', 'Book Now'] },
-          { gradient: 'linear-gradient(135deg,#6A1B9A,#CE93D8)', title: 'Campaign Broadcast', subtitle: 'Send rich carousels, offers & promos to thousands instantly.', btns: ['Learn More', 'Try It'] },
+          { gradient: 'linear-gradient(135deg,#0a4a3a,#1a8a5a)', icon: '🎯', title: 'Lead Capture', subtitle: 'Capture & qualify leads 24/7 across every channel — automatically.', btns: [{ label: 'Get Started', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
+          { gradient: 'linear-gradient(135deg,#0d3a6e,#1565C0)', icon: '📅', title: 'Appointment Booking', subtitle: 'Let customers self-book. Confirmations & reminders sent instantly.', btns: [{ label: 'Book Now', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
+          { gradient: 'linear-gradient(135deg,#4a1060,#9c27b0)', icon: '📢', title: 'Campaign Broadcast', subtitle: 'Send rich carousels and promos to thousands in one click.', btns: [{ label: 'Try It Free', icon: '→' }, { label: 'Learn More', icon: '↗' }] },
         ],
       },
       { from: 'customer', text: 'Book Now', time: '10:14 AM', type: 'quickreplies', selected: 'Book Now' },
@@ -280,12 +271,12 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
     ],
   },
   {
-    name: 'Messenger', icon: <SiMessenger />, accent: '#0084FF',
+    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
     messages: [
-      { from: 'customer', text: 'Do you offer a free trial?', time: '4:02 PM' },
-      { from: 'ai',       text: "Yes! 14-day free trial, no card needed. I can start you in 5 minutes. What's your business email?", time: '4:02 PM' },
-      { from: 'customer', text: "Great. It's john@acme.com", time: '4:03 PM' },
-      { from: 'ai',       text: 'Trial account created! Check your inbox. Login link and setup guide sent. 🎉', time: '4:03 PM' },
+      { from: 'customer', text: 'What channels do you support?', time: '11:45 AM' },
+      { from: 'ai',       text: 'WhatsApp, Instagram, Messenger, Voice, web chat, and email. All from one dashboard with shared memory.', time: '11:45 AM' },
+      { from: 'customer', text: 'Does it sync with HubSpot?', time: '11:46 AM' },
+      { from: 'ai',       text: 'Yes. Native HubSpot integration. Every conversation and lead score syncs automatically. Want to see it live?', time: '11:46 AM' },
     ],
   },
   {
@@ -298,12 +289,21 @@ const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; mes
     ],
   },
   {
-    name: 'Web', icon: <FiGlobe />, accent: '#A78BFA',
+    name: 'Messenger', icon: <SiMessenger />, accent: '#0084FF',
     messages: [
-      { from: 'customer', text: 'What channels do you support?', time: '11:45 AM' },
-      { from: 'ai',       text: 'WhatsApp, Instagram, Messenger, Voice, web chat, and email. All from one dashboard with shared memory.', time: '11:45 AM' },
-      { from: 'customer', text: 'Does it sync with HubSpot?', time: '11:46 AM' },
-      { from: 'ai',       text: 'Yes. Native HubSpot integration. Every conversation and lead score syncs automatically. Want to see it live?', time: '11:46 AM' },
+      { from: 'customer', text: 'Do you offer a free trial?', time: '4:02 PM' },
+      { from: 'ai',       text: "Yes! 14-day free trial, no card needed. I can start you in 5 minutes. What's your business email?", time: '4:02 PM' },
+      { from: 'customer', text: "Great. It's john@acme.com", time: '4:03 PM' },
+      { from: 'ai',       text: 'Trial account created! Check your inbox. Login link and setup guide sent. 🎉', time: '4:03 PM' },
+    ],
+  },
+  {
+    name: 'Voice', icon: <FiPhone />, accent: 'rgba(255,255,255,0.85)',
+    messages: [
+      { from: 'customer', text: 'I saw your product online. Curious about pricing.', time: '2:31 PM' },
+      { from: 'ai',       text: 'Happy to help! Starter is $99/mo for 1,000 conversations. How many leads do you get monthly?', time: '2:31 PM' },
+      { from: 'customer', text: 'Around 200 to 300 a month.', time: '2:32 PM' },
+      { from: 'ai',       text: 'Starter covers that easily. Want me to set up your free trial right now? Takes 2 minutes.', time: '2:32 PM' },
     ],
   },
 ];
@@ -436,14 +436,19 @@ function WhatsAppChat({ channel }: { channel: typeof CHANNELS[number] }) {
                   <div className="wa-carousel">
                     {m.cards.map((card, ci) => (
                       <div key={ci} className="wa-card">
-                        <div className="wa-card-img" style={{ background: card.gradient }} />
+                        <div className="wa-card-img" style={{ background: card.gradient }}>
+                          <span className="wa-card-img-icon">{card.icon}</span>
+                        </div>
                         <div className="wa-card-body">
                           <div className="wa-card-title">{card.title}</div>
                           <div className="wa-card-sub">{card.subtitle}</div>
                         </div>
                         <div className="wa-card-actions">
                           {card.btns.map((btn, bi) => (
-                            <button key={bi} className="wa-card-btn">{btn}</button>
+                            <button key={bi} className="wa-card-btn">
+                              <span className="wa-card-btn-icon">{btn.icon}</span>
+                              {btn.label}
+                            </button>
                           ))}
                         </div>
                       </div>
