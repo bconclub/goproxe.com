@@ -1082,6 +1082,11 @@ body:has(.proxe-root) {
 .vc-chat {
   display: flex; flex-direction: column;
   height: 600px;
+}
+.vc-chat--orb {
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   background:
     radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.45) 0%, transparent 55%),
     radial-gradient(circle at 50% 100%, rgba(20, 10, 60, 0.6) 0%, transparent 55%),

@@ -676,55 +676,11 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
   );
 }
 
-/* ===== Voice call ===== */
-function VoiceChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
-  const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
-  const visible = channel.messages.slice(0, shownCount);
-
-  const [seconds, setSeconds] = useState(0);
-  useEffect(() => {
-    if (!isActive) { setSeconds(0); return; }
-    const t = setInterval(() => setSeconds(s => s + 1), 1000);
-    return () => clearInterval(t);
-  }, [isActive]);
-  const timerStr = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-
+/* ===== Voice — live VapiOrb demo inside the phone frame ===== */
+function VoiceChat({ channel: _channel, isActive: _isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
   return (
-    <div className="vc-chat">
-      <div className="vc-header">
-        <span className="vc-eyebrow">ON CALL</span>
-        <span className="vc-timer">{timerStr}</span>
-      </div>
-      <div className="vc-stage">
-        <div className="vc-orb">
-          <div className="vc-orb-pulse" />
-          <div className="vc-orb-pulse vc-orb-pulse--2" />
-          <div className="vc-orb-core"><FiPhone /></div>
-        </div>
-        <div className="vc-name">PROXe Voice</div>
-        <div className="vc-sub">AI Agent - Live Transcript</div>
-      </div>
-      <div className="vc-transcript">
-        {visible.map((m, i) => (
-          <div key={i} className={`vc-line vc-line--${m.from === 'proxe' ? 'ai' : 'customer'} conv-msg-in`}>
-            <span className="vc-speaker">{m.from === 'proxe' ? 'PROXE' : 'CALLER'}</span>
-            <span className="vc-text">{m.text}</span>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="vc-line vc-line--ai vc-line--speaking conv-msg-in">
-            <span className="vc-speaker">PROXE IS SPEAKING</span>
-            <div className="vc-wave">
-              {Array.from({ length: 14 }).map((_, i) => <span key={i} style={{ '--bar-i': i } as React.CSSProperties} />)}
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="vc-controls">
-        <button className="vc-btn" aria-label="Mute"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
-        <button className="vc-btn vc-btn--end" aria-label="End"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
-        <button className="vc-btn" aria-label="Speaker"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
-      </div>
+    <div className="vc-chat vc-chat--orb">
+      <VapiOrb />
     </div>
   );
 }
