@@ -2728,21 +2728,20 @@ body:has(.proxe-root) {
 }
 
 .proxe-usecase-img {
-  height: 120px;
+  height: 160px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   position: relative;
+  border-radius: 14px 14px 0 0;
 }
-.proxe-usecase-img-icon {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.3);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 24px;
-  backdrop-filter: blur(6px);
+.proxe-usecase-img-photo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.proxe-usecase-card:hover .proxe-usecase-img-photo {
+  transform: scale(1.04);
 }
 
 .proxe-usecase-body {

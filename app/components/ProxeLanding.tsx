@@ -1120,65 +1120,57 @@ export default function ProxeLanding() {
           <div className="proxe-usecase-grid">
             {[
               {
-                icon: <Icon.AcademicCap />,
-                gradient: 'linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)',
+                img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=280&fit=crop&q=80',
                 title: 'Coaching Academies',
                 desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
                 stat: '4.2×', statLabel: 'more enrollments',
               },
               {
-                icon: <Icon.Clinic />,
-                gradient: 'linear-gradient(135deg,#0EA5E9 0%,#6366F1 100%)',
+                img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=280&fit=crop&q=80',
                 title: 'Clinics & Healthcare',
                 desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
                 stat: '68%', statLabel: 'fewer no-shows',
               },
               {
-                icon: <Icon.House />,
-                gradient: 'linear-gradient(135deg,#10B981 0%,#0EA5E9 100%)',
+                img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=280&fit=crop&q=80',
                 title: 'Real Estate',
                 desc: 'Qualify buyers, book site visits, follow up until the deal closes.',
                 stat: '3×', statLabel: 'more site visits booked',
               },
               {
-                icon: <Icon.Cart />,
-                gradient: 'linear-gradient(135deg,#F59E0B 0%,#EF4444 100%)',
+                img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=280&fit=crop&q=80',
                 title: 'D2C & E-commerce',
                 desc: 'Recover abandoned carts, answer product questions, nudge hesitant buyers.',
                 stat: '32%', statLabel: 'cart recovery rate',
               },
               {
-                icon: <Icon.Dumbbell />,
-                gradient: 'linear-gradient(135deg,#EC4899 0%,#8B5CF6 100%)',
+                img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=280&fit=crop&q=80',
                 title: 'Fitness & Wellness',
                 desc: 'Convert trial signups, reduce no-shows, re-engage lapsed members.',
                 stat: '55%', statLabel: 'reduction in no-shows',
               },
               {
-                icon: <Icon.Briefcase />,
-                gradient: 'linear-gradient(135deg,#1E40AF 0%,#3B82F6 100%)',
+                img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=280&fit=crop&q=80',
                 title: 'Professional Services',
                 desc: 'Qualify leads, book discovery calls, route hot prospects to partners.',
                 stat: '2.8×', statLabel: 'more discovery calls',
               },
               {
-                icon: <Icon.Car />,
-                gradient: 'linear-gradient(135deg,#374151 0%,#6B7280 100%)',
+                img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&h=280&fit=crop&q=80',
                 title: 'Auto Dealerships',
                 desc: 'Answer inventory questions around the clock, book test drives, reactivate cold leads.',
                 stat: '47%', statLabel: 'more test drives booked',
               },
               {
-                icon: <Icon.Wrench />,
-                gradient: 'linear-gradient(135deg,#D97706 0%,#B45309 100%)',
+                img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=280&fit=crop&q=80',
                 title: 'Home Services',
                 desc: 'Dispatch jobs fast. Capture, qualify, and schedule every service request.',
                 stat: '5×', statLabel: 'faster lead response',
               },
             ].map((u) => (
               <article key={u.title} className="proxe-usecase-card">
-                <div className="proxe-usecase-img" style={{ background: u.gradient }}>
-                  <div className="proxe-usecase-img-icon">{u.icon}</div>
+                <div className="proxe-usecase-img">
+                  <img src={u.img} alt={u.title} className="proxe-usecase-img-photo" />
                 </div>
                 <div className="proxe-usecase-body">
                   <h3 className="proxe-usecase-title">{u.title}</h3>
