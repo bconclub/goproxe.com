@@ -369,9 +369,6 @@ function ChannelCoverflow() {
     setDragging(false);
   };
 
-  const channel = CHANNELS[active];
-  const nextChannel = CHANNELS[(active + 1) % len];
-
   return (
     <div ref={containerRef} className="proxe-coverflow-wrap" aria-label={`PROXe on ${CHANNELS.map(c => c.name).join(', ')}`}>
       {/* Left: curved vertical channel list */}
@@ -399,14 +396,23 @@ function ChannelCoverflow() {
         })}
       </div>
 
-      {/* Right: active mock + peeking next mock */}
+      {/* Right: all mocks rendered with stable keys so CSS transitions work.
+          data-offset drives position/opacity: 0=active, 1=peek, 2-4=offstage. */}
       <div className="proxe-mocks-stack">
-        <div key={active} className="proxe-chat-shell" data-channel={channel.name.toLowerCase()}>
-          <PlatformChat channel={channel} />
-        </div>
-        <div key={`peek-${(active + 1) % len}`} className="proxe-chat-shell proxe-chat-shell--peek" data-channel={nextChannel.name.toLowerCase()} aria-hidden="true">
-          <PlatformChat channel={nextChannel} />
-        </div>
+        {CHANNELS.map((ch, i) => {
+          const offset = (i - active + len) % len;
+          return (
+            <div
+              key={ch.name}
+              className="proxe-chat-shell"
+              data-offset={offset}
+              data-channel={ch.name.toLowerCase()}
+              aria-hidden={offset !== 0}
+            >
+              <PlatformChat channel={ch} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

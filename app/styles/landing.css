@@ -539,13 +539,13 @@ body:has(.proxe-root) {
   width: 210px;
 }
 
-/* stacked mocks container — clips the peek */
+/* stacked mocks container */
 .proxe-mocks-stack {
   position: relative;
-  flex: 0 0 390px;
-  min-height: 480px;
-  overflow: hidden;
-  border-radius: 28px;
+  flex: 0 0 420px;
+  height: 520px;
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
 }
 
 .proxe-channel-item {
@@ -608,8 +608,9 @@ body:has(.proxe-root) {
    violet shadow). Inside, each platform mimics its real-world chrome.
    ======================================================== */
 .proxe-chat-shell {
-  width: 100%;
-  max-width: 400px;
+  position: absolute;
+  top: 0; left: 0;
+  width: 390px;
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.06);
@@ -619,24 +620,43 @@ body:has(.proxe-root) {
     0 18px 40px rgba(16, 4, 66, 0.40),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
   overflow: hidden;
-  animation: proxeChatShellIn 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  position: relative;
   text-align: left;
+  /* spring transition — all mocks slide/rotate smoothly */
+  transition:
+    transform 0.65s cubic-bezier(0.34, 1.15, 0.64, 1),
+    opacity   0.55s ease,
+    filter    0.55s ease;
+  will-change: transform, opacity;
+  pointer-events: none;
 }
 
-/* Peeking next-channel mock — only a sliver visible at right edge */
-.proxe-chat-shell--peek {
-  position: absolute;
-  top: 6%;
-  left: 310px;
-  width: 390px;
-  transform: scale(0.75);
-  transform-origin: top left;
-  opacity: 0.45;
-  pointer-events: none;
-  filter: blur(1.5px);
-  animation: none;
-  z-index: 0;
+/* Active mock — flat, front, fully interactive */
+.proxe-chat-shell[data-offset='0'] {
+  transform: translateX(0) rotateY(0deg) scale(1);
+  opacity: 1;
+  z-index: 3;
+  pointer-events: auto;
+  filter: none;
+}
+
+/* Next mock — offset right, tilted back in 3D space */
+.proxe-chat-shell[data-offset='1'] {
+  transform: translateX(310px) rotateY(-26deg) scale(0.82);
+  transform-origin: left center;
+  opacity: 0.48;
+  z-index: 2;
+  filter: blur(0.5px);
+}
+
+/* All off-stage mocks — parked far right, invisible */
+.proxe-chat-shell[data-offset='2'],
+.proxe-chat-shell[data-offset='3'],
+.proxe-chat-shell[data-offset='4'] {
+  transform: translateX(560px) rotateY(-40deg) scale(0.65);
+  transform-origin: left center;
+  opacity: 0;
+  z-index: 1;
+  filter: blur(2px);
 }
 
 @keyframes proxeChatShellIn {
