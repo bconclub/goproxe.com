@@ -518,51 +518,69 @@ body:has(.proxe-root) {
 }
 
 /* ===== Channel coverflow outer wrap ===== */
+/* ===== Side-by-side: icon list left, chat mock right ===== */
 .proxe-coverflow-wrap {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 28px;
+  gap: 40px;
   margin-top: 36px;
   width: 100%;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Icon picker row with prev/next arrows on either side */
-.proxe-coverflow-row {
+.proxe-channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 200px;
+}
+
+.proxe-channel-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  width: 100%;
-  max-width: 600px;
-}
-.proxe-coverflow-row .proxe-coverflow {
-  flex: 1;
-  margin: 0;
-}
-
-/* Simple arrows — just the chevron, no glass container, no fuss */
-.proxe-coverflow-arrow {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 999px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
   background: transparent;
-  border: 0;
-  color: rgba(255, 255, 255, 0.55);
-  display: inline-flex;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  position: relative;
+}
+.proxe-channel-item:hover {
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
+}
+.proxe-channel-item[data-active='true'] {
+  color: #fff;
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+.proxe-channel-item-icon {
+  font-size: 20px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
 }
-.proxe-coverflow-arrow:hover {
-  color: #fff;
-  transform: translateY(-1px);
+.proxe-channel-item-name {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  flex: 1;
 }
-.proxe-coverflow-arrow:active { transform: translateY(0); }
-.proxe-coverflow-arrow:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
+.proxe-channel-item-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--proxe-accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--proxe-accent);
 }
 
 /* ============ Platform-native chat preview ============
@@ -570,8 +588,9 @@ body:has(.proxe-root) {
    violet shadow). Inside, each platform mimics its real-world chrome.
    ======================================================== */
 .proxe-chat-shell {
+  flex: 1;
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.06);
@@ -1378,28 +1397,24 @@ body:has(.proxe-root) {
 }
 
 @media (max-width: 640px) {
-  .proxe-coverflow {
-    max-width: 320px;
+  .proxe-coverflow-wrap {
+    flex-direction: column;
+    gap: 24px;
   }
-  .proxe-coverflow-stage {
-    height: 110px;
+  .proxe-channel-list {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
   }
-  .proxe-coverflow-tile svg {
-    width: 60px;
-    height: 60px;
+  .proxe-channel-item {
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px;
+    flex-shrink: 0;
   }
-  .proxe-coverflow-tile[data-offset='-1'] {
-    transform: translate(calc(-50% - 85px), -50%) scale(0.7);
-  }
-  .proxe-coverflow-tile[data-offset='1'] {
-    transform: translate(calc(-50% + 85px), -50%) scale(0.7);
-  }
-  /* Mobile shows just 3 icons: hide ±2. */
-  .proxe-coverflow-tile[data-offset='-2'],
-  .proxe-coverflow-tile[data-offset='2'] {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4);
-  }
+  .proxe-channel-item-dot { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

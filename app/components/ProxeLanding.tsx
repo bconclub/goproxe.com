@@ -374,40 +374,25 @@ function ChannelCoverflow() {
 
   return (
     <div ref={containerRef} className="proxe-coverflow-wrap" aria-label={`PROXe on ${CHANNELS.map(c => c.name).join(', ')}`}>
-      {/* Icon picker with cycle arrows */}
-      <div className="proxe-coverflow-row">
-        <button type="button" className="proxe-coverflow-arrow" onClick={goPrev} aria-label="Previous channel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
-        <div className="proxe-coverflow" data-dragging={dragging}
-          onPointerDown={handlePointerDown} onPointerMove={handlePointerMove}
-          onPointerUp={endDrag} onPointerCancel={endDrag}
-        >
-          <div className="proxe-coverflow-stage">
-            {CHANNELS.map((c, i) => {
-              let offset = i - active;
-              if (offset > len / 2) offset -= len;
-              if (offset < -len / 2) offset += len;
-              const visible = Math.abs(offset) <= 2;
-              return (
-                <div key={c.name} className="proxe-coverflow-tile" data-offset={offset} data-visible={visible} aria-hidden={offset !== 0}>
-                  {c.icon}
-                </div>
-              );
-            })}
-          </div>
-          <div className="proxe-coverflow-label" aria-live="polite">{channel.name.toUpperCase()}</div>
-        </div>
-        <button type="button" className="proxe-coverflow-arrow" onClick={goNext} aria-label="Next channel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
+      {/* Left: vertical channel list */}
+      <div className="proxe-channel-list">
+        {CHANNELS.map((c, i) => (
+          <button
+            key={c.name}
+            type="button"
+            className="proxe-channel-item"
+            data-active={i === active}
+            onClick={() => { setActive(i); lockManual(); }}
+            aria-label={c.name}
+          >
+            <span className="proxe-channel-item-icon">{c.icon}</span>
+            <span className="proxe-channel-item-name">{c.name}</span>
+            {i === active && <span className="proxe-channel-item-dot" />}
+          </button>
+        ))}
       </div>
 
-      {/* Native-looking chat preview — re-mounts on channel change to re-animate */}
+      {/* Right: chat preview */}
       <div key={active} className="proxe-chat-shell" data-channel={channel.name.toLowerCase()}>
         <PlatformChat channel={channel} />
       </div>
