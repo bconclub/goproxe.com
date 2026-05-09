@@ -617,10 +617,10 @@ body:has(.proxe-root) {
   background: linear-gradient(170deg, #1c1c2e 0%, #111120 55%, #0d0d18 100%);
   border: 1.5px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    0 32px 80px rgba(10, 4, 50, 0.70),
-    0 4px 12px rgba(0, 0, 0, 0.50),
+    0 60px 160px rgba(10, 4, 50, 0.28),
+    0 20px 60px rgba(80, 30, 180, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.40);
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   overflow: hidden;
   display: flex;
   flex-direction: column;
