@@ -453,22 +453,25 @@ function ChannelCoverflow() {
           return (
             <div
               key={ch.name}
-              className="proxe-phone-outer"
+              className="proxe-phone-frame"
               data-channel={ch.name.toLowerCase()}
               aria-hidden={offset !== 0}
               style={style}
             >
-              {/* Dynamic island / camera pill */}
-              <div className="proxe-phone-notch">
-                <span className="proxe-phone-cam-pill" />
-              </div>
-              {/* Screen area */}
-              <div className="proxe-chat-shell">
-                <PlatformChat channel={ch} isActive={i === active} />
-              </div>
-              {/* Home indicator */}
-              <div className="proxe-phone-home">
-                <span className="proxe-phone-home-bar" />
+              {/* Side buttons rendered outside overflow:hidden */}
+              <span className="proxe-phone-btn proxe-phone-btn--vol" aria-hidden="true" />
+              <span className="proxe-phone-btn proxe-phone-btn--pwr" aria-hidden="true" />
+              {/* Device body — overflow:hidden clips screen to rounded corners */}
+              <div className="proxe-phone-outer">
+                <div className="proxe-phone-notch">
+                  <span className="proxe-phone-cam-pill" />
+                </div>
+                <div className="proxe-chat-shell">
+                  <PlatformChat channel={ch} isActive={i === active} />
+                </div>
+                <div className="proxe-phone-home">
+                  <span className="proxe-phone-home-bar" />
+                </div>
               </div>
             </div>
           );
