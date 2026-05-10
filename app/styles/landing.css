@@ -3003,6 +3003,8 @@ body:has(.proxe-root) {
 /* ===== 11. Industry scroll showcase ===== */
 .proxe-ind-section {
   position: relative;
+  /* Deep dark backdrop so photos + text read clearly */
+  background: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(15, 8, 40, 0.85) 0%, rgba(6, 4, 18, 0.97) 100%);
 }
 
 .proxe-ind-sticky {
@@ -3050,15 +3052,15 @@ body:has(.proxe-root) {
 
 .proxe-ind-photo {
   position: absolute;
-  width: 230px;
-  height: 310px;
-  border-radius: 20px;
+  width: 240px;
+  height: 320px;
+  border-radius: 22px;
   overflow: hidden;
-  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 0 40px 4px rgba(100, 40, 220, 0.12);
+    0 28px 80px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 0 50px 6px rgba(120, 50, 240, 0.18);
 }
 
 .proxe-ind-photo img {
