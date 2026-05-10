@@ -19,6 +19,7 @@ jobs:
             cd /var/www/goproxe
             git pull origin main
             npm ci --production=false
+            rm -rf .next
             export NODE_OPTIONS="--max-old-space-size=2048"
             npm run build
             pm2 restart goproxe || pm2 start npm --name goproxe -- start
