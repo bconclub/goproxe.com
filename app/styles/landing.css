@@ -4920,7 +4920,7 @@ body:has(.proxe-root) {
 .ph-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 72px;
+  gap: 64px;
   align-items: center;
   width: 100%;
 }
@@ -4928,8 +4928,8 @@ body:has(.proxe-root) {
 /* ── left column ── */
 .ph-left {
   opacity: 0;
-  transform: translateX(-28px);
-  transition: opacity 0.75s ease, transform 0.75s ease;
+  transform: translateX(-32px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .ph-section.ph-visible .ph-left {
   opacity: 1;
@@ -4940,32 +4940,32 @@ body:has(.proxe-root) {
   display: inline-block;
   font-family: var(--proxe-font-mono);
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 22px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 20px;
 }
 
 .ph-headline {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(2.8rem, 5.2vw, 4.8rem);
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
   font-weight: 400;
-  line-height: 1.07;
-  letter-spacing: -0.025em;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
   color: #ffffff;
   margin: 0 0 28px;
 }
 
 .ph-h1-line2 {
   display: block;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .ph-sub {
-  font-size: clamp(1rem, 1.35vw, 1.13rem);
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.62);
-  max-width: 490px;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.58);
+  max-width: 480px;
   margin: 0 0 40px;
   font-weight: 400;
 }
@@ -4981,7 +4981,7 @@ body:has(.proxe-root) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 26px;
+  padding: 15px 28px;
   background: #7C3AED;
   color: #ffffff;
   border-radius: 10px;
@@ -4990,21 +4990,21 @@ body:has(.proxe-root) {
   letter-spacing: -0.01em;
   text-decoration: none;
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 4px 24px rgba(124, 58, 237, 0.5);
 }
 .ph-btn-primary:hover {
   background: #6D28D9;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.55);
+  box-shadow: 0 10px 32px rgba(124, 58, 237, 0.6);
 }
 
 .ph-btn-ghost {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 13px 24px;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.78);
+  padding: 14px 26px;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.75);
   border-radius: 10px;
   font-size: 15px;
   font-weight: 500;
@@ -5013,7 +5013,7 @@ body:has(.proxe-root) {
   transition: border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 .ph-btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.48);
   color: #ffffff;
   transform: translateY(-2px);
 }
@@ -5021,8 +5021,8 @@ body:has(.proxe-root) {
 /* ── right column ── */
 .ph-right {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.85s ease 0.18s, transform 0.85s ease 0.18s;
+  transform: translateY(32px);
+  transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -5032,41 +5032,111 @@ body:has(.proxe-root) {
   transform: translateY(0);
 }
 
-/* Visual stage — pills positioned relative to this */
+/* Visual stage */
 .ph-visual {
   position: relative;
-  width: 440px;
-  height: 440px;
+  width: 500px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: visible;
 }
 
+/* ── ambient glow blob behind everything ── */
+.ph-glow-bg {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(139, 92, 246, 0.38) 0%,
+    rgba(109, 40, 217, 0.2)  35%,
+    rgba(76, 29, 149, 0.08)  65%,
+    transparent 75%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── pulsing halo rings ── */
+@keyframes phHalo {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.32; }
+  50%       { transform: translate(-50%, -50%) scale(1.1); opacity: 0.12; }
+}
+@keyframes phHalo2 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);    opacity: 0.22; }
+  50%       { transform: translate(-50%, -50%) scale(1.14); opacity: 0.08; }
+}
+
+.ph-halo {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  border: 1px solid rgba(167, 139, 250, 0.5);
+}
+
+.ph-halo--1 {
+  width: 240px;
+  height: 240px;
+  animation: phHalo 3.8s ease-in-out infinite;
+  border-color: rgba(167, 139, 250, 0.45);
+}
+.ph-halo--2 {
+  width: 330px;
+  height: 330px;
+  animation: phHalo 3.8s ease-in-out infinite 0.9s;
+  border-color: rgba(139, 92, 246, 0.28);
+}
+.ph-halo--3 {
+  width: 420px;
+  height: 420px;
+  animation: phHalo2 4.6s ease-in-out infinite 1.6s;
+  border-color: rgba(109, 40, 217, 0.16);
+}
+
 /* ── center logo card ── */
 .ph-logo-card {
-  width: 164px;
-  height: 164px;
-  border-radius: 34px;
-  background: linear-gradient(148deg, #8B5CF6 0%, #5B21B6 55%, #1E1B4B 100%);
+  width: 200px;
+  height: 200px;
+  border-radius: 40px;
+  background: linear-gradient(148deg, #9333EA 0%, #6D28D9 45%, #2E1065 100%);
   box-shadow:
-    0 0 0 1px rgba(139, 92, 246, 0.45),
-    0 0 48px rgba(124, 58, 237, 0.5),
-    0 0 110px rgba(124, 58, 237, 0.22),
-    0 24px 64px rgba(0, 0, 0, 0.5);
+    0 0 0 1.5px rgba(167, 139, 250, 0.5),
+    0 0 40px  rgba(139, 92, 246, 0.7),
+    0 0 90px  rgba(124, 58, 237, 0.45),
+    0 0 160px rgba(124, 58, 237, 0.2),
+    0 28px 80px rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 2;
+  z-index: 4;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Inner highlight shimmer on card */
+.ph-logo-inner-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%);
+  pointer-events: none;
 }
 
 .ph-logo-img {
-  width: 84px;
-  height: 84px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
-  filter: brightness(1.05) drop-shadow(0 2px 12px rgba(255,255,255,0.15));
+  position: relative;
+  z-index: 1;
+  filter: brightness(1.1) drop-shadow(0 0 18px rgba(255,255,255,0.25));
 }
 
 /* ── pill float animation ── */
@@ -5081,33 +5151,35 @@ body:has(.proxe-root) {
   position: absolute;
   display: inline-flex;
   align-items: center;
-  padding: 7px 15px;
+  padding: 8px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   color: #ffffff;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
   white-space: nowrap;
   letter-spacing: -0.01em;
   animation: phFloat ease-in-out infinite;
-  z-index: 3;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  z-index: 5;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 /* ── dot pulse animation ── */
 @keyframes phPulse {
-  0%, 100% { opacity: 0.45; transform: scale(1); }
-  50%       { opacity: 0.85; transform: scale(1.3); }
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.35); }
 }
 
 .ph-dot {
   position: absolute;
   border-radius: 50%;
   animation: phPulse ease-in-out infinite;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* ── mobile / tablet ── */
@@ -5117,36 +5189,42 @@ body:has(.proxe-root) {
     gap: 56px;
   }
   .ph-visual {
-    width: 360px;
-    height: 360px;
+    width: 380px;
+    height: 380px;
     margin: 0 auto;
   }
+  .ph-halo--3 { width: 340px; height: 340px; }
+  .ph-glow-bg { width: 320px; height: 320px; }
   .ph-section {
     padding: 110px 0 72px;
     align-items: flex-start;
   }
   .ph-headline {
-    font-size: clamp(2.4rem, 9vw, 3.4rem);
+    font-size: clamp(2.6rem, 9vw, 3.6rem);
   }
 }
 
 @media (max-width: 520px) {
   .ph-visual {
-    width: 290px;
-    height: 290px;
+    width: 300px;
+    height: 300px;
   }
   .ph-logo-card {
-    width: 120px;
-    height: 120px;
-    border-radius: 26px;
+    width: 140px;
+    height: 140px;
+    border-radius: 30px;
   }
   .ph-logo-img {
-    width: 62px;
-    height: 62px;
+    width: 70px;
+    height: 70px;
   }
+  .ph-halo--1 { width: 180px; height: 180px; }
+  .ph-halo--2 { width: 240px; height: 240px; }
+  .ph-halo--3 { width: 300px; height: 300px; }
+  .ph-glow-bg { width: 240px; height: 240px; }
   .ph-pill {
     font-size: 11.5px;
-    padding: 5px 11px;
+    padding: 6px 12px;
   }
   .ph-ctas {
     flex-direction: column;
