@@ -291,6 +291,175 @@ function useConversationPlayer(msgs: ConvMsg[], isActive: boolean) {
   return { shownCount, isTyping };
 }
 
+/* ===== Industries (scrolling showcase) ===== */
+const INDUSTRIES = [
+  {
+    name: 'Beauty',
+    leftImg: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Wellness',
+    leftImg: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Medspa',
+    leftImg: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Health',
+    leftImg: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Fitness',
+    leftImg: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Self-Care',
+    leftImg: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Services',
+    leftImg: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=360&h=500&fit=crop&q=80',
+  },
+];
+
+function IndustryScroll() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      const scrolled = -rect.top;
+      const scrollableHeight = rect.height - window.innerHeight;
+      if (scrollableHeight <= 0) return;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
+      const idx = Math.min(INDUSTRIES.length - 1, Math.floor(progress * INDUSTRIES.length));
+      setActiveIndex(idx);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const ITEM_H = 88; // px — fixed row height for each name item
+  const VISIBLE_H = 440; // px — height of the visible names window
+  // Keep active item centered vertically in the window
+  const listShift = VISIBLE_H / 2 - ITEM_H / 2 - activeIndex * ITEM_H;
+
+  return (
+    <div
+      ref={sectionRef}
+      className="proxe-ind-section"
+      style={{ height: `calc(${INDUSTRIES.length + 1} * 80vh)` }}
+    >
+      <div className="proxe-ind-sticky">
+        <p className="proxe-ind-eyebrow">Powering growth across</p>
+
+        <div className="proxe-ind-layout">
+          {/* ── Left photos ── */}
+          <div className="proxe-ind-photos-wrap proxe-ind-photos-wrap--left">
+            {INDUSTRIES.map((ind, i) => (
+              <div
+                key={ind.name + '-left'}
+                className="proxe-ind-photo proxe-ind-photo--left"
+                style={{ opacity: i === activeIndex ? 1 : 0 }}
+              >
+                <img src={ind.leftImg} alt={ind.name} />
+              </div>
+            ))}
+          </div>
+
+          {/* ── Center name scroll ── */}
+          <div className="proxe-ind-center">
+            <div
+              className="proxe-ind-names"
+              style={{ transform: `translateY(${listShift}px)` }}
+            >
+              {INDUSTRIES.map((ind, i) => {
+                const dist = Math.abs(i - activeIndex);
+                const isActive = dist === 0;
+                const fontSize =
+                  isActive ? 74 : dist === 1 ? 42 : dist === 2 ? 32 : 24;
+                const opacity =
+                  isActive ? 1 : dist === 1 ? 0.5 : dist === 2 ? 0.22 : 0.08;
+                const color = isActive ? '#ffffff' : 'rgba(255,255,255,0.9)';
+
+                return (
+                  <div
+                    key={ind.name}
+                    className="proxe-ind-item"
+                    style={{ height: `${ITEM_H}px`, opacity }}
+                  >
+                    <span
+                      className="proxe-ind-item-name"
+                      style={{ fontSize: `${fontSize}px`, color }}
+                    >
+                      {ind.name}
+                      {isActive && (
+                        <svg
+                          className="proxe-ind-arrow"
+                          width="48"
+                          height="28"
+                          viewBox="0 0 48 28"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M2 14h44M32 4l12 10-12 10"
+                            stroke="#CDFC2E"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Right photos ── */}
+          <div className="proxe-ind-photos-wrap proxe-ind-photos-wrap--right">
+            {INDUSTRIES.map((ind, i) => (
+              <div
+                key={ind.name + '-right'}
+                className="proxe-ind-photo proxe-ind-photo--right"
+                style={{ opacity: i === activeIndex ? 1 : 0 }}
+              >
+                <img src={ind.rightImg} alt={ind.name} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dot progress indicator */}
+        <div className="proxe-ind-dots" aria-hidden="true">
+          {INDUSTRIES.map((ind, i) => (
+            <span
+              key={ind.name}
+              className="proxe-ind-dot"
+              data-active={i === activeIndex}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const CHANNELS: Array<{ name: string; icon: React.ReactNode; accent: string; messages: ConvMsg[] }> = [
   {
     name: 'WhatsApp', icon: <SiWhatsapp />, accent: '#25D366',
@@ -1174,87 +1343,8 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== 11. Use cases ===== */}
-      <section className="proxe-section">
-        <div className="proxe-container">
-          <div className="proxe-section-label">Built For</div>
-          <div className="proxe-usecase-grid">
-            {[
-              {
-                img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#4F46E5,#A855F7)',
-                title: 'Coaching Academies',
-                desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
-                stat: '4.2×', statLabel: 'more enrollments',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#0EA5E9,#6366F1)',
-                title: 'Clinics & Healthcare',
-                desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
-                stat: '68%', statLabel: 'fewer no-shows',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#059669,#0EA5E9)',
-                title: 'Real Estate',
-                desc: 'Qualify buyers, book site visits, follow up until the deal closes.',
-                stat: '3×', statLabel: 'more site visits booked',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#F59E0B,#EF4444)',
-                title: 'D2C & E-commerce',
-                desc: 'Recover abandoned carts, answer product questions, nudge hesitant buyers.',
-                stat: '32%', statLabel: 'cart recovery rate',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#DB2777,#7C3AED)',
-                title: 'Fitness & Wellness',
-                desc: 'Convert trial signups, reduce no-shows, re-engage lapsed members.',
-                stat: '55%', statLabel: 'reduction in no-shows',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#1D4ED8,#06B6D4)',
-                title: 'Professional Services',
-                desc: 'Qualify leads, book discovery calls, route hot prospects to partners.',
-                stat: '2.8×', statLabel: 'more discovery calls',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#334155,#7C3AED)',
-                title: 'Auto Dealerships',
-                desc: 'Answer inventory questions around the clock, book test drives, reactivate cold leads.',
-                stat: '47%', statLabel: 'more test drives booked',
-              },
-              {
-                img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=280&fit=crop&q=80',
-                tint: 'linear-gradient(135deg,#D97706,#DC2626)',
-                title: 'Home Services',
-                desc: 'Dispatch jobs fast. Capture, qualify, and schedule every service request.',
-                stat: '5×', statLabel: 'faster lead response',
-              },
-            ].map((u) => (
-              <article key={u.title} className="proxe-usecase-card">
-                <div className="proxe-usecase-img">
-                  <img src={u.img} alt={u.title} className="proxe-usecase-img-photo" />
-                  <div className="proxe-usecase-img-overlay" style={{ background: u.tint }} />
-                </div>
-                <div className="proxe-usecase-body">
-                  <h3 className="proxe-usecase-title">{u.title}</h3>
-                  <p className="proxe-usecase-desc">{u.desc}</p>
-                  <div className="proxe-usecase-stat">
-                    <span className="proxe-usecase-stat-num">{u.stat}</span>
-                    <span className="proxe-usecase-stat-label">{u.statLabel}</span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ===== 11. Industry scroll showcase ===== */}
+      <IndustryScroll />
 
       {/* ===== 12. Pricing ===== */}
       <section className="proxe-section" id="pricing">

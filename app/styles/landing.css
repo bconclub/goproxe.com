@@ -3000,6 +3000,201 @@ body:has(.proxe-root) {
   }
 }
 
+/* ===== 11. Industry scroll showcase ===== */
+.proxe-ind-section {
+  position: relative;
+}
+
+.proxe-ind-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.proxe-ind-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0 0 44px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Three-column layout: left photos | names | right photos */
+.proxe-ind-layout {
+  position: relative;
+  width: 100%;
+  max-width: 1260px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  box-sizing: border-box;
+  gap: 0;
+}
+
+/* ── Photo columns ── */
+.proxe-ind-photos-wrap {
+  width: 280px;
+  flex-shrink: 0;
+  position: relative;
+  height: 440px;
+  pointer-events: none;
+}
+
+.proxe-ind-photo {
+  position: absolute;
+  width: 230px;
+  height: 310px;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 40px 4px rgba(100, 40, 220, 0.12);
+}
+
+.proxe-ind-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Left column: tilt CCW, anchor to bottom-right of its column */
+.proxe-ind-photos-wrap--left .proxe-ind-photo {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) rotate(-6deg);
+  animation: proxeIndFloat 7s ease-in-out infinite;
+}
+
+/* Right column: tilt CW, anchor to bottom-left of its column */
+.proxe-ind-photos-wrap--right .proxe-ind-photo {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%) rotate(6deg);
+  animation: proxeIndFloat 9s ease-in-out infinite reverse;
+}
+
+@keyframes proxeIndFloat {
+  0%, 100% { translate: 0 0; }
+  33%       { translate: 0 -10px; }
+  66%       { translate: 0  8px; }
+}
+
+/* ── Center names ── */
+.proxe-ind-center {
+  flex: 1;
+  height: 440px;
+  overflow: hidden;
+  position: relative;
+  /* Fade-mask: dissolve names toward top and bottom edges */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 22%,
+    black 78%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 22%,
+    black 78%,
+    transparent 100%
+  );
+}
+
+.proxe-ind-names {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.proxe-ind-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.proxe-ind-item-name {
+  font-family: var(--proxe-font-heading);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition:
+    font-size 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color 0.55s ease,
+    opacity 0.55s ease;
+  white-space: nowrap;
+}
+
+.proxe-ind-item,
+.proxe-ind-item-name {
+  transition: opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              font-size 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.55s ease;
+}
+
+.proxe-ind-arrow {
+  flex-shrink: 0;
+  opacity: 0.9;
+  animation: proxeIndArrowPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes proxeIndArrowPulse {
+  0%, 100% { translate: 0 0; opacity: 0.9; }
+  50%       { translate: 6px 0; opacity: 1; }
+}
+
+/* ── Dot progress ── */
+.proxe-ind-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 48px;
+  position: relative;
+  z-index: 2;
+}
+
+.proxe-ind-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.proxe-ind-dot[data-active='true'] {
+  width: 22px;
+  background: #CDFC2E;
+}
+
+/* Mobile: stack vertically, hide photos */
+@media (max-width: 768px) {
+  .proxe-ind-photos-wrap {
+    display: none;
+  }
+  .proxe-ind-layout {
+    padding: 0 24px;
+  }
+  .proxe-ind-eyebrow {
+    margin-bottom: 32px;
+  }
+}
+
 /* ===== 12. Pricing ===== */
 .proxe-pricing-grid {
   display: grid;
