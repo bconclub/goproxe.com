@@ -58,6 +58,15 @@ export default function HeroSection() {
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+
+    // If the hero is already in viewport (first load), reveal immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      setVisible(true);
+      return;
+    }
+
+    // Otherwise use IntersectionObserver for scroll-in
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
