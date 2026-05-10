@@ -5,6 +5,8 @@ import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase } fr
 import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
 import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
+import HowItWorks from './HowItWorks';
+import ChannelDemo from './ChannelDemo';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1218,14 +1220,11 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== 6. Channel dial ===== */}
-      <section className="proxe-problem">
-        <div className="proxe-container">
-          <h2 className="proxe-problem-line">Leads don&rsquo;t wait. Neither does PROXe.</h2>
-          <p className="proxe-problem-sub">PROXe captures, follows up, and pushes leads to close across channels. One AI brain. Full context. Always on.</p>
-          <ChannelCoverflow />
-        </div>
-      </section>
+      {/* ===== 6. How It Works ===== */}
+      <HowItWorks />
+
+      {/* ===== 7. Channel Demo ===== */}
+      <ChannelDemo />
 
       {/* ===== 7. Three pillars — sticky stack ===== */}
       <section className="proxe-section proxe-pillars-section" id="features" ref={pillarsRef}>
