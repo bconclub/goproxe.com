@@ -3633,14 +3633,30 @@ body:has(.proxe-root) {
 }
 
 .hiw-card {
-  background: rgba(255,255,255,0.04);
+  background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 100%);
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.13);
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
   display: flex;
   flex-direction: column;
   min-height: 500px;
+  position: relative;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Grain overlay */
+.hiw-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 100;
+  border-radius: inherit;
 }
 
 .hiw-card-top {
@@ -3648,7 +3664,7 @@ body:has(.proxe-root) {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  background: linear-gradient(145deg, #1a1240 0%, #0e0b22 100%) !important;
+  background: linear-gradient(145deg, rgba(139,92,246,0.22) 0%, rgba(14,11,34,0.65) 60%, rgba(9,7,20,0.8) 100%) !important;
 }
 
 
@@ -3658,6 +3674,10 @@ body:has(.proxe-root) {
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border-top: 1px solid rgba(255,255,255,0.07);
 }
 
 .hiw-card-title {
