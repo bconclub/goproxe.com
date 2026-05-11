@@ -224,19 +224,19 @@ function useConvPlayer(msgs: ConvMsg[], isActive: boolean) {
 
     function run() {
       setShown(0); setTyping(false);
-      let t = 200;
+      let t = 300;
       ts.push(setTimeout(() => { if (!stopped) setShown(1); }, t));
       for (let i = 0; i < msgs.length - 1; i++) {
-        t += (msgs[i].delay ?? 1200) / 2;
+        t += (msgs[i].delay ?? 1200) / 1.5;
         const next = msgs[i + 1];
         if (next.from === 'agent' && !next.noTyping) {
           ts.push(setTimeout(() => { if (!stopped) setTyping(true); }, t));
-          t += 450;
+          t += 600;
         }
         const cnt = i + 2;
         ts.push(setTimeout(() => { if (!stopped) { setTyping(false); setShown(cnt); } }, t));
       }
-      t += ((msgs[msgs.length - 1].delay ?? 1200) / 2) + 2000;
+      t += ((msgs[msgs.length - 1].delay ?? 1200) / 1.5) + 2500;
       ts.push(setTimeout(() => { if (!stopped) run(); }, t));
     }
     run();
@@ -743,7 +743,18 @@ export default function ChannelDemo() {
 
   const [active, setActive] = useState('voice');
   const [paused, setPaused] = useState(false);
-  const SLIDE_MS = 7000;
+  const SLIDE_MS = 10000;
+
+  const goPrev = () => {
+    const idx = CHANNELS.findIndex(c => c.id === active);
+    setActive(CHANNELS[(idx - 1 + CHANNELS.length) % CHANNELS.length].id);
+    setPaused(false);
+  };
+  const goNext = () => {
+    const idx = CHANNELS.findIndex(c => c.id === active);
+    setActive(CHANNELS[(idx + 1) % CHANNELS.length].id);
+    setPaused(false);
+  };
 
   // Auto-advance through channels with a timer
   useEffect(() => {
@@ -801,6 +812,12 @@ export default function ChannelDemo() {
               );
             })}
           </nav>
+
+          {/* ── Dial controls (between nav and preview) ── */}
+          <div className="cd-dial-controls">
+            <button className="cd-dial-btn" onClick={goPrev} aria-label="Previous channel">↑</button>
+            <button className="cd-dial-btn" onClick={goNext} aria-label="Next channel">↓</button>
+          </div>
 
           {/* ── Right: active channel preview ── */}
           <div
