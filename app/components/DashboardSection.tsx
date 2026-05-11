@@ -181,22 +181,22 @@ export default function DashboardSection() {
                 <StatCard
                   icon="▣" title="Conversations" titleColor="#3B82F6"
                   value="103" sub="103 all time" barColor="#3B82F6" trend="+12%"
-                  sparkPts={[45,52,48,61,58,70,65,78,71,88,90,103]}
+                  sparkPts={[42,58,49,71,55,38,29,51,73,62,84,69,77,91,68,82,95,79,88,103]}
                 />
                 <StatCard
                   icon="↑" title="Engaged Leads" titleColor="#22c55e"
                   value="68" sub="53.5%" subColor="#22c55e" barColor="#22c55e" trend="+8%"
-                  sparkPts={[30,38,42,35,48,52,45,58,55,62,65,68]}
+                  sparkPts={[28,41,33,46,29,52,38,44,57,48,61,42,55,64,49,58,60,53,66,68]}
                 />
                 <StatCard
                   icon="🔥" title="Warm Leads" titleColor="#f97316"
                   value="30" sub="Score 40-69" subColor="#f97316" barColor="#f97316" trend="+15%"
-                  sparkPts={[12,18,15,22,19,25,20,26,24,28,27,30]}
+                  sparkPts={[8,14,11,19,9,22,16,12,24,18,27,15,21,29,17,25,23,19,28,30]}
                 />
                 <StatCard
                   icon="👥" title="Total Leads" titleColor="rgba(255,255,255,0.75)"
                   value="127" sub="127 all time" barColor="rgba(255,255,255,0.5)" trend="+22%"
-                  sparkPts={[65,72,78,82,88,94,98,105,110,118,122,127]}
+                  sparkPts={[58,62,68,71,73,78,82,85,89,94,99,103,108,112,115,119,121,124,126,127]}
                 />
               </div>
 
