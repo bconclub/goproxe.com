@@ -185,7 +185,7 @@ function ReactivateVis({ on }: { on: boolean }) {
   }, [on]);
 
   return (
-    <div className="hiw-vis" style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
+    <div className="hiw-vis">
       <div className="hiw-dotgrid" />
 
       {/* RESPONDED badge — top right, pop-scale in */}

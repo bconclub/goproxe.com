@@ -593,8 +593,8 @@ const WA_SUBS = Object.keys(WA);
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════ */
 export default function ChannelDemo() {
-  const [activeSub, setActiveSub] = useState(WA_SUBS[0]);
-  const currentMsgs = WA[activeSub] ?? WA[WA_SUBS[0]];
+  const industry = 'Real Estate';
+  const currentMsgs = WA[industry];
 
   return (
     <section className="cd-section" id="voice">
@@ -602,7 +602,7 @@ export default function ChannelDemo() {
         <div className="proxe-section-label" style={{ textAlign: 'center' }}>PROXe in Action</div>
         <h2 className="cd-headline">See PROXe in action.</h2>
         <p className="cd-sub">
-          One AI brain. Every channel. Try the voice agent live, then see how it handles WhatsApp across industries.
+          One AI brain. Every channel. Try the voice agent live, then see how it handles WhatsApp conversations.
         </p>
 
         {/* ── Voice — full-width orb stage ── */}
@@ -616,26 +616,15 @@ export default function ChannelDemo() {
           </div>
         </div>
 
-        {/* ── WhatsApp — industry mockups ── */}
+        {/* ── WhatsApp — single mockup ── */}
         <div className="cd-channel-block">
           <div className="cd-channel-label">
             <span className="cd-channel-icon"><SiWhatsapp size={14} /></span>
             <span>WhatsApp</span>
           </div>
-          <div className="cd-sub-tabs cd-sub-tabs--center">
-            {WA_SUBS.map((sub) => (
-              <button
-                key={sub}
-                className={`cd-sub-tab${activeSub === sub ? ' cd-sub-tab--active' : ''}`}
-                onClick={() => setActiveSub(sub)}
-              >
-                {sub}
-              </button>
-            ))}
-          </div>
           <div className="cd-whatsapp-stage">
             <PhoneFrame>
-              <WaChat key={activeSub} msgs={currentMsgs} isActive industry={activeSub} />
+              <WaChat msgs={currentMsgs} isActive industry={industry} />
             </PhoneFrame>
           </div>
         </div>
