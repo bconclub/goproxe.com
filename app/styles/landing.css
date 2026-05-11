@@ -3709,10 +3709,11 @@ body:has(.proxe-root) {
   max-width: 400px;
 }
 
-/* ── Top: animation panel — fixed height so all 3 match ── */
+/* ── Top: animation panel — fixed height so all 3 match. Solid dark backdrop so
+       the colored card gradient fades inside and the animation content reads cleanly ── */
 .hiw-card-vis-wrap {
   position: relative;
-  background: rgba(0,0,0,0.35);
+  background: linear-gradient(180deg, rgba(8,6,24,0.85) 0%, rgba(12,9,32,0.92) 100%);
   border-bottom: 1px solid rgba(255,255,255,0.07);
   overflow: hidden;
   flex-shrink: 0;
@@ -5235,12 +5236,12 @@ body:has(.proxe-root) {
 }
 .cd-dial-btn:active { transform: scale(0.96); }
 
-/* Left channel nav (legacy linear nav — kept for fallback) */
+/* Left channel nav */
 .cd-nav {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  gap: 24px;
 }
 
 /* ── Rotating semicircle dial ── */
@@ -5325,22 +5326,25 @@ body:has(.proxe-root) {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
+  gap: 16px;
+  padding: 18px 22px;
   background: transparent;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   color: rgba(255,255,255,0.7);
   text-align: left;
   cursor: pointer;
   overflow: hidden;
   transform-origin: left center;
   will-change: transform, opacity;
+  min-height: 60px;
   transition:
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.cd-nav-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+.cd-nav-label { font-size: 15px; font-weight: 600; }
 .cd-nav-label {
   font-size: 14px;
   font-weight: 700;
@@ -5719,6 +5723,7 @@ body:has(.proxe-root) {
 .hiw-vis--react {
   gap: 8px;
   justify-content: flex-start !important;
+  padding-top: 12px !important;
 }
 .hiw-vis--react .hiw-react-chat { gap: 6px; }
 .hiw-vis--react .hiw-react-bub { padding: 7px 11px; font-size: 11px; }

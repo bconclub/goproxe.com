@@ -792,7 +792,7 @@ export default function ChannelDemo() {
             {CHANNELS.map(({ id, label, Icon }, idx) => {
               const total = CHANNELS.length;             // 5
               const centerSlot = (total - 1) / 2;        // 2
-              const ITEM_H = 76;
+              const ITEM_H = 100;
               const activeIdx = CHANNELS.findIndex(c => c.id === active);
               // Signed slot offset from active, wrapped into [-centerSlot..+centerSlot]
               let slotOff = idx - activeIdx;
