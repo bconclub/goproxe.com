@@ -330,11 +330,8 @@ export default function HowItWorks() {
               className={`hiw-card${vis ? ' hiw-in' : ''}`}
               style={{ transitionDelay: `${0.2 + i * 0.1}s`, background: CARD_ACCENTS[i].grad }}
             >
-              {/* Left: content */}
+              {/* Bottom: content */}
               <div className="hiw-card-content">
-                <div className="hiw-card-icon" style={{ color: CARD_ACCENTS[i].icon, background: `${CARD_ACCENTS[i].icon}18`, border: `1px solid ${CARD_ACCENTS[i].icon}30` }}>
-                  {ICONS[i]}
-                </div>
                 <h3 className="hiw-card-title">{title}</h3>
                 <p className="hiw-card-desc">{desc}</p>
               </div>
