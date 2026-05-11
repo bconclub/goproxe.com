@@ -5150,10 +5150,14 @@ body:has(.proxe-root) {
 ═════════════════════════════════════════════ */
 .cd-stage {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 32px;
+  grid-template-columns: 260px 540px;
+  gap: 60px;
   align-items: stretch;
   margin-top: 20px;
+  justify-content: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Left channel nav */
@@ -5175,7 +5179,13 @@ body:has(.proxe-root) {
   text-align: left;
   cursor: pointer;
   overflow: hidden;
-  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  transform-origin: left center;
+  transition:
+    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .cd-nav-label {
   font-size: 14px;
@@ -5206,7 +5216,6 @@ body:has(.proxe-root) {
   border-color: #A78BFA;
   color: #fff;
   box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 16px 40px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
-  transform: scale(1.06) translateX(4px);
   padding: 20px 22px;
 }
 .cd-nav-item--active .cd-nav-icon {

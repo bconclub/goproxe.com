@@ -758,16 +758,17 @@ export default function ChannelDemo() {
             {CHANNELS.map(({ id, label, Icon }, idx) => {
               const activeIdx = CHANNELS.findIndex(c => c.id === active);
               const dist = Math.abs(idx - activeIdx);
-              // Curve: active = bulge right, neighbours pull back left
-              const offsetX = dist === 0 ? 16 : dist === 1 ? 0 : -14;
-              const opacity = dist === 0 ? 1 : dist === 1 ? 0.85 : 0.55;
+              // Semi-circle: active bulges far right, neighbours arc back left
+              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.45 : 0.25;
+              const scale = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
               return (
                 <button
                   key={id}
                   className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
                   onClick={() => { setActive(id); setPaused(false); }}
                   style={{
-                    transform: `translateX(${offsetX}px)${active === id ? ' scale(1.06)' : ''}`,
+                    transform: `translateX(${offsetX}px) scale(${scale})`,
                     opacity,
                   }}
                 >
