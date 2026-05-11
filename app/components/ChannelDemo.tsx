@@ -44,15 +44,15 @@ const WA: Record<string, ConvMsg[]> = {
   ],
 
   'Real Estate': [
-    { from: 'lead',  text: 'Hi I saw your 4BHK listing in Whitefield. Still available?' },
-    { from: 'agent', text: 'Yes, available. 2400 sqft, fully furnished. 1.35 Cr negotiable.' },
-    { from: 'agent', type: 'carousel', noTyping: true, delay: 400,
+    { from: 'lead',  text: 'Hi, looking for a 3 or 4 BHK in Whitefield.' },
+    { from: 'agent', text: 'Got a few good options. Which budget are you looking at?' },
+    { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
       carousel: [
-        { title: 'Whitefield 4BHK', sub: '2400 sqft · 1.35 Cr · Furnished', btn: 'View Details', imgBg: 'linear-gradient(135deg, #4338ca, #7c3aed)', imgIcon: '🏠' },
-        { title: 'Marathahalli 3BHK', sub: '1850 sqft · 98L · Semi-furnished', btn: 'View Details', imgBg: 'linear-gradient(135deg, #0e7490, #06b6d4)', imgIcon: '🏢' },
-        { title: 'HSR Layout 3BHK', sub: '1620 sqft · 1.05 Cr · Modular', btn: 'View Details', imgBg: 'linear-gradient(135deg, #b91c1c, #f97316)', imgIcon: '🏡' },
+        { title: 'Whitefield 4BHK',  sub: '2400 sqft · 1.35 Cr · Furnished',      btn: 'View Details', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=240&fit=crop&q=80' },
+        { title: 'Whitefield 3BHK',  sub: '1850 sqft · 98L · Semi-furnished',     btn: 'View Details', img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&h=240&fit=crop&q=80' },
+        { title: 'Whitefield Villa', sub: '3600 sqft · 2.4 Cr · Premium gated',   btn: 'View Details', img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=240&fit=crop&q=80' },
       ] },
-    { from: 'lead',  text: 'Can I visit Saturday?', delay: 900 },
+    { from: 'lead',  text: 'The 3BHK looks great. Can I visit Saturday?', delay: 800 },
     { from: 'agent', text: 'Site visit confirmed. Saturday 11am. Our agent calls 30 mins before.' },
     { from: 'agent', type: 'qr', noTyping: true, qr: ['Confirm Saturday', 'Pick Another Day', 'Call Me Now'] },
   ],
@@ -197,19 +197,19 @@ function useConvPlayer(msgs: ConvMsg[], isActive: boolean) {
 
     function run() {
       setShown(0); setTyping(false);
-      let t = 400;
+      let t = 200;
       ts.push(setTimeout(() => { if (!stopped) setShown(1); }, t));
       for (let i = 0; i < msgs.length - 1; i++) {
-        t += msgs[i].delay ?? 1200;
+        t += (msgs[i].delay ?? 1200) / 2;
         const next = msgs[i + 1];
         if (next.from === 'agent' && !next.noTyping) {
           ts.push(setTimeout(() => { if (!stopped) setTyping(true); }, t));
-          t += 900;
+          t += 450;
         }
         const cnt = i + 2;
         ts.push(setTimeout(() => { if (!stopped) { setTyping(false); setShown(cnt); } }, t));
       }
-      t += (msgs[msgs.length - 1].delay ?? 1200) + 4000;
+      t += ((msgs[msgs.length - 1].delay ?? 1200) / 2) + 2000;
       ts.push(setTimeout(() => { if (!stopped) run(); }, t));
     }
     run();
@@ -278,9 +278,15 @@ function WaChat({ msgs, isActive, industry }: { msgs: ConvMsg[]; isActive: boole
               <div key={i} className="cd-wa-carousel conv-msg-in">
                 {(m.carousel ?? []).map((c, ci) => (
                   <div key={ci} className="cd-wa-caro-card">
-                    <div className="cd-wa-caro-img" style={{ background: c.imgBg ?? 'linear-gradient(135deg, #4338ca, #7c3aed)' }}>
-                      <span className="cd-wa-caro-img-icon">{c.imgIcon ?? '🏠'}</span>
-                    </div>
+                    {c.img ? (
+                      <div className="cd-wa-caro-img cd-wa-caro-img--photo">
+                        <img src={c.img} alt={c.title} loading="lazy" />
+                      </div>
+                    ) : (
+                      <div className="cd-wa-caro-img" style={{ background: c.imgBg ?? 'linear-gradient(135deg, #4338ca, #7c3aed)' }}>
+                        <span className="cd-wa-caro-img-icon">{c.imgIcon ?? '🏠'}</span>
+                      </div>
+                    )}
                     <div className="cd-wa-caro-body">
                       <div className="cd-wa-caro-title">{c.title}</div>
                       <div className="cd-wa-caro-sub">{c.sub}</div>

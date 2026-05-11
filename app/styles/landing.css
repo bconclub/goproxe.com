@@ -5285,6 +5285,11 @@ body:has(.proxe-root) {
   align-items: center;
   justify-content: center;
   font-size: 36px;
+  overflow: hidden;
+}
+.cd-wa-caro-img--photo { background: #e9edef; }
+.cd-wa-caro-img--photo img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .cd-wa-caro-img-icon {
   font-size: 38px;
