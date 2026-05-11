@@ -4217,6 +4217,17 @@ body:has(.proxe-root) {
   width: min(1100px, 92%);
 }
 
+/* Each slide slides in from the right when scrolled into view */
+.db2-slide {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.db2-slide--in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* ── Browser shell ── */
 .db2-browser {
   border-radius: 14px; overflow: hidden;

@@ -170,15 +170,16 @@ function ReactivateVis({ on }: { on: boolean }) {
     function loop() {
       setStep(0);
       setLoopKey(k => k + 1);
-      // step 1 @ 400ms  → typing indicator
-      // step 2 @ 1900ms → PROXe bubble (typing gone, 1.5s of typing)
-      // step 3 @ 3400ms → lead bubble + RESPONDED badge (1.5s pause)
-      // step 4 @ 3700ms → system label + score badge
-      // loop  @ 7200ms  (2s hold on final state)
-      [400, 1900, 3400, 3700].forEach((t, i) =>
+      // Fast buildup so card mostly shows the polished final state (no empty looks)
+      // step 1 @ 250ms  → typing indicator
+      // step 2 @ 700ms  → PROXe bubble
+      // step 3 @ 1200ms → lead bubble + RESPONDED badge
+      // step 4 @ 1500ms → system label + score badge
+      // loop  @ 6500ms  (5s hold on full final state)
+      [250, 700, 1200, 1500].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 7200));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 6500));
     }
     loop();
     return () => { dead = true; ts.forEach(clearTimeout); };

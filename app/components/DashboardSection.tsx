@@ -111,13 +111,35 @@ function StatCard({
 export default function DashboardSection() {
   const secRef = useRef<HTMLDivElement>(null);
   const carRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [vis, setVis] = useState(false);
+  const [revealedSlides, setRevealedSlides] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     const el = secRef.current; if (!el) return;
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.08 });
     io.observe(el);
     return () => io.disconnect();
+  }, []);
+
+  // Per-slide scroll reveal — each dashboard browser slides in when it enters viewport
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    slideRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const io = new IntersectionObserver(
+        ([e]) => {
+          if (e.isIntersecting) {
+            setRevealedSlides(prev => new Set(prev).add(i));
+            io.disconnect();
+          }
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+      );
+      io.observe(el);
+      observers.push(io);
+    });
+    return () => observers.forEach(o => o.disconnect());
   }, []);
 
   // Convert vertical wheel into horizontal scroll while pointer is over the carousel
@@ -152,7 +174,7 @@ export default function DashboardSection() {
         </p>
 
         <div ref={carRef} className={`db2-carousel${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s' }}>
-        <div className="db2-browser">
+        <div ref={el => { slideRefs.current[0] = el; }} className={`db2-browser db2-slide${revealedSlides.has(0) ? ' db2-slide--in' : ''}`}>
 
           {/* Chrome bar */}
           <div className="db2-chrome">
@@ -299,7 +321,7 @@ export default function DashboardSection() {
         </div>
 
         {/* ── Slide 2: Conversation inbox view ── */}
-        <div className="db2-browser">
+        <div ref={el => { slideRefs.current[1] = el; }} className={`db2-browser db2-slide${revealedSlides.has(1) ? ' db2-slide--in' : ''}`}>
           <div className="db2-chrome">
             <div className="db2-chrome-dots"><span /><span /><span /></div>
             <div className="db2-chrome-url">
