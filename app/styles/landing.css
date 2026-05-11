@@ -3600,9 +3600,10 @@ body:has(.proxe-root) {
 }
 
 .hiw-section .proxe-section-label {
-  color: #A78BFA;
-  background: rgba(167,139,250,0.1);
-  border-color: rgba(167,139,250,0.25);
+  color: rgba(167,139,250,0.8);
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .hiw-h2 {

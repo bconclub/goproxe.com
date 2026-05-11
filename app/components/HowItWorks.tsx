@@ -246,7 +246,7 @@ export default function HowItWorks() {
       <div className="proxe-container">
         <div className={`proxe-section-label hiw-center${vis ? ' hiw-in' : ''}`}>How It Works</div>
         <h2 className={`hiw-h2${vis ? ' hiw-in' : ''}`} style={{ transitionDelay: '0.08s' }}>
-          From first message to closed deal. Automatically.
+          Capture. Remember. Close. Repeat.
         </h2>
         <p className={`hiw-sub${vis ? ' hiw-in' : ''}`} style={{ transitionDelay: '0.14s' }}>
           PROXe captures every lead, remembers every conversation, and follows up until they close. No human required.
