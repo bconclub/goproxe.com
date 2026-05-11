@@ -7,6 +7,7 @@ import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
 import ChannelDemo from './ChannelDemo';
 import HowItWorks from './HowItWorks';
+import DashboardSection from './DashboardSection';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1289,6 +1290,9 @@ export default function ProxeLanding() {
 
       {/* ===== 7b. How It Works — animated feature cards ===== */}
       <HowItWorks />
+
+      {/* ===== 7c. Dashboard preview ===== */}
+      <DashboardSection />
 
       {/* ===== Voice demo — gradient orb "click to talk" (moved up to sit right after pillars) ===== */}
       <section className="proxe-section" id="voice">
