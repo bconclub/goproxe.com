@@ -4191,6 +4191,25 @@ body:has(.proxe-root) {
   line-height: 1.6; max-width: 520px; margin: 0 0 48px;
 }
 
+/* ── Horizontal carousel container ── */
+.db2-carousel {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: 8px 4px 28px;
+  margin: 0 -4px;
+}
+.db2-carousel::-webkit-scrollbar { height: 6px; }
+.db2-carousel::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.4); border-radius: 4px; }
+.db2-carousel > .db2-browser {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: min(1100px, 92%);
+}
+
 /* ── Browser shell ── */
 .db2-browser {
   border-radius: 14px; overflow: hidden;
@@ -4406,6 +4425,49 @@ body:has(.proxe-root) {
 .db2-activity-avatar--green { background: rgba(34,197,94,0.15); color: #4ade80; }
 .db2-activity-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.8); }
 .db2-activity-meta { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+/* ── Leads table view ── */
+.db2-leads { display: flex; flex-direction: column; gap: 14px; padding: 4px; }
+.db2-leads-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; gap: 16px; }
+.db2-leads-title { display: flex; align-items: center; gap: 16px; }
+.db2-leads-h { font-size: 16px; font-weight: 800; color: #fff; }
+.db2-leads-count { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 600; }
+.db2-leads-filters { display: flex; gap: 6px; margin-left: 12px; }
+.db2-leads-filter { font-size: 11px; padding: 4px 10px; border-radius: 6px; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); }
+.db2-leads-filter--active { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.18); }
+.db2-leads-tools { display: flex; gap: 8px; align-items: center; }
+.db2-leads-search { font-size: 11px; color: rgba(255,255,255,0.45); padding: 5px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; }
+.db2-leads-pill { font-size: 11px; padding: 5px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; color: rgba(255,255,255,0.7); }
+.db2-leads-export { font-size: 11px; padding: 5px 12px; background: rgba(124,58,237,0.25); border: 1px solid rgba(167,139,250,0.4); border-radius: 6px; color: #C4B5FD; font-weight: 600; }
+.db2-leads-table { display: flex; flex-direction: column; }
+.db2-leads-head, .db2-leads-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1.6fr 0.7fr 0.6fr 1fr 0.7fr 1.2fr;
+  gap: 12px;
+  padding: 10px 12px;
+  align-items: center;
+}
+.db2-leads-head {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.db2-leads-row {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 12px;
+}
+.db2-leads-name { font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.9); }
+.db2-leads-sub { font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.db2-leads-phone { font-size: 11.5px; color: rgba(255,255,255,0.85); }
+.db2-leads-email { font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.db2-leads-src, .db2-leads-stage { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; }
+.db2-leads-score { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.db2-leads-active { font-size: 11px; color: rgba(255,255,255,0.55); }
+.db2-leads-booking { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.db2-leads-dash { color: rgba(255,255,255,0.25); }
 
 /* ── Mobile: show desktop dashboard as a scaled-down thumbnail ── */
 @media (max-width: 900px) {
@@ -4938,8 +5000,13 @@ body:has(.proxe-root) {
   background: linear-gradient(135deg, #7C3AED, #5B21B6);
   border-color: #A78BFA;
   color: #fff;
-  box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 12px 32px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
-  transform: translateX(2px);
+  box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 16px 40px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  transform: scale(1.06) translateX(4px);
+  padding: 20px 22px;
+}
+.cd-nav-item--active .cd-nav-icon {
+  width: 42px;
+  height: 42px;
 }
 .cd-nav-icon {
   display: flex;
@@ -4969,12 +5036,8 @@ body:has(.proxe-root) {
   align-items: center;
   justify-content: center;
   min-height: 560px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 24px;
-  padding: 24px;
+  padding: 12px;
   position: relative;
-  overflow: hidden;
 }
 
 /* Voice orb stage */

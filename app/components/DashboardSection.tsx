@@ -131,7 +131,8 @@ export default function DashboardSection() {
           Always on screen. Every lead, every stage, every channel, tracked in real time.
         </p>
 
-        <div className={`db2-browser${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s' }}>
+        <div className={`db2-carousel${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s' }}>
+        <div className="db2-browser">
 
           {/* Chrome bar */}
           <div className="db2-chrome">
@@ -276,6 +277,99 @@ export default function DashboardSection() {
             </div>
           </div>
         </div>
+
+        {/* ── Slide 2: Leads table view ── */}
+        <div className="db2-browser">
+          <div className="db2-chrome">
+            <div className="db2-chrome-dots"><span /><span /><span /></div>
+            <div className="db2-chrome-url">
+              <span className="db2-chrome-lock">🔒</span>
+              app.proxe.ai/leads
+            </div>
+          </div>
+          <div className="db2-app">
+            <div className="db2-sidebar">
+              <div className="db2-sidebar-logo">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <circle cx="11" cy="11" r="10" stroke="#C8FF00" strokeWidth="2" />
+                  <circle cx="11" cy="11" r="5" fill="#C8FF00" />
+                </svg>
+              </div>
+              <div className="db2-sidebar-icons">
+                {['⊞','⬜','👤','▤','📅','〜','↗','💬','📖','⚙'].map((ic, i) => (
+                  <div key={i} className={`db2-sidebar-ico${i === 2 ? ' db2-sidebar-ico--active' : ''}`}>{ic}</div>
+                ))}
+              </div>
+            </div>
+            <div className="db2-main">
+              <div className="db2-leads">
+                <div className="db2-leads-toolbar">
+                  <div className="db2-leads-title">
+                    <span className="db2-leads-h">Leads</span>
+                    <span className="db2-leads-count">50 / 127</span>
+                    <div className="db2-leads-filters">
+                      {['All','50+','70+','Hot'].map((f, i) => (
+                        <span key={f} className={`db2-leads-filter${i === 0 ? ' db2-leads-filter--active' : ''}`}>{f}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="db2-leads-tools">
+                    <span className="db2-leads-search">🔍 Search leads...</span>
+                    <span className="db2-leads-pill">All time</span>
+                    <span className="db2-leads-pill">All sources</span>
+                    <span className="db2-leads-pill">All statuses</span>
+                    <span className="db2-leads-pill">50</span>
+                    <span className="db2-leads-export">Export</span>
+                  </div>
+                </div>
+                <div className="db2-leads-table">
+                  <div className="db2-leads-head">
+                    <span>Lead</span><span>Contact</span><span>Source</span><span>Score</span><span>Stage</span><span>Active</span><span>Booking</span>
+                  </div>
+                  {[
+                    { name: 'Md Mehran alam',  sub: '', phone: '91423354449',  email: 'mdmehranalam8051@gmail.com',  src: 'WEB',   srcC: '#3B82F6', score: 16, sc: '#ef4444', stage: 'NEW',         stC: '#9CA3AF', active: '10d ago', booking: null },
+                    { name: 'Thanzeel Ashruf', sub: '', phone: '09353253817',  email: 'bconclubx@gmail.com',         src: 'VOICE', srcC: '#A78BFA', score: 54, sc: '#F59E0B', stage: 'QUALIFIED',   stC: '#A78BFA', active: '25d ago', booking: null },
+                    { name: 'Wasiullah Zaffari',sub: 'Design Lyf Realty & Interiors · Bangalore', phone: '919742291417', email: 'wasi.zaffari@gmail.com', src: 'WA', srcC: '#22c55e', score: 50, sc: '#F59E0B', stage: 'QUALIFIED', stC: '#A78BFA', active: '27d ago', booking: 'Mar 9, 3:00 PM' },
+                    { name: 'Rachna Agarwal',  sub: '', phone: '919886508731', email: '',                            src: 'WA',    srcC: '#22c55e', score: 19, sc: '#ef4444', stage: 'IN SEQUENCE', stC: '#3B82F6', active: '1mo ago', booking: null },
+                    { name: 'Prityush',        sub: 'PROXe Platform', phone: '9876549875', email: 'prat@yush.com',   src: 'WEB',   srcC: '#3B82F6', score: 26, sc: '#ef4444', stage: 'QUALIFIED',   stC: '#A78BFA', active: '1mo ago', booking: null },
+                    { name: 'PREM GUNAKI',     sub: 'Sangam Tea · Belgaavi', phone: '917899311815', email: 'premgunaki1995@gmail.com', src: 'WA', srcC: '#22c55e', score: 48, sc: '#F59E0B', stage: 'QUALIFIED', stC: '#A78BFA', active: '1mo ago', booking: null },
+                    { name: 'world of home decor', sub: 'World of Home Decor', phone: '919346792544', email: '', src: 'WA', srcC: '#22c55e', score: 59, sc: '#F59E0B', stage: 'QUALIFIED', stC: '#A78BFA', active: '1mo ago', booking: null },
+                    { name: 'WORK PLANET',     sub: '', phone: '919187074400', email: '', src: 'WA', srcC: '#22c55e', score: 64, sc: '#F59E0B', stage: 'IN SEQUENCE', stC: '#3B82F6', active: '1mo ago', booking: 'Mar 4, 10:00 AM' },
+                    { name: 'Savari Holidays', sub: '', phone: '919972537722', email: '', src: 'WA', srcC: '#22c55e', score: 56, sc: '#F59E0B', stage: 'HIGH INTENT', stC: '#f97316', active: '1mo ago', booking: 'Mar 4, 11:00 AM' },
+                  ].map((row, i) => (
+                    <div key={i} className="db2-leads-row">
+                      <div className="db2-leads-cell">
+                        <div className="db2-leads-name">{row.name}</div>
+                        {row.sub && <div className="db2-leads-sub">{row.sub}</div>}
+                      </div>
+                      <div className="db2-leads-cell">
+                        <div className="db2-leads-phone">{row.phone}</div>
+                        {row.email && <div className="db2-leads-email">{row.email}</div>}
+                      </div>
+                      <div className="db2-leads-cell">
+                        <span className="db2-leads-src" style={{ color: row.srcC, background: `${row.srcC}22`, border: `1px solid ${row.srcC}55` }}>{row.src}</span>
+                      </div>
+                      <div className="db2-leads-cell">
+                        <span className="db2-leads-score" style={{ color: row.sc, background: `${row.sc}18`, border: `1px solid ${row.sc}55` }}>{row.score}</span>
+                      </div>
+                      <div className="db2-leads-cell">
+                        <span className="db2-leads-stage" style={{ color: row.stC, background: `${row.stC}18`, border: `1px solid ${row.stC}55` }}>{row.stage}</span>
+                      </div>
+                      <div className="db2-leads-cell db2-leads-active">{row.active}</div>
+                      <div className="db2-leads-cell">
+                        {row.booking ? (
+                          <span className="db2-leads-booking">📅 {row.booking}</span>
+                        ) : <span className="db2-leads-dash">—</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div>{/* end db2-carousel */}
       </div>
     </section>
   );
