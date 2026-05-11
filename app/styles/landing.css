@@ -3731,6 +3731,13 @@ body:has(.proxe-root) {
   padding: 20px 24px;
 }
 
+/* Card 3 (lead reactivation) — top-align so the header sits right under
+   the RESPONDED badge instead of floating in the middle. */
+.hiw-vis--react {
+  justify-content: flex-start;
+  padding-top: 48px;
+}
+
 .hiw-dotgrid {
   position: absolute;
   inset: 0;
