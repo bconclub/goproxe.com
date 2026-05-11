@@ -5543,7 +5543,6 @@ body:has(.proxe-root) {
 .hiw-vis--react {
   gap: 8px;
   justify-content: flex-start !important;
-  padding-top: 32px !important;
 }
 .hiw-vis--react .hiw-react-chat { gap: 6px; }
 .hiw-vis--react .hiw-react-bub { padding: 7px 11px; font-size: 11px; }
