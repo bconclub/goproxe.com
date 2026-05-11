@@ -777,7 +777,7 @@ export default function ChannelDemo() {
         </p>
 
         <div className="cd-stage">
-          {/* ── Left: fixed semi-circle channel nav (positions never move) ── */}
+          {/* ── Left: rotating semicircle (slots are fixed, channels rotate through them) ── */}
           <nav
             className="cd-nav"
             aria-label="Channels"
@@ -785,20 +785,31 @@ export default function ChannelDemo() {
             onMouseLeave={() => setPaused(false)}
           >
             {CHANNELS.map(({ id, label, Icon }, idx) => {
-              const total = CHANNELS.length;
-              const centerIdx = (total - 1) / 2;
-              const distFromCenter = Math.abs(idx - centerIdx);
-              const offsetX = distFromCenter === 0 ? 60 : distFromCenter === 1 ? 10 : -40;
-              const scale   = distFromCenter === 0 ? 1.08 : distFromCenter === 1 ? 0.96 : 0.86;
+              const total = CHANNELS.length;             // 5
+              const centerSlot = (total - 1) / 2;        // 2
+              const ITEM_H = 76;
+              const activeIdx = CHANNELS.findIndex(c => c.id === active);
+              // Signed slot offset from active, wrapped into [-centerSlot..+centerSlot]
+              let slotOff = idx - activeIdx;
+              if (slotOff > centerSlot)  slotOff -= total;
+              if (slotOff < -centerSlot) slotOff += total;
+              const targetSlot = slotOff + centerSlot;   // 0..4
+              // Y shift: move from natural row (idx) into target slot row
+              const offsetY = (targetSlot - idx) * ITEM_H;
+              // X curve: slot 2 (center) bulges out; others arc back
+              const slotX  = [-40, 10, 60, 10, -40];
+              const slotS  = [0.86, 0.96, 1.08, 0.96, 0.86];
+              const offsetX = slotX[targetSlot];
+              const scale   = slotS[targetSlot];
               const isActive = active === id;
-              const opacity = isActive ? 1 : 0.35;
+              const opacity = isActive ? 1 : 0.45;
               return (
                 <button
                   key={id}
                   className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
                   onClick={() => { setActive(id); setPaused(false); }}
                   style={{
-                    transform: `translateX(${offsetX}px) scale(${scale})`,
+                    transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
                     opacity,
                   }}
                 >
