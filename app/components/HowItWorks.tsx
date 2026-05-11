@@ -314,7 +314,7 @@ export default function HowItWorks() {
       Vis: MemoryVis,
     },
     {
-      title: 'Gone quiet? PROXe keeps knocking.',
+      title: 'Never Let a Lead Go Cold.',
       desc: 'Most leads just need one more nudge. PROXe sends it automatically across WhatsApp, email, and SMS until they respond.',
       Vis: ReactivateVis,
     },
