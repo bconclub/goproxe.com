@@ -4250,16 +4250,24 @@ body:has(.proxe-root) {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
 .db2-gauge {
-  position: relative; width: 90px; height: 90px;
+  position: relative; width: 96px; height: 96px;
   display: flex; align-items: center; justify-content: center;
 }
 .db2-gauge svg { position: absolute; inset: 0; }
+.db2-gauge-center {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
 .db2-gauge-val {
-  position: relative; font-size: 15px; font-weight: 800;
+  font-size: 16px; font-weight: 800;
   text-align: center; line-height: 1;
 }
+.db2-gauge-sub {
+  font-size: 9px; font-weight: 600; opacity: 0.7;
+  text-align: center; letter-spacing: 0.04em;
+}
 .db2-gauge-label {
-  font-size: 10px; color: rgba(255,255,255,0.45); text-align: center;
+  font-size: 10px; color: rgba(255,255,255,0.45); text-align: center; max-width: 90px;
 }
 
 /* ── Stat cards row ── */
@@ -4279,15 +4287,18 @@ body:has(.proxe-root) {
 .db2-stat-header {
   display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
 }
-.db2-stat-title { font-size: 12px; font-weight: 600; }
-.db2-stat-val   { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; }
-.db2-stat-sub   { font-size: 11px; margin-bottom: 10px; }
-.db2-stat-bar-track {
-  height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; margin-bottom: 10px;
+.db2-stat-title { font-size: 12px; font-weight: 600; flex: 1; }
+.db2-stat-trend {
+  font-size: 9px; font-weight: 700; padding: 2px 6px;
+  border-radius: 5px; letter-spacing: 0.04em; flex-shrink: 0;
 }
-.db2-stat-bar-fill { height: 100%; border-radius: 1px; }
+.db2-stat-val { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; }
+.db2-stat-sub { font-size: 11px; margin-bottom: 2px; }
+.db2-stat-spark {
+  margin: 4px 0 6px; overflow: hidden;
+}
 .db2-stat-footer {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; margin-top: 2px;
 }
 .db2-stat-view  { font-size: 11px; font-weight: 600; cursor: pointer; }
 .db2-stat-tabs  { display: flex; gap: 4px; }
