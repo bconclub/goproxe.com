@@ -233,7 +233,7 @@ function ReactivateVis({ on }: { on: boolean }) {
           }}
         >
           <div className="hiw-react-bub hiw-react-bub--proxe">
-            Hey Rahul, just checking in — you had asked about a 3BHK in Whitefield last week. Still looking?
+            Hey Rahul, just checking in. You asked about a 3BHK in Whitefield last week. Still looking?
           </div>
           <div className="hiw-react-meta">Sent via WhatsApp · Day 4 of follow-up sequence</div>
         </div>

@@ -297,39 +297,44 @@ function useConversationPlayer(msgs: ConvMsg[], isActive: boolean) {
 /* ===== Industries (scrolling showcase) ===== */
 const INDUSTRIES = [
   {
-    name: 'Beauty',
-    leftImg: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=360&h=500&fit=crop&q=80',
+    name: 'Real Estate',
+    leftImg:  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1582407947304-fd86f28f1cd7?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Wellness',
-    leftImg: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=360&h=500&fit=crop&q=80',
+    name: 'Healthcare',
+    leftImg:  'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Medspa',
-    leftImg: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=360&h=500&fit=crop&q=80',
+    name: 'Education',
+    leftImg:  'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Health',
-    leftImg: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=360&h=500&fit=crop&q=80',
+    name: 'Coaching',
+    leftImg:  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Fitness',
-    leftImg: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=360&h=500&fit=crop&q=80',
+    name: 'Travel',
+    leftImg:  'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Self-Care',
-    leftImg: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=360&h=500&fit=crop&q=80',
+    name: 'Weddings',
+    leftImg:  'https://images.unsplash.com/photo-1519741497674-611481863552?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=360&h=500&fit=crop&q=80',
   },
   {
-    name: 'Services',
-    leftImg: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=420&h=580&fit=crop&q=80',
-    rightImg: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=360&h=500&fit=crop&q=80',
+    name: 'Car Sales',
+    leftImg:  'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=360&h=500&fit=crop&q=80',
+  },
+  {
+    name: 'Immigration',
+    leftImg:  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=420&h=580&fit=crop&q=80',
+    rightImg: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=360&h=500&fit=crop&q=80',
   },
 ];
 
