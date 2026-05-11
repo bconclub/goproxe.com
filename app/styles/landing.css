@@ -4174,13 +4174,41 @@ body:has(.proxe-root) {
 ═══════════════════════════════════════════════════════════════ */
 
 /* scroll-reveal */
-.db2-label, .db2-h2, .db2-sub, .db2-carousel {
+.db2-label, .db2-h2, .db2-sub, .db2-carousel-wrap {
   opacity: 0; transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.db2-label.db2-in, .db2-h2.db2-in, .db2-sub.db2-in, .db2-carousel.db2-in {
+.db2-label.db2-in, .db2-h2.db2-in, .db2-sub.db2-in, .db2-carousel-wrap.db2-in {
   opacity: 1; transform: translateY(0);
 }
+
+/* Dashboard carousel arrows */
+.db2-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(124,58,237,0.4);
+  border: 1px solid rgba(167,139,250,0.5);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 400;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 24px rgba(124,58,237,0.4);
+  transition: background 0.2s, transform 0.2s;
+}
+.db2-carousel-arrow:hover {
+  background: rgba(124,58,237,0.65);
+  transform: translateY(-50%) scale(1.06);
+}
+.db2-carousel-arrow--prev { left: 12px; }
+.db2-carousel-arrow--next { right: 12px; }
 
 .db2-section { background: transparent; padding: 90px 0 100px; overflow: hidden; }
 
@@ -5845,7 +5873,7 @@ body:has(.proxe-root) {
   flex-shrink: 0;
 }
 .cd-ig-back { color: rgba(255,255,255,0.8); display: flex; align-items: center; cursor: pointer; }
-.cd-ig-hdr-av { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #7C3AED, #4F46E5); flex-shrink: 0; padding: 4px; }
+.cd-ig-hdr-av { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); flex-shrink: 0; }
 .cd-ig-hdr-av img { width: 100%; height: 100%; object-fit: contain; }
 
 /* Instagram quick reply pills */

@@ -469,7 +469,7 @@ function IgChat({ isActive }: { isActive: boolean }) {
       <div className="cd-ig-hdr">
         <span className="cd-ig-back"><FiChevronLeft size={16} /></span>
         <div className="cd-ig-hdr-av">
-          <img src="/proxe/brand/proxe-icon-white.webp" alt="PROXe" width={28} height={28} />
+          <SiInstagram size={18} color="#fff" />
         </div>
         <div className="cd-ig-hdr-info">
           <span className="cd-ig-hdr-name">Coaching PROXe</span>

@@ -173,7 +173,18 @@ export default function DashboardSection() {
           Always on screen. Every lead, every stage, every channel, tracked in real time.
         </p>
 
-        <div ref={carRef} className={`db2-carousel${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s' }}>
+        <div className={`db2-carousel-wrap${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s', position: 'relative' }}>
+        <button
+          className="db2-carousel-arrow db2-carousel-arrow--prev"
+          aria-label="Previous"
+          onClick={() => carRef.current?.scrollBy({ left: -carRef.current.clientWidth, behavior: 'smooth' })}
+        >‹</button>
+        <button
+          className="db2-carousel-arrow db2-carousel-arrow--next"
+          aria-label="Next"
+          onClick={() => carRef.current?.scrollBy({ left: carRef.current.clientWidth, behavior: 'smooth' })}
+        >›</button>
+        <div ref={carRef} className="db2-carousel">
         <div ref={el => { slideRefs.current[0] = el; }} className={`db2-browser db2-slide${revealedSlides.has(0) ? ' db2-slide--in' : ''}`}>
 
           {/* Chrome bar */}
@@ -477,6 +488,7 @@ export default function DashboardSection() {
         </div>
 
         </div>{/* end db2-carousel */}
+        </div>{/* end db2-carousel-wrap */}
       </div>
     </section>
   );
