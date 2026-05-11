@@ -596,16 +596,12 @@ export default function ChannelDemo() {
   const industry = 'Real Estate';
   const currentMsgs = WA[industry];
 
-  const SLIDES = [
-    { id: 'voice',    label: 'Voice',    Icon: FiPhone },
-    { id: 'whatsapp', label: 'WhatsApp', Icon: SiWhatsapp },
+  const CHANNELS = [
+    { id: 'voice',    label: 'Voice',    desc: 'Hear it answer live',  Icon: FiPhone },
+    { id: 'whatsapp', label: 'WhatsApp', desc: 'Real Estate playbook', Icon: SiWhatsapp },
   ];
 
-  const [active, setActive] = useState(0);
-  const total = SLIDES.length;
-
-  const goPrev = () => setActive((a) => (a - 1 + total) % total);
-  const goNext = () => setActive((a) => (a + 1) % total);
+  const [active, setActive] = useState('voice');
 
   return (
     <section className="cd-section" id="voice">
@@ -613,62 +609,42 @@ export default function ChannelDemo() {
         <div className="proxe-section-label" style={{ textAlign: 'center' }}>PROXe in Action</div>
         <h2 className="cd-headline">See PROXe in action.</h2>
         <p className="cd-sub">
-          One AI brain. Every channel. Slide through to see PROXe live.
+          One AI brain. Every channel. Pick a channel to see it live.
         </p>
-      </div>
 
-      {/* ── Full-width slider ── */}
-      <div className="cd-slider">
-        <div
-          className="cd-slider-track"
-          style={{ transform: `translateX(-${active * 100}%)` }}
-        >
-          {/* Slide 1: Voice */}
-          <div className="cd-slide">
-            <div className="cd-slide-label">
-              <span className="cd-channel-icon"><FiPhone size={14} /></span>
-              <span>Voice</span>
-            </div>
-            <div className="cd-voice-stage">
-              <VapiOrb />
-            </div>
+        <div className="cd-stage">
+          {/* ── Left: channel nav ── */}
+          <nav className="cd-nav" aria-label="Channels">
+            {CHANNELS.map(({ id, label, desc, Icon }) => (
+              <button
+                key={id}
+                className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
+                onClick={() => setActive(id)}
+              >
+                <span className="cd-nav-icon"><Icon size={20} /></span>
+                <span className="cd-nav-text">
+                  <span className="cd-nav-label">{label}</span>
+                  <span className="cd-nav-desc">{desc}</span>
+                </span>
+              </button>
+            ))}
+          </nav>
+
+          {/* ── Right: active channel preview ── */}
+          <div className="cd-preview">
+            {active === 'voice' && (
+              <div className="cd-voice-stage" key="voice">
+                <VapiOrb />
+              </div>
+            )}
+            {active === 'whatsapp' && (
+              <div className="cd-whatsapp-stage" key="whatsapp">
+                <PhoneFrame>
+                  <WaChat msgs={currentMsgs} isActive industry={industry} />
+                </PhoneFrame>
+              </div>
+            )}
           </div>
-
-          {/* Slide 2: WhatsApp */}
-          <div className="cd-slide">
-            <div className="cd-slide-label">
-              <span className="cd-channel-icon"><SiWhatsapp size={14} /></span>
-              <span>WhatsApp</span>
-            </div>
-            <div className="cd-whatsapp-stage">
-              <PhoneFrame>
-                <WaChat msgs={currentMsgs} isActive={active === 1} industry={industry} />
-              </PhoneFrame>
-            </div>
-          </div>
-        </div>
-
-        {/* Arrows */}
-        <button className="cd-slider-arrow cd-slider-arrow--prev" onClick={goPrev} aria-label="Previous">
-          <FiChevronLeft size={22} />
-        </button>
-        <button className="cd-slider-arrow cd-slider-arrow--next" onClick={goNext} aria-label="Next">
-          <FiChevronLeft size={22} style={{ transform: 'rotate(180deg)' }} />
-        </button>
-
-        {/* Dot indicators */}
-        <div className="cd-slider-dots">
-          {SLIDES.map((s, i) => (
-            <button
-              key={s.id}
-              className={`cd-slider-dot${i === active ? ' cd-slider-dot--active' : ''}`}
-              onClick={() => setActive(i)}
-              aria-label={`Show ${s.label}`}
-            >
-              <s.Icon size={12} />
-              <span>{s.label}</span>
-            </button>
-          ))}
         </div>
       </div>
     </section>
