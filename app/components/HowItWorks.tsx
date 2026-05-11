@@ -200,18 +200,6 @@ function ReactivateVis({ on }: { on: boolean }) {
         ✓ RESPONDED
       </div>
 
-      {/* Lead header pill */}
-      <div className="hiw-react-header">
-        <div className="hiw-react-avatar">R</div>
-        <div className="hiw-react-info">
-          <span className="hiw-react-name">Rahul S.</span>
-          <span className="hiw-react-status">
-            <span className="hiw-react-dot" />
-            Last seen 3 days ago
-          </span>
-        </div>
-      </div>
-
       {/* Chat area */}
       <div className="hiw-react-chat">
         {/* Typing indicator */}
