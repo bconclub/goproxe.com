@@ -4869,6 +4869,19 @@ body:has(.proxe-root) {
   align-items: center;
 }
 
+/* ── Voice stage (orb, no phone) ── */
+.cd-voice-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 480px;
+  background: rgba(124,58,237,0.06);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
 /* ── WhatsApp sub-tabs ── */
 .cd-sub-tabs {
   display: flex;

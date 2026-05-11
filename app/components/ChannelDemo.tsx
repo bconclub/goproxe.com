@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { SiWhatsapp, SiInstagram, SiMessenger } from 'react-icons/si';
 import { FiPhone, FiGlobe, FiCheck, FiCalendar, FiChevronLeft } from 'react-icons/fi';
+import VapiOrb from './VapiOrb';
 
 /* ═══════════════════════════════════════════════════════════════
    TYPES
@@ -582,11 +583,8 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
    CHANNEL TABS
 ═══════════════════════════════════════════════════════════════ */
 const TABS = [
-  { id: 'whatsapp',  label: 'WhatsApp',  Icon: SiWhatsapp },
-  { id: 'voice',     label: 'Voice',     Icon: FiPhone },
-  { id: 'instagram', label: 'Instagram', Icon: SiInstagram },
-  { id: 'messenger', label: 'Messenger', Icon: SiMessenger },
-  { id: 'web',       label: 'Web',       Icon: FiGlobe },
+  { id: 'voice',    label: 'Voice',    Icon: FiPhone },
+  { id: 'whatsapp', label: 'WhatsApp', Icon: SiWhatsapp },
 ];
 
 const WA_SUBS = Object.keys(WA);
@@ -595,7 +593,7 @@ const WA_SUBS = Object.keys(WA);
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════ */
 export default function ChannelDemo() {
-  const [activeChannel, setActiveChannel] = useState('whatsapp');
+  const [activeChannel, setActiveChannel] = useState('voice');
   const [activeSub, setActiveSub] = useState(WA_SUBS[0]);
 
   const handleChannelChange = (id: string) => {
@@ -628,7 +626,7 @@ export default function ChannelDemo() {
             ))}
           </div>
 
-          {/* ── Right: sub-tabs + phone ── */}
+          {/* ── Right: content panel ── */}
           <div className="cd-right">
             {/* WhatsApp industry sub-tabs */}
             {activeChannel === 'whatsapp' && (
@@ -645,13 +643,19 @@ export default function ChannelDemo() {
               </div>
             )}
 
-            <PhoneFrame>
-              {activeChannel === 'whatsapp'  && <WaChat key={activeSub} msgs={currentMsgs} isActive industry={activeSub} />}
-              {activeChannel === 'voice'     && <VoiceDemo isActive />}
-              {activeChannel === 'instagram' && <IgChat isActive />}
-              {activeChannel === 'messenger' && <MsnChat isActive />}
-              {activeChannel === 'web'       && <WebWidget isActive />}
-            </PhoneFrame>
+            {/* Voice — show the orb blob, no phone frame */}
+            {activeChannel === 'voice' && (
+              <div className="cd-voice-stage">
+                <VapiOrb />
+              </div>
+            )}
+
+            {/* WhatsApp — phone frame with industry chat */}
+            {activeChannel === 'whatsapp' && (
+              <PhoneFrame>
+                <WaChat key={activeSub} msgs={currentMsgs} isActive industry={activeSub} />
+              </PhoneFrame>
+            )}
           </div>
         </div>
       </div>
