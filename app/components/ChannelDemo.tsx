@@ -785,31 +785,22 @@ export default function ChannelDemo() {
             onMouseLeave={() => setPaused(false)}
           >
             {CHANNELS.map(({ id, label, Icon }, idx) => {
-              // The CURVE/CIRCLE shape is fixed in space (5 permanent slots).
-              // Channels rotate through slots so the active channel is always in the center slot.
+              // FIXED positions by INDEX — items never move up/down.
+              // The curve shape is permanent; active state only changes opacity highlight.
               const total = CHANNELS.length;
-              const centerSlot = (total - 1) / 2;                    // 2 for 5 items
-              const activeIdx = CHANNELS.findIndex(c => c.id === active);
-              const ITEM_H = 76;
-              // signed slot offset from center, wrapped to [-2..+2]
-              let slotOffset = idx - activeIdx;
-              if (slotOffset > centerSlot) slotOffset -= total;
-              if (slotOffset < -centerSlot) slotOffset += total;
-              const targetSlot = centerSlot + slotOffset;            // 0..4
-              const offsetY = (targetSlot - idx) * ITEM_H;
-              // translateX (curve) is determined by the SLOT, not the channel index
-              const distFromCenter = Math.abs(slotOffset);
+              const centerIdx = (total - 1) / 2;
+              const distFromCenter = Math.abs(idx - centerIdx);
               const offsetX = distFromCenter === 0 ? 60 : distFromCenter === 1 ? 10 : -40;
               const scale   = distFromCenter === 0 ? 1.08 : distFromCenter === 1 ? 0.96 : 0.86;
               const isActive = active === id;
-              const opacity = distFromCenter === 0 ? 1 : distFromCenter === 1 ? 0.7 : 0.4;
+              const opacity = isActive ? 1 : 0.35;
                   return (
                     <button
                       key={id}
                       className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
                       onClick={() => { setActive(id); setPaused(false); }}
                       style={{
-                        transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
+                        transform: `translateX(${offsetX}px) scale(${scale})`,
                         opacity,
                       }}
                     >
