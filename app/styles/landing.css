@@ -3978,10 +3978,15 @@ body:has(.proxe-root) {
 
 @media (max-width: 900px) {
   .hiw-grid { grid-template-columns: 1fr; max-width: 100%; margin: 0 auto; }
-  .hiw-card { min-height: unset; }
-  .hiw-card-top { height: 280px; }
-  .hiw-grid > article:nth-child(3) .hiw-card-top { height: 300px; }
+  .hiw-card { min-height: unset; width: 100%; }
+  .hiw-card-top { height: 320px; }
+  .hiw-grid > article:nth-child(3) .hiw-card-top { height: 340px; }
   .hiw-card-bot { padding: 24px; text-align: left; }
+  .hiw-vis { padding: 20px 20px; gap: 10px; }
+  .hiw-score-wrap { margin-top: 10px; min-height: 68px; gap: 6px; }
+  .hiw-score-tags { min-height: 32px; gap: 5px; }
+  .hiw-score-tag { font-size: 9px; padding: 2px 7px; }
+  .hiw-score-badge { font-size: 9px; padding: 2px 6px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
