@@ -180,11 +180,11 @@ const WEB: ConvMsg[] = [
   { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
     carousel: [
       { title: '2-Year Foundation', sub: 'Class 11+12 · ₹95K/yr · Hybrid', btn: 'View',
-        img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=240&fit=crop&q=80' },
+        img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&h=240&fit=crop&q=80' },
       { title: 'JEE Crash Course',  sub: '6 months · ₹65K · Online',       btn: 'View',
-        img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=240&fit=crop&q=80' },
+        img: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=240&fit=crop&q=80' },
       { title: 'Weekend Mentorship',sub: 'Saturdays · ₹40K/yr · Hybrid',   btn: 'View',
-        img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=240&fit=crop&q=80' },
+        img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop&q=80' },
     ] },
   { from: 'lead',  text: 'Foundation looks great. Can we visit?', delay: 1200 },
   { from: 'agent', text: 'Of course. Pick a date for a campus tour.' },
@@ -769,13 +769,14 @@ export default function ChannelDemo() {
           {/* ── Left: curved channel nav ── */}
           <nav className="cd-nav" aria-label="Channels" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
             {CHANNELS.map(({ id, label, Icon }, idx) => {
-              // Fixed semicircle by INDEX (does not change when active changes)
-              const total = CHANNELS.length;
-              const mid = (total - 1) / 2;            // 2 for 5 items
-              const distFromMid = Math.abs(idx - mid); // 2,1,0,1,2
-              const offsetX = distFromMid === 0 ? 60 : distFromMid === 1 ? 30 : -10;
-              const scale = distFromMid === 0 ? 1.08 : distFromMid === 1 ? 0.96 : 0.88;
-              const opacity = distFromMid === 0 ? 1 : distFromMid === 1 ? 0.78 : 0.5;
+              // Curve shape stays identical; active always sits in the center bulged slot
+              const activeIdx = CHANNELS.findIndex(c => c.id === active);
+              const dist = Math.abs(idx - activeIdx);
+              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : -10;
+              const scale   = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : 0.5;
+              // translateY shifts the whole list so the active item is at vertical center
+              const offsetY = (activeIdx - idx) * 0; // items stay at their natural Y positions
               const isActive = active === id;
               return (
                 <button
@@ -783,7 +784,7 @@ export default function ChannelDemo() {
                   className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
                   onClick={() => { setActive(id); setPaused(false); }}
                   style={{
-                    transform: `translateX(${offsetX}px) scale(${scale})`,
+                    transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
                     opacity,
                   }}
                 >
