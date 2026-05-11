@@ -304,7 +304,7 @@ export default function HowItWorks() {
 
   const CARDS: CardSpec[] = [
     {
-      title: 'Every lead. Every channel. Real time.',
+      title: 'Every lead. Every channel.',
       desc: 'The moment someone messages on WhatsApp, visits your website, calls, or DMs on Instagram, PROXe captures them instantly. Lead scored and logged before you blink.',
       Vis: CaptureVis,
     },
