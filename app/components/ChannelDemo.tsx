@@ -242,6 +242,13 @@ function WaChat({ msgs, isActive, industry }: { msgs: ConvMsg[]; isActive: boole
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [shown, typing]);
 
+  // Preload carousel images once so they stay in cache across loop restarts (no flicker)
+  useEffect(() => {
+    const urls = new Set<string>();
+    msgs.forEach(m => m.carousel?.forEach(c => c.img && urls.add(c.img)));
+    urls.forEach(u => { const img = new Image(); img.src = u; });
+  }, [msgs]);
+
   const visible = msgs.slice(0, shown);
 
   return (
@@ -615,14 +622,27 @@ export default function ChannelDemo() {
   const currentMsgs = WA[industry];
 
   const CHANNELS = [
-    { id: 'voice',     label: 'Voice',     desc: 'Hear it answer live',     Icon: FiPhone },
-    { id: 'whatsapp',  label: 'WhatsApp',  desc: 'Real Estate playbook',    Icon: SiWhatsapp },
-    { id: 'instagram', label: 'Instagram', desc: 'DM replies + bookings',   Icon: SiInstagram },
-    { id: 'messenger', label: 'Messenger', desc: 'Lead capture on FB',      Icon: SiMessenger },
-    { id: 'web',       label: 'Web Chat',  desc: 'Site widget, 24/7',       Icon: FiGlobe },
+    { id: 'voice',     label: 'Voice',     Icon: FiPhone },
+    { id: 'whatsapp',  label: 'WhatsApp',  Icon: SiWhatsapp },
+    { id: 'instagram', label: 'Instagram', Icon: SiInstagram },
+    { id: 'messenger', label: 'Messenger', Icon: SiMessenger },
+    { id: 'web',       label: 'Web Chat',  Icon: FiGlobe },
   ];
 
   const [active, setActive] = useState('voice');
+  const [paused, setPaused] = useState(false);
+  const SLIDE_MS = 7000;
+
+  // Auto-advance through channels with a timer
+  useEffect(() => {
+    if (paused) return;
+    const t = setTimeout(() => {
+      const idx = CHANNELS.findIndex(c => c.id === active);
+      const next = CHANNELS[(idx + 1) % CHANNELS.length];
+      setActive(next.id);
+    }, SLIDE_MS);
+    return () => clearTimeout(t);
+  }, [active, paused]);
 
   return (
     <section className="cd-section" id="voice">
@@ -635,18 +655,22 @@ export default function ChannelDemo() {
 
         <div className="cd-stage">
           {/* ── Left: channel nav ── */}
-          <nav className="cd-nav" aria-label="Channels">
-            {CHANNELS.map(({ id, label, desc, Icon }) => (
+          <nav className="cd-nav" aria-label="Channels" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+            {CHANNELS.map(({ id, label, Icon }) => (
               <button
                 key={id}
                 className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
-                onClick={() => setActive(id)}
+                onClick={() => { setActive(id); setPaused(false); }}
               >
                 <span className="cd-nav-icon"><Icon size={20} /></span>
-                <span className="cd-nav-text">
-                  <span className="cd-nav-label">{label}</span>
-                  <span className="cd-nav-desc">{desc}</span>
-                </span>
+                <span className="cd-nav-label">{label}</span>
+                {active === id && (
+                  <span
+                    className="cd-nav-progress"
+                    key={`${id}-${Date.now()}`}
+                    style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
+                  />
+                )}
               </button>
             ))}
           </nav>
