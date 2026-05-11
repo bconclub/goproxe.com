@@ -4935,10 +4935,11 @@ body:has(.proxe-root) {
   color: #fff;
 }
 .cd-nav-item--active {
-  background: linear-gradient(135deg, rgba(124,58,237,0.22), rgba(76,29,149,0.15));
-  border-color: rgba(167,139,250,0.5);
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  border-color: #A78BFA;
   color: #fff;
-  box-shadow: 0 0 0 1px rgba(167,139,250,0.2), 0 8px 24px rgba(124,58,237,0.25);
+  box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 12px 32px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+  transform: translateX(2px);
 }
 .cd-nav-icon {
   display: flex;
@@ -4952,8 +4953,13 @@ body:has(.proxe-root) {
   flex-shrink: 0;
 }
 .cd-nav-item--active .cd-nav-icon {
-  background: rgba(167,139,250,0.2);
+  background: rgba(255,255,255,0.18);
   color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+}
+.cd-nav-item--active .cd-nav-label {
+  color: #fff;
+  font-weight: 700;
 }
 /* (descriptions removed — auto-advance timeline takes over) */
 
@@ -5215,6 +5221,7 @@ body:has(.proxe-root) {
 .cd-wa-body {
   flex: 1;
   overflow-y: auto;
+  scroll-behavior: smooth;
   padding: 12px 10px;
   display: flex;
   flex-direction: column;
