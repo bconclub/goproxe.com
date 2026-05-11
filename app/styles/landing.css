@@ -3619,13 +3619,13 @@ body:has(.proxe-root) {
 
 .hiw-h2 {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(28px, 4vw, 46px);
+  font-size: clamp(48px, 6.8vw, 92px);
   font-weight: 700;
   color: #ffffff;
   text-align: center;
-  margin: 16px 0 18px;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
+  margin: 20px 0 28px;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 .hiw-sub {
@@ -3693,12 +3693,12 @@ body:has(.proxe-root) {
 
 .hiw-card-title {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(36px, 4.2vw, 56px);
+  font-size: clamp(20px, 2.2vw, 28px);
   font-weight: 700;
   color: #ffffff;
   margin: 0;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .hiw-card-desc {

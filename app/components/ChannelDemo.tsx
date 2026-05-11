@@ -755,21 +755,16 @@ export default function ChannelDemo() {
         <div className="cd-stage">
           {/* ── Left: curved channel nav ── */}
           <nav className="cd-nav" aria-label="Channels" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-            {CHANNELS.map(({ id, label, Icon }, idx) => {
-              const activeIdx = CHANNELS.findIndex(c => c.id === active);
-              const dist = Math.abs(idx - activeIdx);
-              // Semi-circle: active bulges far right, neighbours arc back left
-              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
-              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.45 : 0.25;
-              const scale = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
+            {CHANNELS.map(({ id, label, Icon }) => {
+              const isActive = active === id;
               return (
                 <button
                   key={id}
-                  className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
+                  className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
                   onClick={() => { setActive(id); setPaused(false); }}
                   style={{
-                    transform: `translateX(${offsetX}px) scale(${scale})`,
-                    opacity,
+                    transform: isActive ? 'translateX(40px) scale(1.08)' : 'translateX(0) scale(1)',
+                    opacity: isActive ? 1 : 0.55,
                   }}
                 >
                   <span className="cd-nav-icon"><Icon size={20} /></span>
