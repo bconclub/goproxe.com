@@ -4331,7 +4331,7 @@ body:has(.proxe-root) {
   font-size: 10px; font-weight: 700; border-radius: 20px; padding: 1px 8px;
   border: 1px solid rgba(167,139,250,0.3);
 }
-.db2-event-list  { display: flex; flex-direction: column; gap: 8px; }
+.db2-event-list  { display: flex; flex-direction: row; gap: 8px; }
 .db2-event-row   {
   display: flex; align-items: center; gap: 12px;
   background: rgba(255,255,255,0.04);
@@ -4340,6 +4340,7 @@ body:has(.proxe-root) {
   padding: 10px 12px;
   position: relative;
   overflow: hidden;
+  flex: 1;
 }
 .db2-event-row::before {
   content: '';
