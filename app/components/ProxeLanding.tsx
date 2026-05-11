@@ -1225,13 +1225,13 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== 7. Channel Demo ===== */}
-      <ChannelDemo />
-
-      {/* ===== 7b. How It Works — animated feature cards ===== */}
+      {/* ===== 2. How It Works — animated feature cards ===== */}
       <HowItWorks />
 
-      {/* ===== 7c. Dashboard preview ===== */}
+      {/* ===== 3. See PROXe in Action — full-screen sliding previews ===== */}
+      <ChannelDemo />
+
+      {/* ===== 4. Dashboard preview ===== */}
       <DashboardSection />
 
       {/* ===== 8. Scroll-triggered popup — disabled for now ===== */}

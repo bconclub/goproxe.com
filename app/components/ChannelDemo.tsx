@@ -596,37 +596,79 @@ export default function ChannelDemo() {
   const industry = 'Real Estate';
   const currentMsgs = WA[industry];
 
+  const SLIDES = [
+    { id: 'voice',    label: 'Voice',    Icon: FiPhone },
+    { id: 'whatsapp', label: 'WhatsApp', Icon: SiWhatsapp },
+  ];
+
+  const [active, setActive] = useState(0);
+  const total = SLIDES.length;
+
+  const goPrev = () => setActive((a) => (a - 1 + total) % total);
+  const goNext = () => setActive((a) => (a + 1) % total);
+
   return (
     <section className="cd-section" id="voice">
       <div className="proxe-container">
         <div className="proxe-section-label" style={{ textAlign: 'center' }}>PROXe in Action</div>
         <h2 className="cd-headline">See PROXe in action.</h2>
         <p className="cd-sub">
-          One AI brain. Every channel. Try the voice agent live, then see how it handles WhatsApp conversations.
+          One AI brain. Every channel. Slide through to see PROXe live.
         </p>
+      </div>
 
-        {/* ── Voice — full-width orb stage ── */}
-        <div className="cd-channel-block">
-          <div className="cd-channel-label">
-            <span className="cd-channel-icon"><FiPhone size={14} /></span>
-            <span>Voice</span>
+      {/* ── Full-width slider ── */}
+      <div className="cd-slider">
+        <div
+          className="cd-slider-track"
+          style={{ transform: `translateX(-${active * 100}%)` }}
+        >
+          {/* Slide 1: Voice */}
+          <div className="cd-slide">
+            <div className="cd-slide-label">
+              <span className="cd-channel-icon"><FiPhone size={14} /></span>
+              <span>Voice</span>
+            </div>
+            <div className="cd-voice-stage">
+              <VapiOrb />
+            </div>
           </div>
-          <div className="cd-voice-stage">
-            <VapiOrb />
+
+          {/* Slide 2: WhatsApp */}
+          <div className="cd-slide">
+            <div className="cd-slide-label">
+              <span className="cd-channel-icon"><SiWhatsapp size={14} /></span>
+              <span>WhatsApp</span>
+            </div>
+            <div className="cd-whatsapp-stage">
+              <PhoneFrame>
+                <WaChat msgs={currentMsgs} isActive={active === 1} industry={industry} />
+              </PhoneFrame>
+            </div>
           </div>
         </div>
 
-        {/* ── WhatsApp — single mockup ── */}
-        <div className="cd-channel-block">
-          <div className="cd-channel-label">
-            <span className="cd-channel-icon"><SiWhatsapp size={14} /></span>
-            <span>WhatsApp</span>
-          </div>
-          <div className="cd-whatsapp-stage">
-            <PhoneFrame>
-              <WaChat msgs={currentMsgs} isActive industry={industry} />
-            </PhoneFrame>
-          </div>
+        {/* Arrows */}
+        <button className="cd-slider-arrow cd-slider-arrow--prev" onClick={goPrev} aria-label="Previous">
+          <FiChevronLeft size={22} />
+        </button>
+        <button className="cd-slider-arrow cd-slider-arrow--next" onClick={goNext} aria-label="Next">
+          <FiChevronLeft size={22} style={{ transform: 'rotate(180deg)' }} />
+        </button>
+
+        {/* Dot indicators */}
+        <div className="cd-slider-dots">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.id}
+              className={`cd-slider-dot${i === active ? ' cd-slider-dot--active' : ''}`}
+              onClick={() => setActive(i)}
+              aria-label={`Show ${s.label}`}
+            >
+              <s.Icon size={12} />
+              <span>{s.label}</span>
+            </button>
+          ))}
         </div>
       </div>
     </section>
