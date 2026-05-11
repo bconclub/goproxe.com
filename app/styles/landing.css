@@ -6015,25 +6015,27 @@ body:has(.proxe-root) {
 
 /* Instagram quick reply pills */
 .cd-ig-qr {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
-  gap: 6px;
-  max-width: 78%;
-  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  align-items: flex-end;
 }
 .cd-ig-qr-btn {
-  background: transparent;
-  border: 1.5px solid #0095f6;
-  color: #0095f6;
+  display: inline-flex !important;
+  background: #fff !important;
+  border: 1.5px solid #0095f6 !important;
+  color: #0095f6 !important;
   border-radius: 18px;
-  padding: 7px 16px;
+  padding: 8px 18px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
-  align-self: flex-end;
+  width: auto;
+  white-space: nowrap;
 }
-.cd-ig-qr-btn:hover { background: rgba(0,149,246,0.08); }
+.cd-ig-qr-btn:hover { background: rgba(0,149,246,0.08) !important; }
 .cd-ig-hdr-info { flex: 1; display: flex; flex-direction: column; }
 .cd-ig-hdr-name { font-size: 13px; font-weight: 700; color: #fff; }
 .cd-ig-hdr-active { font-size: 11px; color: rgba(255,255,255,0.6); }
@@ -6066,13 +6068,18 @@ body:has(.proxe-root) {
 .cd-ig-bub--agent { background: #f0f0f0; color: #111; border-radius: 18px 18px 18px 4px; }
 
 .cd-ig-pill {
-  background: transparent;
-  border: 1.5px solid #3797F0;
-  color: #3797F0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #3797F0 !important;
+  border: 1.5px solid #3797F0 !important;
+  color: #fff !important;
   border-radius: 999px;
-  padding: 8px 20px;
+  padding: 10px 22px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s;
 }
