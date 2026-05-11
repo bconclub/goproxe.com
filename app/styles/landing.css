@@ -5195,12 +5195,12 @@ body:has(.proxe-root) {
 ═════════════════════════════════════════════ */
 .cd-stage {
   display: grid;
-  grid-template-columns: 340px 420px 56px;
-  gap: 24px;
+  grid-template-columns: 240px 540px 56px;
+  gap: 32px;
   align-items: stretch;
   margin-top: 20px;
   justify-content: center;
-  max-width: 980px;
+  max-width: 940px;
   margin-left: auto;
   margin-right: auto;
 }
