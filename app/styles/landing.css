@@ -6091,18 +6091,44 @@ body:has(.proxe-root) {
 
 .cd-web-links {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   padding: 4px 0;
+  justify-content: flex-end;
+  max-width: 90%;
+  align-self: flex-end;
 }
 .cd-web-link-btn {
-  background: transparent;
-  border: 1px solid rgba(124,58,237,0.4);
-  color: #a78bfa;
-  border-radius: 8px;
-  padding: 7px 14px;
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.35);
+  color: #E9D5FF;
+  border-radius: 10px;
+  padding: 9px 14px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.cd-web-link-btn:hover { background: rgba(167,139,250,0.22); transform: translateY(-1px); }
+
+/* Powered by + call icon (Windchasers-style web widget polish) */
+.cd-web-powered {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 6px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.cd-web-powered strong { color: rgba(255,255,255,0.6); font-weight: 700; }
+.cd-web-input-call {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(167,139,250,0.18);
+  border: 1px solid rgba(167,139,250,0.35);
+  color: #C4B5FD;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* ── Web chat: rich carousel ── */

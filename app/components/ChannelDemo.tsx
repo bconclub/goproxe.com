@@ -175,19 +175,28 @@ const MSN: ConvMsg[] = [
    WEB CHAT CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const WEB: ConvMsg[] = [
-  { from: 'lead',  text: 'Looking for JEE coaching for my son. Class 11.' },
-  { from: 'agent', text: 'Got 3 programs that fit. Here are the top picks:' },
+  { from: 'agent', text: 'Hi, I am Edu.', noTyping: true },
+  { from: 'agent', text: 'I am PROXe Academy’s AI counsellor.', delay: 600 },
+  { from: 'agent', text: 'I am here to help you find the right program. What are you looking for?', delay: 700 },
+  { from: 'agent', type: 'qr', noTyping: true, delay: 400,
+    qr: ['JEE Coaching', 'NEET Coaching', 'I am a parent'] },
+  { from: 'lead',  text: 'JEE Coaching', delay: 1200 },
+  { from: 'agent', text: 'Great. Which class is your child in?' },
+  { from: 'agent', type: 'qr', noTyping: true, delay: 400,
+    qr: ['Class 11', 'Class 12', 'Repeater'] },
+  { from: 'lead',  text: 'Class 11', delay: 1000 },
+  { from: 'agent', text: 'Here are 3 programs that fit:' },
   { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
     carousel: [
-      { title: 'JEE 2-Year Foundation', sub: 'Class 11+12 · ₹95K/yr · Hybrid', btn: 'View',
+      { title: '2-Year Foundation', sub: 'Class 11+12 · ₹95K/yr · Hybrid', btn: 'View',
         img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=240&fit=crop&q=80' },
-      { title: 'JEE Crash Course',      sub: '6 months · ₹65K · Online',      btn: 'View',
+      { title: 'JEE Crash Course',  sub: '6 months · ₹65K · Online',       btn: 'View',
         img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=240&fit=crop&q=80' },
-      { title: 'Weekend Mentorship',    sub: 'Saturdays · ₹40K/yr · Hybrid',  btn: 'View',
+      { title: 'Weekend Mentorship',sub: 'Saturdays · ₹40K/yr · Hybrid',   btn: 'View',
         img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=240&fit=crop&q=80' },
     ] },
-  { from: 'lead',  text: 'The Foundation program looks right. Can we visit?', delay: 800 },
-  { from: 'agent', text: 'Of course. Pick a date and time for a campus tour.' },
+  { from: 'lead',  text: 'Foundation looks great. Can we visit?', delay: 1200 },
+  { from: 'agent', text: 'Of course. Pick a date for a campus tour.' },
   { from: 'agent', type: 'calendar', noTyping: true, delay: 300,
     calendar: {
       month: 'November 2026',
@@ -196,8 +205,8 @@ const WEB: ConvMsg[] = [
       times: ['10:00', '11:00', '14:00', '16:00'],
       selectedTime: '11:00',
     } },
-  { from: 'lead',  text: 'Saturday 11am works', delay: 800 },
-  { from: 'agent', text: 'Great. Just need a couple of details to confirm.' },
+  { from: 'lead',  text: 'Saturday 11am works', delay: 1000 },
+  { from: 'agent', text: 'Locked in. Quick details to confirm:' },
   { from: 'agent', type: 'form', noTyping: true, delay: 300,
     form: {
       title: 'Confirm Campus Tour',
@@ -676,8 +685,15 @@ function WebWidget({ isActive }: { isActive: boolean }) {
           </div>
         )}
       </div>
+      <div className="cd-web-powered">
+        <img src="/proxe/brand/proxe-icon-white.webp" alt="" width={11} height={11} />
+        <span>Powered by <strong>PROXe</strong></span>
+      </div>
       <div className="cd-web-input">
-        <input className="cd-web-input-field" placeholder="Type a message..." readOnly />
+        <button className="cd-web-input-call" aria-label="Call">
+          <FiPhone size={14} />
+        </button>
+        <input className="cd-web-input-field" placeholder="Type your message..." readOnly />
         <button className="cd-web-input-send">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
