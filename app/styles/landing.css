@@ -2068,6 +2068,16 @@ body:has(.proxe-root) {
   padding-bottom: 0;
 }
 
+.proxe-pillars-h2 {
+  font-family: var(--proxe-font-heading);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 12px 0 48px;
+}
+
 .proxe-pillars-list {
   display: block;
   position: relative;

@@ -5,7 +5,6 @@ import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase } fr
 import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
 import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
-import HowItWorks from './HowItWorks';
 import ChannelDemo from './ChannelDemo';
 
 /**
@@ -1219,16 +1218,14 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== 6. How It Works ===== */}
-      <HowItWorks />
-
       {/* ===== 7. Channel Demo ===== */}
       <ChannelDemo />
 
       {/* ===== 7. Three pillars — sticky stack ===== */}
       <section className="proxe-section proxe-pillars-section" id="features" ref={pillarsRef}>
         <div className="proxe-container">
-          <div className="proxe-section-label">The PROXe System</div>
+          <div className="proxe-section-label">How It Works</div>
+          <h2 className="proxe-pillars-h2">Capture. Remember. Close. Repeat.</h2>
           <div className="proxe-pillars-list">
             {([
               {
@@ -1240,7 +1237,7 @@ export default function ProxeLanding() {
               },
               {
                 icon: <Icon.Remember />,
-                title: 'Nurture',
+                title: 'Remember',
                 desc: 'Stay in every conversation. One thread across channels. Customers never repeat themselves.',
                 videoSrc: null as string | null,
                 gradient: 'linear-gradient(135deg, rgba(76,29,149,0.4) 0%, rgba(20,10,60,0.55) 100%)',
