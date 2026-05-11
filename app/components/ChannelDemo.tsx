@@ -829,12 +829,6 @@ export default function ChannelDemo() {
             );
           })()}
 
-          {/* ── Dial controls (between nav and preview) ── */}
-          <div className="cd-dial-controls">
-            <button className="cd-dial-btn" onClick={goPrev} aria-label="Previous channel">↑</button>
-            <button className="cd-dial-btn" onClick={goNext} aria-label="Next channel">↓</button>
-          </div>
-
           {/* ── Right: active channel preview ── */}
           <div
             className="cd-preview"
@@ -875,6 +869,12 @@ export default function ChannelDemo() {
                 </PhoneFrame>
               </div>
             )}
+          </div>
+
+          {/* ── Dial controls (right side, next to phone) ── */}
+          <div className="cd-dial-controls">
+            <button className="cd-dial-btn" onClick={goPrev} aria-label="Previous channel">↑</button>
+            <button className="cd-dial-btn" onClick={goNext} aria-label="Next channel">↓</button>
           </div>
         </div>
       </div>
