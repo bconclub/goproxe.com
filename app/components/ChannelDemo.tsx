@@ -777,46 +777,60 @@ export default function ChannelDemo() {
         </p>
 
         <div className="cd-stage">
-          {/* ── Left: fixed semi-circle channel nav (positions never move) ── */}
-          <nav
-            className="cd-nav"
-            aria-label="Channels"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
-            {CHANNELS.map(({ id, label, Icon }, idx) => {
-              // FIXED positions by INDEX — items never move up/down.
-              // The curve shape is permanent; active state only changes opacity highlight.
-              const total = CHANNELS.length;
-              const centerIdx = (total - 1) / 2;
-              const distFromCenter = Math.abs(idx - centerIdx);
-              const offsetX = distFromCenter === 0 ? 60 : distFromCenter === 1 ? 10 : -40;
-              const scale   = distFromCenter === 0 ? 1.08 : distFromCenter === 1 ? 0.96 : 0.86;
-              const isActive = active === id;
-              const opacity = isActive ? 1 : 0.35;
-                  return (
-                    <button
-                      key={id}
-                      className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
-                      onClick={() => { setActive(id); setPaused(false); }}
-                      style={{
-                        transform: `translateX(${offsetX}px) scale(${scale})`,
-                        opacity,
-                      }}
-                    >
-                  <span className="cd-nav-icon"><Icon size={20} /></span>
-                  <span className="cd-nav-label">{label}</span>
-                  {active === id && (
-                    <span
-                      className="cd-nav-progress"
-                      key={`${id}-${Date.now()}`}
-                      style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
+          {/* ── Left: rotating semicircle dial ── */}
+          {(() => {
+            const STEP = 30; // degrees between channels on the arc
+            const RADIUS = 150;
+            const activeIdx = CHANNELS.findIndex(c => c.id === active);
+            const total = CHANNELS.length;
+            const centerIdx = (total - 1) / 2;
+            // Rotate the dial so the active channel comes to angle 0 (the centered slot)
+            const dialRotation = (centerIdx - activeIdx) * STEP;
+            return (
+              <div
+                className="cd-dial-wrap"
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                aria-label="Channels"
+              >
+                <div
+                  className="cd-dial"
+                  style={{ transform: `rotate(${dialRotation}deg)` }}
+                >
+                  {CHANNELS.map(({ id, label, Icon }, idx) => {
+                    const itemAngle = (idx - centerIdx) * STEP;            // -60, -30, 0, +30, +60
+                    const isActive = active === id;
+                    return (
+                      <div
+                        key={id}
+                        className="cd-dial-slot"
+                        style={{
+                          transform: `rotate(${itemAngle}deg) translateX(${RADIUS}px) rotate(${-itemAngle}deg)`,
+                        }}
+                      >
+                        <button
+                          className={`cd-dial-item${isActive ? ' cd-dial-item--active' : ''}`}
+                          onClick={() => { setActive(id); setPaused(false); }}
+                          style={{ transform: `rotate(${-dialRotation}deg)` }}
+                          aria-label={label}
+                        >
+                          <span className="cd-dial-icon"><Icon size={isActive ? 22 : 16} /></span>
+                          <span className="cd-dial-label">{label}</span>
+                          {isActive && (
+                            <span
+                              className="cd-nav-progress"
+                              key={`${id}-${Date.now()}`}
+                              style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
+                            />
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* ── Right: active channel preview ── */}
           <div

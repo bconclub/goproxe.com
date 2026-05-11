@@ -5180,12 +5180,12 @@ body:has(.proxe-root) {
 ═════════════════════════════════════════════ */
 .cd-stage {
   display: grid;
-  grid-template-columns: 240px 540px 56px;
-  gap: 32px;
+  grid-template-columns: 340px 420px 56px;
+  gap: 24px;
   align-items: stretch;
   margin-top: 20px;
   justify-content: center;
-  max-width: 940px;
+  max-width: 980px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -5220,14 +5220,92 @@ body:has(.proxe-root) {
 }
 .cd-dial-btn:active { transform: scale(0.96); }
 
-/* Left channel nav */
+/* Left channel nav (legacy linear nav — kept for fallback) */
 .cd-nav {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+/* ── Rotating semicircle dial ── */
+.cd-dial-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 640px;
+}
+.cd-dial {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-origin: center center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.cd-dial-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  /* Each slot is angled around the dial's center pivot */
+}
+.cd-dial-item {
+  position: absolute;
+  transform-origin: center center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  /* Inner counter-rotation is applied via inline style to keep label upright */
+  transition:
+    background 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.5;
+}
+.cd-dial-item:hover {
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.2);
+}
+.cd-dial-item--active {
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  border-color: #A78BFA;
+  color: #fff;
+  padding: 14px 22px;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 16px 40px rgba(124,58,237,0.45);
+  opacity: 1;
+}
+.cd-dial-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cd-dial-item--active .cd-dial-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.18);
+}
+.cd-dial-label {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+.cd-dial-item--active .cd-dial-label { font-size: 15px; }
 .cd-nav-item {
   position: relative;
   display: flex;
