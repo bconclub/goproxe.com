@@ -533,7 +533,7 @@ function MsnChat({ isActive }: { isActive: boolean }) {
           <svg width="14" height="14" viewBox="0 0 24 24"><defs><linearGradient id="msn-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#0695FF"/><stop offset="100%" stopColor="#A033FF"/></linearGradient></defs><path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.94 1.32 5.57 3.4 7.37L5 22l3.5-1.9A10.83 10.83 0 0012 20.486c5.523 0 10-4.145 10-9.243C22 6.145 17.523 2 12 2z" fill="url(#msn-g)"/><path d="M7 13l2.5-3.5L12 11l2.5-3.5L17 11" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" fill="none"/></svg>
         </div>
         <div className="cd-msn-hdr-info">
-          <span className="cd-msn-hdr-name">PROXe</span>
+          <span className="cd-msn-hdr-name">Clinic PROXe</span>
           <span className="cd-msn-hdr-active">Active now</span>
         </div>
       </div>
@@ -753,25 +753,36 @@ export default function ChannelDemo() {
         </p>
 
         <div className="cd-stage">
-          {/* ── Left: channel nav ── */}
+          {/* ── Left: curved channel nav ── */}
           <nav className="cd-nav" aria-label="Channels" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-            {CHANNELS.map(({ id, label, Icon }) => (
-              <button
-                key={id}
-                className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
-                onClick={() => { setActive(id); setPaused(false); }}
-              >
-                <span className="cd-nav-icon"><Icon size={20} /></span>
-                <span className="cd-nav-label">{label}</span>
-                {active === id && (
-                  <span
-                    className="cd-nav-progress"
-                    key={`${id}-${Date.now()}`}
-                    style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
-                  />
-                )}
-              </button>
-            ))}
+            {CHANNELS.map(({ id, label, Icon }, idx) => {
+              const activeIdx = CHANNELS.findIndex(c => c.id === active);
+              const dist = Math.abs(idx - activeIdx);
+              // Curve: active = bulge right, neighbours pull back left
+              const offsetX = dist === 0 ? 16 : dist === 1 ? 0 : -14;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.85 : 0.55;
+              return (
+                <button
+                  key={id}
+                  className={`cd-nav-item${active === id ? ' cd-nav-item--active' : ''}`}
+                  onClick={() => { setActive(id); setPaused(false); }}
+                  style={{
+                    transform: `translateX(${offsetX}px)${active === id ? ' scale(1.06)' : ''}`,
+                    opacity,
+                  }}
+                >
+                  <span className="cd-nav-icon"><Icon size={20} /></span>
+                  <span className="cd-nav-label">{label}</span>
+                  {active === id && (
+                    <span
+                      className="cd-nav-progress"
+                      key={`${id}-${Date.now()}`}
+                      style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </nav>
 
           {/* ── Right: active channel preview ── */}

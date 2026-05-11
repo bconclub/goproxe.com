@@ -284,9 +284,9 @@ const ICONS = [
 ];
 
 const CARD_ACCENTS = [
-  { grad: 'linear-gradient(135deg, rgba(124,58,237,0.45) 0%, rgba(14,11,34,0.6) 100%)', icon: 'rgba(167,139,250,1)' },
-  { grad: 'linear-gradient(135deg, rgba(14,165,233,0.35) 0%, rgba(8,20,60,0.65) 100%)',  icon: 'rgba(125,211,252,1)' },
-  { grad: 'linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(6,30,18,0.7)  100%)',   icon: 'rgba(74,222,128,1)'  },
+  { grad: 'linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(14,11,34,0.55) 100%)', icon: 'rgba(167,139,250,1)' },
+  { grad: 'linear-gradient(135deg, rgba(14,165,233,0.14) 0%, rgba(8,20,60,0.55) 100%)',  icon: 'rgba(125,211,252,1)' },
+  { grad: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(6,30,18,0.55)  100%)',   icon: 'rgba(74,222,128,1)'  },
 ];
 
 type CardSpec = { title: string; desc: string; Vis: React.FC<{ on: boolean }> };

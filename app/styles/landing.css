@@ -3693,12 +3693,12 @@ body:has(.proxe-root) {
 
 .hiw-card-title {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: clamp(36px, 4.2vw, 56px);
   font-weight: 700;
   color: #ffffff;
   margin: 0;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
 .hiw-card-desc {
