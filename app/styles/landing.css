@@ -3576,7 +3576,7 @@ body:has(.proxe-root) {
    HOW IT WORKS SECTION
 ═══════════════════════════════════════════════════════════════ */
 .hiw-section {
-  background: #f5f3ff;
+  background: transparent;
   padding: 100px 0 110px;
 }
 
@@ -3600,16 +3600,16 @@ body:has(.proxe-root) {
 }
 
 .hiw-section .proxe-section-label {
-  color: #7C3AED;
-  background: rgba(124,58,237,0.08);
-  border-color: rgba(124,58,237,0.2);
+  color: #A78BFA;
+  background: rgba(167,139,250,0.1);
+  border-color: rgba(167,139,250,0.25);
 }
 
 .hiw-h2 {
   font-family: var(--proxe-font-heading);
   font-size: clamp(28px, 4vw, 46px);
   font-weight: 700;
-  color: #111827;
+  color: #ffffff;
   text-align: center;
   margin: 16px 0 18px;
   letter-spacing: -0.025em;
@@ -3618,7 +3618,7 @@ body:has(.proxe-root) {
 
 .hiw-sub {
   font-size: 17px;
-  color: #6B7280;
+  color: rgba(255,255,255,0.55);
   text-align: center;
   max-width: 600px;
   margin: 0 auto 64px;
@@ -3632,9 +3632,9 @@ body:has(.proxe-root) {
 }
 
 .hiw-card {
-  background: #ffffff;
+  background: rgba(255,255,255,0.04);
   border-radius: 20px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(255,255,255,0.08);
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
   display: flex;
@@ -3659,14 +3659,14 @@ body:has(.proxe-root) {
 .hiw-card-title {
   font-size: 17px;
   font-weight: 700;
-  color: #111827;
+  color: #ffffff;
   margin: 0;
   line-height: 1.3;
 }
 
 .hiw-card-desc {
   font-size: 14px;
-  color: #6B7280;
+  color: rgba(255,255,255,0.55);
   margin: 0;
   line-height: 1.65;
 }
@@ -3785,7 +3785,7 @@ body:has(.proxe-root) {
 .hiw-mem-ico {
   width: 20px;
   height: 20px;
-  background: rgba(0,0,0,0.06);
+  background: rgba(0,0,0,0.10);
   border-radius: 5px;
   display: flex;
   align-items: center;

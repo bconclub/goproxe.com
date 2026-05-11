@@ -222,19 +222,19 @@ export default function HowItWorks() {
 
   const CARDS: CardSpec[] = [
     {
-      bg: '#0E7490',
+      bg: '#0d0d16',
       title: 'Every lead. Every channel. Real time.',
       desc: 'The moment someone messages on WhatsApp, visits your website, calls, or DMs on Instagram, PROXe captures them instantly. Lead scored and logged before you blink.',
       Vis: CaptureVis,
     },
     {
-      bg: '#9D174D',
+      bg: '#0d0d16',
       title: 'One memory. Every conversation.',
       desc: 'Customer messaged on WhatsApp Monday. Called Thursday. Visited the website Saturday. PROXe remembers all of it. They never repeat themselves. You never lose context.',
       Vis: MemoryVis,
     },
     {
-      bg: '#166534',
+      bg: '#0d0d16',
       title: 'Follows up until they close.',
       desc: 'Lead went quiet? PROXe sends a follow up. Still quiet? Sends another. After 10 days of smart nudges across WhatsApp, email, and SMS, cold leads come back to life.',
       Vis: FollowVis,
