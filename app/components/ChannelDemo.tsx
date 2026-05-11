@@ -8,7 +8,7 @@ import VapiOrb from './VapiOrb';
    TYPES
 ═══════════════════════════════════════════════════════════════ */
 type MsgFrom = 'lead' | 'agent';
-type MsgType = 'text' | 'qr' | 'carousel' | 'conf-card' | 'cta-card' | 'pill-btn';
+type MsgType = 'text' | 'qr' | 'carousel' | 'conf-card' | 'cta-card' | 'pill-btn' | 'calendar' | 'form';
 
 interface ConvMsg {
   from: MsgFrom;
@@ -21,6 +21,8 @@ interface ConvMsg {
   confCard?: { title: string; lines: string[]; btn: string; color: string };
   ctaCard?: { btn: string; color?: string };
   pillBtn?: string;
+  calendar?: { month: string; days: number[]; selected: number; times: string[]; selectedTime: string };
+  form?: { title: string; fields: Array<{ label: string; value: string; placeholder?: string }>; btn: string };
 }
 
 interface VoiceLine {
@@ -162,25 +164,51 @@ const IG: ConvMsg[] = [
    MESSENGER CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const MSN: ConvMsg[] = [
-  { from: 'lead',  text: 'Hi, does your clinic take walk-ins or only appointments?' },
-  { from: 'agent', text: 'We recommend appointments to avoid waiting. Dr. Sharma has slots tomorrow. Want to book?' },
-  { from: 'lead',  text: 'Yes for 2 people', delay: 900 },
-  { from: 'agent', text: 'Done. Two slots confirmed tomorrow 10am and 10:30am. Confirmation sent to your inbox.' },
+  { from: 'lead',  text: 'Hey, saw your Whitefield listing on FB. Still available?' },
+  { from: 'agent', text: 'Yes! 3BHK, 1850 sqft, 98L. Want to schedule a site visit?' },
+  { from: 'lead',  text: 'Saturday morning works for me', delay: 800 },
+  { from: 'agent', text: 'Done. Saturday 11am confirmed. Our agent will call you 30 mins before.' },
   { from: 'agent', type: 'cta-card', noTyping: true, delay: 400,
-    ctaCard: { btn: 'View Appointment Details', color: '#0084FF' } },
+    ctaCard: { btn: 'View Property Details', color: '#0084FF' } },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
    WEB CHAT CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const WEB: ConvMsg[] = [
-  { from: 'lead',  text: 'I am looking for a 3BHK under 80L in North Bangalore.' },
-  { from: 'agent', text: 'We have 4 options right now. Hebbal, Yelahanka, Thanisandra, and Kogilu. Want me to send the shortlist?' },
-  { from: 'lead',  text: 'Yes please', delay: 800 },
-  { from: 'agent', text: 'Sent to your email. Want a callback from our agent today?' },
-  { from: 'lead',  text: 'Tomorrow morning', delay: 900 },
-  { from: 'agent', text: 'Callback scheduled for tomorrow 10am. See you then.' },
-  { from: 'agent', type: 'qr', noTyping: true, delay: 400, qr: ['Book a Demo', 'Pricing'] },
+  { from: 'lead',  text: 'Looking for a 3BHK in Whitefield around 1 Cr.' },
+  { from: 'agent', text: 'Got 3 great matches in that range. Here are the top picks:' },
+  { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
+    carousel: [
+      { title: 'Whitefield Heights', sub: '3BHK · 1850 sqft · 98L', btn: 'View',
+        img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&h=240&fit=crop&q=80' },
+      { title: 'Prestige Lakeside',  sub: '3BHK · 2100 sqft · 1.1 Cr', btn: 'View',
+        img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=240&fit=crop&q=80' },
+      { title: 'Brigade Cosmopolitan', sub: '3BHK · 1950 sqft · 1.05 Cr', btn: 'View',
+        img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=240&fit=crop&q=80' },
+    ] },
+  { from: 'lead',  text: 'Whitefield Heights looks great. Can I book a visit?', delay: 800 },
+  { from: 'agent', text: 'Of course. Pick a date and time below.' },
+  { from: 'agent', type: 'calendar', noTyping: true, delay: 300,
+    calendar: {
+      month: 'November 2026',
+      days: [3, 4, 5, 6, 7, 8, 9],
+      selected: 7,
+      times: ['10:00', '11:00', '14:00', '16:00'],
+      selectedTime: '11:00',
+    } },
+  { from: 'lead',  text: 'Saturday 11am works', delay: 800 },
+  { from: 'agent', text: 'Great. Just need a couple of details to confirm.' },
+  { from: 'agent', type: 'form', noTyping: true, delay: 300,
+    form: {
+      title: 'Confirm Site Visit',
+      fields: [
+        { label: 'Full Name', value: 'Rahul Sharma' },
+        { label: 'Phone',     value: '+91 98765 43210' },
+        { label: 'Email',     value: 'rahul@example.com' },
+      ],
+      btn: 'Confirm Booking',
+    } },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -564,6 +592,70 @@ function WebWidget({ isActive }: { isActive: boolean }) {
               {(m.qr ?? []).map(q => <button key={q} className="cd-web-link-btn">{q}</button>)}
             </div>
           );
+          if (m.type === 'carousel' && m.carousel) return (
+            <div key={i} className="cd-web-carousel conv-msg-in">
+              {m.carousel.map((c, ci) => (
+                <div key={ci} className="cd-web-caro-card">
+                  {c.img && (
+                    <div className="cd-web-caro-img"><img src={c.img} alt={c.title} loading="lazy" /></div>
+                  )}
+                  <div className="cd-web-caro-body">
+                    <div className="cd-web-caro-title">{c.title}</div>
+                    <div className="cd-web-caro-sub">{c.sub}</div>
+                    <button className="cd-web-caro-btn">{c.btn} →</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+          if (m.type === 'calendar' && m.calendar) {
+            const cal = m.calendar;
+            return (
+              <div key={i} className="cd-web-cal conv-msg-in">
+                <div className="cd-web-cal-hdr">
+                  <FiCalendar size={14} />
+                  <span>{cal.month}</span>
+                </div>
+                <div className="cd-web-cal-days">
+                  {['M','T','W','T','F','S','S'].map((d, di) => (
+                    <span key={di} className="cd-web-cal-dow">{d}</span>
+                  ))}
+                  {cal.days.map(d => (
+                    <button
+                      key={d}
+                      className={`cd-web-cal-day${d === cal.selected ? ' cd-web-cal-day--active' : ''}`}
+                    >{d}</button>
+                  ))}
+                </div>
+                <div className="cd-web-cal-times">
+                  {cal.times.map(t => (
+                    <button
+                      key={t}
+                      className={`cd-web-cal-time${t === cal.selectedTime ? ' cd-web-cal-time--active' : ''}`}
+                    >{t}</button>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          if (m.type === 'form' && m.form) {
+            const fm = m.form;
+            return (
+              <div key={i} className="cd-web-form conv-msg-in">
+                <div className="cd-web-form-hdr">{fm.title}</div>
+                {fm.fields.map(f => (
+                  <div key={f.label} className="cd-web-form-field">
+                    <span className="cd-web-form-label">{f.label}</span>
+                    <span className="cd-web-form-value">{f.value}</span>
+                  </div>
+                ))}
+                <button className="cd-web-form-btn">
+                  <FiCheck size={13} />
+                  <span>{fm.btn}</span>
+                </button>
+              </div>
+            );
+          }
           const isLead = m.from === 'lead';
           return (
             <div key={i} className={`cd-web-row cd-web-row--${isLead ? 'lead' : 'agent'} conv-msg-in`}>
