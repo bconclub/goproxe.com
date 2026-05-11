@@ -272,7 +272,23 @@ function ReactivateVis({ on }: { on: boolean }) {
 /* ─────────────────────────────────────────────────────────────
    Main export
 ───────────────────────────────────────────────────────────── */
-type CardSpec = { bg: string; title: string; desc: string; Vis: React.FC<{ on: boolean }> };
+/* ── Small icon box (matches pillar style) ── */
+const ICONS = [
+  /* Capture — lightning bolt */
+  <svg key="c" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  /* Remember — brain/cpu */
+  <svg key="r" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="14" x2="22" y2="14"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="14" x2="4" y2="14"/></svg>,
+  /* Close — check circle */
+  <svg key="cl" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+];
+
+const CARD_ACCENTS = [
+  { grad: 'linear-gradient(135deg, rgba(124,58,237,0.45) 0%, rgba(14,11,34,0.6) 100%)', icon: 'rgba(167,139,250,1)' },
+  { grad: 'linear-gradient(135deg, rgba(14,165,233,0.35) 0%, rgba(8,20,60,0.65) 100%)',  icon: 'rgba(125,211,252,1)' },
+  { grad: 'linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(6,30,18,0.7)  100%)',   icon: 'rgba(74,222,128,1)'  },
+];
+
+type CardSpec = { title: string; desc: string; Vis: React.FC<{ on: boolean }> };
 
 export default function HowItWorks() {
   const secRef = useRef<HTMLDivElement>(null);
@@ -288,19 +304,16 @@ export default function HowItWorks() {
 
   const CARDS: CardSpec[] = [
     {
-      bg: '#0e0b22',
       title: 'Every lead. Every channel. Real time.',
       desc: 'The moment someone messages on WhatsApp, visits your website, calls, or DMs on Instagram, PROXe captures them instantly. Lead scored and logged before you blink.',
       Vis: CaptureVis,
     },
     {
-      bg: '#0e0b22',
       title: 'One memory. Every conversation.',
       desc: 'Customer messaged on WhatsApp Monday. Called Thursday. Visited the website Saturday. PROXe remembers all of it. They never repeat themselves. You never lose context.',
       Vis: MemoryVis,
     },
     {
-      bg: '#0e0b22',
       title: 'Gone quiet? PROXe keeps knocking.',
       desc: 'Most leads just need one more nudge. PROXe sends it automatically across WhatsApp, email, and SMS until they respond.',
       Vis: ReactivateVis,
@@ -311,18 +324,23 @@ export default function HowItWorks() {
     <section ref={secRef} className="hiw-section">
       <div className="proxe-container">
         <div className="hiw-grid">
-          {CARDS.map(({ bg, title, desc, Vis }, i) => (
+          {CARDS.map(({ title, desc, Vis }, i) => (
             <article
               key={i}
               className={`hiw-card${vis ? ' hiw-in' : ''}`}
-              style={{ transitionDelay: `${0.2 + i * 0.1}s` }}
+              style={{ transitionDelay: `${0.2 + i * 0.1}s`, background: CARD_ACCENTS[i].grad }}
             >
-              <div className="hiw-card-top" style={{ background: bg }}>
-                <Vis on={vis} />
-              </div>
-              <div className="hiw-card-bot">
+              {/* Left: content */}
+              <div className="hiw-card-content">
+                <div className="hiw-card-icon" style={{ color: CARD_ACCENTS[i].icon, background: `${CARD_ACCENTS[i].icon}18`, border: `1px solid ${CARD_ACCENTS[i].icon}30` }}>
+                  {ICONS[i]}
+                </div>
                 <h3 className="hiw-card-title">{title}</h3>
                 <p className="hiw-card-desc">{desc}</p>
+              </div>
+              {/* Right: live animation */}
+              <div className="hiw-card-vis-wrap">
+                <Vis on={vis} />
               </div>
             </article>
           ))}

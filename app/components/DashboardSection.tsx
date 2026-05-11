@@ -190,12 +190,29 @@ export default function DashboardSection() {
               </div>
 
               {/* Upcoming Events */}
-              <div className="db2-events">
-                <div className="db2-events-left">
-                  <span className="db2-events-title">Upcoming Events</span>
-                  <span className="db2-events-badge">0</span>
+              <div className="db2-events-card">
+                <div className="db2-panel-header">
+                  <div className="db2-events-left">
+                    <span className="db2-panel-title">Upcoming Events</span>
+                    <span className="db2-events-badge">2</span>
+                  </div>
+                  <span className="db2-panel-view">View All →</span>
                 </div>
-                <span className="db2-events-view">View All →</span>
+                <div className="db2-event-list">
+                  {[
+                    { dot: '#7C3AED', label: 'Follow-up call', lead: 'Rahul S.',  time: 'Today, 4:00 PM',   tag: 'Scheduled' },
+                    { dot: '#0EA5E9', label: 'Demo walkthrough', lead: 'Sara J.', time: 'Tomorrow, 11:00 AM', tag: 'Confirmed' },
+                  ].map(ev => (
+                    <div key={ev.lead} className="db2-event-row">
+                      <div className="db2-event-dot" style={{ background: ev.dot, boxShadow: `0 0 6px ${ev.dot}88` }} />
+                      <div className="db2-event-body">
+                        <span className="db2-event-label">{ev.label} <span className="db2-event-lead">· {ev.lead}</span></span>
+                        <span className="db2-event-time">{ev.time}</span>
+                      </div>
+                      <span className="db2-event-tag" style={{ color: ev.dot, background: `${ev.dot}18`, border: `1px solid ${ev.dot}35` }}>{ev.tag}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Bottom */}
@@ -205,7 +222,20 @@ export default function DashboardSection() {
                     <span className="db2-panel-title">Leads Needing Attention</span>
                     <span className="db2-panel-view">View All →</span>
                   </div>
-                  <div className="db2-panel-empty">No leads need attention</div>
+                  {[
+                    { name: 'Priya M.',  tag: 'No reply · 5 days', score: 67, color: '#F59E0B' },
+                    { name: 'Amit K.',   tag: 'Missed call · 2 days', score: 45, color: '#0EA5E9' },
+                    { name: 'Neha R.',   tag: 'Form drop-off · 1 day', score: 28, color: '#9CA3AF' },
+                  ].map(lead => (
+                    <div key={lead.name} className="db2-attn-row">
+                      <div className="db2-attn-avatar">{lead.name[0]}</div>
+                      <div className="db2-attn-body">
+                        <span className="db2-attn-name">{lead.name}</span>
+                        <span className="db2-attn-tag">{lead.tag}</span>
+                      </div>
+                      <span className="db2-attn-score" style={{ color: lead.color }}>{lead.score}</span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="db2-activity">
@@ -214,8 +244,9 @@ export default function DashboardSection() {
                     <span className="db2-panel-view">View All →</span>
                   </div>
                   {[
-                    { name: 'Md Mehran alam arrived via web', meta: '10d ago · Web',       green: false },
-                    { name: 'Rahul S. replied on WhatsApp',   meta: '2m ago · WhatsApp',  green: true  },
+                    { name: 'Rahul S. replied on WhatsApp',        meta: '2m ago · WhatsApp',  green: true  },
+                    { name: 'Sara J. booked a demo',                meta: '14m ago · Instagram', green: true  },
+                    { name: 'Md Mehran alam arrived via web',       meta: '10d ago · Web',       green: false },
                   ].map(({ name, meta, green }) => (
                     <div key={name} className="db2-activity-row">
                       <div className={`db2-activity-avatar${green ? ' db2-activity-avatar--green' : ''}`}>
