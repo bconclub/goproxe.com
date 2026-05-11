@@ -50,20 +50,51 @@ function CaptureVis({ on }: { on: boolean }) {
 ───────────────────────────────────────────────────────────── */
 function MemoryVis({ on }: { on: boolean }) {
   const [step, setStep] = useState(0);
+  const [scoreVal, setScoreVal] = useState(0);
+  const scoreRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
-    if (!on) { setStep(0); return; }
+    if (!on) { setStep(0); setScoreVal(0); return; }
     let dead = false;
     const ts: ReturnType<typeof setTimeout>[] = [];
+
+    function runScore() {
+      setScoreVal(0);
+      const start = performance.now();
+      const dur = 1000;
+      const target = 74;
+      if (scoreRef.current) clearInterval(scoreRef.current);
+      scoreRef.current = setInterval(() => {
+        const elapsed = performance.now() - start;
+        const pct = Math.min(elapsed / dur, 1);
+        setScoreVal(Math.round(pct * target));
+        if (pct >= 1 && scoreRef.current) { clearInterval(scoreRef.current); scoreRef.current = null; }
+      }, 16);
+    }
+
     function loop() {
       setStep(0);
+      setScoreVal(0);
       [300, 1100, 1900, 2700].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 5200));
+      ts.push(setTimeout(() => { if (!dead) runScore(); }, 3000));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 6400));
     }
     loop();
-    return () => { dead = true; ts.forEach(clearTimeout); };
+    return () => {
+      dead = true;
+      ts.forEach(clearTimeout);
+      if (scoreRef.current) clearInterval(scoreRef.current);
+    };
   }, [on]);
+
+  const scorePct = (scoreVal / 74) * 100;
+  const barColor = scoreVal < 40
+    ? `color-mix(in srgb, #9CA3AF ${100 - (scoreVal / 40) * 100}%, #F59E0B ${(scoreVal / 40) * 100}%)`
+    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - 40) / 34) * 100}%, #7C3AED ${((scoreVal - 40) / 34) * 100}%)`;
+
+  const scoreVisible = step >= 4;
 
   return (
     <div className="hiw-vis">
@@ -89,7 +120,38 @@ function MemoryVis({ on }: { on: boolean }) {
           </div>
         ))}
       </div>
-      <div className="hiw-mem-foot" style={{ opacity: step >= 4 ? 1 : 0 }}>One unified thread</div>
+
+      {/* ── Lead score gauge ── */}
+      <div className="hiw-score-wrap" style={{ opacity: scoreVisible ? 1 : 0, transform: scoreVisible ? 'translateY(0)' : 'translateY(6px)' }}>
+        <div className="hiw-score-row">
+          <span className="hiw-score-lbl">Lead Score</span>
+          <div className="hiw-score-bar-wrap">
+            <div className="hiw-score-bar-track">
+              <div
+                className="hiw-score-bar-fill"
+                style={{ width: `${scorePct}%`, background: barColor }}
+              />
+            </div>
+            <span className="hiw-score-num">{scoreVal}</span>
+          </div>
+          <span className="hiw-score-badge">High Intent</span>
+        </div>
+        <div className="hiw-score-tags">
+          {([
+            { txt: 'Pricing asked',    cls: 'amber',  delay: '0s'   },
+            { txt: 'Demo requested',   cls: 'purple', delay: '0.2s' },
+            { txt: 'Multi-channel',    cls: 'teal',   delay: '0.4s' },
+          ]).map(({ txt, cls, delay }) => (
+            <span
+              key={txt}
+              className={`hiw-score-tag hiw-score-tag--${cls}`}
+              style={{ animationDelay: delay, animationPlayState: scoreVisible ? 'running' : 'paused' }}
+            >
+              {txt}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
