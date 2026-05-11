@@ -61,6 +61,7 @@ html:has(.proxe-root),
 body:has(.proxe-root) {
   background: #14102e !important;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* ===== Typography helpers ===== */
@@ -4994,11 +4995,17 @@ body:has(.proxe-root) {
   .cd-nav {
     flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    width: 100%;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scroll-snap-type: x mandatory;
   }
   .cd-nav-item {
     flex: 0 0 auto;
-    min-width: 200px;
+    min-width: 180px;
+    scroll-snap-align: start;
   }
   .cd-preview {
     min-height: 460px;
