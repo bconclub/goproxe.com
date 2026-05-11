@@ -5540,7 +5540,11 @@ body:has(.proxe-root) {
 .cd-wa-qr-btn:hover { background: rgba(0,128,105,0.04) !important; }
 
 /* Tighten Card 3 (Reactivate) so content matches visual weight of cards 1 & 2 */
-.hiw-vis--react { gap: 8px; }
+.hiw-vis--react {
+  gap: 8px;
+  justify-content: flex-start !important;
+  padding-top: 32px !important;
+}
 .hiw-vis--react .hiw-react-chat { gap: 6px; }
 .hiw-vis--react .hiw-react-bub { padding: 7px 11px; font-size: 11px; }
 .hiw-vis--react .hiw-react-meta { font-size: 9.5px; margin-top: 2px; }
