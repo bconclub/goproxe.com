@@ -1,33 +1,44 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-/* ── Sparkline SVG ── */
+/* ── Sparkline SVG (smooth bezier curve) ── */
 function Sparkline({ pts, color, width = 110, height = 36 }: {
   pts: number[]; color: string; width?: number; height?: number;
 }) {
   const max = Math.max(...pts), min = Math.min(...pts);
   const range = max - min || 1;
   const pad = 2;
-  const points = pts.map((v, i) => {
-    const x = pad + (i / (pts.length - 1)) * (width - pad * 2);
-    const y = pad + (1 - (v - min) / range) * (height - pad * 2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
+  const coords = pts.map((v, i) => ({
+    x: pad + (i / (pts.length - 1)) * (width - pad * 2),
+    y: pad + (1 - (v - min) / range) * (height - pad * 2),
+  }));
 
-  // gradient fill area
-  const firstX = pad, lastX = width - pad;
-  const areaPoints = `${firstX},${height} ${points} ${lastX},${height}`;
+  // Build smooth cubic bezier path
+  function smooth(pts: { x: number; y: number }[]) {
+    if (pts.length < 2) return '';
+    let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+    for (let i = 1; i < pts.length; i++) {
+      const prev = pts[i - 1], cur = pts[i];
+      const cpx = (prev.x + cur.x) / 2;
+      d += ` C ${cpx.toFixed(1)},${prev.y.toFixed(1)} ${cpx.toFixed(1)},${cur.y.toFixed(1)} ${cur.x.toFixed(1)},${cur.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
+  const linePath = smooth(coords);
+  const areaPath = `${linePath} L ${coords[coords.length-1].x.toFixed(1)},${height} L ${coords[0].x.toFixed(1)},${height} Z`;
+  const gId = `sg-${color.replace(/[^a-zA-Z0-9]/g, '')}`;
 
   return (
     <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ overflow: 'visible', display: 'block' }}>
       <defs>
-        <linearGradient id={`sg-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+        <linearGradient id={gId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <polygon points={areaPoints} fill={`url(#sg-${color.replace('#','')})`} />
-      <polyline points={points} fill="none" stroke={color}
+      <path d={areaPath} fill={`url(#${gId})`} />
+      <path d={linePath} fill="none" stroke={color}
         strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -158,10 +169,10 @@ export default function DashboardSection() {
               <div className="db2-glance">
                 <div className="db2-glance-title">At a Glance</div>
                 <div className="db2-gauges">
-                  <CircleGauge value="27%"  label="Avg Lead Score"  color="#ef4444" pct={0.27} />
+                  <CircleGauge value="46%"  label="Avg Lead Score"  color="#ef4444" pct={0.46} />
                   <CircleGauge value="99%"  label="Response Rate"   color="#22c55e" pct={0.99} />
                   <CircleGauge value="29%"  label="Key Event Rate"  color="#22c55e" pct={0.29} />
-                  <CircleGauge value="9.7"  sub="sec"  label="Avg Response Time" color="#ef4444" pct={0.42} />
+                  <CircleGauge value="3.5"  sub="sec"  label="Avg Response Time" color="#ef4444" pct={0.18} />
                 </div>
               </div>
 
