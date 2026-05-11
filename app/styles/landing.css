@@ -3639,13 +3639,18 @@ body:has(.proxe-root) {
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
+  min-height: 500px;
 }
 
 .hiw-card-top {
-  height: 220px;
+  height: 320px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.hiw-grid > article:nth-child(3) .hiw-card-top {
+  height: 340px;
 }
 
 .hiw-card-bot {
@@ -3679,8 +3684,8 @@ body:has(.proxe-root) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 20px 24px;
+  gap: 12px;
+  padding: 24px 28px;
 }
 
 .hiw-dotgrid {
@@ -3694,13 +3699,13 @@ body:has(.proxe-root) {
 /* ── Card 1: notification pills ── */
 .hiw-pill {
   width: 100%;
-  max-width: 240px;
+  max-width: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: rgba(255,255,255,0.92);
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 12px;
+  padding: 11px 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   transition: opacity 0.4s ease, transform 0.4s ease;
   position: relative;
@@ -3708,9 +3713,9 @@ body:has(.proxe-root) {
 }
 
 .hiw-pill-ico {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3719,21 +3724,21 @@ body:has(.proxe-root) {
 }
 
 .hiw-pill-txt {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #111827;
   flex: 1;
 }
 
 .hiw-pill-badge {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   background: #22c55e;
   color: #fff;
-  border-radius: 4px;
-  padding: 2px 5px;
+  border-radius: 5px;
+  padding: 3px 7px;
   flex-shrink: 0;
 }
 
@@ -3754,9 +3759,9 @@ body:has(.proxe-root) {
 .hiw-mem-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  max-width: 240px;
+  max-width: none;
   position: relative;
   z-index: 1;
 }
@@ -3764,10 +3769,10 @@ body:has(.proxe-root) {
 .hiw-mem-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: rgba(255,255,255,0.90);
-  border-radius: 9px;
-  padding: 7px 10px;
+  border-radius: 10px;
+  padding: 10px 13px;
   position: relative;
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
@@ -3803,7 +3808,7 @@ body:has(.proxe-root) {
 }
 
 .hiw-mem-lbl {
-  font-size: 11px;
+  font-size: 12px;
   color: #111827;
   font-weight: 500;
 }
@@ -3822,13 +3827,16 @@ body:has(.proxe-root) {
 
 /* ── Lead score gauge (card 2) ── */
 .hiw-score-wrap {
-  margin-top: 8px;
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   transition: opacity 0.4s ease, transform 0.4s ease;
   position: relative;
   z-index: 1;
+  width: 100%;
+  min-height: 80px;
+  justify-content: center;
 }
 
 .hiw-score-row {
@@ -3888,8 +3896,10 @@ body:has(.proxe-root) {
 
 .hiw-score-tags {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   flex-wrap: wrap;
+  min-height: 40px;
+  align-items: center;
 }
 
 .hiw-score-tag {
@@ -3914,9 +3924,9 @@ body:has(.proxe-root) {
 .hiw-fu {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-  max-width: 240px;
+  max-width: none;
   position: relative;
   z-index: 1;
 }
@@ -3924,29 +3934,29 @@ body:has(.proxe-root) {
 .hiw-fu-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .hiw-fu-row--lead { flex-direction: row-reverse; }
 
 .hiw-fu-day {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   color: rgba(255,255,255,0.7);
-  width: 34px;
+  width: 38px;
   flex-shrink: 0;
   text-align: center;
 }
 
 .hiw-fu-bub {
   background: rgba(255,255,255,0.88);
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 10.5px;
+  border-radius: 12px;
+  padding: 9px 13px;
+  font-size: 11.5px;
   color: #111827;
   font-weight: 500;
-  max-width: 160px;
+  max-width: 200px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 
@@ -3955,18 +3965,22 @@ body:has(.proxe-root) {
 }
 
 .hiw-fu-close {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   background: #22c55e;
   color: #fff;
-  border-radius: 4px;
-  padding: 2px 6px;
+  border-radius: 5px;
+  padding: 3px 8px;
   flex-shrink: 0;
 }
 
 @media (max-width: 900px) {
-  .hiw-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .hiw-grid { grid-template-columns: 1fr; max-width: 100%; margin: 0 auto; }
+  .hiw-card { min-height: unset; }
+  .hiw-card-top { height: 280px; }
+  .hiw-grid > article:nth-child(3) .hiw-card-top { height: 300px; }
+  .hiw-card-bot { padding: 24px; text-align: left; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
