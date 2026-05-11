@@ -5173,20 +5173,15 @@ body:has(.proxe-root) {
   align-items: center;
   gap: 14px;
   padding: 16px 18px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  border: none;
   border-radius: 14px;
   color: rgba(255,255,255,0.7);
   text-align: left;
   cursor: pointer;
   overflow: hidden;
   transform-origin: left center;
-  transition:
-    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s ease;
 }
 .cd-nav-label {
   font-size: 14px;
@@ -5213,15 +5208,10 @@ body:has(.proxe-root) {
   color: #fff;
 }
 .cd-nav-item--active {
-  background: linear-gradient(135deg, #7C3AED, #5B21B6);
-  border-color: #A78BFA;
+  background: transparent;
+  border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 0 2px rgba(167,139,250,0.35), 0 16px 40px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
-  padding: 20px 22px;
-}
-.cd-nav-item--active .cd-nav-icon {
-  width: 42px;
-  height: 42px;
+  box-shadow: none;
 }
 .cd-nav-icon {
   display: flex;

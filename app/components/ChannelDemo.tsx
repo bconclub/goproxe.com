@@ -175,17 +175,8 @@ const MSN: ConvMsg[] = [
    WEB CHAT CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const WEB: ConvMsg[] = [
-  { from: 'agent', text: 'Hi, I am Edu.', noTyping: true },
-  { from: 'agent', text: 'I am PROXe Academy’s AI counsellor.', delay: 600 },
-  { from: 'agent', text: 'I am here to help you find the right program. What are you looking for?', delay: 700 },
-  { from: 'agent', type: 'qr', noTyping: true, delay: 400,
-    qr: ['JEE Coaching', 'NEET Coaching', 'I am a parent'] },
-  { from: 'lead',  text: 'JEE Coaching', delay: 1200 },
-  { from: 'agent', text: 'Great. Which class is your child in?' },
-  { from: 'agent', type: 'qr', noTyping: true, delay: 400,
-    qr: ['Class 11', 'Class 12', 'Repeater'] },
-  { from: 'lead',  text: 'Class 11', delay: 1000 },
-  { from: 'agent', text: 'Here are 3 programs that fit:' },
+  { from: 'lead',  text: 'Looking for JEE coaching for my son in Class 11.' },
+  { from: 'agent', text: 'Got it. Here are 3 programs that fit:' },
   { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
     carousel: [
       { title: '2-Year Foundation', sub: 'Class 11+12 · ₹95K/yr · Hybrid', btn: 'View',
@@ -778,12 +769,13 @@ export default function ChannelDemo() {
           {/* ── Left: curved channel nav ── */}
           <nav className="cd-nav" aria-label="Channels" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
             {CHANNELS.map(({ id, label, Icon }, idx) => {
-              const activeIdx = CHANNELS.findIndex(c => c.id === active);
-              const dist = Math.abs(idx - activeIdx);
-              // Semi-circle: active bulges far right, neighbours arc back left
-              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
-              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.45 : 0.25;
-              const scale = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
+              // Fixed semicircle by INDEX (does not change when active changes)
+              const total = CHANNELS.length;
+              const mid = (total - 1) / 2;            // 2 for 5 items
+              const distFromMid = Math.abs(idx - mid); // 2,1,0,1,2
+              const offsetX = distFromMid === 0 ? 60 : distFromMid === 1 ? 30 : -10;
+              const scale = distFromMid === 0 ? 1.08 : distFromMid === 1 ? 0.96 : 0.88;
+              const opacity = distFromMid === 0 ? 1 : distFromMid === 1 ? 0.78 : 0.5;
               const isActive = active === id;
               return (
                 <button
