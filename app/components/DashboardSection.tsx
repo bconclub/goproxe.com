@@ -331,159 +331,31 @@ export default function DashboardSection() {
           </div>
         </div>
 
-        {/* ── Slide 2: Conversation inbox view ── */}
+        {/* ── Slide 2: Conversations (real screenshot) ── */}
         <div ref={el => { slideRefs.current[1] = el; }} className={`db2-browser db2-slide${revealedSlides.has(1) ? ' db2-slide--in' : ''}`}>
           <div className="db2-chrome">
             <div className="db2-chrome-dots"><span /><span /><span /></div>
             <div className="db2-chrome-url">
               <span className="db2-chrome-lock">🔒</span>
-              app.proxe.ai/inbox
+              app.proxe.ai/conversations
             </div>
           </div>
-          <div className="db2-app db2-app--inbox">
-            <div className="db2-sidebar">
-              <div className="db2-sidebar-logo">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <circle cx="11" cy="11" r="10" stroke="#C8FF00" strokeWidth="2" />
-                  <circle cx="11" cy="11" r="5" fill="#C8FF00" />
-                </svg>
-              </div>
-              <div className="db2-sidebar-icons">
-                {['⊞','💬','👤','▤','📅','✓','〜','💬','📖','⚙'].map((ic, i) => (
-                  <div key={i} className={`db2-sidebar-ico${i === 1 ? ' db2-sidebar-ico--active' : ''}`}>{ic}</div>
-                ))}
-              </div>
-            </div>
+          <div className="db2-shot">
+            <img src="/home/Conversations.webp" alt="PROXe Conversations" />
+          </div>
+        </div>
 
-            {/* Conversation list */}
-            <div className="db2-inbox-list">
-              <div className="db2-inbox-search">🔍 <span>Search conversations...</span></div>
-              <div className="db2-inbox-srctabs">
-                <span className="db2-inbox-srctab db2-inbox-srctab--active">All</span>
-                <span className="db2-inbox-srctab">Web</span>
-                <span className="db2-inbox-srctab">WhatsApp</span>
-              </div>
-              {[
-                { name: 'Prityush',          sub: 'PROXe Platform',          ago: '27d ago', score: 46, src: 'web', evt: null, active: true },
-                { name: 'Rachna Agarwal',    sub: 'Rachna! I think you might have sent this to the wrong...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Gopal',             sub: 'Hi Gopal, you reached out to us recently about Huma...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Angel Fire Service',sub: 'Hi Angel Fire Service, you reached out to us recently...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Research',          sub: 'Hi Research, you reached out to us recently about H...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Ramesh Babu',       sub: 'Hi Ramesh Babu, you reached out to us rece...', ago: '30d ago', src: 'wa', evt: 'EVENT' },
-                { name: 'Kushal Begur',      sub: 'Hi kushal begur, you reached out to us recently abou...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Vijay Chavan',      sub: 'Hi Vijay Chavan, you reached out to us recently abou...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'B Srikanth Reddy',  sub: 'Hi B Srikanth Reddy, you reached out to us recently a...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'ESKelectric',       sub: 'Hi Esk Electric Vehicles, you reached out to us recen...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Uma',               sub: 'Hi Uma, you reached out to us recently about Human...', ago: '30d ago', src: 'wa', evt: null },
-                { name: 'Sri Lakshmi Sai',   sub: 'Hi Sri Lakshmi Sai, you reached out to us re...', ago: '30d ago', src: 'wa', evt: 'EVENT' },
-              ].map((c, i) => (
-                <div key={i} className={`db2-inbox-item${c.active ? ' db2-inbox-item--active' : ''}`}>
-                  <div className="db2-inbox-avatar" style={{ background: c.src === 'wa' ? '#25D366' : '#7C3AED' }}>
-                    {c.active && <span className="db2-inbox-score">{c.score}</span>}
-                  </div>
-                  <div className="db2-inbox-body">
-                    <div className="db2-inbox-name-row">
-                      <span className="db2-inbox-name">{c.name}</span>
-                      <span className="db2-inbox-ago">{c.ago}</span>
-                    </div>
-                    <div className="db2-inbox-sub">{c.sub}</div>
-                  </div>
-                  {c.evt && <span className="db2-inbox-evt">{c.evt}</span>}
-                </div>
-              ))}
+        {/* ── Slide 3: Leads (real screenshot) ── */}
+        <div ref={el => { slideRefs.current[2] = el; }} className={`db2-browser db2-slide${revealedSlides.has(2) ? ' db2-slide--in' : ''}`}>
+          <div className="db2-chrome">
+            <div className="db2-chrome-dots"><span /><span /><span /></div>
+            <div className="db2-chrome-url">
+              <span className="db2-chrome-lock">🔒</span>
+              app.proxe.ai/leads
             </div>
-
-            {/* Chat thread */}
-            <div className="db2-inbox-thread">
-              <div className="db2-inbox-thread-hdr">
-                <span className="db2-inbox-thread-tab db2-inbox-thread-tab--active">All (11)</span>
-                <span className="db2-inbox-thread-tab">Web (11)</span>
-              </div>
-              <div className="db2-inbox-thread-body">
-                <div className="db2-inbox-date">Apr 11, 2026</div>
-                <div className="db2-inbox-msg db2-inbox-msg--lead">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name">PRITYUSH</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:32 AM</span></div>
-                  <div className="db2-inbox-msg-text">quality leads</div>
-                </div>
-                <div className="db2-inbox-msg db2-inbox-msg--agent">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name db2-inbox-msg-name--ai">PROXE AI</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:32 AM</span></div>
-                  <div className="db2-inbox-msg-text">So you&apos;re getting leads but they&apos;re not converting? <b>Let&apos;s set up an AI Brand Audit</b> — we&apos;ll map out a lead qualification system built for your painting business.</div>
-                </div>
-                <div className="db2-inbox-msg db2-inbox-msg--lead">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name">PRITYUSH</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:32 AM</span></div>
-                  <div className="db2-inbox-msg-text">wahsta up</div>
-                </div>
-                <div className="db2-inbox-msg db2-inbox-msg--lead">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name">PRITYUSH</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:33 AM</span></div>
-                  <div className="db2-inbox-msg-text">Explore AI Solutions</div>
-                </div>
-                <div className="db2-inbox-msg db2-inbox-msg--agent">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name db2-inbox-msg-name--ai">PROXE AI</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:33 AM</span></div>
-                  <div className="db2-inbox-msg-text">Perfect! <b>What&apos;s your name?</b> I&apos;ll show you exactly how AI can transform your painting business. Are you looking to automate lead qualification, booking, or something else?</div>
-                </div>
-                <div className="db2-inbox-date">Apr 12, 2026</div>
-                <div className="db2-inbox-msg db2-inbox-msg--lead">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name">PRITYUSH</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:52 PM</span></div>
-                  <div className="db2-inbox-msg-text">About BCON</div>
-                </div>
-                <div className="db2-inbox-msg db2-inbox-msg--agent">
-                  <div className="db2-inbox-msg-meta"><span className="db2-inbox-msg-name db2-inbox-msg-name--ai">PROXE AI</span> <span className="db2-inbox-msg-src">Web</span> <span className="db2-inbox-msg-time">1:52 PM</span></div>
-                  <div className="db2-inbox-msg-text">Hey Kanishk! We help businesses integrate AI and maximize their potential. What&apos;s your business?</div>
-                </div>
-              </div>
-              <div className="db2-inbox-thread-input">
-                <span className="db2-inbox-thread-input-ai">✨</span>
-                <span className="db2-inbox-thread-input-placeholder">Type a reply...</span>
-                <span className="db2-inbox-thread-input-send">▶</span>
-              </div>
-            </div>
-
-            {/* Right details panel */}
-            <div className="db2-inbox-details">
-              <div className="db2-inbox-details-hdr">
-                <div className="db2-inbox-details-av" style={{ background: '#7C3AED' }}>P</div>
-                <div className="db2-inbox-details-info">
-                  <div className="db2-inbox-details-name">Prityush <span className="db2-inbox-details-ago">27d ago</span></div>
-                  <div className="db2-inbox-details-tags">
-                    <span className="db2-inbox-details-qual">Qualified</span>
-                    <span className="db2-inbox-details-cal">📅</span>
-                  </div>
-                </div>
-              </div>
-              <div className="db2-inbox-details-score">
-                <div className="db2-inbox-details-score-row">
-                  <span>Lead Score</span>
-                  <span className="db2-inbox-details-score-num">46 <span className="db2-inbox-details-cold">Cold</span></span>
-                </div>
-                <div className="db2-inbox-details-score-bar">
-                  <div className="db2-inbox-details-score-fill" style={{ width: '46%' }} />
-                </div>
-              </div>
-              <div className="db2-inbox-details-actions">
-                <span className="db2-inbox-details-act db2-inbox-details-act--call">📞 Call</span>
-                <span className="db2-inbox-details-act db2-inbox-details-act--wa">💬 WhatsApp</span>
-                <span className="db2-inbox-details-act db2-inbox-details-act--email">✉ Email</span>
-              </div>
-              <div className="db2-inbox-details-block">
-                <div className="db2-inbox-details-label">CONTACT</div>
-                <div className="db2-inbox-details-line">✉ prat@yush.com</div>
-                <div className="db2-inbox-details-line">📞 9876549875</div>
-              </div>
-              <div className="db2-inbox-details-stats">
-                <div className="db2-inbox-details-stat"><div className="db2-inbox-details-stat-v">6</div><div className="db2-inbox-details-stat-l">MESSAGES</div></div>
-                <div className="db2-inbox-details-stat"><div className="db2-inbox-details-stat-v">83%</div><div className="db2-inbox-details-stat-l">RESPONSE</div></div>
-                <div className="db2-inbox-details-stat"><div className="db2-inbox-details-stat-v">30d</div><div className="db2-inbox-details-stat-l">PIPELINE</div></div>
-              </div>
-              <div className="db2-inbox-details-block">
-                <div className="db2-inbox-details-label">PROFILE</div>
-                <div className="db2-inbox-details-line db2-inbox-details-row"><span>Source</span><span className="db2-inbox-details-val">Web</span></div>
-              </div>
-              <div className="db2-inbox-details-block">
-                <div className="db2-inbox-details-label">UPCOMING</div>
-                <div className="db2-inbox-details-line db2-inbox-details-muted">No upcoming events</div>
-              </div>
-              <div className="db2-inbox-details-cta">View Full Details</div>
-            </div>
+          </div>
+          <div className="db2-shot">
+            <img src="/home/Leads.webp" alt="PROXe Leads" />
           </div>
         </div>
 

@@ -4661,6 +4661,21 @@ body:has(.proxe-root) {
   text-align: center;
 }
 
+/* ── Real product screenshot slide ── */
+.db2-shot {
+  width: 100%;
+  background: #000;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.db2-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 0;
+}
+
 /* ── Leads table view ── */
 .db2-leads { display: flex; flex-direction: column; gap: 14px; padding: 4px; }
 .db2-leads-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; gap: 16px; }
