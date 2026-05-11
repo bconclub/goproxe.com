@@ -494,6 +494,11 @@ function IgChat({ isActive }: { isActive: boolean }) {
           const isLead = m.from === 'lead';
           return (
             <div key={i} className={`cd-ig-row cd-ig-row--${isLead ? 'lead' : 'agent'} conv-msg-in`}>
+              {!isLead && (
+                <div className="cd-ig-msg-av">
+                  <img src="/proxe/brand/proxe-icon-white.webp" alt="" width={20} height={20} />
+                </div>
+              )}
               <div className={`cd-ig-bub cd-ig-bub--${isLead ? 'lead' : 'agent'}`}>{m.text}</div>
             </div>
           );
