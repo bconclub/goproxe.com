@@ -777,32 +777,23 @@ export default function ChannelDemo() {
         </p>
 
         <div className="cd-stage">
-          {/* ── Left: curved channel nav (dial — whole list translates Y so active slides to center) ── */}
-          {(() => {
-            const activeIdx = CHANNELS.findIndex(c => c.id === active);
-            const total = CHANNELS.length;
-            const centerIdx = (total - 1) / 2;            // 2 for 5 items
-            const ITEM_H = 76;                            // approx item height + gap
-            const listShiftY = (centerIdx - activeIdx) * ITEM_H;
-            return (
-              <nav
-                className="cd-nav"
-                aria-label="Channels"
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
-                style={{ transform: `translateY(${listShiftY}px)` }}
-              >
-                {CHANNELS.map(({ id, label, Icon }, idx) => {
-                  // Curve shape is FIXED by INDEX position — it does not rearrange when active changes
-                  const distFromCenter = Math.abs(idx - centerIdx);
-                  // But after the list translates, the "visible center" is always the active item.
-                  // We want the curve to be relative to that center, so use dist from active.
-                  const dist = Math.abs(idx - activeIdx);
-                  const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : -10;
-                  const scale   = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
-                  const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : 0.5;
-                  void distFromCenter;
+          {/* ── Left: fixed semi-circle channel nav (positions never move) ── */}
+          <nav
+            className="cd-nav"
+            aria-label="Channels"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {CHANNELS.map(({ id, label, Icon }, idx) => {
+              // Curve is FIXED by INDEX — Web Chat (idx 2, middle) is always the bulged centerpoint
+              const total = CHANNELS.length;
+              const centerIdx = (total - 1) / 2;
+              const distFromCenter = Math.abs(idx - centerIdx);
+              const offsetX = distFromCenter === 0 ? 60 : distFromCenter === 1 ? 30 : -10;
+              const scale = distFromCenter === 0 ? 1.08 : distFromCenter === 1 ? 0.96 : 0.88;
+              const baseOpacity = distFromCenter === 0 ? 1 : distFromCenter === 1 ? 0.78 : 0.5;
                   const isActive = active === id;
+                  const opacity = isActive ? 1 : baseOpacity * 0.7;
                   return (
                     <button
                       key={id}
@@ -826,8 +817,6 @@ export default function ChannelDemo() {
               );
             })}
           </nav>
-            );
-          })()}
 
           {/* ── Right: active channel preview ── */}
           <div
