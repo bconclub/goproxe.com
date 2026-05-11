@@ -4306,7 +4306,9 @@ body:has(.proxe-root) {
 .db2-stat-sub { font-size: 11px; margin-bottom: 2px; }
 .db2-stat-spark {
   margin: 4px 0 6px; overflow: hidden;
+  width: 100%;
 }
+.db2-stat-spark svg { width: 100% !important; display: block; }
 .db2-stat-footer {
   display: flex; align-items: center; justify-content: space-between; margin-top: 2px;
 }

@@ -19,7 +19,7 @@ function Sparkline({ pts, color, width = 110, height = 36 }: {
   const areaPoints = `${firstX},${height} ${points} ${lastX},${height}`;
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }}>
+    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ overflow: 'visible', display: 'block' }}>
       <defs>
         <linearGradient id={`sg-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.25" />
