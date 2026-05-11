@@ -325,7 +325,7 @@ export default function HowItWorks() {
       <div className="proxe-container">
         <div className={`proxe-section-label hiw-center${vis ? ' hiw-in' : ''}`}>How It Works</div>
         <h2 className={`hiw-h2${vis ? ' hiw-in' : ''}`} style={{ transitionDelay: '0.08s' }}>
-          Capture. Remember. Close.
+          Capture, Nurture, Close, Repeat.
         </h2>
         <div className="hiw-grid">
           {CARDS.map(({ title, desc, Vis }, i) => (
