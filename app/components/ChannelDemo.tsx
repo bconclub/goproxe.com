@@ -607,6 +607,7 @@ export default function ChannelDemo() {
   return (
     <section className="cd-section">
       <div className="proxe-container">
+        <div className="proxe-section-label">PROXe in Action</div>
         <h2 className="cd-headline">Leads don&rsquo;t wait. Neither does PROXe.</h2>
         <p className="cd-sub">
           PROXe captures, follows up, and pushes leads to close across channels. One AI brain. Full context. Always on.
