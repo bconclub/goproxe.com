@@ -152,12 +152,11 @@ const VOICE: VoiceLine[] = [
 ═══════════════════════════════════════════════════════════════ */
 const IG: ConvMsg[] = [
   { from: 'lead',  text: 'Saw your reel. Do you do online coaching?' },
-  { from: 'agent', text: 'Yes, fully online. 12-week program. Workouts, diet, weekly calls. Where are you based?' },
-  { from: 'lead',  text: 'Bangalore', delay: 800 },
-  { from: 'agent', text: 'Perfect. We have 3 clients from Bangalore right now. Want to jump on a free call this week?' },
-  { from: 'lead',  text: 'How much does it cost?', delay: 900 },
-  { from: 'agent', text: 'Starts at 8,000 a month. First call is free. No commitment.' },
-  { from: 'agent', type: 'pill-btn', noTyping: true, delay: 400, pillBtn: 'Book Free Call' },
+  { from: 'agent', text: 'Yes, fully online. 12-week program. Workouts, diet, weekly calls.' },
+  { from: 'agent', type: 'qr', noTyping: true, delay: 300, qr: ['Tell me more', 'See success stories', 'Pricing'] },
+  { from: 'lead',  text: 'Pricing', delay: 800 },
+  { from: 'agent', text: 'Starts at ₹8,000/month. First call is free. No commitment.' },
+  { from: 'agent', type: 'pill-btn', noTyping: true, delay: 300, pillBtn: '📅 Book Free Call' },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -470,10 +469,10 @@ function IgChat({ isActive }: { isActive: boolean }) {
       <div className="cd-ig-hdr">
         <span className="cd-ig-back"><FiChevronLeft size={16} /></span>
         <div className="cd-ig-hdr-av">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><defs><linearGradient id="ig-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#f9ce34"/><stop offset="25%" stopColor="#ee2a7b"/><stop offset="100%" stopColor="#6228d7"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig-g)"/><rect x="7" y="7" width="10" height="10" rx="3" fill="none" stroke="#fff" strokeWidth="1.5"/><circle cx="17" cy="7" r="1" fill="#fff"/></svg>
+          <img src="/proxe/brand/proxe-icon-white.webp" alt="PROXe" width={28} height={28} />
         </div>
         <div className="cd-ig-hdr-info">
-          <span className="cd-ig-hdr-name">PROXe</span>
+          <span className="cd-ig-hdr-name">Coaching PROXe</span>
           <span className="cd-ig-hdr-active">Active now</span>
         </div>
         <svg className="cd-ig-hdr-call" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -483,6 +482,13 @@ function IgChat({ isActive }: { isActive: boolean }) {
           if (m.type === 'pill-btn') return (
             <div key={i} className="cd-ig-row cd-ig-row--agent conv-msg-in">
               <button className="cd-ig-pill">{m.pillBtn}</button>
+            </div>
+          );
+          if (m.type === 'qr') return (
+            <div key={i} className="cd-ig-row cd-ig-row--agent conv-msg-in">
+              <div className="cd-ig-qr">
+                {(m.qr ?? []).map(q => <button key={q} className="cd-ig-qr-btn">{q}</button>)}
+              </div>
             </div>
           );
           const isLead = m.from === 'lead';
@@ -576,7 +582,9 @@ function WebWidget({ isActive }: { isActive: boolean }) {
     <div className="cd-web">
       <div className="cd-web-hdr">
         <div className="cd-web-hdr-brand">
-          <div className="cd-web-hdr-av">P</div>
+          <div className="cd-web-hdr-av">
+            <img src="/proxe/brand/proxe-icon-white.webp" alt="PROXe" width={20} height={20} />
+          </div>
           <span className="cd-web-hdr-name">PROXe</span>
         </div>
         <div className="cd-web-hdr-icons">
@@ -715,9 +723,9 @@ export default function ChannelDemo() {
   const CHANNELS = [
     { id: 'voice',     label: 'Voice',     Icon: FiPhone },
     { id: 'whatsapp',  label: 'WhatsApp',  Icon: SiWhatsapp },
+    { id: 'web',       label: 'Web Chat',  Icon: FiGlobe },
     { id: 'instagram', label: 'Instagram', Icon: SiInstagram },
     { id: 'messenger', label: 'Messenger', Icon: SiMessenger },
-    { id: 'web',       label: 'Web Chat',  Icon: FiGlobe },
   ];
 
   const [active, setActive] = useState('voice');
