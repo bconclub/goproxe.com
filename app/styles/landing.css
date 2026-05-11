@@ -6167,59 +6167,86 @@ body:has(.proxe-root) {
 }
 
 /* ── Web chat: calendar ── */
+/* ── Web chat: full-month calendar (Windchasers-style) ── */
 .cd-web-cal {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px 14px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  position: relative;
+  width: 100%;
+  max-width: 320px;
 }
-.cd-web-cal-hdr {
+.cd-web-cal-close {
+  position: absolute;
+  top: 10px; right: 12px;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+}
+.cd-web-cal-hdr-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  justify-content: space-between;
+  padding: 4px 8px 2px;
+}
+.cd-web-cal-arr {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+}
+.cd-web-cal-month {
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.01em;
 }
-.cd-web-cal-hdr svg { color: #a78bfa; }
-.cd-web-cal-days {
+.cd-web-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 3px;
 }
 .cd-web-cal-dow {
   font-size: 9px;
   font-weight: 700;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.45);
   text-align: center;
-  padding-bottom: 3px;
-  letter-spacing: 0.04em;
+  padding: 4px 0 6px;
+  letter-spacing: 0.05em;
 }
 .cd-web-cal-day {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.7);
-  border-radius: 7px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  border-radius: 8px;
   padding: 7px 0;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 500;
   cursor: pointer;
   text-align: center;
 }
+.cd-web-cal-day--muted { color: rgba(255,255,255,0.2); cursor: default; }
 .cd-web-cal-day--active {
-  background: #7C3AED;
-  border-color: #A78BFA;
+  background: rgba(167,139,250,0.18);
+  border: 1px solid rgba(167,139,250,0.45);
   color: #fff;
-  box-shadow: 0 0 12px rgba(124,58,237,0.5);
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(124,58,237,0.4);
 }
 .cd-web-cal-times {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
+  margin-top: 4px;
 }
 .cd-web-cal-time {
   background: rgba(255,255,255,0.04);
@@ -6232,62 +6259,80 @@ body:has(.proxe-root) {
   cursor: pointer;
 }
 .cd-web-cal-time--active {
-  background: rgba(124,58,237,0.25);
+  background: rgba(167,139,250,0.18);
   border-color: rgba(167,139,250,0.5);
   color: #fff;
 }
 
-/* ── Web chat: form ── */
+/* ── Web chat: Booking Details form ── */
 .cd-web-form {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 22px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+.cd-web-form-close {
+  position: absolute;
+  top: 10px; right: 14px;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
 }
 .cd-web-form-hdr {
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 2px;
+  text-align: center;
+  letter-spacing: -0.01em;
 }
-.cd-web-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px 10px;
-  background: rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.06);
+.cd-web-form-sub {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.cd-web-form-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
-}
-.cd-web-form-label {
-  font-size: 9.5px;
-  color: rgba(255,255,255,0.45);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.cd-web-form-value {
-  font-size: 12.5px;
+  padding: 11px 13px;
+  font-size: 13px;
   color: #fff;
   font-weight: 500;
+  outline: none;
+}
+.cd-web-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+.cd-web-form-back {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
 }
 .cd-web-form-btn {
-  margin-top: 4px;
   background: #7C3AED;
   border: 1px solid #A78BFA;
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 8px;
-  padding: 9px;
+  padding: 10px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
   box-shadow: 0 8px 24px rgba(124,58,237,0.35);
 }
 

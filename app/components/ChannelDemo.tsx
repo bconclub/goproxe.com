@@ -209,13 +209,13 @@ const WEB: ConvMsg[] = [
   { from: 'agent', text: 'Locked in. Quick details to confirm:' },
   { from: 'agent', type: 'form', noTyping: true, delay: 300,
     form: {
-      title: 'Confirm Campus Tour',
+      title: 'Booking Details',
       fields: [
-        { label: 'Parent Name', value: 'Anil Sharma' },
-        { label: 'Student',     value: 'Rahul Sharma · Class 11' },
-        { label: 'Phone',       value: '+91 98765 43210' },
+        { label: 'Name',  value: 'Anil Sharma' },
+        { label: 'Email', value: 'anil@example.com' },
+        { label: 'Phone', value: '+91 98765 43210' },
       ],
-      btn: 'Confirm Tour',
+      btn: 'Book Now',
     } },
 ];
 
@@ -626,22 +626,29 @@ function WebWidget({ isActive }: { isActive: boolean }) {
           );
           if (m.type === 'calendar' && m.calendar) {
             const cal = m.calendar;
+            // Build a full 35-cell month grid for Nov 2026 (starts on a Sunday: Nov 1 = Sun)
+            const dows = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+            const prevMonthDays = [26, 27, 28, 29, 30, 31];      // Oct trailing days (last week)
+            const monthDays = Array.from({ length: 30 }, (_, k) => k + 1); // Nov 1-30
+            const nextMonthDays = [1, 2, 3, 4, 5];                // Dec leading days
             return (
               <div key={i} className="cd-web-cal conv-msg-in">
-                <div className="cd-web-cal-hdr">
-                  <FiCalendar size={14} />
-                  <span>{cal.month}</span>
+                <div className="cd-web-cal-close">×</div>
+                <div className="cd-web-cal-hdr-row">
+                  <span className="cd-web-cal-arr">‹</span>
+                  <span className="cd-web-cal-month">{cal.month}</span>
+                  <span className="cd-web-cal-arr">›</span>
                 </div>
-                <div className="cd-web-cal-days">
-                  {['M','T','W','T','F','S','S'].map((d, di) => (
-                    <span key={di} className="cd-web-cal-dow">{d}</span>
-                  ))}
-                  {cal.days.map(d => (
+                <div className="cd-web-cal-grid">
+                  {dows.map(d => <span key={d} className="cd-web-cal-dow">{d}</span>)}
+                  {prevMonthDays.map(d => <span key={`p${d}`} className="cd-web-cal-day cd-web-cal-day--muted">{d}</span>)}
+                  {monthDays.map(d => (
                     <button
                       key={d}
                       className={`cd-web-cal-day${d === cal.selected ? ' cd-web-cal-day--active' : ''}`}
                     >{d}</button>
                   ))}
+                  {nextMonthDays.map(d => <span key={`n${d}`} className="cd-web-cal-day cd-web-cal-day--muted">{d}</span>)}
                 </div>
                 <div className="cd-web-cal-times">
                   {cal.times.map(t => (
@@ -658,17 +665,16 @@ function WebWidget({ isActive }: { isActive: boolean }) {
             const fm = m.form;
             return (
               <div key={i} className="cd-web-form conv-msg-in">
+                <div className="cd-web-form-close">×</div>
                 <div className="cd-web-form-hdr">{fm.title}</div>
+                <div className="cd-web-form-sub">Saturday, Nov 7 · 11:00 AM</div>
                 {fm.fields.map(f => (
-                  <div key={f.label} className="cd-web-form-field">
-                    <span className="cd-web-form-label">{f.label}</span>
-                    <span className="cd-web-form-value">{f.value}</span>
-                  </div>
+                  <input key={f.label} className="cd-web-form-input" defaultValue={f.value} readOnly />
                 ))}
-                <button className="cd-web-form-btn">
-                  <FiCheck size={13} />
-                  <span>{fm.btn}</span>
-                </button>
+                <div className="cd-web-form-row">
+                  <button className="cd-web-form-back">Back</button>
+                  <button className="cd-web-form-btn">{fm.btn}</button>
+                </div>
               </div>
             );
           }
@@ -774,10 +780,10 @@ export default function ChannelDemo() {
             {CHANNELS.map(({ id, label, Icon }, idx) => {
               const activeIdx = CHANNELS.findIndex(c => c.id === active);
               const dist = Math.abs(idx - activeIdx);
-              // Semi-circle: only the active sits centered, the rest arc OUT to the left
-              const offsetX = dist === 0 ? 80 : dist === 1 ? 0 : dist === 2 ? -60 : -100;
-              const opacity = dist === 0 ? 1 : dist === 1 ? 0.65 : dist === 2 ? 0.35 : 0.18;
-              const scale = dist === 0 ? 1.1 : dist === 1 ? 0.92 : 0.82;
+              // Semi-circle: active bulges far right, neighbours arc back left
+              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.45 : 0.25;
+              const scale = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
               const isActive = active === id;
               return (
                 <button
