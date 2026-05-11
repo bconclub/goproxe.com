@@ -157,47 +157,113 @@ function MemoryVis({ on }: { on: boolean }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Card 3 — follow-up bubbles across days
+   Card 3 — lead reactivation via WhatsApp follow-up
 ───────────────────────────────────────────────────────────── */
-function FollowVis({ on }: { on: boolean }) {
+function ReactivateVis({ on }: { on: boolean }) {
   const [step, setStep] = useState(0);
+  const [loopKey, setLoopKey] = useState(0);
+
   useEffect(() => {
     if (!on) { setStep(0); return; }
     let dead = false;
     const ts: ReturnType<typeof setTimeout>[] = [];
     function loop() {
       setStep(0);
-      [400, 1200, 2000, 2800, 3600].forEach((t, i) =>
+      setLoopKey(k => k + 1);
+      // step 1 @ 400ms  → typing indicator
+      // step 2 @ 1900ms → PROXe bubble (typing gone, 1.5s of typing)
+      // step 3 @ 3400ms → lead bubble + RESPONDED badge (1.5s pause)
+      // step 4 @ 3700ms → system label + score badge
+      // loop  @ 7200ms  (2s hold on final state)
+      [400, 1900, 3400, 3700].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 6500));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 7200));
     }
     loop();
     return () => { dead = true; ts.forEach(clearTimeout); };
   }, [on]);
 
-  const items = [
-    { day: 'Day 1', from: 'lead',  txt: 'Interested in your service' },
-    { day: 'Day 3', from: 'ai',    txt: 'Hey, wanted to follow up' },
-    { day: 'Day 5', from: 'ai',    txt: 'Still here if you need help' },
-    { day: 'Day 8', from: 'lead',  txt: 'Sorry was busy. Can we talk?', hot: true },
-  ];
-
   return (
-    <div className="hiw-vis">
+    <div className="hiw-vis" style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
       <div className="hiw-dotgrid" />
-      <div className="hiw-fu">
-        {items.map((b, i) => (
-          <div
-            key={i}
-            className={`hiw-fu-row hiw-fu-row--${b.from}`}
-            style={{ opacity: step > i ? 1 : 0, transform: step > i ? 'translateY(0)' : 'translateY(8px)' }}
-          >
-            <span className="hiw-fu-day">{b.day}</span>
-            <span className={`hiw-fu-bub${b.hot ? ' hiw-fu-bub--hot' : ''}`}>{b.txt}</span>
-            {b.hot && step >= 5 && <span className="hiw-fu-close">Closed</span>}
+
+      {/* RESPONDED badge — top right, pop-scale in */}
+      <div
+        className="hiw-react-responded"
+        style={{
+          opacity: step >= 3 ? 1 : 0,
+          transform: step >= 3 ? 'scale(1)' : 'scale(0.4)',
+        }}
+      >
+        ✓ RESPONDED
+      </div>
+
+      {/* Lead header pill */}
+      <div className="hiw-react-header">
+        <div className="hiw-react-avatar">R</div>
+        <div className="hiw-react-info">
+          <span className="hiw-react-name">Rahul S.</span>
+          <span className="hiw-react-status">
+            <span className="hiw-react-dot" />
+            Last seen 3 days ago
+          </span>
+        </div>
+      </div>
+
+      {/* Chat area */}
+      <div className="hiw-react-chat">
+        {/* Typing indicator */}
+        <div
+          className="hiw-react-typing"
+          style={{
+            opacity: step === 1 ? 1 : 0,
+            transform: step === 1 ? 'translateY(0)' : 'translateY(4px)',
+          }}
+        >
+          <span /><span /><span />
+        </div>
+
+        {/* PROXe bubble */}
+        <div
+          className="hiw-react-row hiw-react-row--proxe"
+          style={{
+            opacity: step >= 2 ? 1 : 0,
+            transform: step >= 2 ? 'translateY(0)' : 'translateY(8px)',
+          }}
+        >
+          <div className="hiw-react-bub hiw-react-bub--proxe">
+            Hey Rahul, just checking in. You had asked about our real estate services last week. Still looking for a 3BHK in Whitefield?
           </div>
-        ))}
+          <div className="hiw-react-meta">Sent via WhatsApp · Day 4 of follow-up sequence</div>
+        </div>
+
+        {/* Lead bubble — key=loopKey forces animation replay each loop */}
+        <div
+          className="hiw-react-row hiw-react-row--lead"
+          style={{
+            opacity: step >= 3 ? 1 : 0,
+            transform: step >= 3 ? 'translateY(0)' : 'translateY(8px)',
+          }}
+        >
+          <div key={loopKey} className="hiw-react-bub hiw-react-bub--lead">
+            Hey sorry was caught up! Yes still looking.
+          </div>
+        </div>
+
+        {/* System label + score badge */}
+        <div
+          className="hiw-react-system"
+          style={{
+            opacity: step >= 4 ? 1 : 0,
+            transform: step >= 4 ? 'translateY(0)' : 'translateY(4px)',
+          }}
+        >
+          Lead reactivated · Score updated to 82 ·{' '}
+          <span className={`hiw-react-score-badge${step >= 4 ? ' hiw-react-score-badge--hot' : ''}`}>
+            {step >= 4 ? 'High Intent' : 'Cold'}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -235,23 +301,15 @@ export default function HowItWorks() {
     },
     {
       bg: '#0e0b22',
-      title: 'Follows up until they close.',
-      desc: 'Lead went quiet? PROXe sends a follow up. Still quiet? Sends another. After 10 days of smart nudges across WhatsApp, email, and SMS, cold leads come back to life.',
-      Vis: FollowVis,
+      title: 'Gone quiet? PROXe keeps knocking.',
+      desc: 'Most leads just need one more nudge. PROXe sends it automatically across WhatsApp, email, and SMS until they respond.',
+      Vis: ReactivateVis,
     },
   ];
 
   return (
     <section ref={secRef} className="hiw-section">
       <div className="proxe-container">
-        <div className={`proxe-section-label hiw-center${vis ? ' hiw-in' : ''}`}>How It Works</div>
-        <h2 className={`hiw-h2${vis ? ' hiw-in' : ''}`} style={{ transitionDelay: '0.08s' }}>
-          Capture. Remember. Close. Repeat.
-        </h2>
-        <p className={`hiw-sub${vis ? ' hiw-in' : ''}`} style={{ transitionDelay: '0.14s' }}>
-          PROXe captures every lead, remembers every conversation, and follows up until they close. No human required.
-        </p>
-
         <div className="hiw-grid">
           {CARDS.map(({ bg, title, desc, Vis }, i) => (
             <article

@@ -6,6 +6,7 @@ import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
 import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
 import ChannelDemo from './ChannelDemo';
+import HowItWorks from './HowItWorks';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1285,6 +1286,9 @@ export default function ProxeLanding() {
           </div>
         </div>
       </section>
+
+      {/* ===== 7b. How It Works — animated feature cards ===== */}
+      <HowItWorks />
 
       {/* ===== Voice demo — gradient orb "click to talk" (moved up to sit right after pillars) ===== */}
       <section className="proxe-section" id="voice">
