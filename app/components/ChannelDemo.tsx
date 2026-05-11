@@ -609,8 +609,11 @@ export default function ChannelDemo() {
   const currentMsgs = WA[industry];
 
   const CHANNELS = [
-    { id: 'voice',    label: 'Voice',    desc: 'Hear it answer live',  Icon: FiPhone },
-    { id: 'whatsapp', label: 'WhatsApp', desc: 'Real Estate playbook', Icon: SiWhatsapp },
+    { id: 'voice',     label: 'Voice',     desc: 'Hear it answer live',     Icon: FiPhone },
+    { id: 'whatsapp',  label: 'WhatsApp',  desc: 'Real Estate playbook',    Icon: SiWhatsapp },
+    { id: 'instagram', label: 'Instagram', desc: 'DM replies + bookings',   Icon: SiInstagram },
+    { id: 'messenger', label: 'Messenger', desc: 'Lead capture on FB',      Icon: SiMessenger },
+    { id: 'web',       label: 'Web Chat',  desc: 'Site widget, 24/7',       Icon: FiGlobe },
   ];
 
   const [active, setActive] = useState('voice');
@@ -653,6 +656,27 @@ export default function ChannelDemo() {
               <div className="cd-whatsapp-stage" key="whatsapp">
                 <PhoneFrame>
                   <WaChat msgs={currentMsgs} isActive industry={industry} />
+                </PhoneFrame>
+              </div>
+            )}
+            {active === 'instagram' && (
+              <div className="cd-whatsapp-stage" key="instagram">
+                <PhoneFrame>
+                  <IgChat isActive />
+                </PhoneFrame>
+              </div>
+            )}
+            {active === 'messenger' && (
+              <div className="cd-whatsapp-stage" key="messenger">
+                <PhoneFrame>
+                  <MsnChat isActive />
+                </PhoneFrame>
+              </div>
+            )}
+            {active === 'web' && (
+              <div className="cd-whatsapp-stage" key="web">
+                <PhoneFrame>
+                  <WebWidget isActive />
                 </PhoneFrame>
               </div>
             )}
