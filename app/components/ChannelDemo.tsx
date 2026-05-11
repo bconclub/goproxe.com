@@ -758,10 +758,10 @@ export default function ChannelDemo() {
             {CHANNELS.map(({ id, label, Icon }, idx) => {
               const activeIdx = CHANNELS.findIndex(c => c.id === active);
               const dist = Math.abs(idx - activeIdx);
-              // Semi-circle: active bulges far right, neighbours arc back left
-              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
-              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.45 : 0.25;
-              const scale = dist === 0 ? 1.08 : dist === 1 ? 0.96 : 0.88;
+              // Semi-circle: only the active sits centered, the rest arc OUT to the left
+              const offsetX = dist === 0 ? 80 : dist === 1 ? 0 : dist === 2 ? -60 : -100;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.65 : dist === 2 ? 0.35 : 0.18;
+              const scale = dist === 0 ? 1.1 : dist === 1 ? 0.92 : 0.82;
               const isActive = active === id;
               return (
                 <button
