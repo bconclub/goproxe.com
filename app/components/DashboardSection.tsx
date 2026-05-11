@@ -203,8 +203,8 @@ export default function DashboardSection() {
                     { dot: '#7C3AED', label: 'Follow-up call', lead: 'Rahul S.',  time: 'Today, 4:00 PM',   tag: 'Scheduled' },
                     { dot: '#0EA5E9', label: 'Demo walkthrough', lead: 'Sara J.', time: 'Tomorrow, 11:00 AM', tag: 'Confirmed' },
                   ].map(ev => (
-                    <div key={ev.lead} className="db2-event-row">
-                      <div className="db2-event-dot" style={{ background: ev.dot, boxShadow: `0 0 6px ${ev.dot}88` }} />
+                    <div key={ev.lead} className="db2-event-row" style={{ '--ev-color': ev.dot } as React.CSSProperties}>
+                      <div className="db2-event-dot" />
                       <div className="db2-event-body">
                         <span className="db2-event-label">{ev.label} <span className="db2-event-lead">· {ev.lead}</span></span>
                         <span className="db2-event-time">{ev.time}</span>
