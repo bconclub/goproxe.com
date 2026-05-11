@@ -5224,6 +5224,7 @@ body:has(.proxe-root) {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .cd-nav-item {
   position: relative;
