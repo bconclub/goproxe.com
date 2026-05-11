@@ -36,7 +36,7 @@ function CaptureVis({ on }: { on: boolean }) {
           className="hiw-pill"
           style={{ opacity: step > i ? 1 : 0, transform: step > i ? 'translateY(0)' : 'translateY(-14px)' }}
         >
-          <span className="hiw-pill-ico" style={{ background: bg }}><I size={11} /></span>
+          <span className="hiw-pill-ico" style={{ background: bg, boxShadow: `0 0 14px ${bg}99, 0 0 4px ${bg}66` }}><I size={14} /></span>
           <span className="hiw-pill-txt">{txt}</span>
           <span className="hiw-pill-badge">Captured</span>
         </div>
@@ -104,17 +104,17 @@ function MemoryVis({ on }: { on: boolean }) {
       </div>
       <div className="hiw-mem-list">
         {([
-          { I: SiWhatsapp, day: 'Mon', txt: 'Asked about pricing' },
-          { I: FiPhone,    day: 'Thu', txt: 'Called, asked about demo' },
-          { I: FiGlobe,   day: 'Sat', txt: 'Visited pricing page' },
-        ] as const).map(({ I, day, txt }, i) => (
+          { I: SiWhatsapp, day: 'Mon', txt: 'Asked about pricing',    color: '#25D366' },
+          { I: FiPhone,    day: 'Thu', txt: 'Called, asked about demo', color: '#0EA5E9' },
+          { I: FiGlobe,   day: 'Sat', txt: 'Visited pricing page',    color: '#7C3AED' },
+        ] as const).map(({ I, day, txt, color }, i) => (
           <div
             key={i}
             className="hiw-mem-row"
             style={{ opacity: step > i + 1 ? 1 : step === i + 1 ? 0.9 : 0, transform: step > i ? 'translateX(0)' : 'translateX(-10px)' }}
           >
             <div className="hiw-mem-vline" />
-            <span className="hiw-mem-ico"><I size={12} /></span>
+            <span className="hiw-mem-ico" style={{ background: color, color: '#fff', boxShadow: `0 0 10px ${color}88` }}><I size={12} /></span>
             <span className="hiw-mem-day">{day}</span>
             <span className="hiw-mem-lbl">{txt}</span>
           </div>
@@ -222,19 +222,19 @@ export default function HowItWorks() {
 
   const CARDS: CardSpec[] = [
     {
-      bg: '#0d0d16',
+      bg: '#0e0b22',
       title: 'Every lead. Every channel. Real time.',
       desc: 'The moment someone messages on WhatsApp, visits your website, calls, or DMs on Instagram, PROXe captures them instantly. Lead scored and logged before you blink.',
       Vis: CaptureVis,
     },
     {
-      bg: '#0d0d16',
+      bg: '#0e0b22',
       title: 'One memory. Every conversation.',
       desc: 'Customer messaged on WhatsApp Monday. Called Thursday. Visited the website Saturday. PROXe remembers all of it. They never repeat themselves. You never lose context.',
       Vis: MemoryVis,
     },
     {
-      bg: '#0d0d16',
+      bg: '#0e0b22',
       title: 'Follows up until they close.',
       desc: 'Lead went quiet? PROXe sends a follow up. Still quiet? Sends another. After 10 days of smart nudges across WhatsApp, email, and SMS, cold leads come back to life.',
       Vis: FollowVis,
