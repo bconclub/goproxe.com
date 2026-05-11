@@ -175,19 +175,19 @@ const MSN: ConvMsg[] = [
    WEB CHAT CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const WEB: ConvMsg[] = [
-  { from: 'lead',  text: 'Looking for a 3BHK in Whitefield around 1 Cr.' },
-  { from: 'agent', text: 'Got 3 great matches in that range. Here are the top picks:' },
+  { from: 'lead',  text: 'Looking for JEE coaching for my son. Class 11.' },
+  { from: 'agent', text: 'Got 3 programs that fit. Here are the top picks:' },
   { from: 'agent', type: 'carousel', noTyping: true, delay: 300,
     carousel: [
-      { title: 'Whitefield Heights', sub: '3BHK · 1850 sqft · 98L', btn: 'View',
-        img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&h=240&fit=crop&q=80' },
-      { title: 'Prestige Lakeside',  sub: '3BHK · 2100 sqft · 1.1 Cr', btn: 'View',
-        img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=240&fit=crop&q=80' },
-      { title: 'Brigade Cosmopolitan', sub: '3BHK · 1950 sqft · 1.05 Cr', btn: 'View',
-        img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=240&fit=crop&q=80' },
+      { title: 'JEE 2-Year Foundation', sub: 'Class 11+12 · ₹95K/yr · Hybrid', btn: 'View',
+        img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=240&fit=crop&q=80' },
+      { title: 'JEE Crash Course',      sub: '6 months · ₹65K · Online',      btn: 'View',
+        img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=240&fit=crop&q=80' },
+      { title: 'Weekend Mentorship',    sub: 'Saturdays · ₹40K/yr · Hybrid',  btn: 'View',
+        img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=240&fit=crop&q=80' },
     ] },
-  { from: 'lead',  text: 'Whitefield Heights looks great. Can I book a visit?', delay: 800 },
-  { from: 'agent', text: 'Of course. Pick a date and time below.' },
+  { from: 'lead',  text: 'The Foundation program looks right. Can we visit?', delay: 800 },
+  { from: 'agent', text: 'Of course. Pick a date and time for a campus tour.' },
   { from: 'agent', type: 'calendar', noTyping: true, delay: 300,
     calendar: {
       month: 'November 2026',
@@ -200,13 +200,13 @@ const WEB: ConvMsg[] = [
   { from: 'agent', text: 'Great. Just need a couple of details to confirm.' },
   { from: 'agent', type: 'form', noTyping: true, delay: 300,
     form: {
-      title: 'Confirm Site Visit',
+      title: 'Confirm Campus Tour',
       fields: [
-        { label: 'Full Name', value: 'Rahul Sharma' },
-        { label: 'Phone',     value: '+91 98765 43210' },
-        { label: 'Email',     value: 'rahul@example.com' },
+        { label: 'Parent Name', value: 'Anil Sharma' },
+        { label: 'Student',     value: 'Rahul Sharma · Class 11' },
+        { label: 'Phone',       value: '+91 98765 43210' },
       ],
-      btn: 'Confirm Booking',
+      btn: 'Confirm Tour',
     } },
 ];
 
@@ -585,7 +585,7 @@ function WebWidget({ isActive }: { isActive: boolean }) {
           <div className="cd-web-hdr-av">
             <img src="/proxe/brand/proxe-icon-white.webp" alt="PROXe" width={20} height={20} />
           </div>
-          <span className="cd-web-hdr-name">PROXe</span>
+          <span className="cd-web-hdr-name">Education PROXe</span>
         </div>
         <div className="cd-web-hdr-icons">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>

@@ -5164,6 +5164,7 @@ body:has(.proxe-root) {
 .cd-nav {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 10px;
 }
 .cd-nav-item {
