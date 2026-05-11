@@ -1234,19 +1234,6 @@ export default function ProxeLanding() {
       {/* ===== 7c. Dashboard preview ===== */}
       <DashboardSection />
 
-      {/* ===== Voice demo — gradient orb "click to talk" (moved up to sit right after pillars) ===== */}
-      <section className="proxe-section" id="voice">
-        <div className="proxe-container">
-          <div className="proxe-section-label" style={{ textAlign: 'center' }}>
-            Hear it Live
-          </div>
-          <div className="proxe-voice">
-            <h2 className="proxe-voice-title">See PROXe in action.</h2>
-            <VapiOrb />
-          </div>
-        </div>
-      </section>
-
       {/* ===== 8. Scroll-triggered popup — disabled for now ===== */}
       {/* <ScrollPopup triggerRef={pillarsRef} /> */}
 

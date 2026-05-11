@@ -593,69 +593,50 @@ const WA_SUBS = Object.keys(WA);
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════ */
 export default function ChannelDemo() {
-  const [activeChannel, setActiveChannel] = useState('voice');
   const [activeSub, setActiveSub] = useState(WA_SUBS[0]);
-
-  const handleChannelChange = (id: string) => {
-    setActiveChannel(id);
-  };
-
   const currentMsgs = WA[activeSub] ?? WA[WA_SUBS[0]];
 
   return (
-    <section className="cd-section">
+    <section className="cd-section" id="voice">
       <div className="proxe-container">
-        <div className="proxe-section-label">PROXe in Action</div>
-        <h2 className="cd-headline">Leads don&rsquo;t wait. Neither does PROXe.</h2>
+        <div className="proxe-section-label" style={{ textAlign: 'center' }}>PROXe in Action</div>
+        <h2 className="cd-headline">See PROXe in action.</h2>
         <p className="cd-sub">
-          PROXe captures, follows up, and pushes leads to close across channels. One AI brain. Full context. Always on.
+          One AI brain. Every channel. Try the voice agent live, then see how it handles WhatsApp across industries.
         </p>
 
-        <div className="cd-body">
-          {/* ── Left: channel tabs ── */}
-          <div className="cd-tabs">
-            {TABS.map(({ id, label, Icon }) => (
+        {/* ── Voice — full-width orb stage ── */}
+        <div className="cd-channel-block">
+          <div className="cd-channel-label">
+            <span className="cd-channel-icon"><FiPhone size={14} /></span>
+            <span>Voice</span>
+          </div>
+          <div className="cd-voice-stage">
+            <VapiOrb />
+          </div>
+        </div>
+
+        {/* ── WhatsApp — industry mockups ── */}
+        <div className="cd-channel-block">
+          <div className="cd-channel-label">
+            <span className="cd-channel-icon"><SiWhatsapp size={14} /></span>
+            <span>WhatsApp</span>
+          </div>
+          <div className="cd-sub-tabs cd-sub-tabs--center">
+            {WA_SUBS.map((sub) => (
               <button
-                key={id}
-                className={`cd-tab${activeChannel === id ? ' cd-tab--active' : ''}`}
-                onClick={() => handleChannelChange(id)}
+                key={sub}
+                className={`cd-sub-tab${activeSub === sub ? ' cd-sub-tab--active' : ''}`}
+                onClick={() => setActiveSub(sub)}
               >
-                <span className="cd-tab-icon"><Icon size={18} /></span>
-                <span className="cd-tab-label">{label}</span>
+                {sub}
               </button>
             ))}
           </div>
-
-          {/* ── Right: content panel ── */}
-          <div className="cd-right">
-            {/* WhatsApp industry sub-tabs */}
-            {activeChannel === 'whatsapp' && (
-              <div className="cd-sub-tabs">
-                {WA_SUBS.map((sub) => (
-                  <button
-                    key={sub}
-                    className={`cd-sub-tab${activeSub === sub ? ' cd-sub-tab--active' : ''}`}
-                    onClick={() => setActiveSub(sub)}
-                  >
-                    {sub}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Voice — show the orb blob, no phone frame */}
-            {activeChannel === 'voice' && (
-              <div className="cd-voice-stage">
-                <VapiOrb />
-              </div>
-            )}
-
-            {/* WhatsApp — phone frame with industry chat */}
-            {activeChannel === 'whatsapp' && (
-              <PhoneFrame>
-                <WaChat key={activeSub} msgs={currentMsgs} isActive industry={activeSub} />
-              </PhoneFrame>
-            )}
+          <div className="cd-whatsapp-stage">
+            <PhoneFrame>
+              <WaChat key={activeSub} msgs={currentMsgs} isActive industry={activeSub} />
+            </PhoneFrame>
           </div>
         </div>
       </div>
