@@ -835,8 +835,10 @@ export default function ChannelDemo() {
             onClick={() => setPaused(true)}
           >
             {active === 'voice' && (
-              <div className="cd-voice-stage" key="voice">
-                <VapiOrb />
+              <div className="cd-whatsapp-stage" key="voice">
+                <PhoneFrame>
+                  <div className="cd-voice-stage"><VapiOrb /></div>
+                </PhoneFrame>
               </div>
             )}
             {active === 'whatsapp' && (

@@ -5308,13 +5308,15 @@ body:has(.proxe-root) {
   position: relative;
 }
 
-/* Voice orb stage */
+/* Voice orb stage — sits inside the phone frame, fills it */
 .cd-voice-stage {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 500px;
+  height: 100%;
+  flex: 1;
+  background: linear-gradient(180deg, #14102e 0%, #1f1a4d 100%);
   animation: cdFadeIn 0.4s ease;
 }
 
