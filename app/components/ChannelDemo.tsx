@@ -258,7 +258,7 @@ function WaChat({ msgs, isActive, industry }: { msgs: ConvMsg[]; isActive: boole
         <span className="cd-wa-hdr-back"><FiChevronLeft size={18} /></span>
         <span className="cd-wa-hdr-av">P</span>
         <div className="cd-wa-hdr-info">
-          <span className="cd-wa-hdr-name">PROXe</span>
+          <span className="cd-wa-hdr-name">Real Estate PROXe</span>
           <span className="cd-wa-hdr-status">
             <span className="cd-wa-hdr-dot" />online
           </span>
@@ -676,7 +676,12 @@ export default function ChannelDemo() {
           </nav>
 
           {/* ── Right: active channel preview ── */}
-          <div className="cd-preview">
+          <div
+            className="cd-preview"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onClick={() => setPaused(true)}
+          >
             {active === 'voice' && (
               <div className="cd-voice-stage" key="voice">
                 <VapiOrb />
