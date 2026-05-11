@@ -164,12 +164,12 @@ const IG: ConvMsg[] = [
    MESSENGER CONVERSATION
 ═══════════════════════════════════════════════════════════════ */
 const MSN: ConvMsg[] = [
-  { from: 'lead',  text: 'Hey, saw your Whitefield listing on FB. Still available?' },
-  { from: 'agent', text: 'Yes! 3BHK, 1850 sqft, 98L. Want to schedule a site visit?' },
-  { from: 'lead',  text: 'Saturday morning works for me', delay: 800 },
-  { from: 'agent', text: 'Done. Saturday 11am confirmed. Our agent will call you 30 mins before.' },
+  { from: 'lead',  text: 'Hi, does your clinic take walk-ins or only appointments?' },
+  { from: 'agent', text: 'Appointments work best. Dr. Sharma has a slot tomorrow 10am. Want to book it?' },
+  { from: 'lead',  text: 'Yes please', delay: 800 },
+  { from: 'agent', text: 'Confirmed. Tomorrow 10am with Dr. Sharma. Reminder sent to your inbox.' },
   { from: 'agent', type: 'cta-card', noTyping: true, delay: 400,
-    ctaCard: { btn: 'View Property Details', color: '#0084FF' } },
+    ctaCard: { btn: 'View Appointment Details', color: '#0084FF' } },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
