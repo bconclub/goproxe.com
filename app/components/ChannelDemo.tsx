@@ -785,15 +785,14 @@ export default function ChannelDemo() {
             onMouseLeave={() => setPaused(false)}
           >
             {CHANNELS.map(({ id, label, Icon }, idx) => {
-              // Curve is FIXED by INDEX — Web Chat (idx 2, middle) is always the bulged centerpoint
-              const total = CHANNELS.length;
-              const centerIdx = (total - 1) / 2;
-              const distFromCenter = Math.abs(idx - centerIdx);
-              const offsetX = distFromCenter === 0 ? 60 : distFromCenter === 1 ? 30 : -10;
-              const scale = distFromCenter === 0 ? 1.08 : distFromCenter === 1 ? 0.96 : 0.88;
-              const baseOpacity = distFromCenter === 0 ? 1 : distFromCenter === 1 ? 0.78 : 0.5;
-                  const isActive = active === id;
-                  const opacity = isActive ? 1 : baseOpacity * 0.7;
+              // Curve is RELATIVE to active — active bulges right, items above/below arc back.
+              // Items keep their natural Y position (no whole-list shift), only translateX changes.
+              const activeIdx = CHANNELS.findIndex(c => c.id === active);
+              const dist = Math.abs(idx - activeIdx);
+              const offsetX = dist === 0 ? 60 : dist === 1 ? 30 : dist === 2 ? -10 : -40;
+              const scale   = dist === 0 ? 1.08 : dist === 1 ? 0.96 : dist === 2 ? 0.88 : 0.8;
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.78 : dist === 2 ? 0.5 : 0.3;
+              const isActive = active === id;
                   return (
                     <button
                       key={id}
