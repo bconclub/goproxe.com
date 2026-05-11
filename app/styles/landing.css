@@ -4040,11 +4040,10 @@ body:has(.proxe-root) {
 .hiw-react-chat {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   position: relative;
   z-index: 1;
-  flex: 1;
 }
 
 .hiw-react-typing {
@@ -4408,15 +4407,24 @@ body:has(.proxe-root) {
 .db2-activity-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.8); }
 .db2-activity-meta { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
 
-/* ── Mobile: show desktop dashboard as-is (horizontal scroll) ── */
+/* ── Mobile: show desktop dashboard as a scaled-down thumbnail ── */
 @media (max-width: 900px) {
   .db2-browser {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    /* The browser shell scales down — entire desktop dashboard visible at once */
+    width: 1100px;
+    transform-origin: top left;
+    transform: scale(calc((100vw - 32px) / 1100));
+    /* Cancel the extra vertical space the un-scaled height reserves */
+    margin-bottom: calc((1 - (100vw - 32px) / 1100) * -800px);
   }
   .db2-app {
     min-width: 1000px;
+  }
+  /* Keep the container free of horizontal padding so it can fill the viewport */
+  .db2-section .proxe-container {
+    padding-left: 16px;
+    padding-right: 16px;
+    overflow: hidden;
   }
 }
 
