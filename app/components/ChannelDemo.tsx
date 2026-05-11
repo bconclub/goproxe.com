@@ -17,7 +17,7 @@ interface ConvMsg {
   noTyping?: boolean;   // skip typing indicator
   type?: MsgType;
   qr?: string[];
-  carousel?: Array<{ title: string; sub: string; btn: string }>;
+  carousel?: Array<{ title: string; sub: string; btn: string; img?: string; imgBg?: string; imgIcon?: string }>;
   confCard?: { title: string; lines: string[]; btn: string; color: string };
   ctaCard?: { btn: string; color?: string };
   pillBtn?: string;
@@ -47,7 +47,11 @@ const WA: Record<string, ConvMsg[]> = {
     { from: 'lead',  text: 'Hi I saw your 4BHK listing in Whitefield. Still available?' },
     { from: 'agent', text: 'Yes, available. 2400 sqft, fully furnished. 1.35 Cr negotiable.' },
     { from: 'agent', type: 'carousel', noTyping: true, delay: 400,
-      carousel: [{ title: 'Whitefield 4BHK', sub: '1.35 Cr', btn: 'View Details' }, { title: 'Marathahalli 3BHK', sub: '98L', btn: 'View Details' }] },
+      carousel: [
+        { title: 'Whitefield 4BHK', sub: '2400 sqft · 1.35 Cr · Furnished', btn: 'View Details', imgBg: 'linear-gradient(135deg, #4338ca, #7c3aed)', imgIcon: '🏠' },
+        { title: 'Marathahalli 3BHK', sub: '1850 sqft · 98L · Semi-furnished', btn: 'View Details', imgBg: 'linear-gradient(135deg, #0e7490, #06b6d4)', imgIcon: '🏢' },
+        { title: 'HSR Layout 3BHK', sub: '1620 sqft · 1.05 Cr · Modular', btn: 'View Details', imgBg: 'linear-gradient(135deg, #b91c1c, #f97316)', imgIcon: '🏡' },
+      ] },
     { from: 'lead',  text: 'Can I visit Saturday?', delay: 900 },
     { from: 'agent', text: 'Site visit confirmed. Saturday 11am. Our agent calls 30 mins before.' },
     { from: 'agent', type: 'qr', noTyping: true, qr: ['Confirm Saturday', 'Pick Another Day', 'Call Me Now'] },
@@ -274,9 +278,17 @@ function WaChat({ msgs, isActive, industry }: { msgs: ConvMsg[]; isActive: boole
               <div key={i} className="cd-wa-carousel conv-msg-in">
                 {(m.carousel ?? []).map((c, ci) => (
                   <div key={ci} className="cd-wa-caro-card">
-                    <div className="cd-wa-caro-title">{c.title}</div>
-                    <div className="cd-wa-caro-sub">{c.sub}</div>
-                    <button className="cd-wa-caro-btn">{c.btn}</button>
+                    <div className="cd-wa-caro-img" style={{ background: c.imgBg ?? 'linear-gradient(135deg, #4338ca, #7c3aed)' }}>
+                      <span className="cd-wa-caro-img-icon">{c.imgIcon ?? '🏠'}</span>
+                    </div>
+                    <div className="cd-wa-caro-body">
+                      <div className="cd-wa-caro-title">{c.title}</div>
+                      <div className="cd-wa-caro-sub">{c.sub}</div>
+                    </div>
+                    <div className="cd-wa-caro-actions">
+                      <button className="cd-wa-caro-btn">{c.btn}</button>
+                      <button className="cd-wa-caro-btn cd-wa-caro-btn--ghost">Send more like this</button>
+                    </div>
                   </div>
                 ))}
               </div>

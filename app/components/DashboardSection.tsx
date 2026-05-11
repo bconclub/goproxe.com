@@ -13,14 +13,12 @@ function Sparkline({ pts, color, width = 110, height = 36 }: {
     y: pad + (1 - (v - min) / range) * (height - pad * 2),
   }));
 
-  // Build smooth cubic bezier path
+  // Build a real-data line path: straight segments with subtle smoothing only at sharp peaks
   function smooth(pts: { x: number; y: number }[]) {
     if (pts.length < 2) return '';
     let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
     for (let i = 1; i < pts.length; i++) {
-      const prev = pts[i - 1], cur = pts[i];
-      const cpx = (prev.x + cur.x) / 2;
-      d += ` C ${cpx.toFixed(1)},${prev.y.toFixed(1)} ${cpx.toFixed(1)},${cur.y.toFixed(1)} ${cur.x.toFixed(1)},${cur.y.toFixed(1)}`;
+      d += ` L ${pts[i].x.toFixed(1)},${pts[i].y.toFixed(1)}`;
     }
     return d;
   }
@@ -169,10 +167,10 @@ export default function DashboardSection() {
               <div className="db2-glance">
                 <div className="db2-glance-title">At a Glance</div>
                 <div className="db2-gauges">
-                  <CircleGauge value="46%"  label="Avg Lead Score"  color="#ef4444" pct={0.46} />
+                  <CircleGauge value="46%"  label="Avg Lead Score"  color="#22c55e" pct={0.46} />
                   <CircleGauge value="99%"  label="Response Rate"   color="#22c55e" pct={0.99} />
                   <CircleGauge value="29%"  label="Key Event Rate"  color="#22c55e" pct={0.29} />
-                  <CircleGauge value="3.5"  sub="sec"  label="Avg Response Time" color="#ef4444" pct={0.18} />
+                  <CircleGauge value="3.5"  sub="sec"  label="Avg Response Time" color="#22c55e" pct={0.18} />
                 </div>
               </div>
 

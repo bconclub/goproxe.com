@@ -3587,7 +3587,7 @@ body:has(.proxe-root) {
 ═══════════════════════════════════════════════════════════════ */
 .hiw-section {
   background: transparent;
-  padding: 0 0 110px;
+  padding: 120px 0 120px;
 }
 
 .hiw-center { text-align: center; }
@@ -3639,7 +3639,8 @@ body:has(.proxe-root) {
 .hiw-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
+  align-items: stretch;
 }
 
 .hiw-card {
@@ -3724,9 +3725,9 @@ body:has(.proxe-root) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 12px;
-  padding: 18px 28px;
+  padding: 20px 24px;
 }
 
 .hiw-dotgrid {
@@ -5242,36 +5243,92 @@ body:has(.proxe-root) {
 }
 .cd-wa-qr-btn:hover { background: rgba(0,122,122,0.07); }
 
-/* Carousel */
+/* Carousel — proper WhatsApp rich card style */
 .cd-wa-carousel {
   display: flex;
   gap: 8px;
-  padding: 4px 0;
+  padding: 6px 2px 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
 }
+.cd-wa-carousel::-webkit-scrollbar { display: none; }
 .cd-wa-caro-card {
-  flex: 1;
-  background: linear-gradient(145deg, #1e1b4b, #312e81);
-  border-radius: 12px;
-  padding: 11px 12px;
+  flex: 0 0 150px;
+  background: #ffffff;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  scroll-snap-align: start;
 }
-.cd-wa-caro-title { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cd-wa-caro-sub { font-size: 11px; color: rgba(255,255,255,0.6); }
-.cd-wa-caro-btn {
-  margin-top: 7px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 7px;
-  padding: 5px;
+.cd-wa-caro-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+.cd-wa-caro-img-icon {
+  font-size: 38px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+.cd-wa-caro-body {
+  padding: 8px 10px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cd-wa-caro-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #111b21;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.cd-wa-caro-sub {
   font-size: 10.5px;
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-  font-weight: 600;
+  color: #667781;
+  line-height: 1.3;
 }
+.cd-wa-caro-actions {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #e9edef;
+}
+.cd-wa-caro-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e9edef;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #008069;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.cd-wa-caro-btn::before {
+  content: '↗';
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+.cd-wa-caro-btn--ghost {
+  color: #667781;
+}
+.cd-wa-caro-btn--ghost::before {
+  content: '⤴';
+}
+.cd-wa-caro-btn:last-child { border-bottom: none; }
+.cd-wa-caro-btn:hover { background: rgba(0,128,105,0.04); }
 
 /* Confirmation card */
 .cd-wa-conf {
