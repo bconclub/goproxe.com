@@ -328,7 +328,6 @@ function WaChat({ msgs, isActive, industry }: { msgs: ConvMsg[]; isActive: boole
                     </div>
                     <div className="cd-wa-caro-actions">
                       <button className="cd-wa-caro-btn">{c.btn}</button>
-                      <button className="cd-wa-caro-btn cd-wa-caro-btn--ghost">Send more like this</button>
                     </div>
                   </div>
                 ))}
