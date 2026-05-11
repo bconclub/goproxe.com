@@ -4407,17 +4407,16 @@ body:has(.proxe-root) {
 .db2-activity-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.8); }
 .db2-activity-meta { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
 
-/* ── Responsive ── */
+/* ── Mobile: show desktop dashboard as-is (horizontal scroll) ── */
 @media (max-width: 900px) {
-  .db2-gauges { grid-template-columns: repeat(2, 1fr); }
-  .db2-stats  { grid-template-columns: repeat(2, 1fr); }
-  .db2-bottom { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  .db2-app { grid-template-columns: 1fr; }
-  .db2-sidebar { display: none; }
-  .db2-gauges { grid-template-columns: repeat(2, 1fr); }
-  .db2-stats  { grid-template-columns: repeat(2, 1fr); }
+  .db2-browser {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .db2-app {
+    min-width: 1000px;
+  }
 }
 
 /* ── keep old db- classes alive (HowItWorks score bar reuses them) ── */
