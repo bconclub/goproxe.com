@@ -4167,11 +4167,11 @@ body:has(.proxe-root) {
 ═══════════════════════════════════════════════════════════════ */
 
 /* scroll-reveal */
-.db2-label, .db2-h2, .db2-sub, .db2-browser {
+.db2-label, .db2-h2, .db2-sub, .db2-carousel {
   opacity: 0; transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.db2-label.db2-in, .db2-h2.db2-in, .db2-sub.db2-in, .db2-browser.db2-in {
+.db2-label.db2-in, .db2-h2.db2-in, .db2-sub.db2-in, .db2-carousel.db2-in {
   opacity: 1; transform: translateY(0);
 }
 
@@ -5317,17 +5317,18 @@ body:has(.proxe-root) {
   justify-content: center;
 }
 .cd-wa-qr-btn {
-  border: 1px solid rgba(0,122,122,0.4);
-  background: #fff;
-  color: #007a7a;
+  border: 1px solid #008069 !important;
+  background: #fff !important;
+  color: #008069 !important;
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 7px 16px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
-.cd-wa-qr-btn:hover { background: rgba(0,122,122,0.07); }
+.cd-wa-qr-btn:hover { background: rgba(0,128,105,0.08) !important; }
 
 /* Carousel — proper WhatsApp rich card style */
 .cd-wa-carousel {
@@ -5392,35 +5393,22 @@ body:has(.proxe-root) {
   border-top: 1px solid #e9edef;
 }
 .cd-wa-caro-btn {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #e9edef;
-  padding: 8px 10px;
-  font-size: 11px;
-  color: #008069;
-  font-weight: 600;
+  background: #008069 !important;
+  border: none !important;
+  padding: 9px 10px !important;
+  font-size: 11.5px !important;
+  color: #fff !important;
+  font-weight: 700 !important;
   cursor: pointer;
   text-align: center;
-  letter-spacing: 0.01em;
-  display: flex;
+  letter-spacing: 0.02em;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  border-top: 1px solid #e9edef;
 }
-.cd-wa-caro-btn::before {
-  content: '↗';
-  font-size: 10px;
-  font-weight: 700;
-  opacity: 0.85;
-}
-.cd-wa-caro-btn--ghost {
-  color: #667781;
-}
-.cd-wa-caro-btn--ghost::before {
-  content: '⤴';
-}
-.cd-wa-caro-btn:last-child { border-bottom: none; }
-.cd-wa-caro-btn:hover { background: rgba(0,128,105,0.04); }
+.cd-wa-caro-btn:hover { background: #006e5b !important; }
 
 /* Confirmation card */
 .cd-wa-conf {
