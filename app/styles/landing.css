@@ -548,6 +548,12 @@ body:has(.proxe-root) {
   overflow: hidden;
 }
 
+@media (max-width: 640px) {
+  .proxe-mocks-stack {
+    height: 580px;
+  }
+}
+
 .proxe-channel-item {
   display: flex;
   align-items: center;
@@ -2034,6 +2040,13 @@ body:has(.proxe-root) {
   /* scroll room for channel cycling — ~40vh per channel */
   height: 220vh;
   position: relative;
+}
+
+@media (max-height: 600px) {
+  .proxe-problem {
+    height: auto;
+    position: static;
+  }
 }
 .proxe-problem .proxe-container {
   position: sticky;
@@ -4476,7 +4489,7 @@ body:has(.proxe-root) {
 .db2-activity-meta { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
 
 /* ── Inbox view (slide 2) ── */
-.db2-app--inbox { grid-template-columns: 44px 320px 1fr 280px; }
+.db2-app--inbox { grid-template-columns: 44px 320px 1fr 280px; pointer-events: none; }
 .db2-inbox-list {
   background: #0a0a0a;
   border-right: 1px solid rgba(255,255,255,0.06);
@@ -4727,8 +4740,7 @@ body:has(.proxe-root) {
     width: 1100px;
     transform-origin: top left;
     transform: scale(calc((100vw - 32px) / 1100));
-    /* Cancel the extra vertical space the un-scaled height reserves */
-    margin-bottom: calc((1 - (100vw - 32px) / 1100) * -800px);
+    height: fit-content;
   }
   .db2-app {
     min-width: 1000px;
@@ -5204,6 +5216,12 @@ body:has(.proxe-root) {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
+}
+
+@media (max-width: 1023px) {
+  .cd-stage {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Dial control buttons */
@@ -6731,6 +6749,18 @@ body:has(.proxe-root) {
 }
 
 /* Mobile: scale down the canvas to fit viewport */
+@media (max-width: 900px) {
+  .proxe-hub-outer {
+    --hub-s: calc((100vw - 48px) / 600px);
+    height: calc(500px * var(--hub-s));
+    align-items: flex-start;
+  }
+  .proxe-hub-canvas {
+    transform: scale(var(--hub-s));
+    transform-origin: top center;
+  }
+}
+
 @media (max-width: 640px) {
   .proxe-hub-outer {
     /* Scale the 600px canvas to ~95vw */

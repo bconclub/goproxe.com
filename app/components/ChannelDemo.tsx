@@ -748,7 +748,15 @@ export default function ChannelDemo() {
 
   const [active, setActive] = useState('voice');
   const [paused, setPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const SLIDE_MS = 10000;
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 860);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const goPrev = () => {
     const idx = CHANNELS.findIndex(c => c.id === active);
@@ -813,10 +821,10 @@ export default function ChannelDemo() {
                   key={id}
                   className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
                   onClick={() => { setActive(id); setPaused(false); }}
-                  style={{
-                    transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
-                    opacity,
-                  }}
+                  style={isMobile
+                    ? { opacity: isActive ? 1 : 0.55 }
+                    : { transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`, opacity }
+                  }
                 >
                   <span className="cd-nav-icon"><Icon size={20} /></span>
                   <span className="cd-nav-label">{label}</span>

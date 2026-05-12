@@ -171,7 +171,7 @@
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .header {
     top: 16px;
     left: 50%;
