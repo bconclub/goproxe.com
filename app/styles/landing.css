@@ -4225,7 +4225,8 @@ body:has(.proxe-root) {
 }
 @media (min-width: 768px) {
   .db2-sticky-wrapper {
-    height: 300vh;
+    /* Shorter sticky region → slides advance faster per unit of page scroll */
+    height: 180vh;
   }
   .db2-sticky-wrapper .db2-section {
     position: sticky;
@@ -4265,6 +4266,16 @@ body:has(.proxe-root) {
   margin: 0 -4px;
   /* Let the next slide peek out without being clipped by the section container */
   scroll-padding-left: 0;
+  cursor: grab;
+  user-select: none;
+}
+.db2-carousel.db2-carousel--dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+.db2-carousel.db2-carousel--dragging > * {
+  pointer-events: none;
 }
 /* Allow the carousel to extend past the container's right edge so slide 2 stays visible */
 .db2-section .proxe-container {

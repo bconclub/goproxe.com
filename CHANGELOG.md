@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-05-19 · feat: click-drag dashboard carousel + faster scroll pacing
+
+- **Click-drag**: pointerdown/move/up handlers on `.db2-carousel` so users can grab and drag horizontally with the mouse (not just wheel). `cursor: grab` / `grabbing`, captures pointer, suspends the scroll-driven page handler while dragging so they don't fight.
+- **Faster slide pacing**: sticky wrapper height reduced from `300vh` to `180vh` — slides now advance ~67% faster per unit of page-scroll.
+- User-facing: dashboard carousel is now grabbable with the mouse, and scroll-driven horizontal pan moves through slides much quicker.
+
 ## 2026-05-19 · fix: card 3 spacing, mobile thumbnail dashboard, IG chips, dial arrows
 
 - **Card 3 (Reactivate)**: top-aligned (22px padding) like cards 1 & 2 instead of centered. Chat container now stretches with `flex: 1` and `justify-content: space-around` so content fills the frame — no more 100px of empty space at the top.

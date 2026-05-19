@@ -145,7 +145,11 @@ export default function DashboardSection() {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  // Scroll-driven horizontal pan: page scroll advances the carousel on desktop
+  // Scroll-driven horizontal pan: page scroll advances the carousel on desktop.
+  // While the user is click-dragging the carousel, we suspend this so the
+  // drag isn't fighting the page-scroll handler.
+  const isDraggingRef = useRef(false);
+
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const car = carRef.current;
@@ -153,6 +157,7 @@ export default function DashboardSection() {
 
     const onScroll = () => {
       if (window.innerWidth < 768) return;
+      if (isDraggingRef.current) return;
       const rect = wrapper.getBoundingClientRect();
       const totalScrollable = wrapper.offsetHeight - window.innerHeight;
       if (totalScrollable <= 0) return;
@@ -164,6 +169,58 @@ export default function DashboardSection() {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Click-drag horizontal scrolling for the carousel
+  useEffect(() => {
+    const car = carRef.current;
+    if (!car) return;
+
+    let startX = 0;
+    let startScrollLeft = 0;
+    let pointerId: number | null = null;
+
+    const onPointerDown = (e: PointerEvent) => {
+      // Ignore drags that start on the arrow buttons
+      if ((e.target as HTMLElement).closest('.db2-carousel-arrow')) return;
+      // Only primary button / single-touch
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startScrollLeft = car.scrollLeft;
+      isDraggingRef.current = true;
+      car.classList.add('db2-carousel--dragging');
+      try { car.setPointerCapture(e.pointerId); } catch {}
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) < 2) return;
+      car.scrollLeft = startScrollLeft - dx;
+      e.preventDefault();
+    };
+
+    const release = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      pointerId = null;
+      isDraggingRef.current = false;
+      car.classList.remove('db2-carousel--dragging');
+      try { car.releasePointerCapture(e.pointerId); } catch {}
+    };
+
+    car.addEventListener('pointerdown', onPointerDown);
+    car.addEventListener('pointermove', onPointerMove);
+    car.addEventListener('pointerup', release);
+    car.addEventListener('pointercancel', release);
+    car.addEventListener('pointerleave', release);
+    return () => {
+      car.removeEventListener('pointerdown', onPointerDown);
+      car.removeEventListener('pointermove', onPointerMove);
+      car.removeEventListener('pointerup', release);
+      car.removeEventListener('pointercancel', release);
+      car.removeEventListener('pointerleave', release);
+    };
   }, []);
 
   return (
