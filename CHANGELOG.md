@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · polish: Capabilities cards — consistent tinted icons + bigger flow nodes
+
+User showed how the reference cards have tinted-square icons + bigger polished flow nodes that read better.
+
+- **Dropped the special "24" eyebrow** (circular concentric badge with spinning dashed ring) on the Lead Capture card. Replaced with the standard tinted-square `.cap-card-icon` so all four cards share the exact same eyebrow look.
+- **Eyebrow icon upgraded** from `36×36` flat to `42×42` with a subtle gradient background (`rgba(167,139,250,0.22)` → `rgba(124,58,237,0.10)`), purple border, soft shadow + inset highlight. Icon glyph size bumped 18 → 20.
+- **Auto Follow-Ups flow nodes** upgraded from `28×28` flat to `38×38` with the same gradient + shadow treatment. Inner icon size 12 → 16. Final "done" node now uses a brighter purple tint instead of green so it matches the brand. Connector dashes get a small `›` arrowhead at the end and tighter widths so the row fits without overflowing.
+
 ## 2026-05-19 · fix: Capabilities orb — brand icon was lost in the center glow
 
 User: "Foxy icon is not visible. It's too much brightness coming in from the center."

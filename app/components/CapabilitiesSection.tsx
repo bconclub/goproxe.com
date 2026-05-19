@@ -183,12 +183,10 @@ export default function CapabilitiesSection() {
     return () => io.disconnect();
   }, []);
 
-  // Order matters: in the bento, capture / followup stack on the right
-  // beside the hero; then agents (wide) + security sit in the bottom row.
-  // `eyebrow` overrides the icon-pill content for cards with a custom badge
-  // (e.g. the "24" circular badge on the Lead Capture card).
+  // All four cards use the same tinted-square eyebrow icon for visual
+  // consistency. Lead Capture uses a stylized lightning-bolt mark.
   const sideCards = [
-    { id: 'capture',  index: '01', Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation, eyebrow: <span className="cap-card-eyebrow"><span>24</span></span> },
+    { id: 'capture',  index: '01', Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation },
     { id: 'followup', index: '02', Icon: FiSend,   title: 'Auto Follow-Ups',     desc: 'AI sequences the perfect next steps until they book, buy, or opt out.',    Vis: FollowupFlow },
     { id: 'agents',   index: '03', Icon: FiUsers,  title: 'Multi-Agent System',  desc: 'Specialized agents work across web, WhatsApp, voice, email, and SMS.',     Vis: AgentNetwork },
     { id: 'security', index: '04', Icon: FiShield, title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.',                  Vis: ShieldVis },
@@ -330,13 +328,11 @@ export default function CapabilitiesSection() {
               </div>
             </article>
 
-            {/* ── 4 side cards ── */}
+            {/* ── 4 side cards — all share the same tinted-square eyebrow ── */}
             {sideCards.map((c) => (
               <article key={c.id} className={`cap-card cap-card--${c.id}`}>
                 <div className="cap-card-head">
-                  {c.eyebrow ?? (
-                    <span className="cap-card-icon"><c.Icon size={18} /></span>
-                  )}
+                  <span className="cap-card-icon"><c.Icon size={20} /></span>
                   <span className="cap-card-index">{c.index}</span>
                 </div>
                 <h4 className="cap-card-title">{c.title}</h4>

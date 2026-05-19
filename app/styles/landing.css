@@ -7662,50 +7662,20 @@ body:has(.proxe-root) {
   margin-bottom: 14px;
 }
 .cap-card-icon {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
-  background: rgba(124, 58, 237, 0.18);
-  border: 1px solid rgba(124, 58, 237, 0.32);
-  color: #c4b5fd;
+  border-radius: 11px;
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  color: #e9d5ff;
   flex-shrink: 0;
-}
-/* "24" circular eyebrow badge — concentric ring + number inside */
-.cap-card-eyebrow {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1.5px solid rgba(167, 139, 250, 0.55);
-  background: rgba(124, 58, 237, 0.16);
-  flex-shrink: 0;
-}
-.cap-card-eyebrow::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  border: 1px dashed rgba(167, 139, 250, 0.35);
-  animation: capEyebrowSpin 12s linear infinite;
-}
-@keyframes capEyebrowSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.cap-card-eyebrow > span {
-  font-family: var(--proxe-font-heading);
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.02em;
-  position: relative;
-  z-index: 1;
+  box-shadow:
+    0 4px 12px rgba(124, 58, 237, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 /* "01 / 02 / 03 / 04" index in the top-right */
 .cap-card-index {
@@ -7841,29 +7811,49 @@ body:has(.proxe-root) {
 .cap-const-pip--bl { left:  14%; bottom: 14%; }
 .cap-const-pip--br { right: 14%; bottom: 14%; }
 
-/* Followup flow */
-.cap-mini--flow { gap: 4px; }
+/* Followup flow — bigger tinted nodes, soft purple arrows between */
+.cap-mini--flow { gap: 2px; justify-content: center; }
 .cap-flow-node {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: rgba(18, 12, 40, 0.95);
-  border: 1px solid rgba(167, 139, 250, 0.35);
-  color: rgba(255, 255, 255, 0.75);
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  color: #e9d5ff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow:
+    0 4px 12px rgba(124, 58, 237, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
+.cap-flow-dash { flex-shrink: 0; }
+.cap-flow-node svg { width: 16px; height: 16px; }
 .cap-flow-node--done {
-  background: rgba(34, 197, 94, 0.16);
-  border-color: rgba(34, 197, 94, 0.5);
-  color: #4ade80;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.35), rgba(124, 58, 237, 0.20));
+  border-color: rgba(196, 181, 253, 0.55);
+  color: #fff;
+  box-shadow:
+    0 4px 14px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 .cap-flow-dash {
-  width: 18px;
+  width: 14px;
   height: 1px;
   background-image: repeating-linear-gradient(90deg, rgba(167, 139, 250, 0.55) 0 3px, transparent 3px 6px);
+  position: relative;
+}
+.cap-flow-dash::after {
+  content: '›';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(167, 139, 250, 0.7);
+  font-size: 14px;
+  line-height: 1;
 }
 
 /* Agent network — wide horizontal spread across the wide multi-agent card */
