@@ -59,7 +59,7 @@ function CircleGauge({
             strokeDasharray={`${fill} ${circ}`}
             strokeLinecap="round"
             transform="rotate(-90 48 48)"
-            style={{ filter: `drop-shadow(0 0 4px ${color}88)` }}
+            style={{}}
           />
         </svg>
         <div className="db2-gauge-center">
