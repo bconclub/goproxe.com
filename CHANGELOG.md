@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-19 · simplify: Dashboard — smooth scroll, no snap
+
+- `scroll-snap-type: x mandatory` → removed from `.db2-carousel` (both desktop and mobile rules)
+- `scroll-snap-align: start/center` → removed from `.db2-browser` (both desktop and mobile rules)
+- Added `scroll-behavior: smooth` to the carousel so wheel + arrow-button scroll feels glidy
+- Drag + native scroll + arrows still work, just without the snap-to-slide jolt
+
 ## 2026-05-19 · simplify: Dashboard — remove scroll-driven pan, arrows below the frame
 
 Per user — the scroll-driven horizontal pan was causing more friction than it solved. Killed it; the carousel is now a plain drag/scroll/arrow-button affair.

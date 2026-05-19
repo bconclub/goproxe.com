@@ -4256,7 +4256,7 @@ body:has(.proxe-root) {
   display: flex;
   gap: 28px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -4287,7 +4287,6 @@ body:has(.proxe-root) {
 .db2-carousel::-webkit-scrollbar { display: none; }
 .db2-carousel > .db2-browser {
   flex: 0 0 auto;
-  scroll-snap-align: start;
   width: min(1100px, 92%);
 }
 
@@ -4794,7 +4793,6 @@ body:has(.proxe-root) {
        inline via JS in DashboardSection.tsx — Chrome refuses to fold
        `scale(calc(length/length))` and won't substitute CSS vars inside
        transform either. Inline JS is the only reliable path here. */
-    scroll-snap-align: center;
     flex: 0 0 1100px;
   }
   .db2-carousel {
@@ -4804,7 +4802,6 @@ body:has(.proxe-root) {
     gap: 16px;
     padding: 8px 0 24px;
     margin: 0;
-    scroll-snap-type: x mandatory;
     overflow-x: auto;
     overflow-y: hidden;
   }
