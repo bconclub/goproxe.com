@@ -4277,6 +4277,7 @@ body:has(.proxe-root) {
   border-radius: 14px; overflow: hidden;
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 60px rgba(124,58,237,0.12);
+  display: flex; flex-direction: column;
 }
 
 .db2-chrome {
@@ -4300,6 +4301,7 @@ body:has(.proxe-root) {
 
 /* ── App layout: sidebar + main ── */
 .db2-app {
+  flex: 1;
   display: grid; grid-template-columns: 44px 1fr;
   background: #0d0d0d; min-height: 580px;
 }
@@ -4677,15 +4679,19 @@ body:has(.proxe-root) {
 
 /* ── Real product screenshot slide ── */
 .db2-shot {
+  flex: 1;
+  min-height: 0;
   width: 100%;
   background: #000;
   display: flex;
   align-items: stretch;
-  justify-content: center;
+  overflow: hidden;
 }
 .db2-shot img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
   display: block;
   border: 0;
 }

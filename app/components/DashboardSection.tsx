@@ -122,8 +122,10 @@ export default function DashboardSection() {
     return () => io.disconnect();
   }, []);
 
-  // Per-slide scroll reveal — each dashboard browser slides in when it enters viewport
+  // Per-slide scroll reveal — fires when each slide enters the carousel's visible area
   useEffect(() => {
+    const car = carRef.current;
+    if (!car) return;
     const observers: IntersectionObserver[] = [];
     slideRefs.current.forEach((el, i) => {
       if (!el) return;
@@ -134,7 +136,7 @@ export default function DashboardSection() {
             io.disconnect();
           }
         },
-        { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+        { root: car, threshold: 0.15 }
       );
       io.observe(el);
       observers.push(io);
