@@ -8095,6 +8095,11 @@ body:has(.proxe-root) {
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
+.ind-top--photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .ind-top::before {
   /* darken bottom of the gradient so activity cards read well */
   content: '';
@@ -8102,6 +8107,17 @@ body:has(.proxe-root) {
   inset: 0;
   background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 100%);
   pointer-events: none;
+}
+/* Slight tinted overlay on photos so the brand accent still reads */
+.ind-top-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--acc, #a78bfa) 22%, transparent) 0%,
+      rgba(0, 0, 0, 0.10) 40%,
+      rgba(0, 0, 0, 0.45) 100%);
 }
 .ind-top-ico {
   position: absolute;

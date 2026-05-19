@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-19 · feat: Industries cards — use real photos from public/industries/
+
+- `Industry` type gained an optional `image?: string` field.
+- Wired `/industries/Coaching.webp` and `/industries/Clinics.webp` (already in `public/`) to the corresponding cards.
+- Added `.ind-top--photo` modifier: when an image is present, the top panel renders the photo with `background-size: cover` and a `.ind-top-tint` overlay that uses the card's accent color (`--acc`) at the top + a dark gradient at the bottom so the floating activity cards still read well.
+- The other six industries (Real Estate / D2C / Fitness / Pro / Auto / Home) keep their gradient placeholders until images land in `public/industries/`. Just drop a `<id>.webp` in there and add `image: '/industries/<id>.webp'` to the entry — no other changes needed.
+
 ## 2026-05-19 · chore: record HowItWorks card animations as MP4 files
 
 User asked for the three card animations to be saved as videos under `public/`.

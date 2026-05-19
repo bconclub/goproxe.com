@@ -37,7 +37,8 @@ type Step = { Icon: React.ElementType; label: string };
 type Industry = {
   id: string;
   color: string;        // primary accent (hex)
-  gradient: string;     // top image gradient
+  gradient: string;     // top header gradient (fallback when no image)
+  image?: string;       // optional background photo in public/industries/
   Icon: React.ElementType;
   title: string;
   desc: string;
@@ -52,6 +53,7 @@ const INDUSTRIES: Industry[] = [
     id: 'coaching',
     color: '#a78bfa',
     gradient: 'linear-gradient(135deg, #6d28d9 0%, #a78bfa 60%, #ec4899 110%)',
+    image: '/industries/Coaching.webp',
     Icon: LuGraduationCap,
     title: 'Coaching Academies',
     desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
@@ -72,6 +74,7 @@ const INDUSTRIES: Industry[] = [
     id: 'clinics',
     color: '#60a5fa',
     gradient: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 60%, #06b6d4 110%)',
+    image: '/industries/Clinics.webp',
     Icon: LuStethoscope,
     title: 'Clinics & Healthcare',
     desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
@@ -250,8 +253,16 @@ export default function IndustriesSection() {
               className={`ind-card ind-card--${u.id}`}
               style={{ ['--acc' as keyof React.CSSProperties as string]: u.color }}
             >
-              {/* Top: image-style header with floating activity cards */}
-              <div className="ind-top" style={{ background: u.gradient }}>
+              {/* Top: image-style header with floating activity cards.
+                  When `image` is present, render the photo with a tinted
+                  overlay; otherwise fall back to the accent gradient. */}
+              <div
+                className={`ind-top${u.image ? ' ind-top--photo' : ''}`}
+                style={u.image
+                  ? { backgroundImage: `url(${u.image})` }
+                  : { background: u.gradient }}
+              >
+                {u.image && <span className="ind-top-tint" aria-hidden />}
                 <span className="ind-top-ico"><u.Icon size={22} /></span>
                 <div className="ind-top-cards">
                   {u.activities.map((a, i) => (
