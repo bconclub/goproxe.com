@@ -12,7 +12,6 @@ import {
   FiCheckCircle,
   FiClock,
   FiLock,
-  FiDatabase,
   FiActivity,
 } from 'react-icons/fi';
 import { SiWhatsapp } from 'react-icons/si';
@@ -328,24 +327,6 @@ export default function CapabilitiesSection() {
             ))}
           </div>
 
-          {/* Compliance row inside the frame */}
-          <div className="cap-badges">
-            {[
-              { Icon: FiShield,      top: 'SOC 2',         bot: 'Type II Compliant' },
-              { Icon: FiLock,        top: 'End-to-End',    bot: 'Encrypted' },
-              { Icon: FiCheckCircle, top: 'GDPR',          bot: 'Compliant' },
-              { Icon: FiDatabase,    top: 'Multi-Channel', bot: 'Connected' },
-              { Icon: FiActivity,    top: 'Always On',     bot: 'Never Miss a Lead' },
-            ].map((b) => (
-              <div key={b.top} className="cap-badge">
-                <span className="cap-badge-ico"><b.Icon size={14} /></span>
-                <div>
-                  <div className="cap-badge-top">{b.top}</div>
-                  <div className="cap-badge-bot">{b.bot}</div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
