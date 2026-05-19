@@ -20,38 +20,49 @@ import { SiWhatsapp } from 'react-icons/si';
    ORB — SVG-based: glowing core + radiating rays + orbit rings + particles
 ───────────────────────────────────────────────────────────── */
 function UnifiedMemoryOrb() {
-  // Compact glowing sphere — no electrons/orbits. Connector lines
-  // come from the parent visualization SVG, not from the orb.
+  // Compact glowing sphere with a darker "well" at the center so the
+  // brand icon reads cleanly against the surrounding glow.
   return (
     <svg className="cap-orb-svg" viewBox="0 0 140 140" aria-hidden="true">
       <defs>
+        {/* Outer atmospheric halo (sits behind the sphere) */}
         <radialGradient id="capOrbHalo" cx="50%" cy="50%" r="50%">
           <stop offset="0%"   stopColor="rgba(167,139,250,0.55)" />
           <stop offset="50%"  stopColor="rgba(124,58,237,0.20)" />
           <stop offset="100%" stopColor="rgba(124,58,237,0)" />
         </radialGradient>
-        <radialGradient id="capOrbCore" cx="38%" cy="32%" r="68%">
-          <stop offset="0%"   stopColor="#f5f3ff" />
-          <stop offset="25%"  stopColor="#ddd6fe" />
-          <stop offset="55%"  stopColor="#a78bfa" />
-          <stop offset="85%"  stopColor="#6d28d9" />
-          <stop offset="100%" stopColor="#3b0764" />
+        {/* Sphere — bright RIM, darker CENTER so the icon has contrast */}
+        <radialGradient id="capOrbCore" cx="50%" cy="50%" r="55%">
+          <stop offset="0%"   stopColor="#2e1065" />
+          <stop offset="35%"  stopColor="#4c1d95" />
+          <stop offset="70%"  stopColor="#7c3aed" />
+          <stop offset="100%" stopColor="#a78bfa" />
+        </radialGradient>
+        {/* Top-left specular: a small glint, not a full hemisphere wash */}
+        <radialGradient id="capOrbGlint" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stopColor="rgba(255,255,255,0.55)" />
+          <stop offset="60%"  stopColor="rgba(255,255,255,0.10)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
         </radialGradient>
       </defs>
 
       {/* Halo glow */}
       <circle cx="70" cy="70" r="68" fill="url(#capOrbHalo)" />
 
-      {/* Sphere core */}
+      {/* Sphere core — bright rim, dark middle */}
       <circle cx="70" cy="70" r="36" fill="url(#capOrbCore)" />
-      {/* Specular highlight */}
-      <ellipse cx="58" cy="55" rx="13" ry="6" fill="rgba(255,255,255,0.35)" />
+      {/* Subtle inner stroke for definition */}
+      <circle cx="70" cy="70" r="36" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.6" />
+      {/* Small top-left glint (replaces the old wash-out specular ellipse) */}
+      <circle cx="56" cy="52" r="10" fill="url(#capOrbGlint)" />
 
-      {/* PROXe brand mark inside the core */}
+      {/* PROXe brand mark — slightly larger so it owns the center, with a
+          soft shadow so it never gets eaten by the gradient */}
       <image
         href="/proxe/brand/proxe-icon-white.webp"
-        x="51" y="51" width="38" height="38"
+        x="46" y="46" width="48" height="48"
         preserveAspectRatio="xMidYMid meet"
+        style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.45))' }}
       />
     </svg>
   );

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · fix: Capabilities orb — brand icon was lost in the center glow
+
+User: "Foxy icon is not visible. It's too much brightness coming in from the center."
+
+- **Inverted the core gradient**: was bright at top-left (`#f5f3ff` → `#3b0764`) creating a white wash that ate the icon. Now goes bright on the rim, dark in the center (`#2e1065` → `#a78bfa`). The icon sits in a darker well with white-ish glow around it.
+- **Replaced the wide specular ellipse** with a small focused glint (radial-gradient circle, r=10) at the top-left, so the highlight reads as a glint rather than a full hemisphere wash.
+- **Icon bumped from 38×38 → 48×48** and given a `drop-shadow(0 1px 3px rgba(0,0,0,0.45))` filter — owns the center, never gets eaten by the gradient.
+- Added a thin inner stroke (`rgba(255,255,255,0.18)`) for sphere definition.
+
 ## 2026-05-19 · polish: Capabilities orb — smaller, wired both sides, more breathing room
 
 User: "inside this should be a little bit bigger so the text inside this can breathe. The center thing glowing and having doesn't need this much space... it can just wire to these so it can take details from the WhatsApp website. Connect the wires to these two things and give it a little bit of space to breathe."
