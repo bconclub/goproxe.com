@@ -4219,6 +4219,23 @@ body:has(.proxe-root) {
 .db2-carousel-arrow--prev { left: 12px; }
 .db2-carousel-arrow--next { right: 12px; }
 
+/* Sticky scroll-driven wrapper (desktop only) */
+.db2-sticky-wrapper {
+  position: relative;
+}
+@media (min-width: 768px) {
+  .db2-sticky-wrapper {
+    height: 300vh;
+  }
+  .db2-sticky-wrapper .db2-section {
+    position: sticky;
+    top: 0;
+  }
+  .db2-sticky-wrapper .db2-carousel {
+    scroll-snap-type: none;
+  }
+}
+
 .db2-section { background: transparent; padding: 90px 0 100px; overflow: hidden; }
 
 .db2-label {

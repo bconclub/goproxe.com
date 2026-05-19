@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · feat: scroll-driven horizontal dashboard carousel
+
+- Wrapped `.db2-section` in `.db2-sticky-wrapper` (300vh height on desktop) so the section pins sticky while the user scrolls
+- Replaced wheel-intercept handler with a `window scroll` event listener that maps page scroll progress to carousel `scrollLeft`
+- On desktop (≥768px): section sticks at `top: 0`, `scroll-snap-type: none` on carousel (prevents snap fighting programmatic scroll)
+- On mobile: normal layout — section scrolls naturally, carousel is touch-swipeable
+- User-facing: scroll down through the dashboard section to pan through all 3 screens (Dashboard → Conversations → Leads), then continue past to the next section
+
 ## 2026-05-19 · feat: full-bleed right carousel via CSS-only width extension
 
 - Extended `.db2-carousel-wrap` width using `calc(100% + max(24px, (100vw - 1200px) / 2 + 24px))` — accounts for container's right padding and auto-margin to reach the viewport right edge

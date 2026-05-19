@@ -109,6 +109,7 @@ function StatCard({
 }
 
 export default function DashboardSection() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const secRef = useRef<HTMLDivElement>(null);
   const carRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -144,26 +145,29 @@ export default function DashboardSection() {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  // Convert vertical wheel into horizontal scroll while pointer is over the carousel
+  // Scroll-driven horizontal pan: page scroll advances the carousel on desktop
   useEffect(() => {
-    const el = carRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return; // horizontal trackpad — let native scroll
-      const maxScroll = el.scrollWidth - el.clientWidth;
-      if (maxScroll <= 0) return;
-      // Only intercept if we have room to scroll in the wheel direction
-      const atStart = el.scrollLeft <= 0 && e.deltaY < 0;
-      const atEnd = el.scrollLeft >= maxScroll - 1 && e.deltaY > 0;
-      if (atStart || atEnd) return;
-      e.preventDefault();
-      el.scrollLeft += e.deltaY;
+    const wrapper = wrapperRef.current;
+    const car = carRef.current;
+    if (!wrapper || !car) return;
+
+    const onScroll = () => {
+      if (window.innerWidth < 768) return;
+      const rect = wrapper.getBoundingClientRect();
+      const totalScrollable = wrapper.offsetHeight - window.innerHeight;
+      if (totalScrollable <= 0) return;
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      const maxScrollLeft = car.scrollWidth - car.clientWidth;
+      car.scrollLeft = progress * maxScrollLeft;
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
+    <div ref={wrapperRef} className="db2-sticky-wrapper">
     <section ref={secRef} className="db2-section">
       <div className="proxe-container">
 
@@ -365,5 +369,6 @@ export default function DashboardSection() {
         </div>{/* end db2-carousel-wrap */}
       </div>
     </section>
+    </div>
   );
 }
