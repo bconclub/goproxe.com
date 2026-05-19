@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-05-19 · fix: Capabilities — match existing site theme (glass-card system)
+
+- **Section background reverted to transparent** — the page's purple shows through, matching every other section on the site (`.proxe-section`, `.hiw-section`, `.cd-section`, `.db2-section` all use `background: transparent`). The dark navy bg I added was wrong; the user wanted only the reference's *structure*, not its colors.
+- **Cards (hero, side cards, compliance row)** now use the exact same glass-card primitives as HowItWorks:
+  - `background: linear-gradient(180deg, rgba(8,6,24,0.5/0.55), rgba(12,9,32,0.6/0.65))`
+  - `border: 1px solid rgba(255,255,255,0.10)`
+  - `box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)`
+  - `backdrop-filter: blur(24px)`
+- Comet trail dialed down to a subtle highlight (was a heavy purple bar over a dark bg).
+
 ## 2026-05-19 · fix: dashboard→capabilities gap + Capabilities polish (reference-true orb)
 
 **Dashboard→Capabilities gap (high-priority interrupt):**

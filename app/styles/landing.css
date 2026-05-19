@@ -7203,38 +7203,24 @@ body:has(.proxe-root) {
 .cap-section {
   position: relative;
   padding: 60px 0 100px;
-  background:
-    radial-gradient(ellipse 80% 50% at 80% 10%, rgba(124, 58, 237, 0.18), transparent 60%),
-    linear-gradient(180deg, #060418 0%, #0a0726 50%, #060418 100%);
+  background: transparent;
   overflow: hidden;
 }
-.cap-section::before {
-  /* starfield */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.5) 0.6px, transparent 0.6px),
-    radial-gradient(circle, rgba(255,255,255,0.3) 0.5px, transparent 0.5px);
-  background-size: 110px 90px, 160px 130px;
-  background-position: 0 0, 50px 30px;
-  opacity: 0.4;
-  pointer-events: none;
-}
 .cap-section::after {
-  /* Comet arc trail in top right */
+  /* Subtle purple comet trail in the top right — sits over the page's purple */
   content: '';
   position: absolute;
-  top: 4%;
+  top: 6%;
   right: -8%;
-  width: 70%;
-  height: 320px;
+  width: 60%;
+  height: 240px;
   background:
-    radial-gradient(ellipse 60% 4% at 100% 50%, rgba(196, 181, 253, 0.9), rgba(167, 139, 250, 0.4) 40%, transparent 70%);
-  transform: rotate(-18deg);
+    radial-gradient(ellipse 55% 5% at 100% 50%, rgba(255, 255, 255, 0.6), rgba(196, 181, 253, 0.35) 40%, transparent 75%);
+  transform: rotate(-16deg);
   transform-origin: right center;
-  filter: blur(0.6px);
+  filter: blur(0.5px);
   pointer-events: none;
+  opacity: 0.7;
 }
 
 /* Reveal animations — staggered */
@@ -7321,10 +7307,14 @@ body:has(.proxe-root) {
   grid-column: 1;
   grid-row: 1 / span 2;
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(15, 10, 38, 0.75) 0%, rgba(8, 6, 24, 0.85) 100%);
-  border: 1px solid rgba(167, 139, 250, 0.18);
-  border-radius: 18px;
+  /* Same glass-card system as HowItWorks: blurred dark backdrop, subtle
+     white border + inset highlight, soft outer shadow */
+  background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding: 24px 26px 22px;
   overflow: hidden;
   display: flex;
@@ -7606,10 +7596,12 @@ body:has(.proxe-root) {
 ───────────────────────────────────────────────────────────── */
 .cap-card {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(15, 10, 38, 0.7) 0%, rgba(8, 6, 24, 0.8) 100%);
-  border: 1px solid rgba(167, 139, 250, 0.14);
-  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(8, 6, 24, 0.5) 0%, rgba(12, 9, 32, 0.6) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding: 22px 22px 18px;
   display: flex;
   flex-direction: column;
@@ -7794,10 +7786,12 @@ body:has(.proxe-root) {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  background:
-    linear-gradient(180deg, rgba(15, 10, 38, 0.7) 0%, rgba(8, 6, 24, 0.8) 100%);
-  border: 1px solid rgba(167, 139, 250, 0.14);
-  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(8, 6, 24, 0.5) 0%, rgba(12, 9, 32, 0.6) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding: 14px 4px;
 }
 .cap-badge {
