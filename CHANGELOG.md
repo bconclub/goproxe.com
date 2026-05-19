@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · fix: third pillar card — permanent chat header anchors content
+
+The reactivation card visualization area was looking empty during animation cycles. Even with `flex: 1` on the chat container, the chat children were `opacity: 0` until their animation step fired — so during step-0 (loop restart) and step-1/2 (before the lead reply lands) the card showed huge gaps.
+
+- Added an **always-visible WhatsApp chat header** at the top of the card (avatar gradient + "Rahul S." + "WhatsApp · Follow-up sequence" + online dot). It's `flex-shrink: 0` and sits above the chat bubble area.
+- Chat container switched from `space-around` → `space-between` so the typing slot at top and system slot at bottom anchor the layout even when their opacity is 0.
+- The card now always reads as a populated conversation panel regardless of which animation step is mid-cycle.
+
 ## 2026-05-19 · remove: "Learn more →" links from Capabilities side cards
 
 ## 2026-05-19 · update: Pricing — $99 → $249 (Starter), $199 → $449 (Unlimited)

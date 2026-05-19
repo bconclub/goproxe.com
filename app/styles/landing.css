@@ -5805,19 +5805,57 @@ body:has(.proxe-root) {
 .cd-wa-qr-btn:last-child { border-bottom: none !important; }
 .cd-wa-qr-btn:hover { background: rgba(0,128,105,0.04) !important; }
 
-/* Tighten Card 3 (Reactivate) so content matches visual weight of cards 1 & 2 */
+/* Tighten Card 3 (Reactivate) so content matches visual weight of cards 1 & 2.
+   The card has a permanent chat header at the top, then the chat bubble area
+   below; together they fill the frame regardless of animation step. */
 .hiw-vis--react {
-  gap: 8px;
+  gap: 10px;
   justify-content: flex-start !important;
-  padding-top: 22px !important;
-  padding-bottom: 22px !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  align-items: stretch !important;
 }
-/* Stretch the chat to fill the frame so the visual weight matches
-   cards 1 & 2 (no big empty space at top or bottom). */
 .hiw-vis--react .hiw-react-chat {
   flex: 1 1 auto;
-  justify-content: space-around;
+  justify-content: space-between;
   align-self: stretch;
+}
+
+/* Chat header (always visible) — mimics a WhatsApp conversation header */
+.hiw-react-chat-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.hiw-react-chat-av {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.hiw-react-chat-meta { flex: 1; min-width: 0; }
+.hiw-react-chat-name { font-size: 12px; font-weight: 700; color: #fff; }
+.hiw-react-chat-sub  { font-size: 10.5px; color: rgba(255, 255, 255, 0.55); margin-top: 1px; }
+.hiw-react-chat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.7);
+  flex-shrink: 0;
 }
 .hiw-vis--react .hiw-react-chat { gap: 6px; }
 .hiw-vis--react .hiw-react-bub { padding: 7px 11px; font-size: 11px; }

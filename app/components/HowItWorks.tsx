@@ -200,6 +200,19 @@ function ReactivateVis({ on }: { on: boolean }) {
         ✓ RESPONDED
       </div>
 
+      {/* Always-visible chat header — fills the top of the card so the
+          visualization area never looks empty mid-animation. */}
+      <div className="hiw-react-chat-hdr">
+        <span className="hiw-react-chat-av">
+          <SiWhatsapp size={14} />
+        </span>
+        <div className="hiw-react-chat-meta">
+          <div className="hiw-react-chat-name">Rahul S.</div>
+          <div className="hiw-react-chat-sub">WhatsApp · Follow-up sequence</div>
+        </div>
+        <span className="hiw-react-chat-dot" />
+      </div>
+
       {/* Chat area */}
       <div className="hiw-react-chat">
         {/* Typing indicator */}
