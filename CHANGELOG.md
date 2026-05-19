@@ -1,5 +1,7 @@
 # Changelog
 
+## 2026-05-19 · remove: "Learn more →" links from Capabilities side cards
+
 ## 2026-05-19 · update: Pricing — $99 → $249 (Starter), $199 → $449 (Unlimited)
 
 ## 2026-05-19 · remove: Capabilities compliance badges row

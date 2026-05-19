@@ -313,16 +313,13 @@ export default function CapabilitiesSection() {
               </div>
             </article>
 
-            {/* ── 4 side cards (bento — agents is the wide one) ── */}
+            {/* ── 4 side cards ── */}
             {sideCards.map((c) => (
               <article key={c.id} className={`cap-card cap-card--${c.id}`}>
                 <span className="cap-card-icon"><c.Icon size={18} /></span>
                 <h4 className="cap-card-title">{c.title}</h4>
                 <p className="cap-card-desc">{c.desc}</p>
                 <c.Vis />
-                <a className="cap-card-link" href="#" onClick={(e) => e.preventDefault()}>
-                  Learn more <span>→</span>
-                </a>
               </article>
             ))}
           </div>
