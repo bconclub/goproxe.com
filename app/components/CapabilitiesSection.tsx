@@ -100,17 +100,45 @@ function MiniCenterOrb() {
 }
 
 function ChannelConstellation() {
+  // 3D feel: tilted elliptical orbits (not flat circles) with channel pills
+  // sitting on them with soft drop-shadows.
   return (
     <div className="cap-mini cap-mini--const">
-      <svg className="cap-mini-grid" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
-        <circle cx="100" cy="50" r="36" fill="none" stroke="rgba(167,139,250,0.18)" strokeDasharray="2 4" />
-        <circle cx="100" cy="50" r="20" fill="none" stroke="rgba(167,139,250,0.28)" strokeDasharray="2 4" />
+      <svg className="cap-const-orbits" viewBox="0 0 220 120" aria-hidden="true">
+        <defs>
+          <radialGradient id="capConstGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.5)" />
+            <stop offset="60%"  stopColor="rgba(124,58,237,0.15)" />
+            <stop offset="100%" stopColor="rgba(124,58,237,0)" />
+          </radialGradient>
+        </defs>
+        {/* Outer glow */}
+        <circle cx="110" cy="60" r="58" fill="url(#capConstGlow)" />
+        {/* Tilted elliptical orbits */}
+        <ellipse cx="110" cy="60" rx="86" ry="22"
+          fill="none" stroke="rgba(167,139,250,0.30)" strokeWidth="0.8" strokeDasharray="2 3" />
+        <ellipse cx="110" cy="60" rx="86" ry="22"
+          fill="none" stroke="rgba(167,139,250,0.20)" strokeWidth="0.8" strokeDasharray="2 3"
+          transform="rotate(-22 110 60)" />
+        <ellipse cx="110" cy="60" rx="60" ry="14"
+          fill="none" stroke="rgba(167,139,250,0.35)" strokeWidth="0.9" strokeDasharray="2 3" />
+        {/* Tiny moving particles on the outer orbit */}
+        <circle r="1.8" fill="#e9d5ff">
+          <animateMotion dur="6s" repeatCount="indefinite"
+            path="M 24 60 A 86 22 0 1 0 196 60 A 86 22 0 1 0 24 60 Z" />
+        </circle>
+        <circle r="1.5" fill="#c4b5fd" opacity="0.8">
+          <animateMotion dur="9s" repeatCount="indefinite" begin="-2s"
+            path="M 24 60 A 86 22 0 1 0 196 60 A 86 22 0 1 0 24 60 Z" />
+        </circle>
       </svg>
+
       <MiniCenterOrb />
-      <span className="cap-mini-ico cap-mini-ico--n" style={{ color: '#25d366' }}><SiWhatsapp size={13} /></span>
-      <span className="cap-mini-ico cap-mini-ico--e" style={{ color: '#a78bfa' }}><FiMessageCircle size={13} /></span>
-      <span className="cap-mini-ico cap-mini-ico--s" style={{ color: '#60a5fa' }}><FiPhone size={13} /></span>
-      <span className="cap-mini-ico cap-mini-ico--w" style={{ color: '#c084fc' }}><FiMail size={13} /></span>
+      {/* Channel pills hover on the orbit — drop-shadow gives a 3D feel */}
+      <span className="cap-const-pip cap-const-pip--tl" style={{ color: '#25d366' }}><SiWhatsapp size={13} /></span>
+      <span className="cap-const-pip cap-const-pip--tr" style={{ color: '#a78bfa' }}><FiMessageCircle size={13} /></span>
+      <span className="cap-const-pip cap-const-pip--bl" style={{ color: '#60a5fa' }}><FiPhone size={13} /></span>
+      <span className="cap-const-pip cap-const-pip--br" style={{ color: '#c084fc' }}><FiMail size={13} /></span>
     </div>
   );
 }
@@ -176,11 +204,13 @@ export default function CapabilitiesSection() {
 
   // Order matters: in the bento, capture / followup stack on the right
   // beside the hero; then agents (wide) + security sit in the bottom row.
+  // `eyebrow` overrides the icon-pill content for cards with a custom badge
+  // (e.g. the "24" circular badge on the Lead Capture card).
   const sideCards = [
-    { id: 'capture',  Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation },
-    { id: 'followup', Icon: FiSend,   title: 'Auto Follow-Ups',     desc: 'AI sequences the perfect next steps until they book, buy, or opt out.',    Vis: FollowupFlow },
-    { id: 'agents',   Icon: FiUsers,  title: 'Multi-Agent System',  desc: 'Specialized agents work across web, WhatsApp, voice, email, and SMS.',     Vis: AgentNetwork },
-    { id: 'security', Icon: FiShield, title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.',                  Vis: ShieldVis },
+    { id: 'capture',  index: '01', Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation, eyebrow: <span className="cap-card-eyebrow"><span>24</span></span> },
+    { id: 'followup', index: '02', Icon: FiSend,   title: 'Auto Follow-Ups',     desc: 'AI sequences the perfect next steps until they book, buy, or opt out.',    Vis: FollowupFlow },
+    { id: 'agents',   index: '03', Icon: FiUsers,  title: 'Multi-Agent System',  desc: 'Specialized agents work across web, WhatsApp, voice, email, and SMS.',     Vis: AgentNetwork },
+    { id: 'security', index: '04', Icon: FiShield, title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.',                  Vis: ShieldVis },
   ];
 
   return (
@@ -312,7 +342,12 @@ export default function CapabilitiesSection() {
             {/* ── 4 side cards ── */}
             {sideCards.map((c) => (
               <article key={c.id} className={`cap-card cap-card--${c.id}`}>
-                <span className="cap-card-icon"><c.Icon size={18} /></span>
+                <div className="cap-card-head">
+                  {c.eyebrow ?? (
+                    <span className="cap-card-icon"><c.Icon size={18} /></span>
+                  )}
+                  <span className="cap-card-index">{c.index}</span>
+                </div>
                 <h4 className="cap-card-title">{c.title}</h4>
                 <p className="cap-card-desc">{c.desc}</p>
                 <c.Vis />

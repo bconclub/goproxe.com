@@ -7654,6 +7654,12 @@ body:has(.proxe-root) {
   background:
     linear-gradient(180deg, rgba(24, 16, 60, 0.5) 0%, rgba(10, 7, 28, 0.5) 100%);
 }
+.cap-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
 .cap-card-icon {
   width: 36px;
   height: 36px;
@@ -7664,8 +7670,49 @@ body:has(.proxe-root) {
   background: rgba(124, 58, 237, 0.18);
   border: 1px solid rgba(124, 58, 237, 0.32);
   color: #c4b5fd;
-  margin-bottom: 14px;
   flex-shrink: 0;
+}
+/* "24" circular eyebrow badge — concentric ring + number inside */
+.cap-card-eyebrow {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.55);
+  background: rgba(124, 58, 237, 0.16);
+  flex-shrink: 0;
+}
+.cap-card-eyebrow::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(167, 139, 250, 0.35);
+  animation: capEyebrowSpin 12s linear infinite;
+}
+@keyframes capEyebrowSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.cap-card-eyebrow > span {
+  font-family: var(--proxe-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+/* "01 / 02 / 03 / 04" index in the top-right */
+.cap-card-index {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.35);
 }
 .cap-card-title {
   font-family: var(--proxe-font-heading);
@@ -7753,11 +7800,45 @@ body:has(.proxe-root) {
   z-index: 2;
 }
 
-/* Constellation positions */
-.cap-mini--const .cap-mini-ico--n { left: 50%;  top: 4px;     transform: translateX(-50%); }
-.cap-mini--const .cap-mini-ico--e { right: 14%; top: 50%;    transform: translateY(-50%); }
-.cap-mini--const .cap-mini-ico--s { left: 50%;  bottom: 4px; transform: translateX(-50%); }
-.cap-mini--const .cap-mini-ico--w { left: 14%;  top: 50%;    transform: translateY(-50%); }
+/* Constellation — 3D-style tilted orbits with floating channel pips */
+.cap-mini--const {
+  position: relative;
+  min-height: 120px;
+}
+.cap-const-orbits {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.30));
+}
+.cap-mini--const .cap-mini-core {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+/* Channel pips — soft drop shadow for depth (3D feel) */
+.cap-const-pip {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(18, 12, 40, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    0 0 12px rgba(167, 139, 250, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  z-index: 2;
+}
+.cap-const-pip--tl { left:  8%;  top: 16%; }
+.cap-const-pip--tr { right: 8%;  top: 16%; }
+.cap-const-pip--bl { left:  14%; bottom: 14%; }
+.cap-const-pip--br { right: 14%; bottom: 14%; }
 
 /* Followup flow */
 .cap-mini--flow { gap: 4px; }

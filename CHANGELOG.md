@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · polish: 24/7 Lead Capture card — "24" eyebrow + card indexes + 3D orbits
+
+Addresses the user's earlier "night and day" comparison.
+
+- **Circular "24" eyebrow badge** replaces the plain lightning icon on the Lead Capture card. The badge has an outer solid ring + an inner dashed ring that slowly spins, with a serif "24" in the center.
+- **Card index** `01` / `02` / `03` / `04` (mono font, low-contrast) added to the top-right of each capability card so they read as a numbered set.
+- **Constellation visualization redesigned** with 3D-style tilted elliptical orbits (two ellipses at different rotations) instead of flat dotted circles. Two SVG `animateMotion` particles trail along the outermost orbit at different speeds. Channel pips now sit on the orbit corners with a real drop-shadow + inset highlight, giving them depth.
+- Headline gradient end stop changed from pink (`#ec4899`) to deep purple (`#7c3aed`) on Industries + Pricing + the Pricing "Unlimited" word so they match the Capabilities "autonomous" treatment (user: "we are colouring it unwanted").
+
 ## 2026-05-19 · remove: Pricing trust strip
 
 Removed the 6-panel trust strip (SOC 2 · Enterprise · 99.9% Uptime · GDPR · 24/7 Priority · No Long Term) below the pricing cards per user request. Dropped the `TRUST` const and unused icon imports.
