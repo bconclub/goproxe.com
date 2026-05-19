@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · feat: full-bleed right carousel via CSS-only width extension
+
+- Extended `.db2-carousel-wrap` width using `calc(100% + max(24px, (100vw - 1200px) / 2 + 24px))` — accounts for container's right padding and auto-margin to reach the viewport right edge
+- Slide 2 now peeks ~84px from the right on a 1280px viewport, giving the "continuing carousel" effect
+- No DOM structural changes — carousel-wrap stays inside proxe-container (the prior full-bleed approach moved it outside and broke the live site)
+- Section's existing `overflow: hidden` clips the tiny scrollbar-width excess (no horizontal page scrollbar)
+- Reset to `width: 100%` under the `@media (max-width: 900px)` block so mobile scaled-thumbnail layout is unaffected
+- User-facing: second slide peeks out to the right viewport edge on desktop
+
 ## 2026-05-19 · revert: restore stable dashboard carousel layout
 
 - Reverted full-bleed carousel change (af47d9c) — moving carousel-wrap outside proxe-container caused the section IntersectionObserver to stop firing, leaving the entire dashboard section invisible (opacity: 0, no animation reveal)

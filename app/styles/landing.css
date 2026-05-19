@@ -4253,7 +4253,11 @@ body:has(.proxe-root) {
 .db2-section .proxe-container {
   overflow: visible;
 }
-.db2-carousel-wrap { overflow: visible; }
+.db2-carousel-wrap {
+  overflow: visible;
+  /* Extend to viewport right edge: account for container padding (24px) + auto-margin ((vw-1200)/2) */
+  width: calc(100% + max(24px, (100vw - 1200px) / 2 + 24px));
+}
 .db2-carousel::-webkit-scrollbar { display: none; }
 .db2-carousel > .db2-browser {
   flex: 0 0 auto;
@@ -4757,6 +4761,7 @@ body:has(.proxe-root) {
     padding-right: 16px;
     overflow: hidden;
   }
+  .db2-carousel-wrap { width: 100%; }
 }
 
 /* ── keep old db- classes alive (HowItWorks score bar reuses them) ── */
