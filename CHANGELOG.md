@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-05-19 · feat: Industries — horizontal carousel instead of 4×2 grid
+
+User: "rather than showing it as a column, make it a carousel and make the cards a bit bigger and show three and a half cards so we have more space to show the image and what we have written there."
+
+- `.ind-grid` switched from a CSS grid to a horizontal flex row with `overflow-x: auto`, `scroll-behavior: smooth`, no snap.
+- Wrapped in `.ind-track-wrap` that extends past the container's right edge so the 4th card visibly peeks out at the standard 1200px container width.
+- **Cards bumped from `1fr` columns to `flex: 0 0 320px`** — fixed-width carousel slides.
+- **Image panel height 132 → 180px** — more breathing room for the photo + floating activity cards.
+- Pointer-driven **click-drag** scroll handler (same pattern as `DashboardSection`): mousedown → record startX + startScrollLeft, mousemove → update `scrollLeft`, mouseup → release. `cursor: grab` / `grabbing`.
+- **Arrow buttons** (`‹` / `›`) added below the carousel, each scrolling by one card width.
+- Responsive: cards shrink to 280px at ≤880px and to `calc(100vw - 64px)` (effectively one-per-view) at ≤520px; arrows hide on the smallest viewport.
+
 ## 2026-05-19 · polish: Capabilities cards — consistent tinted icons + bigger flow nodes
 
 User showed how the reference cards have tinted-square icons + bigger polished flow nodes that read better.

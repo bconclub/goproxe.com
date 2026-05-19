@@ -8051,18 +8051,41 @@ body:has(.proxe-root) {
   margin: 0;
 }
 
-/* ── Grid ── */
-.ind-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 16px;
+/* ── Horizontal carousel (was a 4×2 grid). Shows ~3.5 cards at a time;
+       drag to scroll, no snap. The wrap extends past the container's right
+       edge so the next card peeks out on the right. ── */
+.ind-track-wrap {
+  position: relative;
+  margin: 0 0 16px;
+  /* Extend past the container's right edge so card 4 visibly peeks */
+  width: calc(100% + max(24px, (100vw - 1200px) / 2 + 24px));
+  overflow: visible;
 }
+.ind-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 4px 24px;
+  margin: 0 -4px;
+  cursor: grab;
+  user-select: none;
+}
+.ind-grid::-webkit-scrollbar { display: none; }
+.ind-grid.ind-grid--dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+.ind-grid.ind-grid--dragging > * { pointer-events: none; }
 
 /* ── Card ── */
 .ind-card {
   --acc: #a78bfa;
   position: relative;
+  flex: 0 0 320px;
   background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 18px;
@@ -8082,7 +8105,7 @@ body:has(.proxe-root) {
 /* ── Top "image" panel with floating activity cards ── */
 .ind-top {
   position: relative;
-  height: 132px;
+  height: 180px;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -8315,18 +8338,46 @@ body:has(.proxe-root) {
   flex-shrink: 0;
 }
 
-/* ── Responsive ── */
-@media (max-width: 1200px) {
-  .ind-grid { grid-template-columns: repeat(3, 1fr); }
+/* Arrows below the carousel (mirrors the dashboard pattern) */
+.ind-arrows {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
 }
+.ind-arrow {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.ind-arrow:hover {
+  background: rgba(167, 139, 250, 0.20);
+  border-color: rgba(167, 139, 250, 0.55);
+  color: #fff;
+}
+.ind-arrow:active { transform: scale(0.96); }
+
+/* ── Responsive ── */
 @media (max-width: 880px) {
-  .ind-grid { grid-template-columns: repeat(2, 1fr); }
   .ind-header { grid-template-columns: 1fr; gap: 12px; }
-  .ind-trust { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px 4px; }
-  .ind-trust-item { border-right: none; padding: 6px 10px; justify-content: flex-start; }
+  .ind-card { flex: 0 0 280px; }
+  .ind-top { height: 160px; }
 }
 @media (max-width: 520px) {
-  .ind-grid { grid-template-columns: 1fr; }
+  .ind-card { flex: 0 0 calc(100vw - 64px); }
+  .ind-arrows { display: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

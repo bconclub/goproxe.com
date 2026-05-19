@@ -216,6 +216,7 @@ const INDUSTRIES: Industry[] = [
 
 export default function IndustriesSection() {
   const ref = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
 
   useEffect(() => {
@@ -225,6 +226,58 @@ export default function IndustriesSection() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  // Click-drag horizontal scrolling for the carousel (same pattern as
+  // DashboardSection — no snap, smooth scroll, grab/grabbing cursor).
+  useEffect(() => {
+    const car = trackRef.current;
+    if (!car) return;
+    let startX = 0;
+    let startScrollLeft = 0;
+    let pointerId: number | null = null;
+
+    const onDown = (e: PointerEvent) => {
+      if ((e.target as HTMLElement).closest('.ind-arrow')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startScrollLeft = car.scrollLeft;
+      car.classList.add('ind-grid--dragging');
+      try { car.setPointerCapture(e.pointerId); } catch {}
+    };
+    const onMove = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) < 2) return;
+      car.scrollLeft = startScrollLeft - dx;
+      e.preventDefault();
+    };
+    const release = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      pointerId = null;
+      car.classList.remove('ind-grid--dragging');
+      try { car.releasePointerCapture(e.pointerId); } catch {}
+    };
+    car.addEventListener('pointerdown', onDown);
+    car.addEventListener('pointermove', onMove);
+    car.addEventListener('pointerup', release);
+    car.addEventListener('pointercancel', release);
+    car.addEventListener('pointerleave', release);
+    return () => {
+      car.removeEventListener('pointerdown', onDown);
+      car.removeEventListener('pointermove', onMove);
+      car.removeEventListener('pointerup', release);
+      car.removeEventListener('pointercancel', release);
+      car.removeEventListener('pointerleave', release);
+    };
+  }, []);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const car = trackRef.current;
+    if (!car) return;
+    const cardW = (car.firstElementChild as HTMLElement | null)?.offsetWidth ?? 320;
+    car.scrollBy({ left: dir * (cardW + 16), behavior: 'smooth' });
+  };
 
   return (
     <section ref={ref} className={`ind-section${vis ? ' ind-in' : ''}`}>
@@ -245,8 +298,9 @@ export default function IndustriesSection() {
           </p>
         </div>
 
-        {/* 4×2 grid */}
-        <div className="ind-grid">
+        {/* Horizontal carousel — ~3.5 cards visible, drag to scroll */}
+        <div className="ind-track-wrap">
+        <div ref={trackRef} className="ind-grid">
           {INDUSTRIES.map((u) => (
             <article
               key={u.id}
@@ -302,7 +356,13 @@ export default function IndustriesSection() {
             </article>
           ))}
         </div>
+        </div>
 
+        {/* Arrows outside the carousel frame */}
+        <div className="ind-arrows">
+          <button className="ind-arrow" aria-label="Previous industries" onClick={() => scrollBy(-1)}>‹</button>
+          <button className="ind-arrow" aria-label="Next industries"     onClick={() => scrollBy(1)}>›</button>
+        </div>
       </div>
     </section>
   );
