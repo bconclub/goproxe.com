@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-05-19 · rebuild: Capabilities — proper hero-frame layout, SVG orb
+
+Full rewrite of `CapabilitiesSection.tsx` and the `.cap-*` block in `landing.css`.
+
+**Structure:**
+- Header (label / heading / sub) sits **above** a single big rounded dark-glass `.cap-frame`.
+- The frame wraps the entire grid + compliance badges in one container — matches the reference instead of floating disconnected elements.
+- Frame has subtle dot-grid backdrop with a radial mask + a diagonal purple light arc in the top right.
+
+**Hero card:**
+- Spans 2 rows on the left.
+- Title in `--proxe-font-heading` (matches the rest of the site's serif rhythm), italic "autonomous" gradient.
+- 3-column visualization: channel feed (with colored left-rail bars per channel) → glowing **SVG orb** → profile panel + AI Memory bubble.
+- SVG orb: glowing core, 3 concentric orbit rings, 8 radiating rays (slow rotation), 6 pulsing particles.
+- Stats row with vertical dividers; values use the heading font for editorial feel.
+
+**Side cards:**
+- 2×2 grid. Each card has icon-in-pill, serif title, body, mini visualization, and "Learn more →".
+- Mini visualizations use shared `.cap-mini-core` glowing dot for consistency.
+- Constellation, follow-up flow (with green check at end), agent network (curved SVG paths), and shield rings.
+
+**Compliance row:**
+- Inside the frame, with vertical dividers and consistent dark-glass styling.
+
+**Theme:**
+- Page background untouched (inherits the site's purple).
+- Frame uses the same dark-glass palette as HowItWorks / Dashboard cards — visual consistency across the page.
+- All accent colors stay within the existing `#7c3aed` / `#a78bfa` / `#c4b5fd` palette.
+
 ## 2026-05-19 · refine: Capabilities — match theme + reference
 
 - Removed the dark forced background — section is now transparent and inherits the site's purple, matching the rest of the page (HowItWorks / Dashboard / etc.) instead of standing out.
