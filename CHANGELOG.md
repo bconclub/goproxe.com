@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · fix: card 3 spacing, mobile thumbnail dashboard, IG chips, dial arrows
+
+- **Card 3 (Reactivate)**: top-aligned (22px padding) like cards 1 & 2 instead of centered. Chat container now stretches with `flex: 1` and `justify-content: space-around` so content fills the frame — no more 100px of empty space at the top.
+- **Mobile dashboard carousel**: reverted the responsive reflow. Each slide now keeps its desktop layout intact and is scaled down as a single "YouTube-thumbnail" using `transform: scale(calc((100vw - 32px) / 1100px))`. Negative right-margin reclaims the unscaled layout width so flex layout matches the visual width. Carousel height shrinks to the scaled-thumbnail height — no empty space below.
+- **Instagram quick-reply pills**: horizontal scrollable chips (small, native-IG style) instead of a vertical stack on the right side.
+- **Channel dial arrows (`cd-dial-controls`)**: hidden on mobile (`≤860px`) — channel selection happens via the icon strip on top.
+- User-facing: card 3 visually matches cards 1 & 2; mobile dashboard reads as a clean YouTube-style thumbnail row; Instagram chat looks like the real app.
+
 ## 2026-05-19 · feat: restore Lenis smooth-scroll globally
 
 - Installed `lenis` and added `app/components/shared/LenisProvider.tsx` — a client component that boots a single Lenis instance at the root and drives the page via `requestAnimationFrame`.

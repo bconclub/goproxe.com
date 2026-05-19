@@ -4760,60 +4760,46 @@ body:has(.proxe-root) {
 .db2-leads-booking { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .db2-leads-dash { color: rgba(255,255,255,0.25); }
 
-/* ── Mobile: each slide = full mobile viewport, swipeable carousel ── */
+/* ── Mobile: show each slide as a thumbnail of the desktop dashboard ── */
 @media (max-width: 900px) {
-  /* Each slide occupies one viewport width — flex layout matches visual
-     width so scroll-snap and swipe distance feel native. The dashboard
-     content inside reflows to fit mobile width. */
-  .db2-carousel > .db2-browser {
-    width: calc(100vw - 32px);
-    transform: none;
-    height: auto;
+  /* The desktop layout stays exactly as-is — we just scale the whole
+     browser element down (like a YouTube thumbnail) and use negative
+     margins so flex layout reclaims the unused horizontal space.
+     This lets each slide visually fit one viewport-wide thumbnail. */
+  .db2-carousel > .db2-browser,
+  .db2-carousel > .db2-browser.db2-slide,
+  .db2-carousel > .db2-browser.db2-slide--in {
+    width: 1100px;
+    height: 720px;
+    transform-origin: top left;
+    /* scale: visual_width / desktop_width. Dividing two lengths gives a
+       unitless number — `scale()` needs that, not a length. */
+    transform: scale(calc((100vw - 32px) / 1100px)) !important;
+    /* Reclaim layout space taken by un-scaled width.
+       Result: each slide occupies ~viewport-width in flex layout. */
+    margin-right: calc((100vw - 32px) - 1100px) !important;
     scroll-snap-align: center;
-    flex: 0 0 calc(100vw - 32px);
+    flex: 0 0 1100px;
   }
+  /* Shrink the row height to match the visually-scaled thumbnail height
+     so there's no huge empty space below the carousel. */
+  .db2-carousel {
+    height: calc(720px * ((100vw - 32px) / 1100px) + 16px);
+    align-items: flex-start;
+    gap: 16px;
+    padding: 8px 0 24px;
+    margin: 0;
+    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .db2-carousel-wrap { width: 100%; margin: 0; overflow: hidden; }
   .db2-section .proxe-container {
     padding-left: 16px;
     padding-right: 16px;
     overflow: hidden;
   }
-  .db2-carousel-wrap { width: 100%; margin: 0; }
-  .db2-carousel {
-    gap: 16px;
-    padding: 8px 0 24px;
-    margin: 0;
-    scroll-snap-type: x mandatory;
-  }
-  /* Arrows feel out of place when each slide already fills the screen */
   .db2-carousel-arrow { display: none; }
-
-  /* Dashboard slide reflows: 2-col grids, smaller spacing */
-  .db2-app { min-height: 0; min-width: 0; }
-  .db2-main { padding: 12px; gap: 10px; }
-  .db2-glance, .db2-events-card, .db2-attention, .db2-activity { padding: 12px; }
-  .db2-glance-title { margin-bottom: 10px; }
-  .db2-gauges { grid-template-columns: repeat(2, 1fr); gap: 10px; row-gap: 14px; }
-  .db2-gauge { width: 78px; height: 78px; }
-  .db2-gauge svg { width: 78px !important; height: 78px !important; }
-  .db2-gauge-val { font-size: 14px; }
-  .db2-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .db2-stat-val { font-size: 20px; }
-  .db2-stat-card { padding: 8px 10px; min-width: 0; overflow: hidden; }
-  .db2-stat-sub { font-size: 10px; }
-  .db2-stat-view { font-size: 10px; }
-  .db2-stat-tabs { gap: 2px; }
-  .db2-stat-tab { padding: 1px 3px; font-size: 8px; }
-  .db2-stat-trend { padding: 1px 4px; font-size: 8px; }
-  .db2-stat-title { font-size: 10.5px; }
-  .db2-stat-header { gap: 4px; }
-  .db2-stat-footer { gap: 4px; }
-  .db2-event-list { flex-direction: column; }
-  .db2-bottom { grid-template-columns: 1fr; }
-  .db2-sidebar { padding: 10px 0; }
-  .db2-sidebar-ico { width: 28px; height: 28px; font-size: 12px; }
-
-  /* Screenshot slides */
-  .db2-shot img { width: 100%; height: auto; display: block; }
 }
 
 /* ── keep old db- classes alive (HowItWorks score bar reuses them) ── */
@@ -5550,6 +5536,8 @@ body:has(.proxe-root) {
     min-height: 460px;
     padding: 16px;
   }
+  /* Dial arrows make no sense on mobile — channel selection is the icon strip on top */
+  .cd-dial-controls { display: none; }
 }
 
 /* ── WhatsApp sub-tabs ── */
@@ -5808,7 +5796,16 @@ body:has(.proxe-root) {
 /* Tighten Card 3 (Reactivate) so content matches visual weight of cards 1 & 2 */
 .hiw-vis--react {
   gap: 8px;
-  justify-content: center !important;
+  justify-content: flex-start !important;
+  padding-top: 22px !important;
+  padding-bottom: 22px !important;
+}
+/* Stretch the chat to fill the frame so the visual weight matches
+   cards 1 & 2 (no big empty space at top or bottom). */
+.hiw-vis--react .hiw-react-chat {
+  flex: 1 1 auto;
+  justify-content: space-around;
+  align-self: stretch;
 }
 .hiw-vis--react .hiw-react-chat { gap: 6px; }
 .hiw-vis--react .hiw-react-bub { padding: 7px 11px; font-size: 11px; }
@@ -6103,22 +6100,29 @@ body:has(.proxe-root) {
 .cd-ig-hdr-av { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); flex-shrink: 0; }
 .cd-ig-hdr-av img { width: 100%; height: 100%; object-fit: contain; }
 
-/* Instagram quick reply pills */
+/* Instagram quick reply pills — horizontal scrollable chips like the real app */
 .cd-ig-qr {
   display: flex !important;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 6px;
   width: 100%;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
 }
+.cd-ig-qr::-webkit-scrollbar { display: none; }
 .cd-ig-qr-btn {
   display: inline-flex !important;
+  flex-shrink: 0;
   background: #fff !important;
-  border: 1.5px solid #0095f6 !important;
+  border: 1px solid #0095f6 !important;
   color: #0095f6 !important;
-  border-radius: 18px;
-  padding: 8px 18px;
-  font-size: 13px;
+  border-radius: 14px;
+  padding: 5px 12px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
