@@ -54,14 +54,17 @@ function HeroVis() {
         ))}
       </div>
 
-      {/* CENTER — glowing orb */}
+      {/* CENTER — glowing orb with orbiting particles */}
       <div className="cap-orb">
         <div className="cap-orb-ring cap-orb-ring--1" />
         <div className="cap-orb-ring cap-orb-ring--2" />
         <div className="cap-orb-ring cap-orb-ring--3" />
+        <div className="cap-orb-particle cap-orb-particle--1" />
+        <div className="cap-orb-particle cap-orb-particle--2" />
+        <div className="cap-orb-particle cap-orb-particle--3" />
         <div className="cap-orb-core">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3v18M5 12h14M7 7l10 10M17 7L7 17" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" strokeLinecap="round" />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3v18M5 12h14M7 7l10 10M17 7L7 17" stroke="rgba(255,255,255,0.92)" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
         </div>
       </div>
@@ -226,7 +229,7 @@ export default function CapabilitiesSection() {
               <div className="cap-stat">
                 <span className="cap-stat-ico">∞</span>
                 <div>
-                  <div className="cap-stat-val">o¦o</div>
+                  <div className="cap-stat-val">∞</div>
                   <div className="cap-stat-lbl">Cross-Channel Memory</div>
                 </div>
               </div>

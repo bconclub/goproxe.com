@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-19 · refine: Capabilities — match theme + reference
+
+- Removed the dark forced background — section is now transparent and inherits the site's purple, matching the rest of the page (HowItWorks / Dashboard / etc.) instead of standing out.
+- Hero card upgraded with a subtle starfield + dual radial glows on top of dark-glass surface.
+- **Orb redesigned**: 160px with 3 expanding rings, pulsing core glow, and 3 particles orbiting at different speeds/radii — closer to the molecular-orbit feel in the reference.
+- **Channel cards** get a colored left border (green / purple / blue / violet) matching their channel.
+- **Connector lines**: animated dotted flow toward the orb (was static).
+- **AI Memory bubble**: header now `nowrap` so "Just now" stays on one line; dot rendered as a true glowing avatar with inner white pip.
+- **Stats row**: divided columns with vertical separators, larger value typography (heading font, 20px).
+- **Side cards**: dark-glass with a subtle bottom-right radial purple glow.
+- **Lead Capture vis**: added a faint dotted ring/cross-hair grid around the channel constellation.
+- Fixed the "o¦o" typo → "∞" on Cross-Channel Memory stat.
+
 ## 2026-05-19 · feat: redesigned Capabilities section
 
 - Replaced the 6-card flat grid with a richer hero + side-grid layout (matching the reference design).
