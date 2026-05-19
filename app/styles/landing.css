@@ -4216,8 +4216,8 @@ body:has(.proxe-root) {
   background: rgba(124,58,237,0.65);
   transform: translateY(-50%) scale(1.06);
 }
-.db2-carousel-arrow--prev { left: 12px; }
-.db2-carousel-arrow--next { right: 12px; }
+.db2-carousel-arrow--prev { left: calc(50vw - min(600px, 50vw) + 14px); }
+.db2-carousel-arrow--next { right: 14px; }
 
 .db2-section { background: transparent; padding: 90px 0 100px; overflow: hidden; }
 
@@ -4250,15 +4250,18 @@ body:has(.proxe-root) {
   scroll-padding-left: 0;
 }
 /* Allow the carousel to extend past the container's right edge so slide 2 stays visible */
-.db2-section .proxe-container {
+/* carousel-wrap lives outside .proxe-container, aligns left with container content */
+.db2-carousel-wrap {
   overflow: visible;
+  padding-left: calc(50vw - min(600px, 50vw) + 24px);
+  box-sizing: border-box;
 }
-.db2-carousel-wrap { overflow: visible; }
 .db2-carousel::-webkit-scrollbar { display: none; }
+/* Slides span from content-left-edge to viewport right edge */
 .db2-carousel > .db2-browser {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  width: min(1100px, 92%);
+  width: calc(50vw + min(600px, 50vw) - 24px);
 }
 
 /* Each slide slides in from the right when scrolled into view */

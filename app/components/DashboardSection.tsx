@@ -166,7 +166,6 @@ export default function DashboardSection() {
   return (
     <section ref={secRef} className="db2-section">
       <div className="proxe-container">
-
         <div className={`proxe-section-label db2-label${vis ? ' db2-in' : ''}`}>The Dashboard</div>
         <h2 className={`db2-h2${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.08s' }}>
           PROXe takes care of<br />your entire pipeline.
@@ -174,8 +173,9 @@ export default function DashboardSection() {
         <p className={`db2-sub${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.14s' }}>
           Always on screen. Every lead, every stage, every channel, tracked in real time.
         </p>
+      </div>
 
-        <div className={`db2-carousel-wrap${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s', position: 'relative' }}>
+      <div className={`db2-carousel-wrap${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s', position: 'relative' }}>
         <button
           className="db2-carousel-arrow db2-carousel-arrow--prev"
           aria-label="Previous"
@@ -362,8 +362,7 @@ export default function DashboardSection() {
         </div>
 
         </div>{/* end db2-carousel */}
-        </div>{/* end db2-carousel-wrap */}
-      </div>
+      </div>{/* end db2-carousel-wrap */}
     </section>
   );
 }
