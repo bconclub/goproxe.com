@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · simplify: Dashboard — remove scroll-driven pan, arrows below the frame
+
+Per user — the scroll-driven horizontal pan was causing more friction than it solved. Killed it; the carousel is now a plain drag/scroll/arrow-button affair.
+
+- **Removed** the `window` scroll listener and `progress`-based `scrollLeft` writer in `DashboardSection.tsx`.
+- **Removed** the `@media (min-width: 768px) { .db2-sticky-wrapper { height: 130vh; ... } }` block — the section now takes its natural content height, no more huge empty buffer.
+- **Arrows moved** out of the carousel-wrap (where they sat on top of the slides) into a new `.db2-carousel-arrows` row below the dashboard frame. Restyled them as quiet 44×44 outlined circles instead of the heavy purple-glow buttons — they no longer compete with the slide content.
+- Click-drag carousel + native horizontal scroll + arrow buttons all still work.
+
 ## 2026-05-19 · remove: Industries trust row + bigger channel-selector labels
 
 - **Industries trust row removed**: the bottom "Works across 15+ industries · AI trained · Always-on · Secure · Results" strip and the `TRUST_ITEMS` constant are gone from `IndustriesSection.tsx`.

@@ -175,31 +175,10 @@ export default function DashboardSection() {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  // Scroll-driven horizontal pan: page scroll advances the carousel on desktop.
-  // While the user is click-dragging the carousel, we suspend this so the
-  // drag isn't fighting the page-scroll handler.
+  // Scroll-driven horizontal pan removed per user request — the carousel
+  // is now a normal drag/scroll/arrow-button carousel. Less magic, more
+  // predictable.
   const isDraggingRef = useRef(false);
-
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const car = carRef.current;
-    if (!wrapper || !car) return;
-
-    const onScroll = () => {
-      if (window.innerWidth < 768) return;
-      if (isDraggingRef.current) return;
-      const rect = wrapper.getBoundingClientRect();
-      const totalScrollable = wrapper.offsetHeight - window.innerHeight;
-      if (totalScrollable <= 0) return;
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
-      const maxScrollLeft = car.scrollWidth - car.clientWidth;
-      car.scrollLeft = progress * maxScrollLeft;
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   // Click-drag horizontal scrolling for the carousel
   useEffect(() => {
@@ -267,16 +246,6 @@ export default function DashboardSection() {
         </p>
 
         <div className={`db2-carousel-wrap${vis ? ' db2-in' : ''}`} style={{ transitionDelay: '0.22s', position: 'relative' }}>
-        <button
-          className="db2-carousel-arrow db2-carousel-arrow--prev"
-          aria-label="Previous"
-          onClick={() => carRef.current?.scrollBy({ left: -carRef.current.clientWidth, behavior: 'smooth' })}
-        >‹</button>
-        <button
-          className="db2-carousel-arrow db2-carousel-arrow--next"
-          aria-label="Next"
-          onClick={() => carRef.current?.scrollBy({ left: carRef.current.clientWidth, behavior: 'smooth' })}
-        >›</button>
         <div ref={carRef} className="db2-carousel">
         <div ref={el => { slideRefs.current[0] = el; }} className={`db2-browser db2-slide${revealedSlides.has(0) ? ' db2-slide--in' : ''}`}>
 
@@ -454,6 +423,20 @@ export default function DashboardSection() {
 
         </div>{/* end db2-carousel */}
         </div>{/* end db2-carousel-wrap */}
+
+        {/* Arrows below the dashboard frame */}
+        <div className="db2-carousel-arrows">
+          <button
+            className="db2-carousel-arrow db2-carousel-arrow--prev"
+            aria-label="Previous slide"
+            onClick={() => carRef.current?.scrollBy({ left: -carRef.current.clientWidth, behavior: 'smooth' })}
+          >‹</button>
+          <button
+            className="db2-carousel-arrow db2-carousel-arrow--next"
+            aria-label="Next slide"
+            onClick={() => carRef.current?.scrollBy({ left: carRef.current.clientWidth, behavior: 'smooth' })}
+          >›</button>
+        </div>
       </div>
     </section>
     </div>
