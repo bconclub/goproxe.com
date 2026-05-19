@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · feat: restore Lenis smooth-scroll globally
+
+- Installed `lenis` and added `app/components/shared/LenisProvider.tsx` — a client component that boots a single Lenis instance at the root and drives the page via `requestAnimationFrame`.
+- Mounted `<LenisProvider />` once inside `<body>` in `app/layout.tsx`.
+- Updated `app/globals.css` with the standard Lenis class hooks (`.lenis`, `.lenis-smooth`, `.lenis-stopped`, `[data-lenis-prevent]`) so native smooth-scroll defers to Lenis when active.
+- Respects `prefers-reduced-motion` — falls back to native scroll for users who prefer it.
+- User-facing: full-page inertial smooth scroll with expo-out easing (~1.15s duration). Wheel and trackpad feel buttery; iOS keeps native touch momentum.
+
 ## 2026-05-19 · fix: mobile dashboard, channel demo icons, third-pillar centering
 
 - **Dashboard mobile carousel**: each slide is now `calc(100vw - 32px)` wide (one full slide per view) — replaced the broken `transform: scale()` thumbnail approach. Dashboard content reflows to 2-column grids (gauges/stats) with tighter padding and smaller fonts so it fits cleanly. Carousel arrows hidden on mobile in favor of native swipe + scroll-snap.

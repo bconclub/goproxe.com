@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import LenisProvider from './components/shared/LenisProvider';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://goproxe.com'),
@@ -30,7 +31,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <LenisProvider />
+        {children}
+      </body>
     </html>
   );
 }
