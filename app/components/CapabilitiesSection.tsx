@@ -39,10 +39,6 @@ function UnifiedMemoryOrb() {
           <stop offset="100%" stopColor="#3b0764" />
         </radialGradient>
         {/* Bar gradient inside */}
-        <linearGradient id="capOrbBar" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="rgba(255,255,255,0.95)" />
-          <stop offset="100%" stopColor="rgba(255,255,255,0.65)" />
-        </linearGradient>
       </defs>
 
       {/* Outer halo glow */}
@@ -81,12 +77,12 @@ function UnifiedMemoryOrb() {
       {/* Specular highlight */}
       <ellipse cx="106" cy="103" rx="18" ry="9" fill="rgba(255,255,255,0.35)" />
 
-      {/* PROXe brain bars — 3 vertical pills inside the core */}
-      <g>
-        <rect x="106" y="100" width="6" height="40" rx="3" fill="url(#capOrbBar)" />
-        <rect x="117" y="93"  width="6" height="54" rx="3" fill="url(#capOrbBar)" />
-        <rect x="128" y="100" width="6" height="40" rx="3" fill="url(#capOrbBar)" />
-      </g>
+      {/* PROXe brand mark inside the core (actual icon) */}
+      <image
+        href="/proxe/brand/proxe-icon-white.webp"
+        x="100" y="100" width="40" height="40"
+        preserveAspectRatio="xMidYMid meet"
+      />
     </svg>
   );
 }

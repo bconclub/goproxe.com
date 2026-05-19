@@ -8364,7 +8364,17 @@ body:has(.proxe-root) {
   filter: drop-shadow(0 0 18px rgba(167, 139, 250, 0.55));
   z-index: 2;
 }
-.pr-hex svg { width: 100%; height: 100%; }
+.pr-hex-frame { width: 100%; height: 100%; display: block; }
+.pr-hex-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  pointer-events: none;
+}
 .pr-callout {
   position: absolute;
   right: 0;

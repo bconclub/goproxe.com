@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-19 · polish: use brand icon inside hero/orb hexes (Pricing + Capabilities)
+
+The "brain bars" I'd hand-drawn with SVG rects were a stand-in for the PROXe brand mark. Swapped both spots to the real asset.
+
+- **Pricing**: the hex inside the channel diagram now renders `/proxe/brand/proxe-icon-white.webp` (36×36) at its center, hex frame kept as a separate SVG behind it.
+- **Capabilities Unified Memory orb**: the 3 hand-drawn pill bars inside the core were replaced with the same brand asset via an SVG `<image>` element. Removed the now-unused `capOrbBar` gradient def.
+
 ## 2026-05-19 · feat: Pricing section redesign (channel diagram + trust strip)
 
 New `PricingSection` component replaces the inline starter/unlimited cards in `ProxeLanding.tsx`.

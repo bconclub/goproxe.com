@@ -119,7 +119,7 @@ export default function PricingSection() {
             </svg>
 
             <div className="pr-hex">
-              <svg viewBox="0 0 80 88" aria-hidden="true">
+              <svg className="pr-hex-frame" viewBox="0 0 80 88" aria-hidden="true">
                 <defs>
                   <linearGradient id="prHexGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#a78bfa" />
@@ -128,10 +128,14 @@ export default function PricingSection() {
                 </defs>
                 <polygon points="40,3 75,22 75,66 40,85 5,66 5,22"
                   fill="rgba(124,58,237,0.18)" stroke="url(#prHexGrad)" strokeWidth="1.4" />
-                <rect x="28" y="32" width="6" height="24" rx="3" fill="#fff" />
-                <rect x="37" y="26" width="6" height="36" rx="3" fill="#fff" />
-                <rect x="46" y="32" width="6" height="24" rx="3" fill="#fff" />
               </svg>
+              <img
+                className="pr-hex-brand"
+                src="/proxe/brand/proxe-icon-white.webp"
+                alt="PROXe"
+                width={36}
+                height={36}
+              />
             </div>
 
             <div className="pr-callout">
