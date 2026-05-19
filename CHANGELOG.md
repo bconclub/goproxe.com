@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-19 · polish: Capabilities mobile — wider cards inside the hero
+
+User: "There is space on both sides of these cards. We can make it a little bit wider, the unified memory and cards."
+
+On mobile (≤760px) the Unified Memory hero card had `padding: 20px 18px` and the inner channel/profile/memory rows had their own padding on top of that, so the rows were noticeably narrower than the hero with empty space on both sides.
+
+- Hero card mobile padding `20/18 → 18/14` — cards stretch closer to the card edge.
+- Cap-frame mobile padding `12 → 4` — the outer frame eats less width.
+- Channel rows mobile padding `9/11 → 10/12` (just trimmed the left-inset).
+- Profile + Memory cards mobile padding `14/16 → 12/14`.
+- Hero-vis grid padding tightened (`6/0 24 → 4/0 8`).
+- Side cards (`.cap-card`) get the same mobile padding as the hero for visual consistency when they stack below.
+
+Net: inner rows went from ~265px wide → **289px wide** on a 375px viewport (only the hero's own 14px padding sits between them and the card edge now).
+
 ## 2026-05-19 · fix: Industries drag + unify all Capabilities pips to brand purple
 
 **Industries drag fix:** The carousel pointer listeners were attached to `.ind-grid` itself, but real mouse events were getting eaten by child elements (background-image divs, activity card pills, SVG icons) before they could bubble. DOM-dispatched events worked, real mouse events did not.

@@ -7956,7 +7956,7 @@ body:has(.proxe-root) {
 }
 @media (max-width: 760px) {
   .cap-section { padding: 70px 0 80px; }
-  .cap-frame { padding: 12px; border-radius: 18px; }
+  .cap-frame { padding: 4px; border-radius: 18px; }
   .cap-grid { grid-template-columns: 1fr; gap: 12px; }
   /* Without resetting positions, the cards force the grid to keep 3
      columns even though template is 1fr — that's why the hero ends
@@ -7969,12 +7969,20 @@ body:has(.proxe-root) {
     grid-column: auto;
     grid-row: auto;
   }
-  .cap-hero { padding: 20px 18px 18px; }
+  /* Pull hero/card padding way down on mobile so the channel/profile/memory
+     rows + the mini-visualizations can stretch closer to the card edge. */
+  .cap-hero { padding: 18px 14px 16px; }
+  .cap-card { padding: 18px 14px 16px; }
   .cap-hero-vis {
     grid-template-columns: 1fr;
     gap: 16px;
     min-height: 0;
+    padding: 4px 0 8px;
   }
+  /* Tighten the inner channel/profile/memory padding too so the rows
+     read as full-width blocks, not centered chips */
+  .cap-channel { padding: 10px 12px; }
+  .cap-profile, .cap-memory { padding: 12px 14px; }
   .cap-orb-wrap { width: 140px; height: 140px; margin: 0 auto; }
   .cap-hero-title { font-size: 28px; }
   .cap-hero-stats { grid-template-columns: 1fr; padding: 14px 0 0; gap: 12px; }
