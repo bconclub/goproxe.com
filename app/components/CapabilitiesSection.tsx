@@ -22,59 +22,72 @@ import { SiWhatsapp } from 'react-icons/si';
 ───────────────────────────────────────────────────────────── */
 function UnifiedMemoryOrb() {
   return (
-    <svg className="cap-orb-svg" viewBox="0 0 200 200" aria-hidden="true">
+    <svg className="cap-orb-svg" viewBox="0 0 240 240" aria-hidden="true">
       <defs>
-        <radialGradient id="capOrbCore" cx="40%" cy="35%" r="65%">
-          <stop offset="0%"   stopColor="#f5f3ff" />
-          <stop offset="35%"  stopColor="#c4b5fd" />
-          <stop offset="70%"  stopColor="#7c3aed" />
-          <stop offset="100%" stopColor="#3b0764" />
-        </radialGradient>
-        <radialGradient id="capOrbGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="rgba(167,139,250,0.55)" />
-          <stop offset="60%"  stopColor="rgba(124,58,237,0.18)" />
+        {/* Outer halo */}
+        <radialGradient id="capOrbHalo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stopColor="rgba(167,139,250,0.65)" />
+          <stop offset="35%"  stopColor="rgba(124,58,237,0.32)" />
+          <stop offset="70%"  stopColor="rgba(124,58,237,0.10)" />
           <stop offset="100%" stopColor="rgba(124,58,237,0)" />
         </radialGradient>
-        <linearGradient id="capRay" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="rgba(196,181,253,0)" />
-          <stop offset="55%"  stopColor="rgba(196,181,253,0.55)" />
-          <stop offset="100%" stopColor="rgba(196,181,253,0.95)" />
+        {/* Core sphere — top-left highlight, deep purple core */}
+        <radialGradient id="capOrbCore" cx="38%" cy="32%" r="68%">
+          <stop offset="0%"   stopColor="#f5f3ff" />
+          <stop offset="25%"  stopColor="#ddd6fe" />
+          <stop offset="55%"  stopColor="#a78bfa" />
+          <stop offset="85%"  stopColor="#6d28d9" />
+          <stop offset="100%" stopColor="#3b0764" />
+        </radialGradient>
+        {/* Bar gradient inside */}
+        <linearGradient id="capOrbBar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor="rgba(255,255,255,0.95)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0.65)" />
         </linearGradient>
       </defs>
 
-      {/* Soft outer glow */}
-      <circle cx="100" cy="100" r="92" fill="url(#capOrbGlow)" />
+      {/* Outer halo glow */}
+      <circle cx="120" cy="120" r="118" fill="url(#capOrbHalo)" />
 
-      {/* Orbit rings */}
-      <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(167,139,250,0.12)" strokeWidth="1" />
-      <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(167,139,250,0.18)" strokeWidth="1" />
-      <circle cx="100" cy="100" r="42" fill="none" stroke="rgba(167,139,250,0.28)" strokeWidth="1" />
-
-      {/* Radiating rays — 8-point star */}
-      <g className="cap-orb-rays" stroke="url(#capRay)" strokeWidth="1.6" strokeLinecap="round">
-        <line x1="100" y1="100" x2="100" y2="35" />
-        <line x1="100" y1="100" x2="100" y2="165" />
-        <line x1="100" y1="100" x2="35"  y2="100" />
-        <line x1="100" y1="100" x2="165" y2="100" />
-        <line x1="100" y1="100" x2="55"  y2="55"  />
-        <line x1="100" y1="100" x2="145" y2="55"  />
-        <line x1="100" y1="100" x2="55"  y2="145" />
-        <line x1="100" y1="100" x2="145" y2="145" />
+      {/* Elliptical orbit rings — 3 at different rotations for an atom feel */}
+      <g className="cap-orb-orbits">
+        <ellipse cx="120" cy="120" rx="105" ry="42"
+          fill="none" stroke="rgba(167,139,250,0.30)" strokeWidth="0.9" />
+        <ellipse cx="120" cy="120" rx="105" ry="42"
+          fill="none" stroke="rgba(167,139,250,0.22)" strokeWidth="0.9"
+          transform="rotate(60 120 120)" />
+        <ellipse cx="120" cy="120" rx="105" ry="42"
+          fill="none" stroke="rgba(167,139,250,0.16)" strokeWidth="0.9"
+          transform="rotate(-60 120 120)" />
       </g>
 
-      {/* Particles on orbits */}
+      {/* Particles on the orbits */}
       <g className="cap-orb-dots">
-        <circle cx="100" cy="20"  r="2.6" fill="#c4b5fd" />
-        <circle cx="180" cy="100" r="2.2" fill="#c4b5fd" opacity="0.85" />
-        <circle cx="100" cy="180" r="2.6" fill="#c4b5fd" />
-        <circle cx="20"  cy="100" r="2.2" fill="#c4b5fd" opacity="0.85" />
-        <circle cx="40"  cy="40"  r="1.8" fill="#e9d5ff" opacity="0.7" />
-        <circle cx="160" cy="160" r="1.8" fill="#e9d5ff" opacity="0.7" />
+        <circle r="2.4" fill="#e9d5ff">
+          <animateMotion dur="9s" repeatCount="indefinite"
+            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
+        </circle>
+        <circle r="2" fill="#c4b5fd" opacity="0.85">
+          <animateMotion dur="11s" repeatCount="indefinite" rotate="60"
+            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
+        </circle>
+        <circle r="1.8" fill="#e9d5ff" opacity="0.75">
+          <animateMotion dur="13s" repeatCount="indefinite" rotate="-60"
+            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
+        </circle>
       </g>
 
-      {/* Glowing core */}
-      <circle cx="100" cy="100" r="20" fill="url(#capOrbCore)" />
-      <circle cx="100" cy="100" r="20" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" />
+      {/* Sphere core */}
+      <circle cx="120" cy="120" r="44" fill="url(#capOrbCore)" />
+      {/* Specular highlight */}
+      <ellipse cx="106" cy="103" rx="18" ry="9" fill="rgba(255,255,255,0.35)" />
+
+      {/* PROXe brain bars — 3 vertical pills inside the core */}
+      <g>
+        <rect x="106" y="100" width="6" height="40" rx="3" fill="url(#capOrbBar)" />
+        <rect x="117" y="93"  width="6" height="54" rx="3" fill="url(#capOrbBar)" />
+        <rect x="128" y="100" width="6" height="40" rx="3" fill="url(#capOrbBar)" />
+      </g>
     </svg>
   );
 }
@@ -211,6 +224,23 @@ export default function CapabilitiesSection() {
               </p>
 
               <div className="cap-hero-vis">
+                {/* Curved glowing connector lines from each channel row to the orb */}
+                <svg className="cap-connectors" viewBox="0 0 600 320" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="capConnGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%"   stopColor="rgba(167,139,250,0.05)" />
+                      <stop offset="50%"  stopColor="rgba(167,139,250,0.55)" />
+                      <stop offset="100%" stopColor="rgba(196,181,253,0.85)" />
+                    </linearGradient>
+                  </defs>
+                  <g fill="none" stroke="url(#capConnGrad)" strokeWidth="1.4" strokeLinecap="round">
+                    <path d="M 200 50  C 260 70,  290 130, 300 160" />
+                    <path d="M 200 120 C 260 130, 290 150, 300 160" />
+                    <path d="M 200 200 C 260 190, 290 170, 300 160" />
+                    <path d="M 200 270 C 260 250, 290 200, 300 160" />
+                  </g>
+                </svg>
+
                 {/* LEFT: channel feed */}
                 <div className="cap-channels">
                   {[

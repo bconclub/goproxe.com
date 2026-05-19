@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-05-19 · fix: dashboard→capabilities gap + Capabilities polish (reference-true orb)
+
+**Dashboard→Capabilities gap (high-priority interrupt):**
+- Reduced sticky wrapper from `180vh` → `130vh`. The dashboard section was reserving way too much vertical scroll space, leaving a huge purple gap before the next section.
+- Capabilities top padding reduced `110px` → `60px`.
+
+**Capabilities polish:**
+- Section background: dark navy gradient + subtle starfield + diagonal purple comet trail in the top-right (matches the reference's own dark background instead of inheriting page purple).
+- Layout: hero spans 2 rows on the left, **2×2 of equal-sized cards** on the right (not bento — that was wrong; the reference uses a uniform 2×2).
+- **Orb redesigned**: viewbox 240, glowing core sphere with top-left specular highlight, **3 inner vertical bars** matching the PROXe brain/logo motif, **3 elliptical orbits** at rotated angles (atom-style), 3 particles animating along the orbits via `animateMotion`, heavy purple drop-shadow.
+- **Curved glowing connector SVG**: 4 paths from each channel row → the orb center, with gradient stroke (transparent on the channel end, bright on the orb end) and a glowing drop-shadow.
+- Cards: subtle purple border + dark-glass surface so they sit properly on the new dark section background.
+- Frame element kept structurally but visually removed (no border / no padding).
+
 ## 2026-05-19 · fix: Capabilities — bento layout (hero 2/3, wide multi-agent)
 
 The previous uniform 3-col grid squeezed the hero card to 438px, which crushed its internal 3-column visualization down to 89px side columns — channel names wrapped to 4 lines, AI Memory wrapped to 10+ lines. The right side was visibly cut off.

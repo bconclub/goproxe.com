@@ -4225,8 +4225,9 @@ body:has(.proxe-root) {
 }
 @media (min-width: 768px) {
   .db2-sticky-wrapper {
-    /* Shorter sticky region → slides advance faster per unit of page scroll */
-    height: 180vh;
+    /* Tight sticky region — short scroll buffer for the horizontal pan
+       so the next section starts right after the dashboard. */
+    height: 130vh;
   }
   .db2-sticky-wrapper .db2-section {
     position: sticky;
@@ -7201,9 +7202,39 @@ body:has(.proxe-root) {
 
 .cap-section {
   position: relative;
-  padding: 110px 0 120px;
-  background: transparent;
+  padding: 60px 0 100px;
+  background:
+    radial-gradient(ellipse 80% 50% at 80% 10%, rgba(124, 58, 237, 0.18), transparent 60%),
+    linear-gradient(180deg, #060418 0%, #0a0726 50%, #060418 100%);
   overflow: hidden;
+}
+.cap-section::before {
+  /* starfield */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.5) 0.6px, transparent 0.6px),
+    radial-gradient(circle, rgba(255,255,255,0.3) 0.5px, transparent 0.5px);
+  background-size: 110px 90px, 160px 130px;
+  background-position: 0 0, 50px 30px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.cap-section::after {
+  /* Comet arc trail in top right */
+  content: '';
+  position: absolute;
+  top: 4%;
+  right: -8%;
+  width: 70%;
+  height: 320px;
+  background:
+    radial-gradient(ellipse 60% 4% at 100% 50%, rgba(196, 181, 253, 0.9), rgba(167, 139, 250, 0.4) 40%, transparent 70%);
+  transform: rotate(-18deg);
+  transform-origin: right center;
+  filter: blur(0.6px);
+  pointer-events: none;
 }
 
 /* Reveal animations — staggered */
@@ -7259,69 +7290,42 @@ body:has(.proxe-root) {
   max-width: 600px;
 }
 
-/* ── Outer frame: one big dark-glass card holding the grid + badges ── */
+/* ── Outer frame: subtle outline since the section itself is already dark ── */
 .cap-frame {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(8, 6, 24, 0.78) 0%, rgba(12, 9, 32, 0.85) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
   border-radius: 24px;
-  padding: 18px;
-  overflow: hidden;
+  padding: 0;
 }
-.cap-frame-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: 0 0;
-  opacity: 0.5;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 90%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 90%);
-}
-.cap-frame-arc {
-  position: absolute;
-  top: 18px;
-  right: -6%;
-  width: 70%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.7), transparent);
-  transform: rotate(-22deg);
-  transform-origin: right center;
-  filter: blur(0.5px);
-}
+.cap-frame-bg, .cap-frame-arc { display: none; }
 
-/* ── Bento grid:
-       row 1: hero (2/3 wide, spans 2 rows)  | lead capture
-       row 2:                                | follow-ups
-       row 3: multi-agent (wide, 2/3)        | security
+/* ── Layout (matches the reference):
+       Hero (left, wide, spans 2 rows) | 2×2 small cards (right)
    ── */
 .cap-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr;
   gap: 14px;
   position: relative;
 }
 .cap-card--capture  { grid-column: 2; grid-row: 1; }
-.cap-card--followup { grid-column: 2; grid-row: 2; }
-.cap-card--agents   { grid-column: 1; grid-row: 3; }
-.cap-card--security { grid-column: 2; grid-row: 3; }
+.cap-card--followup { grid-column: 3; grid-row: 1; }
+.cap-card--agents   { grid-column: 2; grid-row: 2; }
+.cap-card--security { grid-column: 3; grid-row: 2; }
 
 /* ─────────────────────────────────────────────────────────────
    HERO CARD — Unified Memory
 ───────────────────────────────────────────────────────────── */
 .cap-hero {
   grid-column: 1;
-  grid-row: 1 / span 2;  /* spans the first two rows of the 3-row bento */
+  grid-row: 1 / span 2;
   position: relative;
   background:
-    linear-gradient(180deg, rgba(20, 14, 50, 0.55) 0%, rgba(8, 6, 24, 0.55) 100%);
-  border: 1px solid rgba(167, 139, 250, 0.16);
+    linear-gradient(180deg, rgba(15, 10, 38, 0.75) 0%, rgba(8, 6, 24, 0.85) 100%);
+  border: 1px solid rgba(167, 139, 250, 0.18);
   border-radius: 18px;
-  padding: 22px 24px 20px;
+  padding: 24px 26px 22px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -7384,10 +7388,20 @@ body:has(.proxe-root) {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 14px;
   align-items: center;
-  min-height: 280px;
-  padding: 6px 0 20px;
+  min-height: 320px;
+  padding: 6px 0 24px;
   z-index: 1;
 }
+.cap-connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.5));
+}
+.cap-channels, .cap-orb-wrap, .cap-right { position: relative; z-index: 1; }
 
 /* Channel feed (left) */
 .cap-channels {
@@ -7438,31 +7452,26 @@ body:has(.proxe-root) {
 /* ── Orb (center) ── */
 .cap-orb-wrap {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 240px;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .cap-orb-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 24px rgba(167, 139, 250, 0.45));
+  filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.55));
 }
-@keyframes capOrbRotateRays { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-@keyframes capOrbPulseDots  { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-.cap-orb-rays {
-  transform-origin: 100px 100px;
-  animation: capOrbRotateRays 28s linear infinite;
+.cap-orb-orbits {
+  transform-origin: 120px 120px;
+  animation: capOrbitsSpin 60s linear infinite;
 }
-.cap-orb-dots circle {
-  animation: capOrbPulseDots 3s ease-in-out infinite;
+@keyframes capOrbitsSpin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
 }
-.cap-orb-dots circle:nth-child(2) { animation-delay: 0.4s; }
-.cap-orb-dots circle:nth-child(3) { animation-delay: 0.8s; }
-.cap-orb-dots circle:nth-child(4) { animation-delay: 1.2s; }
-.cap-orb-dots circle:nth-child(5) { animation-delay: 1.6s; }
-.cap-orb-dots circle:nth-child(6) { animation-delay: 2.0s; }
 
 /* Right column: profile + memory */
 .cap-right {
@@ -7598,8 +7607,8 @@ body:has(.proxe-root) {
 .cap-card {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(20, 14, 50, 0.4) 0%, rgba(8, 6, 24, 0.4) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+    linear-gradient(180deg, rgba(15, 10, 38, 0.7) 0%, rgba(8, 6, 24, 0.8) 100%);
+  border: 1px solid rgba(167, 139, 250, 0.14);
   border-radius: 18px;
   padding: 22px 22px 18px;
   display: flex;
@@ -7786,8 +7795,8 @@ body:has(.proxe-root) {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   background:
-    linear-gradient(180deg, rgba(20, 14, 50, 0.45) 0%, rgba(8, 6, 24, 0.45) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+    linear-gradient(180deg, rgba(15, 10, 38, 0.7) 0%, rgba(8, 6, 24, 0.8) 100%);
+  border: 1px solid rgba(167, 139, 250, 0.14);
   border-radius: 14px;
   padding: 14px 4px;
 }
