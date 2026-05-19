@@ -20,17 +20,16 @@ import { SiWhatsapp } from 'react-icons/si';
    ORB — SVG-based: glowing core + radiating rays + orbit rings + particles
 ───────────────────────────────────────────────────────────── */
 function UnifiedMemoryOrb() {
+  // Compact glowing sphere — no electrons/orbits. Connector lines
+  // come from the parent visualization SVG, not from the orb.
   return (
-    <svg className="cap-orb-svg" viewBox="0 0 240 240" aria-hidden="true">
+    <svg className="cap-orb-svg" viewBox="0 0 140 140" aria-hidden="true">
       <defs>
-        {/* Outer halo */}
         <radialGradient id="capOrbHalo" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="rgba(167,139,250,0.65)" />
-          <stop offset="35%"  stopColor="rgba(124,58,237,0.32)" />
-          <stop offset="70%"  stopColor="rgba(124,58,237,0.10)" />
+          <stop offset="0%"   stopColor="rgba(167,139,250,0.55)" />
+          <stop offset="50%"  stopColor="rgba(124,58,237,0.20)" />
           <stop offset="100%" stopColor="rgba(124,58,237,0)" />
         </radialGradient>
-        {/* Core sphere — top-left highlight, deep purple core */}
         <radialGradient id="capOrbCore" cx="38%" cy="32%" r="68%">
           <stop offset="0%"   stopColor="#f5f3ff" />
           <stop offset="25%"  stopColor="#ddd6fe" />
@@ -38,49 +37,20 @@ function UnifiedMemoryOrb() {
           <stop offset="85%"  stopColor="#6d28d9" />
           <stop offset="100%" stopColor="#3b0764" />
         </radialGradient>
-        {/* Bar gradient inside */}
       </defs>
 
-      {/* Outer halo glow */}
-      <circle cx="120" cy="120" r="118" fill="url(#capOrbHalo)" />
-
-      {/* Elliptical orbit rings — 3 at different rotations for an atom feel */}
-      <g className="cap-orb-orbits">
-        <ellipse cx="120" cy="120" rx="105" ry="42"
-          fill="none" stroke="rgba(167,139,250,0.30)" strokeWidth="0.9" />
-        <ellipse cx="120" cy="120" rx="105" ry="42"
-          fill="none" stroke="rgba(167,139,250,0.22)" strokeWidth="0.9"
-          transform="rotate(60 120 120)" />
-        <ellipse cx="120" cy="120" rx="105" ry="42"
-          fill="none" stroke="rgba(167,139,250,0.16)" strokeWidth="0.9"
-          transform="rotate(-60 120 120)" />
-      </g>
-
-      {/* Particles on the orbits */}
-      <g className="cap-orb-dots">
-        <circle r="2.4" fill="#e9d5ff">
-          <animateMotion dur="9s" repeatCount="indefinite"
-            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
-        </circle>
-        <circle r="2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="11s" repeatCount="indefinite" rotate="60"
-            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
-        </circle>
-        <circle r="1.8" fill="#e9d5ff" opacity="0.75">
-          <animateMotion dur="13s" repeatCount="indefinite" rotate="-60"
-            path="M 15 120 A 105 42 0 1 0 225 120 A 105 42 0 1 0 15 120 Z" />
-        </circle>
-      </g>
+      {/* Halo glow */}
+      <circle cx="70" cy="70" r="68" fill="url(#capOrbHalo)" />
 
       {/* Sphere core */}
-      <circle cx="120" cy="120" r="44" fill="url(#capOrbCore)" />
+      <circle cx="70" cy="70" r="36" fill="url(#capOrbCore)" />
       {/* Specular highlight */}
-      <ellipse cx="106" cy="103" rx="18" ry="9" fill="rgba(255,255,255,0.35)" />
+      <ellipse cx="58" cy="55" rx="13" ry="6" fill="rgba(255,255,255,0.35)" />
 
-      {/* PROXe brand mark inside the core (actual icon) */}
+      {/* PROXe brand mark inside the core */}
       <image
         href="/proxe/brand/proxe-icon-white.webp"
-        x="100" y="100" width="40" height="40"
+        x="51" y="51" width="38" height="38"
         preserveAspectRatio="xMidYMid meet"
       />
     </svg>
@@ -249,20 +219,30 @@ export default function CapabilitiesSection() {
               </p>
 
               <div className="cap-hero-vis">
-                {/* Curved glowing connector lines from each channel row to the orb */}
+                {/* Glowing connector lines wiring channels (left) and
+                    profile/memory (right) into the orb. */}
                 <svg className="cap-connectors" viewBox="0 0 600 320" preserveAspectRatio="none" aria-hidden="true">
                   <defs>
-                    <linearGradient id="capConnGrad" x1="0" y1="0" x2="1" y2="0">
+                    <linearGradient id="capConnGradL" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%"   stopColor="rgba(167,139,250,0.05)" />
-                      <stop offset="50%"  stopColor="rgba(167,139,250,0.55)" />
-                      <stop offset="100%" stopColor="rgba(196,181,253,0.85)" />
+                      <stop offset="100%" stopColor="rgba(196,181,253,0.9)" />
+                    </linearGradient>
+                    <linearGradient id="capConnGradR" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%"   stopColor="rgba(196,181,253,0.9)" />
+                      <stop offset="100%" stopColor="rgba(167,139,250,0.05)" />
                     </linearGradient>
                   </defs>
-                  <g fill="none" stroke="url(#capConnGrad)" strokeWidth="1.4" strokeLinecap="round">
+                  {/* Left side — 4 channels → orb */}
+                  <g fill="none" stroke="url(#capConnGradL)" strokeWidth="1.4" strokeLinecap="round">
                     <path d="M 200 50  C 260 70,  290 130, 300 160" />
                     <path d="M 200 120 C 260 130, 290 150, 300 160" />
                     <path d="M 200 200 C 260 190, 290 170, 300 160" />
                     <path d="M 200 270 C 260 250, 290 200, 300 160" />
+                  </g>
+                  {/* Right side — orb → profile + memory */}
+                  <g fill="none" stroke="url(#capConnGradR)" strokeWidth="1.4" strokeLinecap="round">
+                    <path d="M 300 160 C 340 130, 360  90, 400  80" />
+                    <path d="M 300 160 C 340 190, 360 230, 400 240" />
                   </g>
                 </svg>
 

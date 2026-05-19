@@ -7409,16 +7409,17 @@ body:has(.proxe-root) {
   z-index: 1;
 }
 
-/* Hero visualization — 3 columns (channels | orb | profile/memory) */
+/* Hero visualization — 3 columns (channels | orb | profile/memory).
+   Side columns get more room to breathe; orb gets less. */
 .cap-hero-vis {
   position: relative;
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.05fr);
+  gap: 28px;
   align-items: center;
-  min-height: 320px;
-  padding: 6px 0 24px;
+  min-height: 340px;
+  padding: 12px 0 28px;
   z-index: 1;
 }
 .cap-connectors {
@@ -7436,18 +7437,18 @@ body:has(.proxe-root) {
 .cap-channels {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .cap-channel {
   --accent: #a78bfa;
   position: relative;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 8px 10px 8px 11px;
+  gap: 10px;
+  padding: 10px 12px 10px 13px;
   background: rgba(18, 12, 40, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border-radius: 12px;
   min-width: 0;
 }
 .cap-channel::before {
@@ -7478,11 +7479,11 @@ body:has(.proxe-root) {
 .cap-channel-name { font-size: 11.5px; font-weight: 600; color: #fff; }
 .cap-channel-sub  { font-size: 10px;   color: rgba(255, 255, 255, 0.45); margin-top: 1px; }
 
-/* ── Orb (center) ── */
+/* ── Orb (center) — compact glowing sphere ── */
 .cap-orb-wrap {
   position: relative;
-  width: 240px;
-  height: 240px;
+  width: 140px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7491,7 +7492,7 @@ body:has(.proxe-root) {
 .cap-orb-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.55));
+  filter: drop-shadow(0 0 22px rgba(167, 139, 250, 0.55));
 }
 .cap-orb-orbits {
   transform-origin: 120px 120px;
@@ -7502,17 +7503,17 @@ body:has(.proxe-root) {
   to   { transform: rotate(360deg); }
 }
 
-/* Right column: profile + memory */
+/* Right column: profile + memory — more padding/gap for breathing room */
 .cap-right {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 .cap-profile {
   background: rgba(18, 12, 40, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 14px 16px;
 }
 .cap-profile-tag {
   font-family: var(--proxe-font-mono);
@@ -7551,8 +7552,8 @@ body:has(.proxe-root) {
 .cap-memory {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(18, 12, 40, 0.85));
   border: 1px solid rgba(124, 58, 237, 0.4);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 14px 16px;
   position: relative;
 }
 .cap-memory-hdr {

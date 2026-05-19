@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-19 · polish: Capabilities orb — smaller, wired both sides, more breathing room
+
+User: "inside this should be a little bit bigger so the text inside this can breathe. The center thing glowing and having doesn't need this much space... it can just wire to these so it can take details from the WhatsApp website. Connect the wires to these two things and give it a little bit of space to breathe."
+
+- **Orb shrunk**: `UnifiedMemoryOrb` SVG viewbox 240→140; the visible glowing sphere is now ~140×140 (was 240×240). Removed the 3 tilted elliptical orbits and the 3 `animateMotion` particles — it's a clean halo + sphere + brand mark now (no more atomic-electron feel).
+- **Wired both sides**: the connector SVG now draws 4 paths from the left channels → orb AND 2 paths from orb → Persistent Customer Profile + AI Memory cards. Used two gradient strokes so the brightness pools at the orb on the left half and at the cards on the right half.
+- **Breathing room**: hero-vis grid columns retuned to `1fr / auto / 1.05fr` (was `1fr / auto / 1fr`) with `gap: 28px` (was 14px). Channel rows / profile / memory padding bumped to `10–14px / 12–16px` and border-radius up to 12px. Min visualization height up to 340px (was 320px). Net effect: text inside the cards no longer wraps tight; the orb has less visual weight and acts as a hub.
+
 ## 2026-05-19 · feat: Industries cards — use real photos from public/industries/
 
 - `Industry` type gained an optional `image?: string` field.
