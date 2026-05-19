@@ -7965,7 +7965,8 @@ body:has(.proxe-root) {
   margin: 0;
 }
 .ind-h2-grad {
-  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 50%, #ec4899 100%);
+  /* Match the Capabilities "autonomous" treatment — soft purple, no pink */
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 50%, #7c3aed 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -8293,7 +8294,8 @@ body:has(.proxe-root) {
   margin: 0 0 16px;
 }
 .pr-h2-grad {
-  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 50%, #ec4899 100%);
+  /* Match the Capabilities "autonomous" treatment — soft purple, no pink */
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 50%, #7c3aed 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -8517,7 +8519,7 @@ body:has(.proxe-root) {
   font-weight: 700;
 }
 .pr-grad-text {
-  background: linear-gradient(135deg, #a78bfa, #c084fc, #ec4899);
+  background: linear-gradient(135deg, #a78bfa, #c084fc, #7c3aed);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
