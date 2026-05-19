@@ -1332,7 +1332,7 @@ export default function ProxeLanding() {
             <div className="proxe-pricing-card">
               <h3 className="proxe-pricing-name">Starter</h3>
               <div className="proxe-pricing-price">
-                $99<small>/mo</small>
+                $249<small>/mo</small>
               </div>
               <ul className="proxe-pricing-features">
                 <li>1,000 conversations</li>
@@ -1349,7 +1349,7 @@ export default function ProxeLanding() {
               <span className="proxe-pricing-badge">Most Popular</span>
               <h3 className="proxe-pricing-name">Unlimited</h3>
               <div className="proxe-pricing-price">
-                $199<small>/mo</small>
+                $449<small>/mo</small>
               </div>
               <ul className="proxe-pricing-features">
                 <li>Unlimited conversations</li>

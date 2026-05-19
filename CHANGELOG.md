@@ -1,5 +1,7 @@
 # Changelog
 
+## 2026-05-19 · update: Pricing — $99 → $249 (Starter), $199 → $449 (Unlimited)
+
 ## 2026-05-19 · remove: Capabilities compliance badges row
 
 Removed the SOC 2 / End-to-End / GDPR / Multi-Channel / Always On strip below the grid per user request. Dropped the now-unused `FiDatabase` import. (d8fc314)
