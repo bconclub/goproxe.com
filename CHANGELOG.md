@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-19 · feat: Pricing section redesign (channel diagram + trust strip)
+
+New `PricingSection` component replaces the inline starter/unlimited cards in `ProxeLanding.tsx`.
+
+- **Two-column header**: left has `PRICING` label, serif headline "Start capturing *every conversation*." (gradient on the italic phrase), and a 2-line supporting paragraph. Right is a channel diagram: 6 colored channel pips (Web / WhatsApp / Instagram DM / Messenger / Email / Voice) at the top, curved SVG lines flowing down to a glowing PROXe hex-orb with the 3 brand bars inside, and a small "One memory. Every channel." floating callout on the right.
+- **Two pricing cards** side by side:
+  - **Starter ($249/mo)**: STARTER tag, big serif price, "1,000 AI conversations / month" headline pill, full channel list (Website chat / WhatsApp / Instagram DM / Facebook Messenger / Email / Voice) with green check ticks, two feature rows (Unified memory / Automated follow-ups), description note, ghost "Start Free Trial →" button.
+  - **Unlimited ($449/mo)**: UNLIMITED tag with "MOST POPULAR" gradient pill, accent border + radial purple bloom, "∞ Unlimited AI conversations" headline (gradient text on "Unlimited"), same channel list, 4 feature rows (Unified cross-channel memory / AI follow-ups & reactivation / Multi-agent orchestration / Priority infrastructure access), description note, full-gradient "Deploy PROXe →" CTA with glow shadow.
+- **Trust strip**: 6 panels with vertical dividers — SOC 2 Type II Compliant · Enterprise Grade Security · 99.9% Uptime Guaranteed · GDPR Compliant · 24/7 Priority Support · No Long Term Contracts.
+- Same glass-card primitives as the rest of the site (`backdrop-filter: blur(24px)`, `border: rgba(255,255,255,0.10)`, soft outer + inset shadows).
+- Staggered scroll-reveal: label → h2 → sub → header-vis → starter card → unlimited card → trust.
+- Responsive: header collapses to 1 col at ≤1100px, trust strip to 3-col then 2-col, cards stack at ≤760px.
+
 ## 2026-05-19 · simplify: Dashboard — smooth scroll, no snap
 
 - `scroll-snap-type: x mandatory` → removed from `.db2-carousel` (both desktop and mobile rules)

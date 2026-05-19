@@ -10,6 +10,7 @@ import HowItWorks from './HowItWorks';
 import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
+import PricingSection from './PricingSection';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1245,51 +1246,8 @@ export default function ProxeLanding() {
       {/* ===== 11. Industries — redesigned with activity cards + flows + trust row ===== */}
       <IndustriesSection />
 
-      {/* ===== 12. Pricing ===== */}
-      <section className="proxe-section" id="pricing">
-        <div className="proxe-container">
-          <div className="proxe-section-label" style={{ textAlign: 'center' }}>
-            Pricing
-          </div>
-          <div className="proxe-pricing-grid">
-            <div className="proxe-pricing-card">
-              <h3 className="proxe-pricing-name">Starter</h3>
-              <div className="proxe-pricing-price">
-                $249<small>/mo</small>
-              </div>
-              <ul className="proxe-pricing-features">
-                <li>1,000 conversations</li>
-                <li>All channels</li>
-                <li>Unified inbox</li>
-                <li>Auto follow-ups</li>
-              </ul>
-              <a href="#book-demo" className="proxe-btn proxe-btn-ghost">
-                Start Free Trial
-              </a>
-            </div>
-
-            <div className="proxe-pricing-card popular">
-              <span className="proxe-pricing-badge">Most Popular</span>
-              <h3 className="proxe-pricing-name">Unlimited</h3>
-              <div className="proxe-pricing-price">
-                $449<small>/mo</small>
-              </div>
-              <ul className="proxe-pricing-features">
-                <li>Unlimited conversations</li>
-                <li>All channels</li>
-                <li>Unified inbox</li>
-                <li>Priority support</li>
-              </ul>
-              <a href="#book-demo" className="proxe-btn proxe-btn-primary">
-                Start Free Trial
-              </a>
-            </div>
-          </div>
-          <div className="proxe-pricing-note">
-            Need custom? <a href="#book-demo">Book a call.</a>
-          </div>
-        </div>
-      </section>
+      {/* ===== 12. Pricing — redesigned with channel diagram + trust strip ===== */}
+      <PricingSection />
 
       {/* ===== 13. Testimonials ===== */}
       <section className="proxe-section">
