@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · fix: capture pills container-less + cap-grid mobile + dashboard mobile scale
+
+**Premium feel for Card 1 pills (CaptureVis):** removed the white pill container around each notification. Just the colored icon + text now, with a slight box-shadow on the icon for depth.
+- `background: transparent`, `box-shadow: none`, larger icon (34×34 vs 30×30), text on white at 92% opacity, badge as outlined chip (was solid green).
+
+**Capabilities grid broken on mobile:** the four cards had explicit `grid-column: 2/3` placements which forced the grid to keep 3 columns even when the template was `1fr` — that's why the hero ended up 38px wide. Reset `grid-column`/`grid-row` to `auto` on mobile (and added a proper 2-col layout at the 1100px breakpoint).
+
+**Dashboard mobile scale not applying:** Chrome refuses to fold both `scale(calc(length/length))` and `scale(var(...))` inside `transform`, falling back to the matching `.db2-slide` rule's `translateX(60px)`. Switched to JS-driven inline transform (`scale(${factor})` set on each slide via `style.setProperty` with `!important`), and disabled the reveal-state transforms on mobile (`.db2-slide`/`.db2-slide--in { transform: none }`) so they don't clobber the scale. Each slide on mobile is now properly 343×224 instead of 1100×720.
+
 ## 2026-05-19 · feat: Industries section redesign (activity cards + flow + trust row)
 
 Replaced the simple gradient-card "Built For" grid with a richer IndustriesSection that matches the reference structure:

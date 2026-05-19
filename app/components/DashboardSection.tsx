@@ -116,6 +116,36 @@ export default function DashboardSection() {
   const [vis, setVis] = useState(false);
   const [revealedSlides, setRevealedSlides] = useState<Set<number>>(new Set());
 
+  // Mobile thumbnail scale + layout-reclaim margin set directly on each
+  // slide. We avoid `scale(calc(length/length))` and `scale(var(...))`
+  // because Chrome refuses to fold those inside transform — the only
+  // reliable path is inline transform + matching margin per element.
+  useEffect(() => {
+    const apply = () => {
+      const slides = slideRefs.current.filter(Boolean) as HTMLDivElement[];
+      const w = window.innerWidth;
+      if (w >= 900) {
+        slides.forEach(s => {
+          s.style.removeProperty('transform');
+          s.style.removeProperty('margin-right');
+        });
+        return;
+      }
+      const target = w - 32;
+      const scale = Math.max(0.18, target / 1100);
+      slides.forEach(s => {
+        s.style.setProperty('transform', `scale(${scale.toFixed(4)})`, 'important');
+        s.style.setProperty('margin-right', `${Math.round(target - 1100)}px`, 'important');
+      });
+      // Row height matches scaled thumbnail
+      const car = carRef.current;
+      if (car) car.style.height = `${Math.round(720 * scale + 16)}px`;
+    };
+    apply();
+    window.addEventListener('resize', apply);
+    return () => window.removeEventListener('resize', apply);
+  }, []);
+
   useEffect(() => {
     const el = secRef.current; if (!el) return;
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.08 });
