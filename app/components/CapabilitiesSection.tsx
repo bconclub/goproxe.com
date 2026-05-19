@@ -122,15 +122,20 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
+  // Wide, horizontal — shows the spread of specialized agents
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-mini-grid" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M 50 60 Q 100 20 150 60" fill="none" stroke="rgba(167,139,250,0.3)" strokeDasharray="2 3" />
-        <path d="M 50 60 Q 100 90 150 60" fill="none" stroke="rgba(167,139,250,0.3)" strokeDasharray="2 3" />
+      <svg className="cap-mini-grid" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M 40 40 Q 90  10 160 40" fill="none" stroke="rgba(167,139,250,0.35)" strokeDasharray="2 3" />
+        <path d="M 160 40 Q 230 10 280 40" fill="none" stroke="rgba(167,139,250,0.35)" strokeDasharray="2 3" />
+        <path d="M 40 40 Q 90  70 160 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
+        <path d="M 160 40 Q 230 70 280 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
       </svg>
-      <span className="cap-mini-ico cap-mini-ico--ag1"><FiUsers size={11} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-l" style={{ color: '#25d366' }}><SiWhatsapp size={12} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-ml" style={{ color: '#a78bfa' }}><FiMessageCircle size={11} /></span>
       <MiniCenterOrb />
-      <span className="cap-mini-ico cap-mini-ico--ag2"><FiUsers size={11} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-mr" style={{ color: '#60a5fa' }}><FiPhone size={11} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-r" style={{ color: '#c084fc' }}><FiMail size={12} /></span>
     </div>
   );
 }
@@ -161,11 +166,13 @@ export default function CapabilitiesSection() {
     return () => io.disconnect();
   }, []);
 
+  // Order matters: in the bento, capture / followup stack on the right
+  // beside the hero; then agents (wide) + security sit in the bottom row.
   const sideCards = [
-    { Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation },
-    { Icon: FiSend,   title: 'Auto Follow-Ups',     desc: 'AI sequences the perfect next steps until they book, buy, or opt out.',    Vis: FollowupFlow },
-    { Icon: FiUsers,  title: 'Multi-Agent System',  desc: 'Specialized agents work across web, WhatsApp, voice, email, and SMS.',     Vis: AgentNetwork },
-    { Icon: FiShield, title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.',                  Vis: ShieldVis },
+    { id: 'capture',  Icon: FiZap,    title: '24/7 Lead Capture',   desc: 'Every channel listens all day. No form, message, or call is ever missed.', Vis: ChannelConstellation },
+    { id: 'followup', Icon: FiSend,   title: 'Auto Follow-Ups',     desc: 'AI sequences the perfect next steps until they book, buy, or opt out.',    Vis: FollowupFlow },
+    { id: 'agents',   Icon: FiUsers,  title: 'Multi-Agent System',  desc: 'Specialized agents work across web, WhatsApp, voice, email, and SMS.',     Vis: AgentNetwork },
+    { id: 'security', Icon: FiShield, title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.',                  Vis: ShieldVis },
   ];
 
   return (
@@ -277,9 +284,9 @@ export default function CapabilitiesSection() {
               </div>
             </article>
 
-            {/* ── 4 side cards ── */}
+            {/* ── 4 side cards (bento — agents is the wide one) ── */}
             {sideCards.map((c) => (
-              <article key={c.title} className="cap-card">
+              <article key={c.id} className={`cap-card cap-card--${c.id}`}>
                 <span className="cap-card-icon"><c.Icon size={18} /></span>
                 <h4 className="cap-card-title">{c.title}</h4>
                 <p className="cap-card-desc">{c.desc}</p>

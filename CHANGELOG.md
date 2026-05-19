@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · fix: Capabilities — bento layout (hero 2/3, wide multi-agent)
+
+The previous uniform 3-col grid squeezed the hero card to 438px, which crushed its internal 3-column visualization down to 89px side columns — channel names wrapped to 4 lines, AI Memory wrapped to 10+ lines. The right side was visibly cut off.
+
+- Grid restructured to a real **bento**: 2-col grid with hero (2/3) spanning 2 rows, lead-capture + follow-ups stacked on the right (1/3 each), then multi-agent (2/3, wide) + security (1/3) in the bottom row.
+- Hero is now 733px wide instead of 438px. Internal columns are 237 / 180 / 180 / 237 — content fits without wrapping.
+- Multi-Agent System upgraded to a **wide horizontal network**: 4 channel-colored agent icons spread across with curved SVG connecting paths to a central orb. Visually distinct from the other side cards.
+- Per-card grid placement classes (`.cap-card--capture`, `--followup`, `--agents`, `--security`) so each card sits in its bento slot.
+
 ## 2026-05-19 · rebuild: Capabilities — proper hero-frame layout, SVG orb
 
 Full rewrite of `CapabilitiesSection.tsx` and the `.cap-*` block in `landing.css`.

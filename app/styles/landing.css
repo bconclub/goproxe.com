@@ -7293,21 +7293,29 @@ body:has(.proxe-root) {
   filter: blur(0.5px);
 }
 
-/* ── Main grid ── */
+/* ── Bento grid:
+       row 1: hero (2/3 wide, spans 2 rows)  | lead capture
+       row 2:                                | follow-ups
+       row 3: multi-agent (wide, 2/3)        | security
+   ── */
 .cap-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
   gap: 14px;
   position: relative;
 }
+.cap-card--capture  { grid-column: 2; grid-row: 1; }
+.cap-card--followup { grid-column: 2; grid-row: 2; }
+.cap-card--agents   { grid-column: 1; grid-row: 3; }
+.cap-card--security { grid-column: 2; grid-row: 3; }
 
 /* ─────────────────────────────────────────────────────────────
    HERO CARD — Unified Memory
 ───────────────────────────────────────────────────────────── */
 .cap-hero {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 2;  /* spans the first two rows of the 3-row bento */
   position: relative;
   background:
     linear-gradient(180deg, rgba(20, 14, 50, 0.55) 0%, rgba(8, 6, 24, 0.55) 100%);
@@ -7736,16 +7744,14 @@ body:has(.proxe-root) {
   background-image: repeating-linear-gradient(90deg, rgba(167, 139, 250, 0.55) 0 3px, transparent 3px 6px);
 }
 
-/* Agent network positions */
-.cap-mini--agents .cap-mini-ico--ag1 {
-  left: 20%; top: 28%;
-  width: 22px; height: 22px;
-}
-.cap-mini--agents .cap-mini-ico--ag2 {
-  right: 20%; top: 56%;
-  width: 22px; height: 22px;
-}
-.cap-mini--agents .cap-mini-core { z-index: 3; }
+/* Agent network — wide horizontal spread across the wide multi-agent card */
+.cap-mini--agents { min-height: 96px; }
+.cap-mini--agents .cap-mini-core { z-index: 3; position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.cap-mini--agents .cap-mini-ico--ag-l  { left:  8%;  top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
+.cap-mini--agents .cap-mini-ico--ag-ml { left:  28%; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; }
+.cap-mini--agents .cap-mini-ico--ag-mr { right: 28%; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; }
+.cap-mini--agents .cap-mini-ico--ag-r  { right:  8%; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
+.cap-card--agents .cap-mini { min-height: 110px; }
 
 /* Shield rings */
 .cap-mini--shield .cap-shield-ring {
