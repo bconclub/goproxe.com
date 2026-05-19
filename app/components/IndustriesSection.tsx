@@ -211,14 +211,6 @@ const INDUSTRIES: Industry[] = [
   },
 ];
 
-const TRUST_ITEMS = [
-  { Icon: FiUsers,    label: 'Works across 15+ industries' },
-  { Icon: FiCpu,      label: 'AI trained on real conversations' },
-  { Icon: FiZap,      label: 'Always-on. 24/7' },
-  { Icon: FiShield,   label: 'Secure. Encrypted. Compliant' },
-  { Icon: FiBarChart2,label: 'Results you can measure' },
-];
-
 export default function IndustriesSection() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
@@ -300,15 +292,6 @@ export default function IndustriesSection() {
           ))}
         </div>
 
-        {/* Trust row */}
-        <div className="ind-trust">
-          {TRUST_ITEMS.map((t) => (
-            <div key={t.label} className="ind-trust-item">
-              <span className="ind-trust-ico"><t.Icon size={14} /></span>
-              <span>{t.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

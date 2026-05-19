@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-19 · remove: Industries trust row + bigger channel-selector labels
+
+- **Industries trust row removed**: the bottom "Works across 15+ industries · AI trained · Always-on · Secure · Results" strip and the `TRUST_ITEMS` constant are gone from `IndustriesSection.tsx`.
+- **Channel selector labels bumped from 14/15px → 18px** (active item 19px) and the icon size from 28→32px. Better readability on desktop.
+
 ## 2026-05-19 · fix: capture pills container-less + cap-grid mobile + dashboard mobile scale
 
 **Premium feel for Card 1 pills (CaptureVis):** removed the white pill container around each notification. Just the colored icon + text now, with a slight box-shadow on the icon for depth.
