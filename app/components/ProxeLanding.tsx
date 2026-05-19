@@ -8,6 +8,7 @@ import VapiOrb from './VapiOrb';
 import ChannelDemo from './ChannelDemo';
 import HowItWorks from './HowItWorks';
 import DashboardSection from './DashboardSection';
+import CapabilitiesSection from './CapabilitiesSection';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1237,41 +1238,8 @@ export default function ProxeLanding() {
       {/* ===== 8. Scroll-triggered popup — disabled for now ===== */}
       {/* <ScrollPopup triggerRef={pillarsRef} /> */}
 
-      {/* ===== 9. Feature grid ===== */}
-      <section className="proxe-section">
-        <div className="proxe-container">
-          <div className="proxe-section-label">Capabilities</div>
-          <div className="proxe-feature-grid">
-            {[
-              { label: '01', title: '24/7 Lead Capture', desc: 'Every channel listens all day. No form, message, or call is missed.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2zm0 2a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm0 3a1 1 0 0 1 1 1v3.586l2.707 2.707a1 1 0 0 1-1.414 1.414l-3-3A1 1 0 0 1 11 12V8a1 1 0 0 1 1-1z"/></svg>
-              )},
-              { label: '02', title: 'Unified Memory', desc: 'One thread across channels. Context travels with the customer.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
-              )},
-              { label: '03', title: 'Auto Follow-Ups', desc: 'Sequenced nudges until they book, buy, or opt out.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-              )},
-              { label: '04', title: 'Multi-Agents Across Channels', desc: 'Dedicated agents for web, WhatsApp, voice, email, and SMS. One brain behind them all.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-              )},
-              { label: '05', title: 'Command Center', desc: 'One dashboard for every conversation, lead, and metric.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-              )},
-              { label: '06', title: 'Enterprise Security', desc: 'SOC2-aligned controls, encrypted at rest and in transit.', icon: (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-              )},
-            ].map((f) => (
-              <article key={f.title} className="proxe-feature-card">
-                <div className="proxe-feature-icon">{f.icon}</div>
-                <span className="proxe-feature-label">{f.label}</span>
-                <h3 className="proxe-feature-title">{f.title}</h3>
-                <p className="proxe-feature-desc">{f.desc}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ===== 9. Capabilities — redesigned hero+grid layout ===== */}
+      <CapabilitiesSection />
 
       {/* ===== 11. Built For — industry cards ===== */}
       <section className="proxe-section">

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-05-19 · feat: redesigned Capabilities section
+
+- Replaced the 6-card flat grid with a richer hero + side-grid layout (matching the reference design).
+- **Hero (Core Intelligence / Unified Memory)**: gradient card with a 3-column visualization — channel feed (WhatsApp / Web / Voice / Email) → glowing animated orb → Persistent Customer Profile + AI Memory bubble. Bottom stats row (100% Context Retention · ∞ Cross-Channel Memory · 24/7 Always Remembering).
+- **Side cards (2×2)**: 24/7 Lead Capture, Auto Follow-Ups, Multi-Agent System, Enterprise Security — each with icon, copy, mini visualization (channel constellation / followup flow / agent network / shield rings), and "Learn more →" link.
+- **Bottom compliance row**: SOC 2 Type II · End-to-End Encrypted · GDPR Compliant · Multi-Channel Connected · Always On.
+- Section-level scroll-reveal with staggered animations on label, headline, sub, hero, cards, and badges.
+- Responsive: hero collapses to full-width above the 2×2 grid at ≤1100px; everything stacks at ≤720px.
+- New component `app/components/CapabilitiesSection.tsx`; old inline 6-card grid removed from `ProxeLanding.tsx`.
+
 ## 2026-05-19 · feat: click-drag dashboard carousel + faster scroll pacing
 
 - **Click-drag**: pointerdown/move/up handlers on `.db2-carousel` so users can grab and drag horizontally with the mouse (not just wheel). `cursor: grab` / `grabbing`, captures pointer, suspends the scroll-driven page handler while dragging so they don't fight.
