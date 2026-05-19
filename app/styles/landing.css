@@ -8105,7 +8105,7 @@ body:has(.proxe-root) {
 .ind-card {
   --acc: #a78bfa;
   position: relative;
-  flex: 0 0 320px;
+  flex: 0 0 360px;
   background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 18px;
@@ -8124,7 +8124,7 @@ body:has(.proxe-root) {
 /* ── Top "image" panel with floating activity cards ── */
 .ind-top {
   position: relative;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -8571,17 +8571,44 @@ body:has(.proxe-root) {
   gap: 14px;
 }
 .pr-card--popular {
-  border-color: rgba(167, 139, 250, 0.32);
+  border: 1.5px solid transparent;
   background:
-    linear-gradient(180deg, rgba(124, 58, 237, 0.12) 0%, rgba(8, 6, 24, 0.6) 100%);
+    /* card body */
+    linear-gradient(180deg, rgba(124, 58, 237, 0.16) 0%, rgba(8, 6, 24, 0.65) 100%) padding-box,
+    /* glowing border via background-clip */
+    linear-gradient(135deg, #c4b5fd 0%, #a78bfa 35%, #7c3aed 70%, #c4b5fd 100%) border-box;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(196, 181, 253, 0.18),
+    0 0 32px rgba(124, 58, 237, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 .pr-card--popular::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(167, 139, 250, 0.15), transparent 60%);
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(196, 181, 253, 0.25), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(124, 58, 237, 0.20), transparent 70%);
   pointer-events: none;
+}
+/* Subtle outer halo that pulses to draw the eye */
+.pr-card--popular::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0));
+  filter: blur(14px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.7;
+  animation: prPopularPulse 4s ease-in-out infinite;
+}
+@keyframes prPopularPulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
 }
 
 .pr-card-tag {

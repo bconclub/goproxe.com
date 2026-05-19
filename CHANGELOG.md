@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-19 · polish: Industries bigger + Pricing Most-Popular glow border + Voice call icon + touch drag fix
+
+Four rapid-fire user requests bundled:
+
+- **Industries cards bigger**: `flex: 0 0 320px` → `360px`. Image panel `180px` → `200px`. Shows ~3 cards instead of ~3.8, but each is much more readable.
+- **Pricing "Most Popular" highlight**: transparent border + `background-clip: border-box` gradient (`#c4b5fd → #a78bfa → #7c3aed → #c4b5fd`) draws a bright purple ring. Added a pulsing outer halo (`::after` with blur(14)) on a 4s loop and a top + bottom radial bloom inside the card. Card now reads as the obvious primary choice.
+- **Voice → call icon**: replaced `FiMic` with `FiPhone` in the pricing channel list (and import). "Voice" line now uses the universal phone icon.
+- **Touch drag fix (Industries)**: JS pointer-drag handler now only intercepts `pointerType === 'mouse'`. Touch swipe falls back to the browser's native `overflow-x: auto` horizontal scroll — much more responsive on mobile than re-implementing inertia in JS.
+
 ## 2026-05-19 · polish: Capabilities mobile — wider cards inside the hero
 
 User: "There is space on both sides of these cards. We can make it a little bit wider, the unified memory and cards."

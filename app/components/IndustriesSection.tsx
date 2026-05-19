@@ -240,9 +240,12 @@ export default function IndustriesSection() {
     let dragged = false;
 
     const onDown = (e: PointerEvent) => {
+      // Touch / pen: let the browser's native overflow-x scroll handle the
+      // swipe. Only intercept mouse drags so desktop click-and-drag works.
+      if (e.pointerType !== 'mouse') return;
       if (!car.contains(e.target as Node)) return;
       if ((e.target as HTMLElement).closest('.ind-arrow')) return;
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.button !== 0) return;
       startX = e.clientX;
       startScroll = car.scrollLeft;
       dragging = true;

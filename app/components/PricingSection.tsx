@@ -6,7 +6,7 @@ import {
   FiInstagram,
   FiMessageCircle,
   FiMail,
-  FiMic,
+  FiPhone,
   FiCheck,
   FiArrowRight,
   FiZap,
@@ -22,7 +22,7 @@ const CHANNELS_HEADER = [
   { Icon: FiInstagram,   label: 'Instagram DM', color: '#c084fc' },
   { Icon: SiFacebook,    label: 'Messenger',    color: '#60a5fa' },
   { Icon: FiMail,        label: 'Email',        color: '#fbbf24' },
-  { Icon: FiMic,         label: 'Voice',        color: '#f472b6' },
+  { Icon: FiPhone,         label: 'Voice',        color: '#f472b6' },
 ];
 
 const STARTER_CHANNELS = [
@@ -31,7 +31,7 @@ const STARTER_CHANNELS = [
   { Icon: FiInstagram,   label: 'Instagram DM',      color: '#c084fc' },
   { Icon: SiFacebook,    label: 'Facebook Messenger',color: '#60a5fa' },
   { Icon: FiMail,        label: 'Email',             color: '#fbbf24' },
-  { Icon: FiMic,         label: 'Voice',             color: '#f472b6' },
+  { Icon: FiPhone,         label: 'Voice',             color: '#f472b6' },
 ];
 
 const STARTER_FEATURES = [
