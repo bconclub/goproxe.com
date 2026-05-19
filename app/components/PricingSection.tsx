@@ -9,11 +9,6 @@ import {
   FiMic,
   FiCheck,
   FiArrowRight,
-  FiShield,
-  FiLock,
-  FiServer,
-  FiHeadphones,
-  FiSlash,
   FiZap,
   FiUsers,
   FiCpu,
@@ -49,15 +44,6 @@ const UNLIMITED_FEATURES = [
   { Icon: FiZap,        label: 'AI follow-ups & reactivation' },
   { Icon: FiUsers,      label: 'Multi-agent orchestration' },
   { Icon: FiCheckCircle,label: 'Priority infrastructure access' },
-];
-
-const TRUST = [
-  { Icon: FiShield,    top: 'SOC 2',           bot: 'Type II Compliant' },
-  { Icon: FiLock,      top: 'Enterprise Grade',bot: 'Security' },
-  { Icon: FiServer,    top: '99.9% Uptime',    bot: 'Guaranteed' },
-  { Icon: FiGlobe,     top: 'GDPR',            bot: 'Compliant' },
-  { Icon: FiHeadphones,top: '24/7 Priority',   bot: 'Support' },
-  { Icon: FiSlash,     top: 'No Long Term',    bot: 'Contracts' },
 ];
 
 export default function PricingSection() {
@@ -229,18 +215,6 @@ export default function PricingSection() {
           </article>
         </div>
 
-        {/* Trust strip */}
-        <div className="pr-trust">
-          {TRUST.map((t) => (
-            <div key={t.top} className="pr-trust-item">
-              <span className="pr-trust-ico"><t.Icon size={14} /></span>
-              <div>
-                <div className="pr-trust-top">{t.top}</div>
-                <div className="pr-trust-bot">{t.bot}</div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

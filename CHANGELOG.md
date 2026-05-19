@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-19 · remove: Pricing trust strip
+
+Removed the 6-panel trust strip (SOC 2 · Enterprise · 99.9% Uptime · GDPR · 24/7 Priority · No Long Term) below the pricing cards per user request. Dropped the `TRUST` const and unused icon imports.
+
 ## 2026-05-19 · polish: use brand icon inside hero/orb hexes (Pricing + Capabilities)
 
 The "brain bars" I'd hand-drawn with SVG rects were a stand-in for the PROXe brand mark. Swapped both spots to the real asset.
