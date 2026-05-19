@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-19 · chore: record HowItWorks card animations as MP4 files
+
+User asked for the three card animations to be saved as videos under `public/`.
+
+- Added `scripts/record-hiw.mjs` — a Playwright + ffmpeg pipeline that:
+  1. Launches headless Chromium at 1400×900 with `deviceScaleFactor: 2`
+  2. Loads the live dev server, scrolls the HowItWorks section into view
+  3. Reads each `.hiw-card-vis-wrap` bounding box
+  4. Records the page as WebM for 8s (one full loop of the longest card)
+  5. Uses ffmpeg to crop each region and re-encode as H.264 (CRF 20, `slower` preset, yuv420p, `+faststart`)
+- Saved outputs:
+  - `public/how-it-works/01-capture.mp4` (~1.5 MB) — notification pills
+  - `public/how-it-works/02-memory.mp4` (~1.1 MB) — chat history + score + tags
+  - `public/how-it-works/03-reactivate.mp4` (~1.0 MB) — WhatsApp follow-up + RESPONDED
+- Added `playwright` as a devDependency.
+- The live React/CSS animations in `HowItWorks.tsx` are unchanged — they still render on the site. The MP4s are exports the user can use elsewhere (social posts, embeds, etc.). If you want me to swap the live components for `<video autoplay loop muted playsinline>` tags, say the word.
+
 ## 2026-05-19 · polish: 24/7 Lead Capture card — "24" eyebrow + card indexes + 3D orbits
 
 Addresses the user's earlier "night and day" comparison.
