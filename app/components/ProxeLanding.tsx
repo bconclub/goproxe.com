@@ -9,6 +9,7 @@ import ChannelDemo from './ChannelDemo';
 import HowItWorks from './HowItWorks';
 import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
+import IndustriesSection from './IndustriesSection';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1241,86 +1242,8 @@ export default function ProxeLanding() {
       {/* ===== 9. Capabilities — redesigned hero+grid layout ===== */}
       <CapabilitiesSection />
 
-      {/* ===== 11. Built For — industry cards ===== */}
-      <section className="proxe-section">
-        <div className="proxe-container">
-          <div className="proxe-section-label">Built For</div>
-          <div className="proxe-usecase-grid">
-            {[
-              {
-                icon: <Icon.AcademicCap />,
-                gradient: 'linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)',
-                title: 'Coaching Academies',
-                desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
-                stat: '4.2×', statLabel: 'more enrollments',
-              },
-              {
-                icon: <Icon.Clinic />,
-                gradient: 'linear-gradient(135deg,#0EA5E9 0%,#6366F1 100%)',
-                title: 'Clinics & Healthcare',
-                desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
-                stat: '68%', statLabel: 'fewer no-shows',
-              },
-              {
-                icon: <Icon.House />,
-                gradient: 'linear-gradient(135deg,#10B981 0%,#0EA5E9 100%)',
-                title: 'Real Estate',
-                desc: 'Qualify buyers, book site visits, follow up until the deal closes.',
-                stat: '3×', statLabel: 'more site visits booked',
-              },
-              {
-                icon: <Icon.Cart />,
-                gradient: 'linear-gradient(135deg,#F59E0B 0%,#EF4444 100%)',
-                title: 'D2C & E-commerce',
-                desc: 'Recover abandoned carts, answer product questions, nudge hesitant buyers.',
-                stat: '32%', statLabel: 'cart recovery rate',
-              },
-              {
-                icon: <Icon.Dumbbell />,
-                gradient: 'linear-gradient(135deg,#EC4899 0%,#8B5CF6 100%)',
-                title: 'Fitness & Wellness',
-                desc: 'Convert trial signups, reduce no-shows, re-engage lapsed members.',
-                stat: '55%', statLabel: 'reduction in no-shows',
-              },
-              {
-                icon: <Icon.Briefcase />,
-                gradient: 'linear-gradient(135deg,#1E40AF 0%,#3B82F6 100%)',
-                title: 'Professional Services',
-                desc: 'Qualify leads, book discovery calls, route hot prospects to partners.',
-                stat: '2.8×', statLabel: 'more discovery calls',
-              },
-              {
-                icon: <Icon.Car />,
-                gradient: 'linear-gradient(135deg,#374151 0%,#6B7280 100%)',
-                title: 'Auto Dealerships',
-                desc: 'Answer inventory questions around the clock, book test drives, reactivate cold leads.',
-                stat: '47%', statLabel: 'more test drives booked',
-              },
-              {
-                icon: <Icon.Wrench />,
-                gradient: 'linear-gradient(135deg,#D97706 0%,#B45309 100%)',
-                title: 'Home Services',
-                desc: 'Dispatch jobs fast. Capture, qualify, and schedule every service request.',
-                stat: '5×', statLabel: 'faster lead response',
-              },
-            ].map((u) => (
-              <article key={u.title} className="proxe-usecase-card">
-                <div className="proxe-usecase-img" style={{ background: u.gradient }}>
-                  <div className="proxe-usecase-img-icon">{u.icon}</div>
-                </div>
-                <div className="proxe-usecase-body">
-                  <h3 className="proxe-usecase-title">{u.title}</h3>
-                  <p className="proxe-usecase-desc">{u.desc}</p>
-                  <div className="proxe-usecase-stat">
-                    <span className="proxe-usecase-stat-num">{u.stat}</span>
-                    <span className="proxe-usecase-stat-label">{u.statLabel}</span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ===== 11. Industries — redesigned with activity cards + flows + trust row ===== */}
+      <IndustriesSection />
 
       {/* ===== 12. Pricing ===== */}
       <section className="proxe-section" id="pricing">

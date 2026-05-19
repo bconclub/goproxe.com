@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-05-19 · feat: Industries section redesign (activity cards + flow + trust row)
+
+Replaced the simple gradient-card "Built For" grid with a richer IndustriesSection that matches the reference structure:
+
+- **New component**: `app/components/IndustriesSection.tsx`.
+- **Header**: 2-column — left has section label `● INDUSTRIES WE POWER` + serif heading "Built for every industry. Trained for *every outcome*." (gradient on "every outcome"); right column has the supporting paragraph.
+- **8 industry cards** in a 4×2 grid, each with:
+  - **Top "image" panel** (gradient placeholder using each industry's accent color) with the industry icon top-left and **1-3 floating activity cards** top-right (e.g. *New inquiry · MBA Program · via WhatsApp* + *AI Qualified · High intent*).
+  - Serif title + body.
+  - **4-step flow row** with icon pills + arrow connectors (e.g. Inquiry → Qualify → Book → Enroll).
+  - Big colored stat (4.2× / 68% / 3× …) plus label.
+- **Bottom trust row**: 5 items with vertical dividers — Works across 15+ industries · AI trained on real conversations · Always-on 24/7 · Secure. Encrypted. Compliant · Results you can measure.
+- Same glass-card system (`backdrop-filter: blur(24px)`, `border: 1px solid rgba(255,255,255,0.10)`, soft outer + inset shadows) as HowItWorks / Capabilities so the section reads as part of the same site.
+- Stagger-reveal on scroll: label → heading → sub → cards → trust row.
+- Responsive: 4-col → 3-col (≤1200) → 2-col (≤880) → 1-col (≤520). Trust row collapses to 2-col with left-aligned items at ≤880.
+- Stale Built-For inline JSX + `Icon.*` placeholders removed from `ProxeLanding.tsx`.
+
+User said "we'll keep improving it" — this is the structural foundation; copy/photo upgrades and per-card polish can iterate from here.
+
 ## 2026-05-19 · fix: third pillar card — permanent chat header anchors content
 
 The reactivation card visualization area was looking empty during animation cycles. Even with `flex: 1` on the chat container, the chat children were `opacity: 0` until their animation step fired — so during step-0 (loop restart) and step-1/2 (before the lead reply lands) the card showed huge gaps.
