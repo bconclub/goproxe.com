@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-19 · remove: Capabilities compliance badges row
+
+Removed the SOC 2 / End-to-End / GDPR / Multi-Channel / Always On strip below the grid per user request. Dropped the now-unused `FiDatabase` import. (d8fc314)
+
 ## 2026-05-19 · fix: Capabilities — match existing site theme (glass-card system)
 
 - **Section background reverted to transparent** — the page's purple shows through, matching every other section on the site (`.proxe-section`, `.hiw-section`, `.cd-section`, `.db2-section` all use `background: transparent`). The dark navy bg I added was wrong; the user wanted only the reference's *structure*, not its colors.
