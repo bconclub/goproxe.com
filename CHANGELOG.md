@@ -9,7 +9,7 @@
 - Fixed stale SWC compiler cache that was showing a false syntax error (file was correct; restarted dev server to clear)
 - User-facing: dashboard carousel reads as a wide "continuing" strip rather than a centered box
 
-(HEAD)
+(af47d9c)
 
 ## 2026-05-19 · fix: clean up dashboard section shadows
 
