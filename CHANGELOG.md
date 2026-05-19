@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-19 · fix: Industries drag + unify all Capabilities pips to brand purple
+
+**Industries drag fix:** The carousel pointer listeners were attached to `.ind-grid` itself, but real mouse events were getting eaten by child elements (background-image divs, activity card pills, SVG icons) before they could bubble. DOM-dispatched events worked, real mouse events did not.
+
+- Moved pointer listeners from `track.addEventListener` → `window.addEventListener` with a `car.contains(e.target)` filter. Nothing inside the carousel can prevent the handler from seeing the event now.
+- Drag state now flips `.ind-grid--dragging` only AFTER 3px of movement, so a clean click on a card still works normally (and the class is removed in a `requestAnimationFrame` so it doesn't block a follow-up click).
+- `touch-action: pan-y` on the track so vertical page scroll keeps working; horizontal pan belongs to us.
+- `* { pointer-events: none !important }` while dragging so the cursor doesn't get caught by hover transitions, image native-drag, or any inline element.
+- Dropped the `:hover { transform: translateY(-3px) }` on cards (was fighting with the drag).
+
+**Unified pip colors (Capabilities):**
+- ChannelConstellation pips, AgentNetwork pips, and the shared `.cap-mini-ico` all now use the same brand-purple gradient + border + soft shadow as the Auto Follow-Ups flow nodes (`linear-gradient(135deg, rgba(167,139,250,0.22), rgba(124,58,237,0.10))`, `border: rgba(167,139,250,0.32)`, `color: #e9d5ff`).
+- Removed the per-channel inline `style={{ color }}` props (WhatsApp green / phone blue / etc.) — all icons now read in the brand violet so the four cards read as one visual family.
+- Pip sizes bumped (`26→32`, `28→36`) and icon glyphs slightly larger.
+
 ## 2026-05-19 · feat: Industries — horizontal carousel instead of 4×2 grid
 
 User: "rather than showing it as a column, make it a carousel and make the cards a bit bigger and show three and a half cards so we have more space to show the image and what we have written there."

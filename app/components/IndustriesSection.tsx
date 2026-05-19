@@ -227,48 +227,55 @@ export default function IndustriesSection() {
     return () => io.disconnect();
   }, []);
 
-  // Click-drag horizontal scrolling for the carousel (same pattern as
-  // DashboardSection — no snap, smooth scroll, grab/grabbing cursor).
+  // Click-drag horizontal scrolling. Listeners attach to `window` so child
+  // elements inside the cards (images, activity pills, SVG icons) can't
+  // eat the events. Once a drag starts, we add `.ind-grid--dragging` so
+  // CSS can null out child pointer-events for the duration of the drag.
   useEffect(() => {
     const car = trackRef.current;
     if (!car) return;
     let startX = 0;
-    let startScrollLeft = 0;
-    let pointerId: number | null = null;
+    let startScroll = 0;
+    let dragging = false;
+    let dragged = false;
 
     const onDown = (e: PointerEvent) => {
+      if (!car.contains(e.target as Node)) return;
       if ((e.target as HTMLElement).closest('.ind-arrow')) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
-      pointerId = e.pointerId;
       startX = e.clientX;
-      startScrollLeft = car.scrollLeft;
-      car.classList.add('ind-grid--dragging');
-      try { car.setPointerCapture(e.pointerId); } catch {}
+      startScroll = car.scrollLeft;
+      dragging = true;
+      dragged = false;
     };
     const onMove = (e: PointerEvent) => {
-      if (pointerId !== e.pointerId) return;
+      if (!dragging) return;
       const dx = e.clientX - startX;
-      if (Math.abs(dx) < 2) return;
-      car.scrollLeft = startScrollLeft - dx;
+      if (!dragged && Math.abs(dx) < 3) return;
+      if (!dragged) {
+        dragged = true;
+        car.classList.add('ind-grid--dragging');
+      }
+      car.scrollLeft = startScroll - dx;
       e.preventDefault();
     };
-    const release = (e: PointerEvent) => {
-      if (pointerId !== e.pointerId) return;
-      pointerId = null;
-      car.classList.remove('ind-grid--dragging');
-      try { car.releasePointerCapture(e.pointerId); } catch {}
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      // Defer class removal one tick so a click on a card right after the
+      // drag (when dragged===false) still fires normally.
+      requestAnimationFrame(() => car.classList.remove('ind-grid--dragging'));
     };
-    car.addEventListener('pointerdown', onDown);
-    car.addEventListener('pointermove', onMove);
-    car.addEventListener('pointerup', release);
-    car.addEventListener('pointercancel', release);
-    car.addEventListener('pointerleave', release);
+
+    window.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
     return () => {
-      car.removeEventListener('pointerdown', onDown);
-      car.removeEventListener('pointermove', onMove);
-      car.removeEventListener('pointerup', release);
-      car.removeEventListener('pointercancel', release);
-      car.removeEventListener('pointerleave', release);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
     };
   }, []);
 

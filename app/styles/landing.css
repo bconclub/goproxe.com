@@ -7759,16 +7759,20 @@ body:has(.proxe-root) {
 
 .cap-mini-ico {
   position: absolute;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(18, 12, 40, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  color: #e9d5ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.85);
   z-index: 2;
+  box-shadow:
+    0 4px 12px rgba(124, 58, 237, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 /* Constellation — 3D-style tilted orbits with floating channel pips */
@@ -7789,20 +7793,22 @@ body:has(.proxe-root) {
   transform: translate(-50%, -50%);
   z-index: 3;
 }
-/* Channel pips — soft drop shadow for depth (3D feel) */
+/* Channel pips — share the same brand-purple tint as the flow nodes
+   in the Auto Follow-Ups card (one consistent visual family). */
 .cap-const-pip {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(18, 12, 40, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  color: #e9d5ff;
   box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.55),
-    0 0 12px rgba(167, 139, 250, 0.18),
+    0 6px 14px rgba(124, 58, 237, 0.30),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   z-index: 2;
 }
@@ -8073,13 +8079,19 @@ body:has(.proxe-root) {
   margin: 0 -4px;
   cursor: grab;
   user-select: none;
+  /* Let vertical page-scroll work; we own horizontal pan */
+  touch-action: pan-y;
 }
 .ind-grid::-webkit-scrollbar { display: none; }
 .ind-grid.ind-grid--dragging {
   cursor: grabbing;
   scroll-behavior: auto;
 }
-.ind-grid.ind-grid--dragging > * { pointer-events: none; }
+/* During an active drag, neutralize ALL descendants so the drag isn't
+   interrupted by hover effects, image native-drag, anchor selection, etc. */
+.ind-grid.ind-grid--dragging * { pointer-events: none !important; }
+/* Don't let the browser try to native-drag any of our card content */
+.ind-grid img, .ind-grid svg { -webkit-user-drag: none; user-select: none; }
 
 /* ── Card ── */
 .ind-card {
@@ -8099,7 +8111,6 @@ body:has(.proxe-root) {
 }
 .ind-card:hover {
   border-color: color-mix(in srgb, var(--acc) 45%, transparent);
-  transform: translateY(-3px);
 }
 
 /* ── Top "image" panel with floating activity cards ── */

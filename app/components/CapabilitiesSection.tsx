@@ -81,8 +81,9 @@ function MiniCenterOrb() {
 }
 
 function ChannelConstellation() {
-  // 3D feel: tilted elliptical orbits (not flat circles) with channel pills
-  // sitting on them with soft drop-shadows.
+  // 3D feel: tilted elliptical orbits with channel pips. Pips share the
+  // same purple-tint treatment as the Auto Follow-Ups flow nodes so all
+  // 4 cards read as one visual family.
   return (
     <div className="cap-mini cap-mini--const">
       <svg className="cap-const-orbits" viewBox="0 0 220 120" aria-hidden="true">
@@ -93,9 +94,7 @@ function ChannelConstellation() {
             <stop offset="100%" stopColor="rgba(124,58,237,0)" />
           </radialGradient>
         </defs>
-        {/* Outer glow */}
         <circle cx="110" cy="60" r="58" fill="url(#capConstGlow)" />
-        {/* Tilted elliptical orbits */}
         <ellipse cx="110" cy="60" rx="86" ry="22"
           fill="none" stroke="rgba(167,139,250,0.30)" strokeWidth="0.8" strokeDasharray="2 3" />
         <ellipse cx="110" cy="60" rx="86" ry="22"
@@ -103,7 +102,6 @@ function ChannelConstellation() {
           transform="rotate(-22 110 60)" />
         <ellipse cx="110" cy="60" rx="60" ry="14"
           fill="none" stroke="rgba(167,139,250,0.35)" strokeWidth="0.9" strokeDasharray="2 3" />
-        {/* Tiny moving particles on the outer orbit */}
         <circle r="1.8" fill="#e9d5ff">
           <animateMotion dur="6s" repeatCount="indefinite"
             path="M 24 60 A 86 22 0 1 0 196 60 A 86 22 0 1 0 24 60 Z" />
@@ -115,11 +113,10 @@ function ChannelConstellation() {
       </svg>
 
       <MiniCenterOrb />
-      {/* Channel pills hover on the orbit — drop-shadow gives a 3D feel */}
-      <span className="cap-const-pip cap-const-pip--tl" style={{ color: '#25d366' }}><SiWhatsapp size={13} /></span>
-      <span className="cap-const-pip cap-const-pip--tr" style={{ color: '#a78bfa' }}><FiMessageCircle size={13} /></span>
-      <span className="cap-const-pip cap-const-pip--bl" style={{ color: '#60a5fa' }}><FiPhone size={13} /></span>
-      <span className="cap-const-pip cap-const-pip--br" style={{ color: '#c084fc' }}><FiMail size={13} /></span>
+      <span className="cap-const-pip cap-const-pip--tl"><SiWhatsapp size={14} /></span>
+      <span className="cap-const-pip cap-const-pip--tr"><FiMessageCircle size={14} /></span>
+      <span className="cap-const-pip cap-const-pip--bl"><FiPhone size={14} /></span>
+      <span className="cap-const-pip cap-const-pip--br"><FiMail size={14} /></span>
     </div>
   );
 }
@@ -139,7 +136,8 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // Wide, horizontal — shows the spread of specialized agents
+  // Wide horizontal spread of specialized agents — all pips use the
+  // shared brand-purple tint (consistent with the other cards).
   return (
     <div className="cap-mini cap-mini--agents">
       <svg className="cap-mini-grid" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
@@ -148,11 +146,11 @@ function AgentNetwork() {
         <path d="M 40 40 Q 90  70 160 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
         <path d="M 160 40 Q 230 70 280 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
       </svg>
-      <span className="cap-mini-ico cap-mini-ico--ag-l" style={{ color: '#25d366' }}><SiWhatsapp size={12} /></span>
-      <span className="cap-mini-ico cap-mini-ico--ag-ml" style={{ color: '#a78bfa' }}><FiMessageCircle size={11} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-l"><SiWhatsapp size={14} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-ml"><FiMessageCircle size={13} /></span>
       <MiniCenterOrb />
-      <span className="cap-mini-ico cap-mini-ico--ag-mr" style={{ color: '#60a5fa' }}><FiPhone size={11} /></span>
-      <span className="cap-mini-ico cap-mini-ico--ag-r" style={{ color: '#c084fc' }}><FiMail size={12} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-mr"><FiPhone size={13} /></span>
+      <span className="cap-mini-ico cap-mini-ico--ag-r"><FiMail size={14} /></span>
     </div>
   );
 }
