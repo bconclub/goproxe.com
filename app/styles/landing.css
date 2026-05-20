@@ -7389,6 +7389,18 @@ body:has(.proxe-root) {
 }
 .cap-hero-tag-ico { color: #e9d5ff; }
 
+/* Hero top: title on the left, stats column on the right */
+.cap-hero-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.cap-hero-header-text { min-width: 0; }
+
 .cap-hero-title {
   font-family: var(--proxe-font-heading);
   font-size: 38px;
@@ -7591,12 +7603,15 @@ body:has(.proxe-root) {
   100% { opacity: 0.3; }
 }
 
-/* Hero stats row */
+/* Hero stats — now a VERTICAL column on the right of the heading */
 .cap-hero-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(15, 10, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   position: relative;
   z-index: 1;
 }
@@ -7604,11 +7619,11 @@ body:has(.proxe-root) {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 12px;
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.cap-stat:first-child { padding-left: 0; }
-.cap-stat:last-child  { border-right: none; padding-right: 0; }
+.cap-stat:last-child { border-bottom: none; padding-bottom: 0; }
+.cap-stat:first-child { padding-top: 0; }
 .cap-stat-ico {
   width: 30px;
   height: 30px;
@@ -7942,16 +7957,28 @@ body:has(.proxe-root) {
   line-height: 1;
 }
 
-/* Agent network — wide horizontal spread across the wide multi-agent card */
-.cap-mini--agents { min-height: 96px; }
-.cap-mini--agents .cap-mini-core { z-index: 3; position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-.cap-mini--agents .cap-mini-ico--ag-l  { left:  8%;  top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
-.cap-mini--agents .cap-mini-ico--ag-ml { left:  28%; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; }
-.cap-mini--agents .cap-mini-ico--ag-mr { right: 28%; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; }
-.cap-mini--agents .cap-mini-ico--ag-r  { right:  8%; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
+/* Agent network — wide horizontal spread of agents radiating into a central hub */
+.cap-mini--agents { min-height: 110px; position: relative; }
+.cap-agent-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
+}
+.cap-mini--agents .cap-mini-core {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+.cap-mini--agents .cap-mini-ico--ag-l  { left:  8%;  top: 50%; transform: translateY(-50%); width: 32px; height: 32px; }
+.cap-mini--agents .cap-mini-ico--ag-ml { left: 28%;  top: 50%; transform: translateY(-50%); width: 28px; height: 28px; }
+.cap-mini--agents .cap-mini-ico--ag-mr { right: 28%; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; }
+.cap-mini--agents .cap-mini-ico--ag-r  { right: 8%;  top: 50%; transform: translateY(-50%); width: 32px; height: 32px; }
 .cap-card--agents .cap-mini { min-height: 110px; }
 
-/* Shield rings */
+/* Shield — radar pulses expanding outward + a "verified" check badge */
+.cap-mini--shield { min-height: 110px; }
 .cap-mini--shield .cap-shield-ring {
   position: absolute;
   left: 50%; top: 50%;
@@ -7959,21 +7986,61 @@ body:has(.proxe-root) {
   border: 1px solid rgba(167, 139, 250, 0.30);
   transform: translate(-50%, -50%);
 }
-.cap-mini--shield .cap-shield-ring--1 { width: 76px; height: 76px; border-color: rgba(167, 139, 250, 0.18); }
-.cap-mini--shield .cap-shield-ring--2 { width: 56px; height: 56px; border-color: rgba(167, 139, 250, 0.28); }
-.cap-mini--shield .cap-shield-ring--3 { width: 38px; height: 38px; border-color: rgba(167, 139, 250, 0.45); }
+.cap-mini--shield .cap-shield-ring--1 { width: 52px; height: 52px; border-color: rgba(167, 139, 250, 0.35); }
+.cap-mini--shield .cap-shield-ring--2 { width: 36px; height: 36px; border-color: rgba(167, 139, 250, 0.55); }
+.cap-mini--shield .cap-shield-pulse {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 32px; height: 32px;
+  margin-left: -16px; margin-top: -16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.55);
+  opacity: 0;
+  animation: capShieldPulse 3s ease-out infinite;
+}
+.cap-shield-pulse--2 { animation-delay: 1s; }
+.cap-shield-pulse--3 { animation-delay: 2s; }
+@keyframes capShieldPulse {
+  0%   { transform: scale(0.6); opacity: 0; }
+  20%  { opacity: 0.85; }
+  100% { transform: scale(3); opacity: 0; }
+}
 .cap-mini--shield .cap-shield-core {
   position: absolute;
   left: 50%; top: 50%;
-  width: 30px; height: 30px;
+  width: 40px; height: 40px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e9d5ff, #c4b5fd 40%, #7c3aed 100%);
+  background: radial-gradient(circle at 35% 30%, #e9d5ff, #c4b5fd 35%, #7c3aed 85%, #4c1d95 100%);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 14px rgba(167, 139, 250, 0.55);
+  box-shadow:
+    0 0 22px rgba(167, 139, 250, 0.65),
+    0 4px 14px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+/* Small "verified" badge that pings on its own loop */
+.cap-shield-verified {
+  position: absolute;
+  left: calc(50% + 14px);
+  top:  calc(50% + 10px);
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
+  z-index: 3;
+  animation: capShieldVerified 3s ease-in-out infinite;
+}
+@keyframes capShieldVerified {
+  0%, 70%, 100% { transform: scale(1);    opacity: 1; }
+  85%           { transform: scale(1.15); opacity: 0.7; }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -8065,8 +8132,9 @@ body:has(.proxe-root) {
   .cap-profile, .cap-memory { padding: 12px 14px; }
   .cap-orb-wrap { width: 140px; height: 140px; margin: 0 auto; }
   .cap-hero-title { font-size: 28px; }
-  .cap-hero-stats { grid-template-columns: 1fr; padding: 14px 0 0; gap: 12px; }
-  .cap-stat { padding: 0; border-right: none; }
+  .cap-hero-header { grid-template-columns: 1fr; gap: 14px; }
+  .cap-hero-stats { padding: 12px 14px; gap: 8px; }
+  .cap-stat { padding: 4px 0; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

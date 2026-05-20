@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-05-20 · polish: hero stats to top-right + Multi-Agent + Enterprise Security upgrades
+
+**Hero stats moved from bottom to top-right** (filling the empty space next to the heading the user drew on). The hero card is now `header { text | stats }` over the visualization; stats become a vertical card column (3 rows: 100% Context · ∞ Cross-Channel · 24/7 Always) instead of a horizontal row.
+
+**Multi-Agent System mini-vis** redesigned with the same polish as Lead Capture / Follow-Ups:
+- 4 channel agents radiate from a central PROXe hub via curved SVG paths.
+- Each path has an `animateMotion` data-packet circle traveling toward the hub at a slightly different speed/offset, so the network looks alive.
+- Pip sizes bumped (corners 26→32, mid 22→28); all share the brand-purple gradient + glow.
+
+**Enterprise Security mini-vis** redesigned:
+- Lock core now bigger (40×40) with a stronger glow + inset highlight.
+- Replaced the static 3 concentric rings with **animated radar pulses** — three expanding rings on a 3s stagger that fade as they grow (`capShieldPulse` keyframe).
+- Added a **green "verified" check badge** that pings (`capShieldVerified` keyframe) at the bottom-right of the lock, anchoring the SOC2-compliant message.
+
 ## 2026-05-20 · feat: Industries reorder + Auto Follow-Ups step-by-step pulse animation
 
 **Industries reorder (user request):** new order is **Clinics & Healthcare → Real Estate → D2C & E-commerce → Coaching Academies → Fitness & Wellness → Professional Services → Auto Dealerships → Home Services** (was Coaching first). Healthcare-led so the strongest photo cards land in the first three slots.

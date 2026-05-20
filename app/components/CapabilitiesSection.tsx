@@ -138,15 +138,44 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // Wide horizontal spread of specialized agents — all pips use the
-  // shared brand-purple tint (consistent with the other cards).
+  // Specialized agents radiate from a central PROXe hub. A data-pulse
+  // packet animates along each curved path so the network feels alive.
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-mini-grid" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M 40 40 Q 90  10 160 40" fill="none" stroke="rgba(167,139,250,0.35)" strokeDasharray="2 3" />
-        <path d="M 160 40 Q 230 10 280 40" fill="none" stroke="rgba(167,139,250,0.35)" strokeDasharray="2 3" />
-        <path d="M 40 40 Q 90  70 160 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
-        <path d="M 160 40 Q 230 70 280 40" fill="none" stroke="rgba(167,139,250,0.25)" strokeDasharray="2 3" />
+      <svg className="cap-agent-svg" viewBox="0 0 320 96" aria-hidden="true">
+        <defs>
+          <linearGradient id="capAgentLine" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.15)" />
+            <stop offset="50%"  stopColor="rgba(196,181,253,0.7)" />
+            <stop offset="100%" stopColor="rgba(167,139,250,0.15)" />
+          </linearGradient>
+        </defs>
+        {/* Curved channels from each agent to the center hub */}
+        <path id="capAgentP1" d="M 40 48 C 90 20, 130 32, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
+        <path id="capAgentP2" d="M 110 48 C 130 28, 145 36, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
+        <path id="capAgentP3" d="M 210 48 C 195 28, 180 36, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
+        <path id="capAgentP4" d="M 280 48 C 230 20, 190 32, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
+        {/* Data pulses traveling toward the hub */}
+        <circle r="2.6" fill="#c4b5fd">
+          <animateMotion dur="2.8s" repeatCount="indefinite">
+            <mpath href="#capAgentP1" />
+          </animateMotion>
+        </circle>
+        <circle r="2.2" fill="#a78bfa">
+          <animateMotion dur="3.2s" begin="-0.8s" repeatCount="indefinite">
+            <mpath href="#capAgentP2" />
+          </animateMotion>
+        </circle>
+        <circle r="2.2" fill="#a78bfa">
+          <animateMotion dur="3.4s" begin="-1.5s" repeatCount="indefinite">
+            <mpath href="#capAgentP3" />
+          </animateMotion>
+        </circle>
+        <circle r="2.6" fill="#c4b5fd">
+          <animateMotion dur="2.6s" begin="-0.4s" repeatCount="indefinite">
+            <mpath href="#capAgentP4" />
+          </animateMotion>
+        </circle>
       </svg>
       <span className="cap-mini-ico cap-mini-ico--ag-l"><SiWhatsapp size={14} /></span>
       <span className="cap-mini-ico cap-mini-ico--ag-ml"><FiMessageCircle size={13} /></span>
@@ -158,12 +187,19 @@ function AgentNetwork() {
 }
 
 function ShieldVis() {
+  // Lock with animated radar-pulse rings expanding outward, and a
+  // small "VERIFIED" checkmark blip that pings independently.
   return (
     <div className="cap-mini cap-mini--shield">
+      <span className="cap-shield-pulse cap-shield-pulse--1" />
+      <span className="cap-shield-pulse cap-shield-pulse--2" />
+      <span className="cap-shield-pulse cap-shield-pulse--3" />
       <span className="cap-shield-ring cap-shield-ring--1" />
       <span className="cap-shield-ring cap-shield-ring--2" />
-      <span className="cap-shield-ring cap-shield-ring--3" />
-      <span className="cap-shield-core"><FiLock size={14} /></span>
+      <span className="cap-shield-core"><FiLock size={16} /></span>
+      <span className="cap-shield-verified" aria-hidden>
+        <FiCheckCircle size={11} />
+      </span>
     </div>
   );
 }
@@ -217,15 +253,50 @@ export default function CapabilitiesSection() {
           <div className="cap-grid">
             {/* ── Hero card ── */}
             <article className="cap-hero">
-              <div className="cap-hero-tag">
-                <span className="cap-hero-tag-ico">✦</span> CORE INTELLIGENCE
+              <div className="cap-hero-header">
+                <div className="cap-hero-header-text">
+                  <div className="cap-hero-tag">
+                    <span className="cap-hero-tag-ico">✦</span> CORE INTELLIGENCE
+                  </div>
+                  <h3 className="cap-hero-title">Unified Memory</h3>
+                  <p className="cap-hero-sub">
+                    One memory across every channel.<br />
+                    Context follows the customer,<br />
+                    not the conversation.
+                  </p>
+                </div>
+
+                {/* Stats moved to the top-right so they fill the empty
+                    space next to the heading instead of sitting at the
+                    bottom of the card. */}
+                <div className="cap-hero-stats">
+                  <div className="cap-stat">
+                    <span className="cap-stat-ico"><FiActivity size={13} /></span>
+                    <div>
+                      <div className="cap-stat-val">100%</div>
+                      <div className="cap-stat-lbl">Context Retention</div>
+                    </div>
+                  </div>
+                  <div className="cap-stat">
+                    <span className="cap-stat-ico" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18.178 8c-3.226 0-5.978 6.16-5.978 7.99 0 0-2.572-7.99-5.821-7.99-1.957 0-3.379 1.79-3.379 4 0 2.21 1.385 4 3.379 4 3.249 0 5.821-7.99 5.821-7.99 0 1.83 2.753 7.99 5.978 7.99 1.984 0 3.422-1.79 3.422-4 0-2.21-1.438-4-3.422-4z"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <div className="cap-stat-val">∞</div>
+                      <div className="cap-stat-lbl">Cross-Channel Memory</div>
+                    </div>
+                  </div>
+                  <div className="cap-stat">
+                    <span className="cap-stat-ico"><FiZap size={13} /></span>
+                    <div>
+                      <div className="cap-stat-val">24/7</div>
+                      <div className="cap-stat-lbl">Always Remembering</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="cap-hero-title">Unified Memory</h3>
-              <p className="cap-hero-sub">
-                One memory across every channel.<br />
-                Context follows the customer,<br />
-                not the conversation.
-              </p>
 
               <div className="cap-hero-vis">
                 {/* Glowing connector lines wiring channels (left) and
