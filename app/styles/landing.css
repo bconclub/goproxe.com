@@ -8157,11 +8157,11 @@ body:has(.proxe-root) {
 }
 @media (max-width: 760px) {
   .cap-section { padding: 70px 0 80px; }
-  .cap-frame { padding: 4px; border-radius: 18px; }
+  /* No outer frame padding on mobile — the hero card sits flush with
+     the container edge so it gets the full available width. */
+  .cap-frame { padding: 0; border-radius: 18px; }
   .cap-grid { grid-template-columns: 1fr; gap: 12px; }
-  /* Without resetting positions, the cards force the grid to keep 3
-     columns even though template is 1fr — that's why the hero ends
-     up 38px on mobile. Reset to auto-placement instead. */
+  /* Reset bento positions to auto-placement (otherwise cards force 3 cols). */
   .cap-hero,
   .cap-card--capture,
   .cap-card--followup,
@@ -8170,10 +8170,12 @@ body:has(.proxe-root) {
     grid-column: auto;
     grid-row: auto;
   }
-  /* Pull hero/card padding way down on mobile so the channel/profile/memory
-     rows + the mini-visualizations can stretch closer to the card edge. */
-  .cap-hero { padding: 18px 14px 16px; }
-  .cap-card { padding: 18px 14px 16px; }
+  /* Tighter hero/card padding so inner rows stretch close to the card edge */
+  .cap-hero { padding: 18px 16px 16px; }
+  .cap-card { padding: 18px 16px 16px; }
+  /* Container padding tightened so the card reaches further toward the
+     screen edges, matching the other sections on mobile. */
+  .cap-section .proxe-container { padding-left: 14px; padding-right: 14px; }
   .cap-hero-vis {
     grid-template-columns: 1fr;
     gap: 16px;
