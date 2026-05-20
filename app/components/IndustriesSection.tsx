@@ -159,6 +159,7 @@ const INDUSTRIES: Industry[] = [
     id: 'pro',
     color: '#38bdf8',
     gradient: 'linear-gradient(135deg, #075985 0%, #0284c7 60%, #38bdf8 110%)',
+    image: '/industries/Proffesional-services.webp',
     Icon: FiBriefcase,
     title: 'Professional Services',
     desc: 'Qualify leads, book discovery calls, and route hot prospects to partners.',
