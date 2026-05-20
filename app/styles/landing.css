@@ -7398,18 +7398,6 @@ body:has(.proxe-root) {
 }
 .cap-hero-tag-ico { color: #e9d5ff; }
 
-/* Hero top: title on the left, stats column on the right */
-.cap-hero-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-  margin-bottom: 12px;
-  position: relative;
-  z-index: 1;
-}
-.cap-hero-header-text { min-width: 0; }
-
 .cap-hero-title {
   font-family: var(--proxe-font-heading);
   font-size: 38px;
@@ -7422,15 +7410,11 @@ body:has(.proxe-root) {
   z-index: 1;
 }
 .cap-hero-sub {
-  /* Now sits in the top-right slot of the hero header (was below title) */
+  /* Stacked below the title, plain text — no box. */
   font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0;
-  padding: 14px 16px;
-  background: rgba(15, 10, 38, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0 0 22px;
   position: relative;
   z-index: 1;
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-20 · revert: hero sub back below the title (no box)
+
+User: "place back the subtext how it was, because putting it in a box is not looking good."
+
+- Removed `.cap-hero-header` 2-col grid (heading left / sub-in-a-card right).
+- Tag, title, and sub are now stacked single-column on the left of the hero again — same as the original layout before the stats-column experiment.
+- `.cap-hero-sub` styling reverted to plain text (no dark-glass card, no padding/border/radius).
+
 ## 2026-05-20 · polish: Multi-Agent rings match flow-node tint + slower animation
 
 User: "Icons can be our own icons, like we have used for 24/7 and auto follow-ups; movement doesn't have to be this fast."

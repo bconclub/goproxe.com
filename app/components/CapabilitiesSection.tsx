@@ -264,22 +264,15 @@ export default function CapabilitiesSection() {
           <div className="cap-grid">
             {/* ── Hero card ── */}
             <article className="cap-hero">
-              <div className="cap-hero-header">
-                <div className="cap-hero-header-text">
-                  <div className="cap-hero-tag">
-                    <span className="cap-hero-tag-ico">✦</span> CORE INTELLIGENCE
-                  </div>
-                  <h3 className="cap-hero-title">Unified Memory</h3>
-                </div>
-
-                {/* The descriptive sub now sits in the top-right slot
-                    where the stats column used to be. */}
-                <p className="cap-hero-sub">
-                  One memory across every channel.<br />
-                  Context follows the customer,<br />
-                  not the conversation.
-                </p>
+              <div className="cap-hero-tag">
+                <span className="cap-hero-tag-ico">✦</span> CORE INTELLIGENCE
               </div>
+              <h3 className="cap-hero-title">Unified Memory</h3>
+              <p className="cap-hero-sub">
+                One memory across every channel.<br />
+                Context follows the customer,<br />
+                not the conversation.
+              </p>
 
               <div className="cap-hero-vis">
                 {/* Glowing connector lines wiring channels (left) and
