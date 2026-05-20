@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-05-20 · feat: Industries reorder + Auto Follow-Ups step-by-step pulse animation
+
+**Industries reorder (user request):** new order is **Clinics & Healthcare → Real Estate → D2C & E-commerce → Coaching Academies → Fitness & Wellness → Professional Services → Auto Dealerships → Home Services** (was Coaching first). Healthcare-led so the strongest photo cards land in the first three slots.
+
+**Auto Follow-Ups card — sequential pulse animation:** four `@keyframes` cycle the 4 flow nodes through different highlight colors on a 5s loop:
+- 0–22%: node 1 (Message) **purple** highlight
+- 25–47%: node 2 (Email) **blue** highlight
+- 50–72%: node 3 (Clock) **amber** highlight
+- 75–100%: node 4 (Check) **green** highlight — holds for ~1.25s before the loop restarts
+- Nodes that aren't currently active sit at a dim resting state. `transition: 0.35s` on background/border/color/box-shadow so the steps cross-fade rather than snap.
+- The `.cap-flow-node--done` static green styling is gone — the green now comes from the `capFlowStep4` keyframes during the hold phase.
+
 ## 2026-05-20 · fix+assets: flip Healthcare + wire Wellness + refresh Real Estate
 
 - **Healthcare.webp** horizontal-flipped with `ffmpeg -vf hflip`. The doctor was looking right (into the activity-card pills sitting at the top-right corner), which made the composition feel like the pills were eating him. Flipped so he faces left into the empty half of the photo.

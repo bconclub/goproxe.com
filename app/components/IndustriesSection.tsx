@@ -50,27 +50,6 @@ type Industry = {
 
 const INDUSTRIES: Industry[] = [
   {
-    id: 'coaching',
-    color: '#a78bfa',
-    gradient: 'linear-gradient(135deg, #6d28d9 0%, #a78bfa 60%, #ec4899 110%)',
-    image: '/industries/Academies.webp',
-    Icon: LuGraduationCap,
-    title: 'Coaching Academies',
-    desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
-    activities: [
-      { Icon: FiMessageCircle, top: 'New inquiry',  sub: 'MBA Program · via WhatsApp' },
-      { Icon: FiUser,          top: 'AI Qualified', sub: 'High intent' },
-    ],
-    flow: [
-      { Icon: FiMessageCircle, label: 'Inquiry'  },
-      { Icon: FiUser,          label: 'Qualify'  },
-      { Icon: FiCalendar,      label: 'Book'     },
-      { Icon: FiCheckCircle,   label: 'Enroll'   },
-    ],
-    stat: '4.2×',
-    statLabel: 'more enrollments',
-  },
-  {
     id: 'clinics',
     color: '#60a5fa',
     gradient: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 60%, #06b6d4 110%)',
@@ -132,6 +111,27 @@ const INDUSTRIES: Industry[] = [
     ],
     stat: '32%',
     statLabel: 'cart recovery rate',
+  },
+  {
+    id: 'coaching',
+    color: '#a78bfa',
+    gradient: 'linear-gradient(135deg, #6d28d9 0%, #a78bfa 60%, #ec4899 110%)',
+    image: '/industries/Academies.webp',
+    Icon: LuGraduationCap,
+    title: 'Coaching Academies',
+    desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
+    activities: [
+      { Icon: FiMessageCircle, top: 'New inquiry',  sub: 'MBA Program · via WhatsApp' },
+      { Icon: FiUser,          top: 'AI Qualified', sub: 'High intent' },
+    ],
+    flow: [
+      { Icon: FiMessageCircle, label: 'Inquiry'  },
+      { Icon: FiUser,          label: 'Qualify'  },
+      { Icon: FiCalendar,      label: 'Book'     },
+      { Icon: FiCheckCircle,   label: 'Enroll'   },
+    ],
+    stat: '4.2×',
+    statLabel: 'more enrollments',
   },
   {
     id: 'fitness',
