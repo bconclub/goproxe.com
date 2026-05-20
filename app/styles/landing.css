@@ -7955,41 +7955,43 @@ body:has(.proxe-root) {
   line-height: 1;
 }
 
-/* Multi-Agent System — row of outlined channel icons threaded by a
-   wavy SVG path with traveling data dots. */
-.cap-mini--agents { min-height: 110px; position: relative; }
-.cap-card--agents .cap-mini { min-height: 110px; }
-.cap-agent-svg {
+/* Multi-Agent System — row of channel icons connected by a subtle
+   dotted track. Each icon pops up in its own brand color when its
+   pulse turn comes round. */
+.cap-mini--agents { min-height: 80px; position: relative; }
+.cap-card--agents .cap-mini { min-height: 80px; }
+
+/* Subtle dotted track running horizontally through the icon centers */
+.cap-agent-track {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
-  pointer-events: none;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background-image: repeating-linear-gradient(90deg, rgba(167, 139, 250, 0.45) 0 3px, transparent 3px 7px);
   z-index: 1;
 }
+
 .cap-agent-row {
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 4px;
-  padding: 8px 4px 0;
+  gap: 6px;
+  padding: 0 4px;
 }
 .cap-agent-cell {
+  --brand: #a78bfa;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  flex: 1;
-  min-width: 0;
+  justify-content: center;
+  flex: 0 0 auto;
 }
 .cap-agent-ring {
-  /* Same tinted-purple gradient + shadow as .cap-flow-node so the
-     Multi-Agent icons read as the same visual family. */
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
   border: 1px solid rgba(167, 139, 250, 0.32);
@@ -8000,14 +8002,14 @@ body:has(.proxe-root) {
   box-shadow:
     0 4px 12px rgba(124, 58, 237, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  /* Slower sequential pulse — 9s loop, ~1.8s active per ring */
+  /* Sequential pulse — when active, the ring takes on its --brand color */
   animation: capAgentRingPulse 9s ease-in-out infinite;
 }
-.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;     }
-.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1.8s;   }
-.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 3.6s;   }
-.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 5.4s;   }
-.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 7.2s;   }
+.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;   }
+.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1.8s; }
+.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 3.6s; }
+.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 5.4s; }
+.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 7.2s; }
 @keyframes capAgentRingPulse {
   0%, 12%, 100% {
     background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
@@ -8018,25 +8020,18 @@ body:has(.proxe-root) {
     color: #e9d5ff;
   }
   6% {
-    background: linear-gradient(135deg, rgba(196, 181, 253, 0.55), rgba(124, 58, 237, 0.30));
-    border-color: rgba(196, 181, 253, 0.85);
+    /* Active state — fill with the cell's brand color */
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--brand) 55%, transparent),
+        color-mix(in srgb, var(--brand) 25%, transparent));
+    border-color: var(--brand);
     box-shadow:
-      0 4px 22px rgba(167, 139, 250, 0.65),
-      0 0 32px rgba(124, 58, 237, 0.40),
-      inset 0 1px 0 rgba(255, 255, 255, 0.20);
+      0 4px 22px color-mix(in srgb, var(--brand) 60%, transparent),
+      0 0 30px color-mix(in srgb, var(--brand) 35%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
     color: #fff;
   }
-}
-.cap-agent-label {
-  font-size: 9.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 0.02em;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
 }
 
 /* Shield — radar pulses expanding outward + a "verified" check badge */

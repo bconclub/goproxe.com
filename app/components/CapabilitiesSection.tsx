@@ -138,56 +138,29 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // 5 channel-specialist icons in a row, threaded by a wavy curved path
-  // with traveling data dots — matches the reference design.
+  // 5 channel-specialist icons in a row. Each icon pops up in its own
+  // brand color when its pulse turn comes round (sequential animation).
+  // No labels, no wavy line — just the icons connected by a subtle
+  // dotted track behind them.
   const channels = [
-    { Icon: SiWhatsapp,      label: 'WhatsApp' },
-    { Icon: FiMessageCircle, label: 'Web Chat' },
-    { Icon: FiPhone,         label: 'Voice'    },
-    { Icon: FiMail,          label: 'Email'    },
-    { Icon: FiMessageCircle, label: 'SMS'      },
+    { Icon: SiWhatsapp,      color: '#25d366' },
+    { Icon: FiMessageCircle, color: '#a78bfa' },
+    { Icon: FiPhone,         color: '#60a5fa' },
+    { Icon: FiMail,          color: '#c084fc' },
+    { Icon: FiMessageCircle, color: '#34d399' },
   ];
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-agent-svg" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="capAgentWave" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="rgba(167,139,250,0.2)" />
-            <stop offset="50%"  stopColor="rgba(196,181,253,0.9)" />
-            <stop offset="100%" stopColor="rgba(167,139,250,0.2)" />
-          </linearGradient>
-        </defs>
-        {/* Wavy curve weaving through all 5 icon positions */}
-        <path
-          id="capAgentWavePath"
-          d="M 22 40 Q 54 18 86 40 T 150 40 T 214 40 T 278 40 T 320 40"
-          fill="none"
-          stroke="url(#capAgentWave)"
-          strokeWidth="1.5"
-          strokeDasharray="3 4"
-        />
-        {/* Traveling data dots — slower so the motion feels calm, not busy */}
-        <circle r="2.6" fill="#e9d5ff">
-          <animateMotion dur="9s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
-        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="9s" begin="-3s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
-        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="9s" begin="-6s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
-      </svg>
+      {/* Subtle dotted track running through the icon centers */}
+      <span className="cap-agent-track" aria-hidden />
       <div className="cap-agent-row">
         {channels.map((c, i) => (
-          <div key={i} className="cap-agent-cell" style={{ animationDelay: `${i * 0.8}s` }}>
+          <div
+            key={i}
+            className="cap-agent-cell"
+            style={{ ['--brand' as keyof React.CSSProperties as string]: c.color }}
+          >
             <span className="cap-agent-ring"><c.Icon size={16} /></span>
-            <span className="cap-agent-label">{c.label}</span>
           </div>
         ))}
       </div>

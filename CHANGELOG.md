@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-20 · polish: Multi-Agent — drop labels + dotted track + brand-color pop-ups
+
+User: "Text is not visible. The text should be very small, the lines are going below it. I don't think it should be needed. Color them properly with brand colors when they pop up."
+
+- **Labels removed** under each icon. They were being ellipsis-truncated to "Whats…", "Web C…" — not adding any value.
+- **Wavy SVG path + traveling data dots removed**. The wave dipped below the icon row and read as messy.
+- Replaced with a **single subtle dotted track** running horizontally through the icon centers — clean connector that doesn't compete with the icons.
+- **Brand colors per icon, popping in on the active pulse**: WhatsApp `#25d366` · Web Chat `#a78bfa` · Voice `#60a5fa` · Email `#c084fc` · SMS `#34d399`. Each cell carries a `--brand` CSS variable; the `capAgentRingPulse` keyframe uses `color-mix(in srgb, var(--brand) …%, transparent)` so the icon's resting purple-tint snaps to its brand color when it lights up, then fades back to neutral. Visually distinct, still on the same animation cadence.
+
 ## 2026-05-20 · revert: hero sub back below the title (no box)
 
 User: "place back the subtext how it was, because putting it in a box is not looking good."
