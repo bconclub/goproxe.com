@@ -7817,6 +7817,25 @@ body:has(.proxe-root) {
 .cap-const-pip--bl { left:  14%; bottom: 14%; }
 .cap-const-pip--br { right: 14%; bottom: 14%; }
 
+/* WhatsApp pip — real brand green */
+.cap-const-pip--wa {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  border-color: rgba(37, 211, 102, 0.55);
+  color: #fff;
+  box-shadow:
+    0 6px 14px rgba(18, 140, 126, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+/* Instagram pip — brand gradient (yellow → pink → purple) */
+.cap-const-pip--ig {
+  background: linear-gradient(135deg, #fcb045 0%, #fd1d1d 45%, #833ab4 100%);
+  border-color: rgba(253, 29, 29, 0.55);
+  color: #fff;
+  box-shadow:
+    0 6px 14px rgba(131, 58, 180, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+
 /* Followup flow — bigger tinted nodes, soft purple arrows between */
 .cap-mini--flow { gap: 2px; justify-content: center; }
 .cap-flow-node {

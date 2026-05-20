@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-19 · polish: brand-color WhatsApp + Instagram pips + real Cross-Channel SVG
+
+- **Lead Capture channel pips:** the WhatsApp pip now uses its real brand green (`#25d366 → #128c7e`) and the bottom-right pip switched from a generic mail envelope to **Instagram** with the brand gradient (`#fcb045 → #fd1d1d → #833ab4`). The other two pips (web chat, phone) keep the brand-purple house tint, so the row reads as "two real channel icons + two neutral ones," matching the user's "Instagram and WhatsApp will be real, the other two are normal" direction.
+- **Cross-Channel Memory stat icon:** replaced the Unicode `∞` text glyph (which rendered as a thin, weak character) with an inline **infinity SVG path** (Lucide-style) so the box has a proper stroke-weight icon matching the other two stat icons (`FiActivity`, `FiZap`). The value still reads `∞`.
+
 ## 2026-05-19 · fix: Pricing Most-Popular — clean dark body + bright gradient border (no wash)
 
 The previous "highlight" treatment combined a translucent purple gradient on the card body + two radial blooms + a pulsing outer halo. The result was a washed-out, cloudy card that looked worse than the Starter, not premium.

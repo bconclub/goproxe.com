@@ -14,7 +14,7 @@ import {
   FiLock,
   FiActivity,
 } from 'react-icons/fi';
-import { SiWhatsapp } from 'react-icons/si';
+import { SiWhatsapp, SiInstagram } from 'react-icons/si';
 
 /* ─────────────────────────────────────────────────────────────
    ORB — SVG-based: glowing core + radiating rays + orbit rings + particles
@@ -113,10 +113,12 @@ function ChannelConstellation() {
       </svg>
 
       <MiniCenterOrb />
-      <span className="cap-const-pip cap-const-pip--tl"><SiWhatsapp size={14} /></span>
+      {/* WhatsApp + Instagram render in their real brand colors; the other
+          two stay in the brand-purple house tint. */}
+      <span className="cap-const-pip cap-const-pip--wa cap-const-pip--tl"><SiWhatsapp size={15} /></span>
       <span className="cap-const-pip cap-const-pip--tr"><FiMessageCircle size={14} /></span>
       <span className="cap-const-pip cap-const-pip--bl"><FiPhone size={14} /></span>
-      <span className="cap-const-pip cap-const-pip--br"><FiMail size={14} /></span>
+      <span className="cap-const-pip cap-const-pip--ig cap-const-pip--br"><SiInstagram size={15} /></span>
     </div>
   );
 }
@@ -310,7 +312,11 @@ export default function CapabilitiesSection() {
                   </div>
                 </div>
                 <div className="cap-stat">
-                  <span className="cap-stat-ico" aria-hidden="true">∞</span>
+                  <span className="cap-stat-ico" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18.178 8c-3.226 0-5.978 6.16-5.978 7.99 0 0-2.572-7.99-5.821-7.99-1.957 0-3.379 1.79-3.379 4 0 2.21 1.385 4 3.379 4 3.249 0 5.821-7.99 5.821-7.99 0 1.83 2.753 7.99 5.978 7.99 1.984 0 3.422-1.79 3.422-4 0-2.21-1.438-4-3.422-4z"/>
+                    </svg>
+                  </span>
                   <div>
                     <div className="cap-stat-val">∞</div>
                     <div className="cap-stat-lbl">Cross-Channel Memory</div>
