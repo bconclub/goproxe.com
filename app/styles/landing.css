@@ -7296,7 +7296,7 @@ body:has(.proxe-root) {
   color: #fff;
   letter-spacing: -0.02em;
   line-height: 1.08;
-  margin: 0 0 18px;
+  margin: 0;
   max-width: 920px;
 }
 .cap-h2-grad {
@@ -7307,12 +7307,21 @@ body:has(.proxe-root) {
   font-style: italic;
 }
 
+/* Section-level header: heading on the left, sub on the right (matches
+   the layout used in Industries / Pricing). */
+.cap-section-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 36px;
+  align-items: end;
+  margin: 0 0 36px;
+}
 .cap-sub {
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.62);
-  margin: 0 0 36px;
-  max-width: 600px;
+  margin: 0;
+  max-width: 520px;
 }
 
 /* ── Outer frame: subtle outline since the section itself is already dark ── */
@@ -7962,93 +7971,84 @@ body:has(.proxe-root) {
   line-height: 1;
 }
 
-/* Multi-Agent System — 3 specialist agents around a central hub.
-   Each agent is a tinted purple chip with a small colored "channel
-   specialty" badge in the corner. */
-.cap-mini--agents { min-height: 130px; position: relative; }
-.cap-card--agents .cap-mini { min-height: 130px; }
+/* Multi-Agent System — row of outlined channel icons threaded by a
+   wavy SVG path with traveling data dots. */
+.cap-mini--agents { min-height: 110px; position: relative; }
+.cap-card--agents .cap-mini { min-height: 110px; }
 .cap-agent-svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
+  pointer-events: none;
+  z-index: 1;
 }
-.cap-agent-hub {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e9d5ff, #c4b5fd 35%, #7c3aed 85%, #4c1d95 100%);
-  color: #fff;
-  box-shadow:
-    0 0 24px rgba(167, 139, 250, 0.65),
-    0 4px 14px rgba(124, 58, 237, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  z-index: 3;
-}
-.cap-agent {
-  position: absolute;
-  width: 38px;
-  height: 38px;
+.cap-agent-row {
+  position: relative;
   z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px 4px 0;
 }
-.cap-agent--tl { left: 16%;  top: 6%; }
-.cap-agent--tr { right: 16%; top: 6%; }
-.cap-agent--b  { left: 50%; bottom: 4%; transform: translateX(-50%); }
-.cap-agent-avatar {
-  width: 100%;
-  height: 100%;
+.cap-agent-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.cap-agent-ring {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  background: rgba(15, 10, 38, 0.6);
+  border: 1.5px solid rgba(167, 139, 250, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.30), rgba(124, 58, 237, 0.15));
-  border: 1px solid rgba(167, 139, 250, 0.45);
-  color: #fff;
+  color: #e9d5ff;
   box-shadow:
-    0 6px 14px rgba(124, 58, 237, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 0 12px rgba(167, 139, 250, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: capAgentRingPulse 5s ease-in-out infinite;
+  animation-delay: inherit;
 }
-.cap-agent-badge {
-  position: absolute;
-  right: -3px;
-  top: -3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(8, 6, 24, 0.95);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;   }
+.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1s;   }
+.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 2s;   }
+.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 3s;   }
+.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 4s;   }
+@keyframes capAgentRingPulse {
+  0%, 14%, 100% {
+    border-color: rgba(167, 139, 250, 0.55);
+    box-shadow:
+      0 0 12px rgba(167, 139, 250, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    color: #e9d5ff;
+  }
+  6% {
+    border-color: rgba(196, 181, 253, 0.95);
+    box-shadow:
+      0 0 22px rgba(196, 181, 253, 0.65),
+      0 0 36px rgba(124, 58, 237, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    color: #fff;
+  }
 }
-
-/* Active-agent pulse — each agent gets a 1s window of glow on a 3s loop */
-.cap-agent--tl .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; }
-.cap-agent--tr .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; animation-delay: -1s; }
-.cap-agent--b  .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; animation-delay: -2s; }
-@keyframes capAgentPulse {
-  0%, 33%, 100% {
-    box-shadow:
-      0 6px 14px rgba(124, 58, 237, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border-color: rgba(167, 139, 250, 0.45);
-  }
-  16% {
-    box-shadow:
-      0 6px 22px rgba(167, 139, 250, 0.75),
-      0 0 28px rgba(196, 181, 253, 0.55),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    border-color: rgba(196, 181, 253, 0.9);
-  }
+.cap-agent-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* Shield — radar pulses expanding outward + a "verified" check badge */
@@ -8159,6 +8159,7 @@ body:has(.proxe-root) {
    Responsive
 ───────────────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
+  .cap-section-header { grid-template-columns: 1fr; gap: 14px; }
   .cap-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto;

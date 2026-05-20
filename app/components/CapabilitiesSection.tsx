@@ -138,64 +138,58 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // 3 specialized agents arranged around a central PROXe hub. Each
-  // agent is a tinted purple chip with a small "specialty" channel
-  // badge attached, so it reads as "this agent handles this channel".
-  // The active agent pulses in turn (handled by CSS animation).
+  // 5 channel-specialist icons in a row, threaded by a wavy curved path
+  // with traveling data dots — matches the reference design.
+  const channels = [
+    { Icon: SiWhatsapp,      label: 'WhatsApp' },
+    { Icon: FiMessageCircle, label: 'Web Chat' },
+    { Icon: FiPhone,         label: 'Voice'    },
+    { Icon: FiMail,          label: 'Email'    },
+    { Icon: FiMessageCircle, label: 'SMS'      },
+  ];
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-agent-svg" viewBox="0 0 320 130" aria-hidden="true">
+      <svg className="cap-agent-svg" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
         <defs>
-          <radialGradient id="capAgentHubGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="rgba(167,139,250,0.45)" />
-            <stop offset="100%" stopColor="rgba(124,58,237,0)" />
-          </radialGradient>
+          <linearGradient id="capAgentWave" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.2)" />
+            <stop offset="50%"  stopColor="rgba(196,181,253,0.9)" />
+            <stop offset="100%" stopColor="rgba(167,139,250,0.2)" />
+          </linearGradient>
         </defs>
-        {/* Soft glow behind the hub */}
-        <circle cx="160" cy="65" r="50" fill="url(#capAgentHubGlow)" />
-        {/* Dotted connections — agent → hub */}
-        <path d="M 80  35 Q 120 55 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
-        <path d="M 240 35 Q 200 55 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
-        <path d="M 160 110 Q 160 90 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
-        {/* Data packet pinging each agent's path */}
-        <circle r="2.4" fill="#e9d5ff">
-          <animateMotion dur="3s" repeatCount="indefinite">
-            <mpath href="#capAgentP1" />
+        {/* Wavy curve weaving through all 5 icon positions */}
+        <path
+          id="capAgentWavePath"
+          d="M 22 40 Q 54 18 86 40 T 150 40 T 214 40 T 278 40 T 320 40"
+          fill="none"
+          stroke="url(#capAgentWave)"
+          strokeWidth="1.5"
+          strokeDasharray="3 4"
+        />
+        {/* Traveling data dots */}
+        <circle r="2.6" fill="#e9d5ff">
+          <animateMotion dur="4s" repeatCount="indefinite">
+            <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>
-        <path id="capAgentP1" d="M 80 35 Q 120 55 160 65" fill="none" stroke="none" />
-        <circle r="2.4" fill="#e9d5ff">
-          <animateMotion dur="3s" begin="-1s" repeatCount="indefinite">
-            <mpath href="#capAgentP2" />
+        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
+          <animateMotion dur="4s" begin="-1.3s" repeatCount="indefinite">
+            <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>
-        <path id="capAgentP2" d="M 240 35 Q 200 55 160 65" fill="none" stroke="none" />
-        <circle r="2.4" fill="#e9d5ff">
-          <animateMotion dur="3s" begin="-2s" repeatCount="indefinite">
-            <mpath href="#capAgentP3" />
+        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
+          <animateMotion dur="4s" begin="-2.6s" repeatCount="indefinite">
+            <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>
-        <path id="capAgentP3" d="M 160 110 Q 160 90 160 65" fill="none" stroke="none" />
       </svg>
-
-      {/* Central PROXe hub */}
-      <div className="cap-agent-hub">
-        <FiUsers size={18} />
-      </div>
-
-      {/* 3 specialist agents — each has a person glyph + a small
-          colored channel badge in the top-right corner */}
-      <div className="cap-agent cap-agent--tl">
-        <span className="cap-agent-avatar"><FiUser size={16} /></span>
-        <span className="cap-agent-badge" style={{ background: '#25d366' }}><SiWhatsapp size={9} /></span>
-      </div>
-      <div className="cap-agent cap-agent--tr">
-        <span className="cap-agent-avatar"><FiUser size={16} /></span>
-        <span className="cap-agent-badge" style={{ background: '#60a5fa' }}><FiPhone size={9} /></span>
-      </div>
-      <div className="cap-agent cap-agent--b">
-        <span className="cap-agent-avatar"><FiUser size={16} /></span>
-        <span className="cap-agent-badge" style={{ background: '#c084fc' }}><FiMail size={9} /></span>
+      <div className="cap-agent-row">
+        {channels.map((c, i) => (
+          <div key={i} className="cap-agent-cell" style={{ animationDelay: `${i * 0.8}s` }}>
+            <span className="cap-agent-ring"><c.Icon size={16} /></span>
+            <span className="cap-agent-label">{c.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -246,18 +240,20 @@ export default function CapabilitiesSection() {
   return (
     <section ref={ref} className={`cap-section${vis ? ' cap-in' : ''}`}>
       <div className="proxe-container">
-        {/* Header (outside the framed container) */}
+        {/* Header (outside the framed container) — 2-col: heading left, sub right */}
         <div className="cap-label">
           <span className="cap-label-diamond">◆</span> CAPABILITIES
         </div>
-        <h2 className="cap-h2">
-          The infrastructure behind<br />
-          <span className="cap-h2-grad">autonomous</span> customer acquisition.
-        </h2>
-        <p className="cap-sub">
-          Every channel connected. Every interaction remembered.<br />
-          Every lead continuously moving toward conversion.
-        </p>
+        <div className="cap-section-header">
+          <h2 className="cap-h2">
+            The infrastructure behind<br />
+            <span className="cap-h2-grad">autonomous</span> customer acquisition.
+          </h2>
+          <p className="cap-sub">
+            Every channel connected. Every interaction remembered.<br />
+            Every lead continuously moving toward conversion.
+          </p>
+        </div>
 
         {/* Single framed container holds everything below */}
         <div className="cap-frame">

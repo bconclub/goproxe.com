@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-20 · feat: Multi-Agent redesign (5-icon wavy row) + Capabilities header 2-col
+
+**Multi-Agent System redesign** to match the reference image:
+- Dropped the central hub + 3 people-avatars layout.
+- New: **5 outlined channel-icon rings** in a row — WhatsApp / Web Chat / Voice / Email / SMS — each a 36×36 transparent-center circle with a 1.5px purple stroke and a glowing inset. Labels sit below each ring.
+- A wavy SVG path (`Q ... T ...` curve weaving up-down-up-down) threads through all 5 icon centers, with 3 `animateMotion` data-dots traveling along it at staggered offsets.
+- Each ring runs a `capAgentRingPulse` keyframe with a 1s offset between siblings, so the icons sequentially light up brighter as the active dot crosses through them (5s loop).
+
+**Capabilities section header is now 2-column** like Industries and Pricing:
+- Wrapped `.cap-h2` + `.cap-sub` in a `.cap-section-header` grid (`1.4fr 1fr`).
+- Heading on the left, sub paragraph aligned to the bottom-right.
+- Collapses to single column at ≤1100px.
+
 ## 2026-05-20 · fix: hero stats removed, sub-text moved up + Multi-Agent System redesign
 
 Three changes in one shot:
