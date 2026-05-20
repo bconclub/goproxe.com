@@ -138,61 +138,50 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // Row of 5 channel-specialist icons threaded by a subtle wavy track.
-  // Each icon pulses in its own brand color in turn (sequential animation).
-  const channels = [
-    { Icon: SiWhatsapp,      color: '#25d366', label: 'WhatsApp' },
-    { Icon: FiMessageCircle, color: '#a78bfa', label: 'Web Chat' },
-    { Icon: FiPhone,         color: '#60a5fa', label: 'Voice'    },
-    { Icon: FiMail,          color: '#c084fc', label: 'Email'    },
-    { Icon: FiMessageCircle, color: '#34d399', label: 'SMS'      },
+  // 5 channel agents arranged in a peer-to-peer mesh (NOT a line).
+  // Top row: 3 agents; bottom row: 2 agents offset between them.
+  // Bidirectional arrow-style connectors between every adjacent pair —
+  // each agent talks to its neighbors. Each agent pulses in its own
+  // brand color in turn on a 9s cycle.
+  const nodes = [
+    { Icon: SiWhatsapp,      color: '#25d366', pos: 'tl' },  // top-left
+    { Icon: FiMessageCircle, color: '#a78bfa', pos: 'tc' },  // top-center
+    { Icon: FiPhone,         color: '#60a5fa', pos: 'tr' },  // top-right
+    { Icon: FiMail,          color: '#c084fc', pos: 'bl' },  // bottom-left
+    { Icon: FiMessageCircle, color: '#34d399', pos: 'br' },  // bottom-right
   ];
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-agent-svg" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
+      {/* Mesh connectors — each line is bidirectional (no real arrowheads,
+          just glowing dotted edges between peers) */}
+      <svg className="cap-agent-mesh" viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
         <defs>
-          <linearGradient id="capAgentWave" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="rgba(167,139,250,0.2)" />
-            <stop offset="50%"  stopColor="rgba(196,181,253,0.9)" />
-            <stop offset="100%" stopColor="rgba(167,139,250,0.2)" />
+          <linearGradient id="capAgentEdge" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.20)" />
+            <stop offset="50%"  stopColor="rgba(196,181,253,0.85)" />
+            <stop offset="100%" stopColor="rgba(167,139,250,0.20)" />
           </linearGradient>
         </defs>
-        <path
-          id="capAgentWavePath"
-          d="M 22 40 Q 54 18 86 40 T 150 40 T 214 40 T 278 40 T 320 40"
-          fill="none"
-          stroke="url(#capAgentWave)"
-          strokeWidth="1.5"
-          strokeDasharray="3 4"
-        />
-        <circle r="2.4" fill="#e9d5ff">
-          <animateMotion dur="9s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
-        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="9s" begin="-3s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
-        <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="9s" begin="-6s" repeatCount="indefinite">
-            <mpath href="#capAgentWavePath" />
-          </animateMotion>
-        </circle>
+        {/* Top row peer edges */}
+        <line x1="60"  y1="36" x2="160" y2="36" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        <line x1="160" y1="36" x2="260" y2="36" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        {/* Bottom row peer edge */}
+        <line x1="110" y1="104" x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        {/* Cross-row diagonals */}
+        <line x1="60"  y1="36"  x2="110" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        <line x1="160" y1="36"  x2="110" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        <line x1="160" y1="36"  x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        <line x1="260" y1="36"  x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
       </svg>
-      <div className="cap-agent-row">
-        {channels.map((c, i) => (
-          <div
-            key={i}
-            className="cap-agent-cell"
-            style={{ ['--brand' as keyof React.CSSProperties as string]: c.color }}
-          >
-            <span className="cap-agent-ring"><c.Icon size={16} /></span>
-            <span className="cap-agent-label">{c.label}</span>
-          </div>
-        ))}
-      </div>
+      {nodes.map((n, i) => (
+        <div
+          key={i}
+          className={`cap-agent-mesh-node cap-agent-mesh-node--${n.pos}`}
+          style={{ ['--brand' as keyof React.CSSProperties as string]: n.color }}
+        >
+          <span className="cap-agent-ring"><n.Icon size={16} /></span>
+        </div>
+      ))}
     </div>
   );
 }

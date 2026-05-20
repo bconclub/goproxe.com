@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-05-21 · revert: Card 3 chat-bubble layout + feat: Multi-Agent peer mesh
+
+**Card 3 reverted to the chat-bubble layout** (user: "revert the third video back to how it was earlier... it was something earlier"). The Card-2-clone approach I'd taken (`68b0326` / `d692077` / `29ad280`) was a mistake — they liked the chat-bubble version. Restored from `git show 68b0326^:app/components/HowItWorks.tsx`:
+- `ReactivateVis` back to its chat-bubble version: WhatsApp avatar header, ✓ RESPONDED badge, PROXe greeting bubble, lead reply bubble, system message with score-badge transition.
+- All `.hiw-vis--react` / `.hiw-react-*` CSS restored (chat header / typing dots / bubble styles / system message / score badge).
+- Removed the `.hiw-mem-row--cold/--warm/--hot` temperature CSS — Card 3 no longer uses `.hiw-mem-row`.
+
+**Multi-Agent System redesigned as a peer-to-peer mesh** (user reference: 6 robots in a 2-row mesh with criss-cross arrows). 5 channel agents arranged as:
+```
+   WhatsApp     Web Chat      Voice
+        \   X   |   X   /
+          Email      SMS
+```
+- 3 agents on the top row (WhatsApp, Web Chat, Voice).
+- 2 agents on the bottom row (Email, SMS) offset between the top three.
+- **7 SVG edge lines** connecting every adjacent pair: 2 horizontal top + 1 horizontal bottom + 4 cross-row diagonals.
+- Each agent still pulses in its own brand color in turn (`tl → tc → tr → br → bl`, like a circuit going clockwise around the mesh).
+
 ## 2026-05-21 · polish: Card 3 — cold→warm→hot row temperature progression
 
 User: "the third one is actually running the same video... the third one had a different video."
