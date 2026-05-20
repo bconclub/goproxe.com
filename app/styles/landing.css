@@ -3692,6 +3692,12 @@ body:has(.proxe-root) {
   gap: 14px;
   position: relative;
   z-index: 1;
+  /* Grow to absorb any extra card height. The grid stretches all 3
+     cards to equal outer height, and the wrap is a fixed 360px —
+     without flex-grow on the text section, cards with shorter copy
+     (e.g. Card 3) leave an empty strip ABOVE the wrap (column-reverse
+     puts extra space at the visual top). */
+  flex: 1 1 auto;
 }
 
 .hiw-card-icon {
