@@ -117,7 +117,7 @@ const INDUSTRIES: Industry[] = [
     id: 'coaching',
     color: '#a78bfa',
     gradient: 'linear-gradient(135deg, #6d28d9 0%, #a78bfa 60%, #ec4899 110%)',
-    image: '/industries/Academies.webp',
+    image: '/industries/Coaching.webp',
     Icon: LuGraduationCap,
     title: 'Coaching Academies',
     desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
