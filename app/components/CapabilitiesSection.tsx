@@ -138,32 +138,58 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // 5 channel-specialist icons in a row. Each icon pops up in its own
-  // brand color when its pulse turn comes round (sequential animation).
-  // No labels, no wavy line — just the icons connected by a subtle
-  // dotted track behind them.
-  const channels = [
-    { Icon: SiWhatsapp,      color: '#25d366' },
-    { Icon: FiMessageCircle, color: '#a78bfa' },
-    { Icon: FiPhone,         color: '#60a5fa' },
-    { Icon: FiMail,          color: '#c084fc' },
-    { Icon: FiMessageCircle, color: '#34d399' },
+  // Branching network: WhatsApp + Web Chat (entries, top) flow into a
+  // central Voice hub, which then branches out to Email + SMS (bottom).
+  // 2 in → 1 → 2 out = an X-shape tree. Each icon pulses in its own
+  // brand color in turn, with data dots traveling along the branches.
+  const nodes = [
+    { key: 'wa',  Icon: SiWhatsapp,      color: '#25d366', pos: 'tl' },
+    { key: 'web', Icon: FiMessageCircle, color: '#a78bfa', pos: 'tr' },
+    { key: 'vc',  Icon: FiPhone,         color: '#60a5fa', pos: 'c'  },
+    { key: 'em',  Icon: FiMail,          color: '#c084fc', pos: 'bl' },
+    { key: 'sm',  Icon: FiMessageCircle, color: '#34d399', pos: 'br' },
   ];
   return (
     <div className="cap-mini cap-mini--agents">
-      {/* Subtle dotted track running through the icon centers */}
-      <span className="cap-agent-track" aria-hidden />
-      <div className="cap-agent-row">
-        {channels.map((c, i) => (
-          <div
-            key={i}
-            className="cap-agent-cell"
-            style={{ ['--brand' as keyof React.CSSProperties as string]: c.color }}
-          >
-            <span className="cap-agent-ring"><c.Icon size={16} /></span>
-          </div>
-        ))}
-      </div>
+      {/* SVG branches: 2 entries → hub → 2 outputs */}
+      <svg className="cap-agent-tree" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="capAgentBranch" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.25)" />
+            <stop offset="100%" stopColor="rgba(196,181,253,0.85)" />
+          </linearGradient>
+        </defs>
+        {/* Top branches into the hub */}
+        <path id="capBrIn1"  d="M 50 26 Q 110 50 160 60" fill="none" stroke="url(#capAgentBranch)" strokeWidth="1.4" strokeDasharray="3 4" />
+        <path id="capBrIn2"  d="M 270 26 Q 210 50 160 60" fill="none" stroke="url(#capAgentBranch)" strokeWidth="1.4" strokeDasharray="3 4" />
+        {/* Hub branches out to outputs */}
+        <path id="capBrOut1" d="M 160 60 Q 110 70 50 94"  fill="none" stroke="url(#capAgentBranch)" strokeWidth="1.4" strokeDasharray="3 4" />
+        <path id="capBrOut2" d="M 160 60 Q 210 70 270 94" fill="none" stroke="url(#capAgentBranch)" strokeWidth="1.4" strokeDasharray="3 4" />
+        {/* Data pulses flowing through the branches */}
+        <circle r="2.2" fill="#e9d5ff">
+          <animateMotion dur="6s" repeatCount="indefinite"><mpath href="#capBrIn1" /></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#e9d5ff">
+          <animateMotion dur="6s" begin="-1.5s" repeatCount="indefinite"><mpath href="#capBrIn2" /></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#e9d5ff">
+          <animateMotion dur="6s" begin="-3s" repeatCount="indefinite"><mpath href="#capBrOut1" /></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#e9d5ff">
+          <animateMotion dur="6s" begin="-4.5s" repeatCount="indefinite"><mpath href="#capBrOut2" /></animateMotion>
+        </circle>
+      </svg>
+
+      {/* Icons positioned at the branch endpoints */}
+      {nodes.map((n) => (
+        <div
+          key={n.key}
+          className={`cap-agent-node cap-agent-node--${n.pos}`}
+          style={{ ['--brand' as keyof React.CSSProperties as string]: n.color }}
+        >
+          <span className="cap-agent-ring"><n.Icon size={16} /></span>
+        </div>
+      ))}
     </div>
   );
 }

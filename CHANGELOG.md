@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-05-20 · feat: Multi-Agent — branching tree layout (2 → hub → 2)
+
+User wanted the icons NOT in a straight line — instead a branching tree where one node flows into multiple.
+
+- 5 nodes positioned in an **X-pattern**:
+  - top-left: WhatsApp (entry)
+  - top-right: Web Chat (entry)
+  - center: Voice (the hub)
+  - bottom-left: Email (output)
+  - bottom-right: SMS (output)
+- **4 SVG branch paths** drawn with curved quadratic-bezier strokes:
+  - WhatsApp → Voice
+  - Web Chat → Voice
+  - Voice → Email
+  - Voice → SMS
+- **4 `animateMotion` data pulses** travel along each branch at staggered offsets (6s loop, -1.5s/-3s/-4.5s starts) so something is always moving through the network.
+- Each node still pulses in its own brand color via the existing `--brand` variable + `capAgentRingPulse` keyframe.
+- Card min-height bumped from 80 → 130px to house the tree shape.
+
 ## 2026-05-20 · polish: Multi-Agent — drop labels + dotted track + brand-color pop-ups
 
 User: "Text is not visible. The text should be very small, the lines are going below it. I don't think it should be needed. Color them properly with brand colors when they pop up."

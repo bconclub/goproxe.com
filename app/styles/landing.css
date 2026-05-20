@@ -7955,40 +7955,34 @@ body:has(.proxe-root) {
   line-height: 1;
 }
 
-/* Multi-Agent System — row of channel icons connected by a subtle
-   dotted track. Each icon pops up in its own brand color when its
-   pulse turn comes round. */
-.cap-mini--agents { min-height: 80px; position: relative; }
-.cap-card--agents .cap-mini { min-height: 80px; }
+/* Multi-Agent System — branching network. 2 entries (top) flow into
+   a central hub, hub branches to 2 outputs (bottom). X-shape tree. */
+.cap-mini--agents { min-height: 130px; position: relative; }
+.cap-card--agents .cap-mini { min-height: 130px; }
 
-/* Subtle dotted track running horizontally through the icon centers */
-.cap-agent-track {
+.cap-agent-tree {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 50%;
-  height: 1px;
-  transform: translateY(-50%);
-  background-image: repeating-linear-gradient(90deg, rgba(167, 139, 250, 0.45) 0 3px, transparent 3px 7px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
+  pointer-events: none;
   z-index: 1;
 }
 
-.cap-agent-row {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 0 4px;
-}
-.cap-agent-cell {
+/* Each branch endpoint is an absolutely-positioned node */
+.cap-agent-node {
   --brand: #a78bfa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
 }
+/* Positions match the SVG path endpoints (320×120 viewBox → percentages) */
+.cap-agent-node--tl { left: 15.6%; top: 21.5%; }   /* WhatsApp */
+.cap-agent-node--tr { left: 84.4%; top: 21.5%; }   /* Web Chat */
+.cap-agent-node--c  { left: 50%;   top: 50%;   }   /* Voice hub */
+.cap-agent-node--bl { left: 15.6%; top: 78.5%; }   /* Email */
+.cap-agent-node--br { left: 84.4%; top: 78.5%; }   /* SMS */
 .cap-agent-ring {
   width: 38px;
   height: 38px;
@@ -8005,11 +7999,13 @@ body:has(.proxe-root) {
   /* Sequential pulse — when active, the ring takes on its --brand color */
   animation: capAgentRingPulse 9s ease-in-out infinite;
 }
-.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;   }
-.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1.8s; }
-.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 3.6s; }
-.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 5.4s; }
-.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 7.2s; }
+/* Sequence: WhatsApp (top-left) → Web Chat (top-right) → Voice (hub)
+   → Email (bottom-left) → SMS (bottom-right) */
+.cap-agent-node--tl .cap-agent-ring { animation-delay: 0s;   }
+.cap-agent-node--tr .cap-agent-ring { animation-delay: 1.8s; }
+.cap-agent-node--c  .cap-agent-ring { animation-delay: 3.6s; }
+.cap-agent-node--bl .cap-agent-ring { animation-delay: 5.4s; }
+.cap-agent-node--br .cap-agent-ring { animation-delay: 7.2s; }
 @keyframes capAgentRingPulse {
   0%, 12%, 100% {
     background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
