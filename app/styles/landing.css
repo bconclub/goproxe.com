@@ -3778,15 +3778,16 @@ body:has(.proxe-root) {
 }
 
 .hiw-pill-ico {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  /* No solid container — just the icon glyph in its brand color
+     with a soft glow underneath. */
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
   flex-shrink: 0;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  background: transparent;
+  box-shadow: none;
 }
 
 .hiw-pill-txt {
@@ -3835,15 +3836,33 @@ body:has(.proxe-root) {
 }
 
 .hiw-mem-row {
+  /* Glass pill tinted with the row's channel color. The --accent
+     CSS variable is set inline per row (WhatsApp green, Voice blue,
+     Web purple); color-mix folds it into a subtle tinted background
+     + accent border + glow shadow. */
+  --accent: #a78bfa;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255,255,255,0.90);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 28%, rgba(15, 10, 38, 0.5)),
+      color-mix(in srgb, var(--accent) 12%, rgba(15, 10, 38, 0.55)));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 10px;
   padding: 10px 13px;
   position: relative;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--accent) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
   transition: opacity 0.4s ease, transform 0.4s ease, background 0.5s ease, box-shadow 0.5s ease;
 }
+/* Row text needs to read on the new tinted background instead of on white */
+.hiw-mem-row .hiw-mem-day,
+.hiw-mem-row .hiw-mem-lbl { color: #fff; }
+.hiw-mem-row .hiw-mem-day { color: rgba(255, 255, 255, 0.65); }
 
 
 .hiw-mem-vline {
@@ -5819,7 +5838,7 @@ body:has(.proxe-root) {
 .hiw-vis--react {
   gap: 10px;
   justify-content: flex-start !important;
-  padding-top: 0 !important;
+  padding-top: 14px !important;
   padding-bottom: 18px !important;
   align-items: stretch !important;
 }

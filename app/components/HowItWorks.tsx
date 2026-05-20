@@ -36,7 +36,7 @@ function CaptureVis({ on }: { on: boolean }) {
           className="hiw-pill"
           style={{ opacity: step > i ? 1 : 0, transform: step > i ? 'translateY(0)' : 'translateY(-14px)' }}
         >
-          <span className="hiw-pill-ico" style={{ background: bg, boxShadow: `0 0 14px ${bg}99, 0 0 4px ${bg}66` }}><I size={14} /></span>
+          <span className="hiw-pill-ico" style={{ color: bg, filter: `drop-shadow(0 0 6px ${bg}88)` }}><I size={22} /></span>
           <span className="hiw-pill-txt">{txt}</span>
           <span className="hiw-pill-badge">Captured</span>
         </div>
@@ -111,7 +111,11 @@ function MemoryVis({ on }: { on: boolean }) {
           <div
             key={i}
             className="hiw-mem-row"
-            style={{ opacity: step > i + 1 ? 1 : step === i + 1 ? 0.9 : 0, transform: step > i ? 'translateX(0)' : 'translateX(-10px)' }}
+            style={{
+              opacity: step > i + 1 ? 1 : step === i + 1 ? 0.9 : 0,
+              transform: step > i ? 'translateX(0)' : 'translateX(-10px)',
+              ['--accent' as keyof React.CSSProperties as string]: color,
+            }}
           >
             <div className="hiw-mem-vline" />
             <span className="hiw-mem-ico" style={{ background: color, color: '#fff', boxShadow: `0 0 10px ${color}88` }}><I size={12} /></span>
