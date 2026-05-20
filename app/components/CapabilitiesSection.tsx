@@ -12,7 +12,7 @@ import {
   FiCheckCircle,
   FiClock,
   FiLock,
-  FiActivity,
+  FiUser,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiInstagram } from 'react-icons/si';
 
@@ -138,50 +138,65 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // Specialized agents radiate from a central PROXe hub. A data-pulse
-  // packet animates along each curved path so the network feels alive.
+  // 3 specialized agents arranged around a central PROXe hub. Each
+  // agent is a tinted purple chip with a small "specialty" channel
+  // badge attached, so it reads as "this agent handles this channel".
+  // The active agent pulses in turn (handled by CSS animation).
   return (
     <div className="cap-mini cap-mini--agents">
-      <svg className="cap-agent-svg" viewBox="0 0 320 96" aria-hidden="true">
+      <svg className="cap-agent-svg" viewBox="0 0 320 130" aria-hidden="true">
         <defs>
-          <linearGradient id="capAgentLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="rgba(167,139,250,0.15)" />
-            <stop offset="50%"  stopColor="rgba(196,181,253,0.7)" />
-            <stop offset="100%" stopColor="rgba(167,139,250,0.15)" />
-          </linearGradient>
+          <radialGradient id="capAgentHubGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.45)" />
+            <stop offset="100%" stopColor="rgba(124,58,237,0)" />
+          </radialGradient>
         </defs>
-        {/* Curved channels from each agent to the center hub */}
-        <path id="capAgentP1" d="M 40 48 C 90 20, 130 32, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
-        <path id="capAgentP2" d="M 110 48 C 130 28, 145 36, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
-        <path id="capAgentP3" d="M 210 48 C 195 28, 180 36, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
-        <path id="capAgentP4" d="M 280 48 C 230 20, 190 32, 160 48" fill="none" stroke="url(#capAgentLine)" strokeWidth="1.3" strokeDasharray="3 4" />
-        {/* Data pulses traveling toward the hub */}
-        <circle r="2.6" fill="#c4b5fd">
-          <animateMotion dur="2.8s" repeatCount="indefinite">
+        {/* Soft glow behind the hub */}
+        <circle cx="160" cy="65" r="50" fill="url(#capAgentHubGlow)" />
+        {/* Dotted connections — agent → hub */}
+        <path d="M 80  35 Q 120 55 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
+        <path d="M 240 35 Q 200 55 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
+        <path d="M 160 110 Q 160 90 160 65" fill="none" stroke="rgba(196,181,253,0.55)" strokeWidth="1.3" strokeDasharray="3 4" />
+        {/* Data packet pinging each agent's path */}
+        <circle r="2.4" fill="#e9d5ff">
+          <animateMotion dur="3s" repeatCount="indefinite">
             <mpath href="#capAgentP1" />
           </animateMotion>
         </circle>
-        <circle r="2.2" fill="#a78bfa">
-          <animateMotion dur="3.2s" begin="-0.8s" repeatCount="indefinite">
+        <path id="capAgentP1" d="M 80 35 Q 120 55 160 65" fill="none" stroke="none" />
+        <circle r="2.4" fill="#e9d5ff">
+          <animateMotion dur="3s" begin="-1s" repeatCount="indefinite">
             <mpath href="#capAgentP2" />
           </animateMotion>
         </circle>
-        <circle r="2.2" fill="#a78bfa">
-          <animateMotion dur="3.4s" begin="-1.5s" repeatCount="indefinite">
+        <path id="capAgentP2" d="M 240 35 Q 200 55 160 65" fill="none" stroke="none" />
+        <circle r="2.4" fill="#e9d5ff">
+          <animateMotion dur="3s" begin="-2s" repeatCount="indefinite">
             <mpath href="#capAgentP3" />
           </animateMotion>
         </circle>
-        <circle r="2.6" fill="#c4b5fd">
-          <animateMotion dur="2.6s" begin="-0.4s" repeatCount="indefinite">
-            <mpath href="#capAgentP4" />
-          </animateMotion>
-        </circle>
+        <path id="capAgentP3" d="M 160 110 Q 160 90 160 65" fill="none" stroke="none" />
       </svg>
-      <span className="cap-mini-ico cap-mini-ico--ag-l"><SiWhatsapp size={14} /></span>
-      <span className="cap-mini-ico cap-mini-ico--ag-ml"><FiMessageCircle size={13} /></span>
-      <MiniCenterOrb />
-      <span className="cap-mini-ico cap-mini-ico--ag-mr"><FiPhone size={13} /></span>
-      <span className="cap-mini-ico cap-mini-ico--ag-r"><FiMail size={14} /></span>
+
+      {/* Central PROXe hub */}
+      <div className="cap-agent-hub">
+        <FiUsers size={18} />
+      </div>
+
+      {/* 3 specialist agents — each has a person glyph + a small
+          colored channel badge in the top-right corner */}
+      <div className="cap-agent cap-agent--tl">
+        <span className="cap-agent-avatar"><FiUser size={16} /></span>
+        <span className="cap-agent-badge" style={{ background: '#25d366' }}><SiWhatsapp size={9} /></span>
+      </div>
+      <div className="cap-agent cap-agent--tr">
+        <span className="cap-agent-avatar"><FiUser size={16} /></span>
+        <span className="cap-agent-badge" style={{ background: '#60a5fa' }}><FiPhone size={9} /></span>
+      </div>
+      <div className="cap-agent cap-agent--b">
+        <span className="cap-agent-avatar"><FiUser size={16} /></span>
+        <span className="cap-agent-badge" style={{ background: '#c084fc' }}><FiMail size={9} /></span>
+      </div>
     </div>
   );
 }
@@ -259,43 +274,15 @@ export default function CapabilitiesSection() {
                     <span className="cap-hero-tag-ico">✦</span> CORE INTELLIGENCE
                   </div>
                   <h3 className="cap-hero-title">Unified Memory</h3>
-                  <p className="cap-hero-sub">
-                    One memory across every channel.<br />
-                    Context follows the customer,<br />
-                    not the conversation.
-                  </p>
                 </div>
 
-                {/* Stats moved to the top-right so they fill the empty
-                    space next to the heading instead of sitting at the
-                    bottom of the card. */}
-                <div className="cap-hero-stats">
-                  <div className="cap-stat">
-                    <span className="cap-stat-ico"><FiActivity size={13} /></span>
-                    <div>
-                      <div className="cap-stat-val">100%</div>
-                      <div className="cap-stat-lbl">Context Retention</div>
-                    </div>
-                  </div>
-                  <div className="cap-stat">
-                    <span className="cap-stat-ico" aria-hidden="true">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18.178 8c-3.226 0-5.978 6.16-5.978 7.99 0 0-2.572-7.99-5.821-7.99-1.957 0-3.379 1.79-3.379 4 0 2.21 1.385 4 3.379 4 3.249 0 5.821-7.99 5.821-7.99 0 1.83 2.753 7.99 5.978 7.99 1.984 0 3.422-1.79 3.422-4 0-2.21-1.438-4-3.422-4z"/>
-                      </svg>
-                    </span>
-                    <div>
-                      <div className="cap-stat-val">∞</div>
-                      <div className="cap-stat-lbl">Cross-Channel Memory</div>
-                    </div>
-                  </div>
-                  <div className="cap-stat">
-                    <span className="cap-stat-ico"><FiZap size={13} /></span>
-                    <div>
-                      <div className="cap-stat-val">24/7</div>
-                      <div className="cap-stat-lbl">Always Remembering</div>
-                    </div>
-                  </div>
-                </div>
+                {/* The descriptive sub now sits in the top-right slot
+                    where the stats column used to be. */}
+                <p className="cap-hero-sub">
+                  One memory across every channel.<br />
+                  Context follows the customer,<br />
+                  not the conversation.
+                </p>
               </div>
 
               <div className="cap-hero-vis">

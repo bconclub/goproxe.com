@@ -7413,10 +7413,15 @@ body:has(.proxe-root) {
   z-index: 1;
 }
 .cap-hero-sub {
+  /* Now sits in the top-right slot of the hero header (was below title) */
   font-size: 14px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.62);
-  margin: 0 0 22px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  padding: 14px 16px;
+  background: rgba(15, 10, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   position: relative;
   z-index: 1;
 }
@@ -7957,8 +7962,11 @@ body:has(.proxe-root) {
   line-height: 1;
 }
 
-/* Agent network — wide horizontal spread of agents radiating into a central hub */
-.cap-mini--agents { min-height: 110px; position: relative; }
+/* Multi-Agent System — 3 specialist agents around a central hub.
+   Each agent is a tinted purple chip with a small colored "channel
+   specialty" badge in the corner. */
+.cap-mini--agents { min-height: 130px; position: relative; }
+.cap-card--agents .cap-mini { min-height: 130px; }
 .cap-agent-svg {
   position: absolute;
   inset: 0;
@@ -7966,16 +7974,82 @@ body:has(.proxe-root) {
   height: 100%;
   filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
 }
-.cap-mini--agents .cap-mini-core {
-  position: absolute; left: 50%; top: 50%;
+.cap-agent-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e9d5ff, #c4b5fd 35%, #7c3aed 85%, #4c1d95 100%);
+  color: #fff;
+  box-shadow:
+    0 0 24px rgba(167, 139, 250, 0.65),
+    0 4px 14px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   z-index: 3;
 }
-.cap-mini--agents .cap-mini-ico--ag-l  { left:  8%;  top: 50%; transform: translateY(-50%); width: 32px; height: 32px; }
-.cap-mini--agents .cap-mini-ico--ag-ml { left: 28%;  top: 50%; transform: translateY(-50%); width: 28px; height: 28px; }
-.cap-mini--agents .cap-mini-ico--ag-mr { right: 28%; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; }
-.cap-mini--agents .cap-mini-ico--ag-r  { right: 8%;  top: 50%; transform: translateY(-50%); width: 32px; height: 32px; }
-.cap-card--agents .cap-mini { min-height: 110px; }
+.cap-agent {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  z-index: 2;
+}
+.cap-agent--tl { left: 16%;  top: 6%; }
+.cap-agent--tr { right: 16%; top: 6%; }
+.cap-agent--b  { left: 50%; bottom: 4%; transform: translateX(-50%); }
+.cap-agent-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.30), rgba(124, 58, 237, 0.15));
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  color: #fff;
+  box-shadow:
+    0 6px 14px rgba(124, 58, 237, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.cap-agent-badge {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(8, 6, 24, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Active-agent pulse — each agent gets a 1s window of glow on a 3s loop */
+.cap-agent--tl .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; }
+.cap-agent--tr .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; animation-delay: -1s; }
+.cap-agent--b  .cap-agent-avatar { animation: capAgentPulse 3s ease-in-out infinite; animation-delay: -2s; }
+@keyframes capAgentPulse {
+  0%, 33%, 100% {
+    box-shadow:
+      0 6px 14px rgba(124, 58, 237, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: rgba(167, 139, 250, 0.45);
+  }
+  16% {
+    box-shadow:
+      0 6px 22px rgba(167, 139, 250, 0.75),
+      0 0 28px rgba(196, 181, 253, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(196, 181, 253, 0.9);
+  }
+}
 
 /* Shield — radar pulses expanding outward + a "verified" check badge */
 .cap-mini--shield { min-height: 110px; }

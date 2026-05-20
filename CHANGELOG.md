@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-20 · fix: hero stats removed, sub-text moved up + Multi-Agent System redesign
+
+Three changes in one shot:
+
+**Hero header restructured (user: "remove this not needed; put this text there"):**
+- The vertical stats column (`100% Context · ∞ Cross-Channel · 24/7 Always Remembering`) is gone.
+- The "One memory across every channel. Context follows the customer, not the conversation." sub now sits where the stats were — top-right slot of the header. Renders in a quiet dark-glass card so it has its own visual weight.
+- Left column of the header is just the `✦ CORE INTELLIGENCE` tag + the `Unified Memory` title (the sub no longer duplicates underneath).
+
+**Multi-Agent System mini-vis redesigned** (user: "the icons are not correct, this shouldn't be shown like this"):
+- Old layout was 5 small channel-icon pips in a horizontal row. Confusing — it looked like channels, not agents.
+- New layout: **3 specialist agent chips** arranged around a **central PROXe hub** (`FiUsers` glyph in a 44×44 glowing orb). Each agent is a 38×38 person-avatar (`FiUser` glyph) with a small colored **channel-specialty badge** in the corner — WhatsApp green / Phone blue / Mail violet — reading clearly as "this agent handles this channel".
+- Curved dotted SVG paths connect each agent → hub, with `animateMotion` data packets traveling toward the hub.
+- Each agent avatar runs a `capAgentPulse` keyframe with staggered delay so one agent lights up at a time (3s loop, 1s active per agent) — gives the network a heartbeat without being noisy.
+
 ## 2026-05-20 · fix: remove duplicate stats row at bottom of Unified Memory hero
 
 When I moved the stats to the top-right in the previous commit, I forgot to remove the original block at the bottom of the hero — they were rendering in both places. Removed the bottom JSX block; only the new top-right stats column remains. (ddcd033)
