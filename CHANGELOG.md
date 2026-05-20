@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-20 · fix: Card 3 (Never Let a Lead Go Cold) — clone Card 2 structure
+
+User: "duplicate the second card, change the video, and then change the text".
+
+The chat-bubble layout for Card 3 had been a recurring trouble spot. Rewrote `ReactivateVis` so it uses **the exact same JSX + CSS as `MemoryVis`** — `.hiw-vis` (no `--react` modifier), `.hiw-mem-lead` pill, `.hiw-mem-list` timeline rows, `.hiw-score-wrap` gauge + tag pills.
+
+- Top pill: "Rahul S." (same as Card 2).
+- Timeline rows (replacing chat bubbles):
+  - Day 1 · Lead went cold (clock, gray)
+  - Day 4 · PROXe sent follow-up (WhatsApp, green)
+  - Now · Replied · Reactivated (check, purple)
+- Score gauge animates **0 → 82** (vs 0 → 74 on card 2), same setInterval ramp + color-mix bar gradient.
+- Tag pills: Reactivated · Responded · Hot Lead.
+- DOM verified identical layout to card 2: `leadY: 23`, `firstRowY: 71`, `scoreY: 255`, top/bottom card gaps `23/26`.
+- Old `hiw-react-*` CSS left in `landing.css` for now (harmless dead rules; later pass).
+
 ## 2026-05-20 · feat: Multi-Agent — branching tree layout (2 → hub → 2)
 
 User wanted the icons NOT in a straight line — instead a branching tree where one node flows into multiple.

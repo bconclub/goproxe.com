@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { SiWhatsapp } from 'react-icons/si';
-import { FiGlobe, FiPhone } from 'react-icons/fi';
+import { FiGlobe, FiPhone, FiClock, FiCheckCircle } from 'react-icons/fi';
 
 /* ─────────────────────────────────────────────────────────────
    Card 1 — notification pills dropping in
@@ -157,114 +157,112 @@ function MemoryVis({ on }: { on: boolean }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Card 3 — lead reactivation via WhatsApp follow-up
+   Card 3 — lead reactivation (cloned from MemoryVis structure so it
+   reuses the proven layout: lead pill at top, 3 timeline rows, score
+   gauge animating up, and tag pills at the bottom).
 ───────────────────────────────────────────────────────────── */
 function ReactivateVis({ on }: { on: boolean }) {
   const [step, setStep] = useState(0);
-  const [loopKey, setLoopKey] = useState(0);
+  const [scoreVal, setScoreVal] = useState(0);
+  const scoreRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (!on) { setStep(0); return; }
+    if (!on) { setStep(0); setScoreVal(0); return; }
     let dead = false;
     const ts: ReturnType<typeof setTimeout>[] = [];
+
+    function runScore() {
+      setScoreVal(0);
+      const start = performance.now();
+      const dur = 1000;
+      const target = 82;
+      if (scoreRef.current) clearInterval(scoreRef.current);
+      scoreRef.current = setInterval(() => {
+        const elapsed = performance.now() - start;
+        const pct = Math.min(elapsed / dur, 1);
+        setScoreVal(Math.round(pct * target));
+        if (pct >= 1 && scoreRef.current) { clearInterval(scoreRef.current); scoreRef.current = null; }
+      }, 16);
+    }
+
     function loop() {
       setStep(0);
-      setLoopKey(k => k + 1);
-      // Fast buildup so card mostly shows the polished final state (no empty looks)
-      // step 1 @ 250ms  → typing indicator
-      // step 2 @ 700ms  → PROXe bubble
-      // step 3 @ 1200ms → lead bubble + RESPONDED badge
-      // step 4 @ 1500ms → system label + score badge
-      // loop  @ 6500ms  (5s hold on full final state)
-      [250, 700, 1200, 1500].forEach((t, i) =>
+      setScoreVal(0);
+      [300, 1100, 1900, 2700].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 6500));
+      ts.push(setTimeout(() => { if (!dead) runScore(); }, 3000));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 6400));
     }
     loop();
-    return () => { dead = true; ts.forEach(clearTimeout); };
+    return () => {
+      dead = true;
+      ts.forEach(clearTimeout);
+      if (scoreRef.current) clearInterval(scoreRef.current);
+    };
   }, [on]);
 
+  const scorePct = (scoreVal / 82) * 100;
+  const barColor = scoreVal < 40
+    ? `color-mix(in srgb, #9CA3AF ${100 - (scoreVal / 40) * 100}%, #F59E0B ${(scoreVal / 40) * 100}%)`
+    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - 40) / 42) * 100}%, #7C3AED ${((scoreVal - 40) / 42) * 100}%)`;
+
+  const scoreVisible = step >= 4;
+
   return (
-    <div className="hiw-vis hiw-vis--react">
+    <div className="hiw-vis">
       <div className="hiw-dotgrid" />
-
-      {/* RESPONDED badge — top right, pop-scale in */}
-      <div
-        className="hiw-react-responded"
-        style={{
-          opacity: step >= 3 ? 1 : 0,
-          transform: step >= 3 ? 'scale(1)' : 'scale(0.4)',
-        }}
-      >
-        ✓ RESPONDED
+      <div className="hiw-mem-lead" style={{ opacity: step >= 1 ? 1 : 0, transform: step >= 1 ? 'translateY(0)' : 'translateY(-8px)' }}>
+        Rahul S.
+      </div>
+      <div className="hiw-mem-list">
+        {([
+          { I: FiClock,       day: 'Day 1', txt: 'Lead went cold',           color: '#9CA3AF' },
+          { I: SiWhatsapp,    day: 'Day 4', txt: 'PROXe sent follow-up',     color: '#25D366' },
+          { I: FiCheckCircle, day: 'Now',   txt: 'Replied · Reactivated',    color: '#7C3AED' },
+        ] as const).map(({ I, day, txt, color }, i) => (
+          <div
+            key={i}
+            className="hiw-mem-row"
+            style={{ opacity: step > i + 1 ? 1 : step === i + 1 ? 0.9 : 0, transform: step > i ? 'translateX(0)' : 'translateX(-10px)' }}
+          >
+            <div className="hiw-mem-vline" />
+            <span className="hiw-mem-ico" style={{ background: color, color: '#fff', boxShadow: `0 0 10px ${color}88` }}><I size={12} /></span>
+            <span className="hiw-mem-day">{day}</span>
+            <span className="hiw-mem-lbl">{txt}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Always-visible chat header — fills the top of the card so the
-          visualization area never looks empty mid-animation. */}
-      <div className="hiw-react-chat-hdr">
-        <span className="hiw-react-chat-av">
-          <SiWhatsapp size={14} />
-        </span>
-        <div className="hiw-react-chat-meta">
-          <div className="hiw-react-chat-name">Rahul S.</div>
-          <div className="hiw-react-chat-sub">WhatsApp · Follow-up sequence</div>
-        </div>
-        <span className="hiw-react-chat-dot" />
-      </div>
-
-      {/* Chat area */}
-      <div className="hiw-react-chat">
-        {/* Typing indicator */}
-        <div
-          className="hiw-react-typing"
-          style={{
-            opacity: step === 1 ? 1 : 0,
-            transform: step === 1 ? 'translateY(0)' : 'translateY(4px)',
-          }}
-        >
-          <span /><span /><span />
-        </div>
-
-        {/* PROXe bubble */}
-        <div
-          className="hiw-react-row hiw-react-row--proxe"
-          style={{
-            opacity: step >= 2 ? 1 : 0,
-            transform: step >= 2 ? 'translateY(0)' : 'translateY(8px)',
-          }}
-        >
-          <div className="hiw-react-bub hiw-react-bub--proxe">
-            Hey Rahul, just checking in. You asked about a 3BHK in Whitefield last week. Still looking?
+      {/* ── Lead score gauge: animated 0 → 82 ── */}
+      <div className="hiw-score-wrap" style={{ opacity: scoreVisible ? 1 : 0, transform: scoreVisible ? 'translateY(0)' : 'translateY(6px)' }}>
+        <div className="hiw-score-row">
+          <span className="hiw-score-lbl">Lead Score</span>
+          <div className="hiw-score-bar-wrap">
+            <div className="hiw-score-bar-track">
+              <div
+                className="hiw-score-bar-fill"
+                style={{ width: `${scorePct}%`, background: barColor }}
+              />
+            </div>
+            <span className="hiw-score-num">{scoreVal}</span>
           </div>
-          <div className="hiw-react-meta">Sent via WhatsApp · Day 4 of follow-up sequence</div>
+          <span className="hiw-score-badge">High Intent</span>
         </div>
-
-        {/* Lead bubble — key=loopKey forces animation replay each loop */}
-        <div
-          className="hiw-react-row hiw-react-row--lead"
-          style={{
-            opacity: step >= 3 ? 1 : 0,
-            transform: step >= 3 ? 'translateY(0)' : 'translateY(8px)',
-          }}
-        >
-          <div key={loopKey} className="hiw-react-bub hiw-react-bub--lead">
-            Hey sorry was caught up! Yes still looking.
-          </div>
-        </div>
-
-        {/* System label + score badge */}
-        <div
-          className="hiw-react-system"
-          style={{
-            opacity: step >= 4 ? 1 : 0,
-            transform: step >= 4 ? 'translateY(0)' : 'translateY(4px)',
-          }}
-        >
-          Lead reactivated · Score updated to 82 ·{' '}
-          <span className={`hiw-react-score-badge${step >= 4 ? ' hiw-react-score-badge--hot' : ''}`}>
-            {step >= 4 ? 'High Intent' : 'Cold'}
-          </span>
+        <div className="hiw-score-tags">
+          {([
+            { txt: 'Reactivated',  cls: 'amber',  delay: '0s'   },
+            { txt: 'Responded',    cls: 'purple', delay: '0.2s' },
+            { txt: 'Hot Lead',     cls: 'teal',   delay: '0.4s' },
+          ]).map(({ txt, cls, delay }) => (
+            <span
+              key={txt}
+              className={`hiw-score-tag hiw-score-tag--${cls}`}
+              style={{ animationDelay: delay, animationPlayState: scoreVisible ? 'running' : 'paused' }}
+            >
+              {txt}
+            </span>
+          ))}
         </div>
       </div>
     </div>
