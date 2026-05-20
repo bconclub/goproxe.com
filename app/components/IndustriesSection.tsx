@@ -137,6 +137,7 @@ const INDUSTRIES: Industry[] = [
     id: 'fitness',
     color: '#f472b6',
     gradient: 'linear-gradient(135deg, #831843 0%, #db2777 60%, #f472b6 110%)',
+    image: '/industries/Wellness.webp',
     Icon: LuDumbbell,
     title: 'Fitness & Wellness',
     desc: 'Convert trial signups, reduce no-shows, and re-engage lapsed members.',
