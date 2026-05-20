@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-05-19 · fix: Pricing Most-Popular — clean dark body + bright gradient border (no wash)
+
+The previous "highlight" treatment combined a translucent purple gradient on the card body + two radial blooms + a pulsing outer halo. The result was a washed-out, cloudy card that looked worse than the Starter, not premium.
+
+Stripped back to the right primitive:
+
+- Card body uses the **same dark glass as Starter** (no extra tint, no inner blooms, no pulse). Visually the card sits next to Starter as an equal.
+- The only highlight is a **`background-clip: border-box` gradient stroke** — a 1.5px bright purple ring (`#c4b5fd → #a78bfa → #7c3aed`) wraps the card.
+- A single **soft outer glow** (`0 0 24px rgba(124,58,237,0.35)`) provides the lift without bleeding into the body.
+
+Net: same readable contrast as Starter + a crisp bright border that says "pick me."
+
 ## 2026-05-19 · polish: Industries bigger + Pricing Most-Popular glow border + Voice call icon + touch drag fix
 
 Four rapid-fire user requests bundled:
