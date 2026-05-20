@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-20 · fix: remove duplicate stats row at bottom of Unified Memory hero
+
+When I moved the stats to the top-right in the previous commit, I forgot to remove the original block at the bottom of the hero — they were rendering in both places. Removed the bottom JSX block; only the new top-right stats column remains. (ddcd033)
+
 ## 2026-05-20 · polish: hero stats to top-right + Multi-Agent + Enterprise Security upgrades
 
 **Hero stats moved from bottom to top-right** (filling the empty space next to the heading the user drew on). The hero card is now `header { text | stats }` over the visualization; stats become a vertical card column (3 rows: 100% Context · ∞ Cross-Channel · 24/7 Always) instead of a horizontal row.
