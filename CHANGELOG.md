@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-21 · fix: HowItWorks 3-card polish (container-less pills, glass-tint rows, header padding)
+
+- **Card 1** (CaptureVis pills): removed the solid colored square container behind each icon. Icon now just the SVG glyph (size 14→22) in its brand color with a soft `drop-shadow(0 0 6px <brand>)` glow.
+- **Card 2** (MemoryVis rows): rows switched from solid `rgba(255,255,255,0.90)` to real glass — `linear-gradient(color-mix(in srgb, var(--accent) 28%/12%, rgba(15,10,38,0.5)))`, `backdrop-filter: blur(14px) saturate(140%)`, accent border, accent glow, inset white highlight. Each row picks up its own channel tint (WA green / Voice blue / Web purple).
+- **Card 3** (ReactivateVis): `.hiw-vis--react` `padding-top` 0 → 14px so the chat header sits a touch down from the top edge.
+- Earlier in the same chain: gap above wrap fixed via `flex: 1 1 auto` on `.hiw-card-content` (commit `bc53a1b`), and inner `padding-top` overshoot corrected here.
+
 ## 2026-05-21 · revert: Card 3 chat-bubble layout + feat: Multi-Agent peer mesh
 
 **Card 3 reverted to the chat-bubble layout** (user: "revert the third video back to how it was earlier... it was something earlier"). The Card-2-clone approach I'd taken (`68b0326` / `d692077` / `29ad280`) was a mistake — they liked the chat-bubble version. Restored from `git show 68b0326^:app/components/HowItWorks.tsx`:
