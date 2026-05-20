@@ -373,34 +373,6 @@ export default function CapabilitiesSection() {
                   </div>
                 </div>
               </div>
-
-              <div className="cap-hero-stats">
-                <div className="cap-stat">
-                  <span className="cap-stat-ico"><FiActivity size={13} /></span>
-                  <div>
-                    <div className="cap-stat-val">100%</div>
-                    <div className="cap-stat-lbl">Context Retention</div>
-                  </div>
-                </div>
-                <div className="cap-stat">
-                  <span className="cap-stat-ico" aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18.178 8c-3.226 0-5.978 6.16-5.978 7.99 0 0-2.572-7.99-5.821-7.99-1.957 0-3.379 1.79-3.379 4 0 2.21 1.385 4 3.379 4 3.249 0 5.821-7.99 5.821-7.99 0 1.83 2.753 7.99 5.978 7.99 1.984 0 3.422-1.79 3.422-4 0-2.21-1.438-4-3.422-4z"/>
-                    </svg>
-                  </span>
-                  <div>
-                    <div className="cap-stat-val">∞</div>
-                    <div className="cap-stat-lbl">Cross-Channel Memory</div>
-                  </div>
-                </div>
-                <div className="cap-stat">
-                  <span className="cap-stat-ico"><FiZap size={13} /></span>
-                  <div>
-                    <div className="cap-stat-val">24/7</div>
-                    <div className="cap-stat-lbl">Always Remembering</div>
-                  </div>
-                </div>
-              </div>
             </article>
 
             {/* ── 4 side cards — all share the same tinted-square eyebrow ── */}
