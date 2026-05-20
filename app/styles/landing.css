@@ -3836,7 +3836,45 @@ body:has(.proxe-root) {
   border-radius: 10px;
   padding: 10px 13px;
   position: relative;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, background 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* ── Card 3 (Reactivate) row "temperature" progression — cold → warm → hot
+       The same .hiw-mem-list structure as Card 2, but each row is tinted
+       to tell the story: lead went cold (muted gray), follow-up sent
+       (WhatsApp green tint), replied (purple hot, with glow). */
+.hiw-mem-row--cold {
+  background: rgba(75, 85, 99, 0.55);
+}
+.hiw-mem-row--cold .hiw-mem-day,
+.hiw-mem-row--cold .hiw-mem-lbl { color: rgba(255, 255, 255, 0.78); }
+
+.hiw-mem-row--warm {
+  background: rgba(37, 211, 102, 0.18);
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  padding: 9px 12px; /* compensate for the border */
+}
+.hiw-mem-row--warm .hiw-mem-day,
+.hiw-mem-row--warm .hiw-mem-lbl { color: #fff; }
+
+.hiw-mem-row--hot {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.32), rgba(124, 58, 237, 0.18));
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  padding: 9px 12px;
+  box-shadow:
+    0 0 18px rgba(167, 139, 250, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  animation: hiwReactHotPulse 2.4s ease-in-out infinite;
+}
+.hiw-mem-row--hot .hiw-mem-day,
+.hiw-mem-row--hot .hiw-mem-lbl { color: #fff; font-weight: 600; }
+@keyframes hiwReactHotPulse {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(167, 139, 250, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(196, 181, 253, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
 }
 
 .hiw-mem-vline {

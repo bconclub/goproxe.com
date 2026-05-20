@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-21 · polish: Card 3 — cold→warm→hot row temperature progression
+
+User: "the third one is actually running the same video... the third one had a different video."
+
+Card 3 was structurally cloned from Card 2 in `68b0326`, which fixed the layout but made the two cards look near-identical mid-animation. Added a temperature progression so each row of Card 3 has a unique visual character that tells the cold → reactivated story:
+
+- **Row 1 — Lead went cold (Day 1)**: muted gray background (`rgba(75,85,99,0.55)`), text at 78% opacity — feels dormant.
+- **Row 2 — PROXe sent follow-up (Day 4)**: WhatsApp-green tinted background + 1px green border — warming up.
+- **Row 3 — Replied · Reactivated (Now)**: purple gradient background + purple border + a pulsing outer glow (`hiwReactHotPulse`, 2.4s loop) — visibly celebrating the reactivation.
+- Each row carries text in full white + 600-weight for the warm/hot states (vs Card 2's default dark text on white pills).
+
+Result: Card 2 and Card 3 share the proven layout skeleton, but Card 3 now tells a distinct color story that Card 2 doesn't. Top spacing verified identical (both `leadY: 23`).
+
 ## 2026-05-20 · fix: Card 3 (Never Let a Lead Go Cold) — clone Card 2 structure
 
 User: "duplicate the second card, change the video, and then change the text".

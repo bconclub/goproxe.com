@@ -215,15 +215,15 @@ function ReactivateVis({ on }: { on: boolean }) {
       <div className="hiw-mem-lead" style={{ opacity: step >= 1 ? 1 : 0, transform: step >= 1 ? 'translateY(0)' : 'translateY(-8px)' }}>
         Rahul S.
       </div>
-      <div className="hiw-mem-list">
+      <div className="hiw-mem-list hiw-mem-list--react">
         {([
-          { I: FiClock,       day: 'Day 1', txt: 'Lead went cold',           color: '#9CA3AF' },
-          { I: SiWhatsapp,    day: 'Day 4', txt: 'PROXe sent follow-up',     color: '#25D366' },
-          { I: FiCheckCircle, day: 'Now',   txt: 'Replied · Reactivated',    color: '#7C3AED' },
-        ] as const).map(({ I, day, txt, color }, i) => (
+          { I: FiClock,       day: 'Day 1', txt: 'Lead went cold',           color: '#9CA3AF', temp: 'cold' },
+          { I: SiWhatsapp,    day: 'Day 4', txt: 'PROXe sent follow-up',     color: '#25D366', temp: 'warm' },
+          { I: FiCheckCircle, day: 'Now',   txt: 'Replied · Reactivated',    color: '#7C3AED', temp: 'hot'  },
+        ] as const).map(({ I, day, txt, color, temp }, i) => (
           <div
             key={i}
-            className="hiw-mem-row"
+            className={`hiw-mem-row hiw-mem-row--${temp}`}
             style={{ opacity: step > i + 1 ? 1 : step === i + 1 ? 0.9 : 0, transform: step > i ? 'translateX(0)' : 'translateX(-10px)' }}
           >
             <div className="hiw-mem-vline" />
