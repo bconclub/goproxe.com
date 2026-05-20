@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-20 · assets+wire: Academies, Healthcare, Real Estate industry images
+
+- Added `Academies.webp` (70 KB), `Healthcare.webp` (52 KB), and `Real Estate.webp` (75 KB) under `public/industries/`.
+- Coaching Academies card now uses `Academies.webp` (was `Coaching.webp`).
+- Clinics & Healthcare card now uses `Healthcare.webp` (was `Clinics.webp`).
+- Real Estate card uses `Real Estate.webp` — filename has a space, URL-encoded as `%20` in the JSX so the request resolves cleanly.
+- 3 of 8 industry cards now render real photos (the other 5 keep gradient placeholders until photos drop in `public/industries/`).
+
 ## 2026-05-19 · polish: brand-color WhatsApp + Instagram pips + real Cross-Channel SVG
 
 - **Lead Capture channel pips:** the WhatsApp pip now uses its real brand green (`#25d366 → #128c7e`) and the bottom-right pip switched from a generic mail envelope to **Instagram** with the brand gradient (`#fcb045 → #fd1d1d → #833ab4`). The other two pips (web chat, phone) keep the brand-purple house tint, so the row reads as "two real channel icons + two neutral ones," matching the user's "Instagram and WhatsApp will be real, the other two are normal" direction.
