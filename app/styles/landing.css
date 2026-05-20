@@ -5813,7 +5813,7 @@ body:has(.proxe-root) {
 .hiw-vis--react {
   gap: 10px;
   justify-content: flex-start !important;
-  padding-top: 18px !important;
+  padding-top: 0 !important;
   padding-bottom: 18px !important;
   align-items: stretch !important;
 }
