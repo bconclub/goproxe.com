@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-20 · polish: Industries floating activity cards — proper glass
+
+The pills (e.g. "New inquiry · MBA Program · via WhatsApp", "Appointment Request · via WhatsApp", "Site Visit Scheduled · via Website") were 85% opaque dark purple over the photo, obscuring most of the image behind them.
+
+- Background `rgba(20, 14, 50, 0.85)` → `rgba(15, 10, 38, 0.32)` so the photo reads through.
+- `backdrop-filter: blur(8px)` → `blur(16px) saturate(140%)` for a real glass feel; saturation boost keeps the underlying photo colors lively through the blur.
+- Border bumped from `rgba(255,255,255,0.10)` → `rgba(255,255,255,0.16)` + an inset highlight for definition against any background brightness.
+- Activity icon container got a real brand-accent glow (`box-shadow: 0 0 8px color-mix(in srgb, var(--acc) 40%, transparent)`) and slightly larger (`18→20px`) so it owns the chip even with the body now translucent.
+
 ## 2026-05-20 · assets+wire: Academies, Healthcare, Real Estate industry images
 
 - Added `Academies.webp` (70 KB), `Healthcare.webp` (52 KB), and `Real Estate.webp` (75 KB) under `public/industries/`.

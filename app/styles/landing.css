@@ -8201,15 +8201,19 @@ body:has(.proxe-root) {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 5px 8px;
-  background: rgba(20, 14, 50, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 6px 9px;
+  /* Glass: very low opacity body + strong blur so the photo behind reads
+     through. A faint white inset highlight defines the edge. */
+  background: rgba(15, 10, 38, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9px;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
   min-width: 120px;
-  max-width: 165px;
+  max-width: 175px;
   opacity: 0;
   transform: translateY(-4px);
   animation: indActIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -8220,16 +8224,17 @@ body:has(.proxe-root) {
   to { opacity: 1; transform: none; }
 }
 .ind-act-ico {
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--acc) 25%, transparent);
-  border: 1px solid color-mix(in srgb, var(--acc) 50%, transparent);
-  color: var(--acc);
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--acc) 30%, rgba(15, 10, 38, 0.5));
+  border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--acc) 40%, transparent);
 }
 .ind-act-txt { flex: 1; min-width: 0; }
 .ind-act-top {
