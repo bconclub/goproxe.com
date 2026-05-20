@@ -8002,39 +8002,43 @@ body:has(.proxe-root) {
   min-width: 0;
 }
 .cap-agent-ring {
+  /* Same tinted-purple gradient + shadow as .cap-flow-node so the
+     Multi-Agent icons read as the same visual family. */
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(15, 10, 38, 0.6);
-  border: 1.5px solid rgba(167, 139, 250, 0.55);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+  border: 1px solid rgba(167, 139, 250, 0.32);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #e9d5ff;
   box-shadow:
-    0 0 12px rgba(167, 139, 250, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  animation: capAgentRingPulse 5s ease-in-out infinite;
-  animation-delay: inherit;
+    0 4px 12px rgba(124, 58, 237, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  /* Slower sequential pulse — 9s loop, ~1.8s active per ring */
+  animation: capAgentRingPulse 9s ease-in-out infinite;
 }
-.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;   }
-.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1s;   }
-.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 2s;   }
-.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 3s;   }
-.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 4s;   }
+.cap-agent-cell:nth-child(1) .cap-agent-ring { animation-delay: 0s;     }
+.cap-agent-cell:nth-child(2) .cap-agent-ring { animation-delay: 1.8s;   }
+.cap-agent-cell:nth-child(3) .cap-agent-ring { animation-delay: 3.6s;   }
+.cap-agent-cell:nth-child(4) .cap-agent-ring { animation-delay: 5.4s;   }
+.cap-agent-cell:nth-child(5) .cap-agent-ring { animation-delay: 7.2s;   }
 @keyframes capAgentRingPulse {
-  0%, 14%, 100% {
-    border-color: rgba(167, 139, 250, 0.55);
+  0%, 12%, 100% {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
+    border-color: rgba(167, 139, 250, 0.32);
     box-shadow:
-      0 0 12px rgba(167, 139, 250, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      0 4px 12px rgba(124, 58, 237, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10);
     color: #e9d5ff;
   }
   6% {
-    border-color: rgba(196, 181, 253, 0.95);
+    background: linear-gradient(135deg, rgba(196, 181, 253, 0.55), rgba(124, 58, 237, 0.30));
+    border-color: rgba(196, 181, 253, 0.85);
     box-shadow:
-      0 0 22px rgba(196, 181, 253, 0.65),
-      0 0 36px rgba(124, 58, 237, 0.4),
+      0 4px 22px rgba(167, 139, 250, 0.65),
+      0 0 32px rgba(124, 58, 237, 0.40),
       inset 0 1px 0 rgba(255, 255, 255, 0.20);
     color: #fff;
   }

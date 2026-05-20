@@ -166,19 +166,19 @@ function AgentNetwork() {
           strokeWidth="1.5"
           strokeDasharray="3 4"
         />
-        {/* Traveling data dots */}
+        {/* Traveling data dots — slower so the motion feels calm, not busy */}
         <circle r="2.6" fill="#e9d5ff">
-          <animateMotion dur="4s" repeatCount="indefinite">
+          <animateMotion dur="9s" repeatCount="indefinite">
             <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>
         <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="4s" begin="-1.3s" repeatCount="indefinite">
+          <animateMotion dur="9s" begin="-3s" repeatCount="indefinite">
             <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>
         <circle r="2.2" fill="#c4b5fd" opacity="0.85">
-          <animateMotion dur="4s" begin="-2.6s" repeatCount="indefinite">
+          <animateMotion dur="9s" begin="-6s" repeatCount="indefinite">
             <mpath href="#capAgentWavePath" />
           </animateMotion>
         </circle>

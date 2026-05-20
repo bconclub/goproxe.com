@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-05-20 · polish: Multi-Agent rings match flow-node tint + slower animation
+
+User: "Icons can be our own icons, like we have used for 24/7 and auto follow-ups; movement doesn't have to be this fast."
+
+- `.cap-agent-ring` style updated to match `.cap-flow-node` exactly:
+  - **Filled tinted gradient** background `linear-gradient(135deg, rgba(167,139,250,0.22), rgba(124,58,237,0.10))` (was transparent center + 1.5px stroke).
+  - 1px purple border + soft shadow + inset highlight — same recipe as the other cards.
+  - Highlight state (when active) uses the brighter `0.55 / 0.30` gradient.
+- Ring pulse animation: 5s → **9s** loop, stagger 1s → **1.8s** between siblings. Each ring now sits "active" for ~1.8s before handing off — feels calm, not flashy.
+- SVG data-dots on the wavy path slowed: 4s → **9s** so the motion matches the ring pulse cadence.
+
 ## 2026-05-20 · feat: Multi-Agent redesign (5-icon wavy row) + Capabilities header 2-col
 
 **Multi-Agent System redesign** to match the reference image:
