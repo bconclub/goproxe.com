@@ -8289,8 +8289,10 @@ body:has(.proxe-root) {
   margin: 0 -4px;
   cursor: grab;
   user-select: none;
-  /* Let vertical page-scroll work; we own horizontal pan */
-  touch-action: pan-y;
+  /* touch-action: auto (default) so native horizontal swipe scrolls the
+     carousel and vertical swipe scrolls the page. JS click-drag only
+     handles mouse events (skips touch) so the two don't collide. */
+  touch-action: pan-x pan-y;
 }
 .ind-grid::-webkit-scrollbar { display: none; }
 .ind-grid.ind-grid--dragging {
