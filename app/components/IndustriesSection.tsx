@@ -96,6 +96,7 @@ const INDUSTRIES: Industry[] = [
     id: 'd2c',
     color: '#f97316',
     gradient: 'linear-gradient(135deg, #7c2d12 0%, #ea580c 60%, #fbbf24 110%)',
+    image: '/industries/D2C.webp',
     Icon: FiShoppingCart,
     title: 'D2C & E-commerce',
     desc: 'Recover abandoned carts, answer product questions, and nudge hesitant buyers.',
