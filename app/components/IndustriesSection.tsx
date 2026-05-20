@@ -28,6 +28,8 @@ import {
   FiAward,
   FiPhoneCall,
   FiDollarSign,
+  FiPlus,
+  FiArrowRight,
 } from 'react-icons/fi';
 import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/lu';
 import { SiWhatsapp } from 'react-icons/si';
@@ -222,7 +224,6 @@ const INDUSTRIES: Industry[] = [
 
 export default function IndustriesSection() {
   const ref = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
 
   useEffect(() => {
@@ -232,68 +233,6 @@ export default function IndustriesSection() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
-  // Click-drag horizontal scrolling. Listeners attach to `window` so child
-  // elements inside the cards (images, activity pills, SVG icons) can't
-  // eat the events. Once a drag starts, we add `.ind-grid--dragging` so
-  // CSS can null out child pointer-events for the duration of the drag.
-  useEffect(() => {
-    const car = trackRef.current;
-    if (!car) return;
-    let startX = 0;
-    let startScroll = 0;
-    let dragging = false;
-    let dragged = false;
-
-    const onDown = (e: PointerEvent) => {
-      // Touch / pen: let the browser's native overflow-x scroll handle the
-      // swipe. Only intercept mouse drags so desktop click-and-drag works.
-      if (e.pointerType !== 'mouse') return;
-      if (!car.contains(e.target as Node)) return;
-      if ((e.target as HTMLElement).closest('.ind-arrow')) return;
-      if (e.button !== 0) return;
-      startX = e.clientX;
-      startScroll = car.scrollLeft;
-      dragging = true;
-      dragged = false;
-    };
-    const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
-      const dx = e.clientX - startX;
-      if (!dragged && Math.abs(dx) < 3) return;
-      if (!dragged) {
-        dragged = true;
-        car.classList.add('ind-grid--dragging');
-      }
-      car.scrollLeft = startScroll - dx;
-      e.preventDefault();
-    };
-    const onUp = () => {
-      if (!dragging) return;
-      dragging = false;
-      // Defer class removal one tick so a click on a card right after the
-      // drag (when dragged===false) still fires normally.
-      requestAnimationFrame(() => car.classList.remove('ind-grid--dragging'));
-    };
-
-    window.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onUp);
-    return () => {
-      window.removeEventListener('pointerdown', onDown);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onUp);
-    };
-  }, []);
-
-  const scrollBy = (dir: 1 | -1) => {
-    const car = trackRef.current;
-    if (!car) return;
-    const cardW = (car.firstElementChild as HTMLElement | null)?.offsetWidth ?? 320;
-    car.scrollBy({ left: dir * (cardW + 16), behavior: 'smooth' });
-  };
 
   return (
     <section ref={ref} className={`ind-section${vis ? ' ind-in' : ''}`}>
@@ -314,9 +253,8 @@ export default function IndustriesSection() {
           </p>
         </div>
 
-        {/* Horizontal carousel — ~3.5 cards visible, drag to scroll */}
-        <div className="ind-track-wrap">
-        <div ref={trackRef} className="ind-grid">
+        {/* 3×3 grid — 8 industries + 1 "your business?" CTA */}
+        <div className="ind-grid">
           {INDUSTRIES.map((u) => (
             <article
               key={u.id}
@@ -371,13 +309,21 @@ export default function IndustriesSection() {
               </div>
             </article>
           ))}
-        </div>
-        </div>
 
-        {/* Arrows outside the carousel frame */}
-        <div className="ind-arrows">
-          <button className="ind-arrow" aria-label="Previous industries" onClick={() => scrollBy(-1)}>‹</button>
-          <button className="ind-arrow" aria-label="Next industries"     onClick={() => scrollBy(1)}>›</button>
+          {/* 9th slot — "your business?" CTA card */}
+          <article className="ind-card ind-card--cta" style={{ ['--acc' as keyof React.CSSProperties as string]: '#a78bfa' }}>
+            <div className="ind-cta-inner">
+              <span className="ind-cta-ico"><FiPlus size={28} /></span>
+              <h3 className="ind-cta-title">Your business next?</h3>
+              <p className="ind-cta-desc">
+                We train PROXe on your playbook — your offers, objections, and tone.
+                If your customers chat, call, or click, we handle it.
+              </p>
+              <a href="#contact" className="ind-cta-btn">
+                Talk to us <FiArrowRight size={16} />
+              </a>
+            </div>
+          </article>
         </div>
       </div>
     </section>

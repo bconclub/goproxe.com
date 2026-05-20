@@ -2,11 +2,16 @@
 
 import { useEffect } from 'react';
 import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 
 /**
  * Global Lenis smooth-scroll driver.
  * Mounts once at the root, drives the entire page's wheel + touch scrolling
  * through requestAnimationFrame for buttery-smooth inertia.
+ *
+ * Uses the `lerp` model (linear interpolation per frame) rather than a fixed
+ * duration + easing. This is what makes scroll feel like butter — every frame
+ * smoothly approaches the target, regardless of how fast you flick the wheel.
  *
  * Disables itself when the user prefers reduced motion.
  */
@@ -19,10 +24,13 @@ export default function LenisProvider() {
     }
 
     const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo-out
+      // Lerp = how quickly the scroll catches up to the wheel target every
+      // frame. 0.1 ≈ 60fps "rubber band" — silky but still responsive.
+      // Lower = more inertia, higher = snappier.
+      lerp: 0.1,
       smoothWheel: true,
-      // Lenis handles touch passively — native momentum still feels best on iOS
+      // Native iOS momentum on touch still feels best — Lenis just gets out
+      // of the way and lets the browser handle it.
       syncTouch: false,
       wheelMultiplier: 1,
       touchMultiplier: 1.5,

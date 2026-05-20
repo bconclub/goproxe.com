@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-05-21 · feat: Industries grid + hero font + Card 2 rewrite + score gradient + Lenis tune
+
+Batched five things into one push.
+
+- **Hero title smaller** (`app/styles/landing.css`): `.proxe-hero-title` font-size cap `clamp(56px, 11vw, 156px)` → `clamp(48px, 9vw, 128px)`. Feels right on desktop now; previous size dominated the viewport.
+- **Card 2 title rewrite** (`HowItWorks.tsx`): "One memory. Every conversation." → **"One Memory. Full context."** Snappier.
+- **Card 2 lead-score bar — red → amber → green** (`HowItWorks.tsx`): old gradient ran gray → amber → purple, which read as "neutral → caution → brand" instead of the obvious "bad → meh → good" semantics of a score. New interpolation: `#EF4444` (red) → `#F59E0B` (amber) below 37, → `#10B981` (green) above 37. Width still animates 0→74 in lockstep so the bar visibly heats up as the score climbs.
+- **Industries section rebuilt as a real 3×3 grid** (`IndustriesSection.tsx`, `landing.css`): killed the horizontal carousel — `.ind-grid` flex/overflow → `display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px`. Removed the click-drag JS (`onPointer*` listeners on window), removed the `‹ ›` arrow buttons, removed the off-canvas `.ind-track-wrap` bleed. Added a 9th slot — `.ind-card--cta` "Your business next?" — dashed brand-tinted border, "+" icon, copy ("We train PROXe on your playbook…"), pill "Talk to us →" button. Responsive: 3-col → 2-col @1024px → 1-col @600px.
+- **Lenis smooth scroll — butter** (`LenisProvider.tsx`, `globals.css`): switched from `duration: 1.15` + custom expo-out easing to **`lerp: 0.1`** (Lenis's frame-rate-independent linear-interpolation model). Imported official `lenis/dist/lenis.css` so the state classes are correct. Stripped the hand-rolled `html.lenis` overrides from `globals.css` and set `html { scroll-behavior: auto }` so the browser's native CSS smooth-scroll stops fighting Lenis on anchor jumps. This is the BCON Club setup.
+
+User-facing: scroll feels smooth, score bar tells the right story at a glance, industries section now actually grids out instead of asking for a swipe.
+
 ## 2026-05-21 · fix: HowItWorks 3-card polish (container-less pills, glass-tint rows, header padding)
 
 - **Card 1** (CaptureVis pills): removed the solid colored square container behind each icon. Icon now just the SVG glyph (size 14→22) in its brand color with a soft `drop-shadow(0 0 6px <brand>)` glow.

@@ -90,9 +90,12 @@ function MemoryVis({ on }: { on: boolean }) {
   }, [on]);
 
   const scorePct = (scoreVal / 74) * 100;
-  const barColor = scoreVal < 40
-    ? `color-mix(in srgb, #9CA3AF ${100 - (scoreVal / 40) * 100}%, #F59E0B ${(scoreVal / 40) * 100}%)`
-    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - 40) / 34) * 100}%, #7C3AED ${((scoreVal - 40) / 34) * 100}%)`;
+  // Red → Amber → Green as the score climbs.
+  // 0–37  : red (#EF4444) → amber (#F59E0B)
+  // 37–74 : amber (#F59E0B) → green (#10B981)
+  const barColor = scoreVal < 37
+    ? `color-mix(in srgb, #EF4444 ${100 - (scoreVal / 37) * 100}%, #F59E0B ${(scoreVal / 37) * 100}%)`
+    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - 37) / 37) * 100}%, #10B981 ${((scoreVal - 37) / 37) * 100}%)`;
 
   const scoreVisible = step >= 4;
 
@@ -117,8 +120,7 @@ function MemoryVis({ on }: { on: boolean }) {
               ['--accent' as keyof React.CSSProperties as string]: color,
             }}
           >
-            <div className="hiw-mem-vline" />
-            <span className="hiw-mem-ico" style={{ background: color, color: '#fff', boxShadow: `0 0 10px ${color}88` }}><I size={12} /></span>
+            <span className="hiw-mem-ico" style={{ color }}><I size={14} /></span>
             <span className="hiw-mem-day">{day}</span>
             <span className="hiw-mem-lbl">{txt}</span>
           </div>
@@ -315,7 +317,7 @@ export default function HowItWorks() {
       Vis: CaptureVis,
     },
     {
-      title: 'One memory. Every conversation.',
+      title: 'One Memory. Full context.',
       desc: 'Customer messaged on WhatsApp Monday. Called Thursday. Visited the website Saturday. PROXe remembers all of it. They never repeat themselves. You never lose context.',
       Vis: MemoryVis,
     },

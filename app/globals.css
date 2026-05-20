@@ -14,31 +14,12 @@ html, body {
 }
 
 html {
-  /* Lenis (LenisProvider) drives smooth scrolling on the window.
-     Keep CSS smooth-scroll as a fallback only when Lenis isn't mounted
-     (e.g. prefers-reduced-motion users). When Lenis is active, it adds
-     `.lenis` to <html> which suppresses native smooth-scroll to avoid
-     fighting Lenis's RAF-driven animation. */
-  scroll-behavior: smooth;
-}
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-html.lenis {
+  /* Lenis drives all smooth scrolling via RAF — `scroll-behavior: smooth`
+     would fight it (anchor jumps animate twice). Keep this `auto` and let
+     Lenis own the inertia. The official lenis.css imported in
+     LenisProvider already handles `.lenis-smooth` / `.lenis-stopped`
+     stateful rules. */
   scroll-behavior: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
 }
 
 a {

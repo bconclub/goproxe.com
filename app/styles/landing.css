@@ -67,8 +67,9 @@ body:has(.proxe-root) {
 /* ===== Typography helpers ===== */
 .proxe-serif {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
 }
 
 .proxe-mono {
@@ -398,10 +399,11 @@ body:has(.proxe-root) {
 
 .proxe-hero-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-weight: 400;
-  font-size: clamp(56px, 11vw, 156px);
+  font-size: clamp(48px, 9vw, 128px);
   line-height: 0.98;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.015em;
   margin: 0;
   max-width: 1200px;
   color: #ffffff;
@@ -1186,7 +1188,7 @@ body:has(.proxe-root) {
 .vc-name {
   font-family: 'Instrument Serif', Georgia, serif;
   font-size: 22px; font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   color: #fff;
 }
 .vc-sub {
@@ -1260,7 +1262,7 @@ body:has(.proxe-root) {
 .web-name {
   font-family: 'Instrument Serif', Georgia, serif;
   font-size: 18px; font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   line-height: 1;
 }
 .web-status {
@@ -2061,10 +2063,11 @@ body:has(.proxe-root) {
 
 .proxe-problem-line {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-weight: 300;
   font-size: clamp(34px, 5.6vw, 72px);
   line-height: 1.1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   margin: 0;
   color: var(--proxe-fg);
 }
@@ -2084,10 +2087,11 @@ body:has(.proxe-root) {
 
 .proxe-pillars-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(28px, 4vw, 48px);
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.015em;
   line-height: 1.15;
   margin: 12px 0 48px;
 }
@@ -2158,9 +2162,10 @@ body:has(.proxe-root) {
 
 .proxe-pillar-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(38px, 4.8vw, 64px);
   font-weight: 400;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.015em;
   margin: 0;
   line-height: 1;
   color: #ffffff;
@@ -2349,10 +2354,11 @@ body:has(.proxe-root) {
 
 .proxe-popup-title {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 30px;
   font-weight: 400;
   margin: 0 0 20px;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
 }
 
 .proxe-popup-media {
@@ -2426,10 +2432,11 @@ body:has(.proxe-root) {
 
 .proxe-feature-title {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 28px;
   font-weight: 400;
   line-height: 1.1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   margin: 0;
 }
 
@@ -2803,10 +2810,11 @@ body:has(.proxe-root) {
 
 .proxe-voice-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(32px, 4.4vw, 56px);
   font-weight: 400;
   line-height: 1.1;
-  letter-spacing: -0.015em;
+  letter-spacing: 0.015em;
   margin: 12px auto 40px;
   max-width: 18ch;
 }
@@ -2978,11 +2986,12 @@ body:has(.proxe-root) {
 
 .proxe-usecase-title {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 20px;
   line-height: 1.15;
   font-weight: 400;
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
 }
 
 .proxe-usecase-desc {
@@ -3155,8 +3164,9 @@ body:has(.proxe-root) {
 
 .proxe-ind-item-name {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.015em;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -3272,6 +3282,7 @@ body:has(.proxe-root) {
 
 .proxe-pricing-name {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 28px;
   font-weight: 400;
   margin: 0;
@@ -3279,10 +3290,11 @@ body:has(.proxe-root) {
 
 .proxe-pricing-price {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 48px;
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
 }
 
 .proxe-pricing-price small {
@@ -3373,6 +3385,7 @@ body:has(.proxe-root) {
 
 .proxe-testimonial-quote {
   font-family: var(--proxe-font-serif);
+  letter-spacing: 0.015em;
   font-size: 22px;
   line-height: 1.35;
   font-weight: 400;
@@ -3490,10 +3503,11 @@ body:has(.proxe-root) {
 
 .proxe-footer-cta-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(38px, 6vw, 84px);
   font-weight: 400;
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
   margin: 0 auto 40px;
   max-width: 16ch;
 }
@@ -3632,12 +3646,13 @@ body:has(.proxe-root) {
 
 .hiw-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(48px, 6.8vw, 92px);
   font-weight: 700;
   color: #ffffff;
   text-align: center;
   margin: 20px 0 28px;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.015em;
   line-height: 1.05;
 }
 
@@ -3712,12 +3727,16 @@ body:has(.proxe-root) {
 
 .hiw-card-title {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(20px, 2.2vw, 28px);
+  letter-spacing: 0.015em;
+  /* Mobile 24px, desktop max 28px (was 36px — felt too big) */
+  font-size: clamp(24px, 2.0vw, 28px);
   font-weight: 700;
   color: #ffffff;
   margin: 0;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  /* Loosened — was -0.02em which felt cramped on long titles like
+     "One memory. Every conversation." that wrap to 2 lines anyway. */
+  letter-spacing: 0.005em;
 }
 
 .hiw-card-desc {
@@ -3855,8 +3874,8 @@ body:has(.proxe-root) {
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
-    0 4px 14px color-mix(in srgb, var(--accent) 22%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    0 2px 8px color-mix(in srgb, var(--accent) 12%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: opacity 0.4s ease, transform 0.4s ease, background 0.5s ease, box-shadow 0.5s ease;
 }
 /* Row text needs to read on the new tinted background instead of on white */
@@ -3865,24 +3884,23 @@ body:has(.proxe-root) {
 .hiw-mem-row .hiw-mem-day { color: rgba(255, 255, 255, 0.65); }
 
 
-.hiw-mem-vline {
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 120%;
-  background: rgba(255,255,255,0.3);
-}
+/* .hiw-mem-vline removed — user didn't want the connector line.
+   JSX no longer renders it; keep selector here as a no-op so any
+   leftover instance doesn't accidentally render. */
+.hiw-mem-vline { display: none; }
 
+/* Flat round icon — no fill, no glow, no box-shadow. Just the SVG
+   glyph in its brand color. */
 .hiw-mem-ico {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .hiw-mem-day {
@@ -4269,8 +4287,9 @@ body:has(.proxe-root) {
 }
 .db2-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(28px, 4vw, 52px); font-weight: 700;
-  color: #fff; letter-spacing: -0.025em; line-height: 1.12; margin: 0 0 16px;
+  color: #fff; letter-spacing: 0.015em; line-height: 1.12; margin: 0 0 16px;
 }
 .db2-sub {
   font-size: 16px; color: rgba(255,255,255,0.55);
@@ -4869,10 +4888,11 @@ body:has(.proxe-root) {
 
 .db-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(28px, 4vw, 52px);
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.015em;
   line-height: 1.12;
   margin: 0 0 16px;
 }
@@ -5207,12 +5227,13 @@ body:has(.proxe-root) {
 
 .cd-headline {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(26px, 3.8vw, 44px);
   font-weight: 700;
   color: #fff;
   text-align: center;
   margin: 0 0 16px;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.015em;
   line-height: 1.15;
 }
 
@@ -6721,10 +6742,11 @@ body:has(.proxe-root) {
 
 .proxe-hub-heading {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-weight: 300;
   font-size: clamp(34px, 5vw, 64px);
   line-height: 1.08;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   margin: 0 auto 20px;
 }
 
@@ -6968,10 +6990,11 @@ body:has(.proxe-root) {
 
 .ph-headline {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(3rem, 5.4vw, 5.2rem);
   font-weight: 400;
   line-height: 1.06;
-  letter-spacing: -0.028em;
+  letter-spacing: 0.015em;
   color: #ffffff;
   margin: 0 0 28px;
 }
@@ -7317,10 +7340,11 @@ body:has(.proxe-root) {
 
 .cap-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(30px, 4vw, 56px);
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
   line-height: 1.08;
   margin: 0;
   max-width: 920px;
@@ -7426,10 +7450,11 @@ body:has(.proxe-root) {
 
 .cap-hero-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 38px;
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
   line-height: 1.05;
   margin: 0 0 12px;
   position: relative;
@@ -7663,6 +7688,7 @@ body:has(.proxe-root) {
 }
 .cap-stat-val {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 22px;
   font-weight: 400;
   color: #fff;
@@ -7726,10 +7752,11 @@ body:has(.proxe-root) {
 }
 .cap-card-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 20px;
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   margin: 0 0 6px;
 }
 .cap-card-desc {
@@ -8273,10 +8300,11 @@ body:has(.proxe-root) {
 }
 .ind-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(30px, 4vw, 56px);
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
   line-height: 1.08;
   margin: 0;
 }
@@ -8299,23 +8327,17 @@ body:has(.proxe-root) {
        drag to scroll, no snap. The wrap extends past the container's right
        edge so the next card peeks out on the right. ── */
 .ind-track-wrap {
+  /* No longer used — kept selector in case any markup still references it */
   position: relative;
   margin: 0 0 16px;
-  /* Extend past the container's right edge so card 4 visibly peeks */
-  width: calc(100% + max(24px, (100vw - 1200px) / 2 + 24px));
-  overflow: visible;
+  width: 100%;
 }
 .ind-grid {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
   padding: 4px 4px 24px;
   margin: 0 -4px;
-  cursor: grab;
   user-select: none;
   /* touch-action: auto (default) so native horizontal swipe scrolls the
      carousel and vertical swipe scrolls the page. JS click-drag only
@@ -8337,7 +8359,7 @@ body:has(.proxe-root) {
 .ind-card {
   --acc: #a78bfa;
   position: relative;
-  flex: 0 0 360px;
+  width: auto;
   background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 18px;
@@ -8472,10 +8494,11 @@ body:has(.proxe-root) {
 }
 .ind-title {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 20px;
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.015em;
   line-height: 1.15;
   margin: 0 0 6px;
 }
@@ -8546,11 +8569,12 @@ body:has(.proxe-root) {
 }
 .ind-stat-num {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 28px;
   font-weight: 700;
   color: var(--acc);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
 }
 .ind-stat-label {
   font-size: 11.5px;
@@ -8625,15 +8649,91 @@ body:has(.proxe-root) {
 }
 .ind-arrow:active { transform: scale(0.96); }
 
+/* ── Arrows (legacy carousel controls — grid mode hides them) ── */
+.ind-arrows { display: none !important; }
+
+/* ── "Your business?" CTA card (9th slot in grid) ── */
+.ind-card--cta {
+  background:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--acc) 22%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(20, 14, 50, 0.65) 0%, rgba(10, 7, 30, 0.75) 100%);
+  border: 1px dashed color-mix(in srgb, var(--acc) 45%, rgba(255,255,255,0.18));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+.ind-card--cta:hover {
+  border-color: color-mix(in srgb, var(--acc) 70%, transparent);
+}
+.ind-cta-inner {
+  padding: 36px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.ind-cta-ico {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--acc) 18%, rgba(255,255,255,0.04));
+  color: var(--acc);
+  border: 1px solid color-mix(in srgb, var(--acc) 40%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--acc) 25%, transparent);
+  margin-bottom: 4px;
+}
+.ind-cta-title {
+  font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0;
+}
+.ind-cta-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(220, 215, 245, 0.72);
+  margin: 0;
+  max-width: 280px;
+}
+.ind-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--acc) 22%, rgba(255,255,255,0.02));
+  border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.ind-cta-btn:hover {
+  background: color-mix(in srgb, var(--acc) 32%, rgba(255,255,255,0.04));
+  border-color: color-mix(in srgb, var(--acc) 80%, transparent);
+  transform: translateY(-1px);
+}
+
 /* ── Responsive ── */
+@media (max-width: 1024px) {
+  .ind-grid { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 880px) {
   .ind-header { grid-template-columns: 1fr; gap: 12px; }
-  .ind-card { flex: 0 0 280px; }
   .ind-top { height: 160px; }
 }
-@media (max-width: 520px) {
-  .ind-card { flex: 0 0 calc(100vw - 64px); }
-  .ind-arrows { display: none; }
+@media (max-width: 600px) {
+  .ind-grid { grid-template-columns: 1fr; gap: 14px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -8681,10 +8781,11 @@ body:has(.proxe-root) {
 }
 .pr-h2 {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: clamp(30px, 4vw, 56px);
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.015em;
   line-height: 1.08;
   margin: 0 0 16px;
 }
@@ -8871,10 +8972,11 @@ body:has(.proxe-root) {
 }
 .pr-card-num {
   font-family: var(--proxe-font-heading);
+  letter-spacing: 0.015em;
   font-size: 52px;
   font-weight: 400;
   color: #fff;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.015em;
   line-height: 1;
 }
 .pr-card-mo {
