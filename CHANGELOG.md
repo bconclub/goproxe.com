@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-20 · fix+assets: flip Healthcare + wire Wellness + refresh Real Estate
+
+- **Healthcare.webp** horizontal-flipped with `ffmpeg -vf hflip`. The doctor was looking right (into the activity-card pills sitting at the top-right corner), which made the composition feel like the pills were eating him. Flipped so he faces left into the empty half of the photo.
+- **Wellness.webp** added (new asset) and wired to the Fitness & Wellness card.
+- **Real Estate.webp** refreshed — newer version dropped into `public/industries/`.
+- 4 of 8 industry cards now use real photos (Coaching, Clinics, Real Estate, Fitness). 4 still on gradient placeholders.
+
 ## 2026-05-20 · polish: Industries floating activity cards — proper glass
 
 The pills (e.g. "New inquiry · MBA Program · via WhatsApp", "Appointment Request · via WhatsApp", "Site Visit Scheduled · via Website") were 85% opaque dark purple over the photo, obscuring most of the image behind them.
