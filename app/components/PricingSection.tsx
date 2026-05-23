@@ -13,42 +13,56 @@ import {
   FiUsers,
   FiCpu,
   FiCheckCircle,
+  FiShield,
+  FiAward,
+  FiTrendingUp,
 } from 'react-icons/fi';
-import { SiWhatsapp, SiFacebook } from 'react-icons/si';
+import { SiWhatsapp, SiMessenger } from 'react-icons/si';
+import { useDeployModal } from '../contexts/DeployModalContext';
 
 const CHANNELS_HEADER = [
   { Icon: FiGlobe,       label: 'Web',          color: '#a78bfa' },
   { Icon: SiWhatsapp,    label: 'WhatsApp',     color: '#25d366' },
   { Icon: FiInstagram,   label: 'Instagram DM', color: '#c084fc' },
-  { Icon: SiFacebook,    label: 'Messenger',    color: '#60a5fa' },
+  { Icon: SiMessenger,   label: 'Messenger',    color: '#60a5fa' },
   { Icon: FiMail,        label: 'Email',        color: '#fbbf24' },
-  { Icon: FiPhone,         label: 'Voice',        color: '#f472b6' },
+  { Icon: FiPhone,       label: 'Voice',        color: '#f472b6' },
 ];
 
 const STARTER_CHANNELS = [
-  { Icon: FiGlobe,       label: 'Website chat',      color: '#a78bfa' },
-  { Icon: SiWhatsapp,    label: 'WhatsApp',          color: '#25d366' },
-  { Icon: FiInstagram,   label: 'Instagram DM',      color: '#c084fc' },
-  { Icon: SiFacebook,    label: 'Facebook Messenger',color: '#60a5fa' },
-  { Icon: FiMail,        label: 'Email',             color: '#fbbf24' },
-  { Icon: FiPhone,         label: 'Voice',             color: '#f472b6' },
+  { Icon: FiGlobe,       label: 'Website chat',       color: '#a78bfa' },
+  { Icon: SiWhatsapp,    label: 'WhatsApp',           color: '#25d366' },
+  { Icon: FiInstagram,   label: 'Instagram DM',       color: '#c084fc' },
+  { Icon: SiMessenger,   label: 'Facebook Messenger', color: '#60a5fa' },
+  { Icon: FiMail,        label: 'Email',              color: '#fbbf24' },
+  { Icon: FiPhone,       label: 'Voice',              color: '#f472b6' },
 ];
 
 const STARTER_FEATURES = [
-  { Icon: FiCpu,  label: 'Unified memory across channels' },
-  { Icon: FiZap,  label: 'Automated follow-ups' },
+  'Unified memory across channels',
+  'Automated follow-ups',
 ];
 
 const UNLIMITED_FEATURES = [
-  { Icon: FiCpu,        label: 'Unified cross-channel memory' },
-  { Icon: FiZap,        label: 'AI follow-ups & reactivation' },
-  { Icon: FiUsers,      label: 'Multi-agent orchestration' },
-  { Icon: FiCheckCircle,label: 'Priority infrastructure access' },
+  'Multi-agent orchestration',
+  'AI follow-ups & reactivation',
+  'Priority infrastructure access',
+  'Advanced analytics dashboard',
+];
+
+const ENTERPRISE_FEATURES = [
+  'Dedicated customer success manager',
+  'Custom integrations & API access',
+  'On-prem / private cloud deployment',
+  '99.99% uptime SLA',
+  'Volume-based pricing',
+  'SOC 2 & GDPR compliance review',
 ];
 
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
+  const { openModal } = useDeployModal();
 
   useEffect(() => {
     const el = ref.current;
@@ -124,95 +138,150 @@ export default function PricingSection() {
               />
             </div>
 
-            <div className="pr-callout">
-              <div>One memory.</div>
-              <div>Every channel.</div>
-            </div>
           </div>
         </div>
 
-        {/* Cards */}
-        <div className="pr-grid">
-          {/* Starter */}
+        {/* 3-tier cards */}
+        <div className="pr-grid pr-grid--3">
+
+          {/* ─── STARTER ─── */}
           <article className="pr-card">
-            <div className="pr-card-tag">STARTER</div>
-            <div className="pr-card-price">
-              <span className="pr-card-num">$249</span>
-              <span className="pr-card-mo">/mo</span>
+            <div className="pr-card-head">
+              <div className="pr-card-tier">Starter</div>
+              <div className="pr-card-price">
+                <span className="pr-card-num">$249</span>
+                <span className="pr-card-mo">/month</span>
+              </div>
+              <div className="pr-card-sub">
+                For growing businesses getting serious about conversations.
+              </div>
             </div>
 
-            <div className="pr-card-headline">
-              <span className="pr-card-headline-ico"><FiMessageCircle size={14} /></span>
-              <span><strong>1,000</strong> AI conversations / month</span>
+            {/* Marquee feature box — the headline thing they're buying */}
+            <div className="pr-card-marquee">
+              <span className="pr-card-marquee-ico"><FiMessageCircle size={16} /></span>
+              <div className="pr-card-marquee-txt">
+                <div className="pr-card-marquee-big"><strong>1,000</strong> conversations</div>
+                <div className="pr-card-marquee-small">per month, across every channel</div>
+              </div>
             </div>
 
-            <ul className="pr-list">
+            <div className="pr-card-features-label">All channels included:</div>
+            <ul className="pr-list pr-list--channels">
               {STARTER_CHANNELS.map((c) => (
                 <li key={c.label}>
                   <span className="pr-list-ico" style={{ color: c.color }}><c.Icon size={14} /></span>
                   <span>{c.label}</span>
-                  <span className="pr-list-tick"><FiCheck size={12} /></span>
                 </li>
               ))}
+            </ul>
+
+            <div className="pr-card-features-label">Plus:</div>
+            <ul className="pr-list">
               {STARTER_FEATURES.map((f) => (
-                <li key={f.label}>
-                  <span className="pr-list-ico pr-list-ico--feature"><f.Icon size={14} /></span>
-                  <span>{f.label}</span>
-                  <span className="pr-list-tick"><FiCheck size={12} /></span>
+                <li key={f}>
+                  <span className="pr-list-tick"><FiCheck size={11} /></span>
+                  <span>{f}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="pr-card-note">
-              Perfect for growing businesses getting serious about conversations.
-            </div>
-
-            <a href="#book-demo" className="pr-cta pr-cta--ghost">
-              Start Free Trial <FiArrowRight size={14} />
-            </a>
+            <button type="button" onClick={openModal} className="pr-cta pr-cta--ghost">
+              Deploy PROXe <FiArrowRight size={14} />
+            </button>
           </article>
 
-          {/* Unlimited */}
+          {/* ─── UNLIMITED (MOST POPULAR) ─── */}
           <article className="pr-card pr-card--popular">
-            <div className="pr-card-tag-row">
-              <span className="pr-card-tag pr-card-tag--popular">UNLIMITED</span>
-              <span className="pr-card-badge">MOST POPULAR</span>
-            </div>
-            <div className="pr-card-price">
-              <span className="pr-card-num">$449</span>
-              <span className="pr-card-mo">/mo</span>
+            <span className="pr-card-popular-badge">MOST POPULAR</span>
+            {/* Subtle inner glow accent — only on the popular card */}
+            <span className="pr-card-popular-glow" aria-hidden />
+            <div className="pr-card-head">
+              <div className="pr-card-tier pr-card-tier--popular">Unlimited</div>
+              <div className="pr-card-price">
+                <span className="pr-card-num">$449</span>
+                <span className="pr-card-mo">/month</span>
+              </div>
+              <div className="pr-card-sub">
+                Built for businesses scaling acquisition without limits.
+              </div>
             </div>
 
-            <div className="pr-card-headline pr-card-headline--unlimited">
-              <span className="pr-card-headline-ico pr-card-headline-ico--inf">∞</span>
-              <span><strong className="pr-grad-text">Unlimited</strong> AI conversations</span>
+            {/* Marquee — "Unlimited" hits hardest as a gradient callout */}
+            <div className="pr-card-marquee pr-card-marquee--unlimited">
+              <span className="pr-card-marquee-ico pr-card-marquee-ico--inf">∞</span>
+              <div className="pr-card-marquee-txt">
+                <div className="pr-card-marquee-big">
+                  <strong className="pr-grad-text">Unlimited</strong> conversations
+                </div>
+                <div className="pr-card-marquee-small">No cap. Scale to a million chats a month.</div>
+              </div>
             </div>
 
-            <ul className="pr-list">
+            <div className="pr-card-features-label">All channels included:</div>
+            <ul className="pr-list pr-list--channels">
               {STARTER_CHANNELS.map((c) => (
                 <li key={c.label}>
                   <span className="pr-list-ico" style={{ color: c.color }}><c.Icon size={14} /></span>
                   <span>{c.label}</span>
-                  <span className="pr-list-tick"><FiCheck size={12} /></span>
-                </li>
-              ))}
-              {UNLIMITED_FEATURES.map((f) => (
-                <li key={f.label}>
-                  <span className="pr-list-ico pr-list-ico--feature"><f.Icon size={14} /></span>
-                  <span>{f.label}</span>
-                  <span className="pr-list-tick"><FiCheck size={12} /></span>
                 </li>
               ))}
             </ul>
 
-            <div className="pr-card-note">
-              Built for businesses that want to scale acquisition without limits.
+            <div className="pr-card-features-label">
+              Everything in <span className="pr-grad-text">Starter</span>, plus:
+            </div>
+            <ul className="pr-list">
+              {UNLIMITED_FEATURES.map((f) => (
+                <li key={f}>
+                  <span className="pr-list-tick"><FiCheck size={11} /></span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button type="button" onClick={openModal} className="pr-cta pr-cta--primary">
+              Deploy PROXe <FiArrowRight size={14} />
+            </button>
+          </article>
+
+          {/* ─── ENTERPRISE — CUSTOM ─── */}
+          <article className="pr-card pr-card--enterprise">
+            <div className="pr-card-head">
+              <div className="pr-card-tier">Enterprise</div>
+              <div className="pr-card-price pr-card-price--custom">
+                <span className="pr-card-num pr-card-num--custom">Custom</span>
+              </div>
+              <div className="pr-card-sub">
+                For enterprises that need dedicated support, custom infra, and SLAs.
+              </div>
             </div>
 
-            <a href="#book-demo" className="pr-cta pr-cta--primary">
-              Deploy PROXe <FiArrowRight size={14} />
-            </a>
+            <div className="pr-card-marquee">
+              <span className="pr-card-marquee-ico"><FiAward size={16} /></span>
+              <div className="pr-card-marquee-txt">
+                <div className="pr-card-marquee-big">Tailored to your scale</div>
+                <div className="pr-card-marquee-small">Custom volume pricing + dedicated team</div>
+              </div>
+            </div>
+
+            <div className="pr-card-features-label">
+              Everything in <span className="pr-grad-text">Unlimited</span>, plus:
+            </div>
+            <ul className="pr-list">
+              {ENTERPRISE_FEATURES.map((f) => (
+                <li key={f}>
+                  <span className="pr-list-tick"><FiCheck size={11} /></span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button type="button" onClick={openModal} className="pr-cta pr-cta--ghost">
+              Talk to sales <FiArrowRight size={14} />
+            </button>
           </article>
+
         </div>
 
       </div>

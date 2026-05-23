@@ -11,6 +11,7 @@ import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
+import { useDeployModal } from '../contexts/DeployModalContext';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -178,6 +179,7 @@ function FaqItem({ question, answer, placeholder }: { question: string; answer: 
 /* ============ Scroll Popup ============ */
 function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement | null> }) {
   const [open, setOpen] = useState(false);
+  const { openModal: openDeployModal } = useDeployModal();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -233,9 +235,13 @@ function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement |
           DASHBOARD SCREENSHOT PLACEHOLDER
         </div>
         <div className="proxe-popup-actions">
-          <a href="#book-demo" className="proxe-btn proxe-btn-primary" onClick={() => setOpen(false)}>
+          <button
+            type="button"
+            className="proxe-btn proxe-btn-primary"
+            onClick={() => { setOpen(false); openDeployModal(); }}
+          >
             Book a Demo
-          </a>
+          </button>
           <button className="proxe-btn proxe-btn-ghost" onClick={() => setOpen(false)}>
             Close
           </button>
@@ -768,6 +774,7 @@ function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]
   const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
   const visible = channel.messages.slice(0, shownCount);
   const lastMsg = visible[visible.length - 1];
+  const { openModal } = useDeployModal();
 
   return (
     <div className="ig-chat">
@@ -786,7 +793,7 @@ function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]
         ))}
         {lastMsg?.type === 'bookdemo' && (
           <div className="ig-row ig-row--ai conv-msg-in">
-            <button className="ig-book-btn">Book a Demo</button>
+            <button type="button" className="ig-book-btn" onClick={openModal}>Book a Demo</button>
           </div>
         )}
         {isTyping && (
@@ -1027,12 +1034,113 @@ function IntegrationHub() {
 }
 
 /* ============ Main Landing ============ */
+/* ─────────────────────────────────────────────────────────────
+   Testimonial carousel — single card visible at a time, centered.
+   Auto-advances every 6.5s; user can click dots to jump.
+───────────────────────────────────────────────────────────── */
+const TESTIMONIALS: { quote: string; name: string; role: string; color: string; image?: string }[] = [
+  {
+    quote: 'PROXe replied to a WhatsApp lead at 2am and booked a demo before my team even woke up.',
+    name: 'Ankush Verma',
+    role: 'Founder, Coachly Academy',
+    color: '#a78bfa',
+    image: '/testimonials/Ankush.webp',
+  },
+  {
+    quote: 'Cold leads from four months ago are closing again. Nothing else we tried moved that number.',
+    name: 'Priya Sharma',
+    role: 'COO, Helix Health',
+    color: '#34d399',
+    image: '/testimonials/Priya%20Sharma.webp',
+  },
+  {
+    quote: 'Our SDRs stopped cold-chasing. They just close the deals PROXe hands them now.',
+    name: 'Rohan Kapoor',
+    role: 'CEO, Skyline Realty',
+    color: '#f472b6',
+    image: '/testimonials/Rohan%20Kapoor.webp',
+  },
+];
+
+function TestimonialCarousel() {
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % TESTIMONIALS.length), 6500);
+    return () => clearInterval(t);
+  }, [paused]);
+
+  return (
+    <div className="tm-stage" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="tm-card-wrap">
+        {TESTIMONIALS.map((t, i) => {
+          const initials = t.name.split(' ').map((n) => n[0]).slice(0, 2).join('');
+          return (
+            <article
+              key={i}
+              className={`tm-card${i === idx ? ' tm-card--active' : ''}`}
+              aria-hidden={i !== idx}
+            >
+              <span className="tm-quote-mark" aria-hidden>&ldquo;</span>
+              <p className="tm-quote">{t.quote}</p>
+              <div className="tm-author">
+                {t.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    className="tm-avatar tm-avatar--photo"
+                    src={t.image}
+                    alt={t.name}
+                    width={48}
+                    height={48}
+                  />
+                ) : (
+                  <span
+                    className="tm-avatar"
+                    style={{
+                      background: `linear-gradient(135deg, ${t.color} 0%, #7c3aed 100%)`,
+                      boxShadow: `0 6px 18px ${t.color}55`,
+                    }}
+                    aria-hidden
+                  >
+                    {initials}
+                  </span>
+                )}
+                <div className="tm-author-meta">
+                  <div className="tm-author-name">{t.name}</div>
+                  <div className="tm-author-role">{t.role}</div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="tm-dots" role="tablist" aria-label="Testimonial navigation">
+        {TESTIMONIALS.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-selected={i === idx}
+            aria-label={`Show testimonial ${i + 1}`}
+            className={`tm-dot${i === idx ? ' tm-dot--active' : ''}`}
+            onClick={() => setIdx(i)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ProxeLanding() {
   const pillarsRef = useRef<HTMLElement | null>(null);
   const videoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [videoMuted, setVideoMuted] = useState(true);
+  const { openModal } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
@@ -1156,11 +1264,11 @@ export default function ProxeLanding() {
             className="proxe-nav-logo-icon"
           />
         </a>
-        <a href="#book-demo" className="proxe-float-cta">
+        <button type="button" onClick={openModal} className="proxe-float-cta">
           {/* Two labels — full on top, short when [data-scrolled='true']. */}
           <span className="proxe-float-cta-full">Deploy PROXe</span>
           <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
-        </a>
+        </button>
       </div>
 
       {/* ===== 2. Hero ===== */}
@@ -1249,34 +1357,11 @@ export default function ProxeLanding() {
       {/* ===== 12. Pricing — redesigned with channel diagram + trust strip ===== */}
       <PricingSection />
 
-      {/* ===== 13. Testimonials ===== */}
+      {/* ===== 13. Testimonials — centered single-card carousel with dot nav ===== */}
       <section className="proxe-section">
         <div className="proxe-container">
-          <div className="proxe-section-label">What Founders Say</div>
-          <div className="proxe-testimonials-scroll">
-            {[
-              {
-                quote: 'PROXe replied to a WhatsApp lead at 2am and booked a demo before my team woke up.',
-                author: 'Founder, Placeholder Academy',
-              },
-              {
-                quote: 'Cold leads from four months ago are closing again. Nothing else moved that number.',
-                author: 'COO, Placeholder Clinic',
-              },
-              {
-                quote: 'Our SDR team stopped chasing. They just close the ones PROXe hands them.',
-                author: 'CEO, Placeholder Realty',
-              },
-            ].map((t, i) => (
-              <article key={i} className="proxe-testimonial-card">
-                <p className="proxe-testimonial-quote">
-                  &ldquo;{t.quote}&rdquo;
-                  <span className="proxe-placeholder-tag">Placeholder</span>
-                </p>
-                <div className="proxe-testimonial-author">{t.author}</div>
-              </article>
-            ))}
-          </div>
+          <div className="proxe-section-label" style={{ textAlign: 'center' }}>What Founders Say</div>
+          <TestimonialCarousel />
         </div>
       </section>
 
@@ -1322,9 +1407,9 @@ export default function ProxeLanding() {
       <section className="proxe-footer-cta" id="book-demo">
         <div className="proxe-container">
           <h2 className="proxe-footer-cta-title">Stop losing leads. Start closing them.</h2>
-          <a href="mailto:hello@bconclub.com?subject=PROXe%20Demo" className="proxe-btn proxe-btn-primary">
+          <button type="button" onClick={openModal} className="proxe-btn proxe-btn-primary">
             Book a Demo
-          </a>
+          </button>
         </div>
       </section>
 

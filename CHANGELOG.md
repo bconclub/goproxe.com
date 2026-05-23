@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-05-21 · feat: Deploy modal + Multi-Agent flowchart + Pricing 3 tiers + Industries carousel rework + Testimonials carousel
+
+Massive batch. The site's main conversion paths and showcase sections all got rebuilt in one pass.
+
+**Global Deploy modal — flip card** (`DeployModal.tsx`, `DeployModal.module.css`, `DeployModalContext.tsx`, `layout.tsx`, `chatLocalStorage.ts`, every section file with a CTA):
+- New 3D card-flip modal — front face is a compact 5-field capture form (name / work email / phone / brand name / brand website), back face is the "Book a a 30-min call" view with calendar link, meta strip (30 min · Google Meet · pick any open slot), and email fallback. Submit triggers a `rotateY(180deg)` on the inner card so it visibly hands off form → booking.
+- Title font pinned to an Inter + system-ui sans stack (the modal portals outside `.proxe-root` so it lost the font variable and was falling back to Times).
+- `DeployModalProvider` mounted at root layout — every CTA across the site now opens this modal: header Deploy, floating "Deploy PROXe", pricing buttons, industries "Talk to us", testimonials, footer "Book a Demo", scroll-popup, IG demo "Book a Demo". All anchors switched to `<button onClick={openModal}>`.
+- Form fields persist via `LocalUserProfile` (added `brandName` to the type). Body-scroll lock + ESC-to-close added.
+- Booking URL is a placeholder (`https://cal.com/bconclub/proxe-intro`) — swap for the real scheduling link before shipping.
+
+**Multi-Agent System — fan-in/fan-out flowchart** (`CapabilitiesSection.tsx`, `landing.css`):
+- Killed the 7-edge W-mesh that looked unstructured. Now: 5 nodes laid out as a true 2→1→2 flowchart pointing right — WhatsApp + Web (left, inputs) → Voice/Phone (center, orchestrator) → Email + SMS (right, outputs). 4 directional dashed edges with arrowheads at every destination ring. Pulse cycle reordered to read left-to-right over 9s.
+
+**Pricing — 3 tiers with dominant middle card** (`PricingSection.tsx`, `landing.css`):
+- Went from 2 cards to 3: **Starter $249** / **Unlimited $449** (MOST POPULAR) / **Enterprise · Custom** (italic serif, no price).
+- Middle card visually wins: `translateY(-12px) scale(1.035)` lift + scale (with a high-specificity rule that survives the entry animation), gradient border ring, radial purple bloom inside the padding-box, brighter "MOST POPULAR" floating badge, gradient-clipped "Unlimited" tier label.
+- New `.pr-card-marquee` highlight box on every card — Starter: "**1,000** conversations / per month, across every channel"; Unlimited: "**Unlimited** conversations / No cap. Scale to a million chats a month." (gradient bg); Enterprise: "Tailored to your scale".
+- 2-column compact channels list (`.pr-list--channels`) on both Starter AND Unlimited so neither card looks empty — Facebook Messenger icon fixed (`SiFacebook` → `SiMessenger`).
+- CTA buttons made actually visible: ghost variants now `1.5px @ 55% lavender` border + 6% white fill + drop shadow; primary now `1.5px @ 30% white` border + inset highlight + stronger purple glow. Starter CTA copy changed from "Start Free Trial" → "Deploy PROXe" so the page reads consistently. Enterprise stays "Talk to sales".
+- "One memory. Every channel." callout removed from the header visualization.
+
+**Industries — carousel restored, bigger, smarter wheel hand-off** (`IndustriesSection.tsx`, `landing.css`):
+- Reverted from a 3×3 static grid back to a horizontal carousel (per user feedback). Cards bumped from 360 → **440px** desktop with a **240px photo header**, and **`.ind-title` jumped from 20 → 28px** serif. Responsive ladder: 440 → 400 (≤1024) → 340 (≤880) → `calc(100vw - 56px)` on mobile.
+- Three input methods for the carousel: mouse click-drag (window-level pointer listeners with `car.contains()` filter), trackpad / touch native swipe, and mouse wheel translated to horizontal scroll.
+- **Wheel hand-off to Lenis at the boundaries** — when the carousel can't scroll further in the wheel's direction, the handler explicitly calls `window.__lenis.scrollTo(lenis.scroll + e.deltaY)` so the page resumes vertical scrolling without trapping the user. `LenisProvider` now exposes the instance on `window.__lenis` while mounted. Removed the `data-lenis-prevent` attribute (which was the cause of the trap).
+- Arrow buttons removed (looked awkward at the bottom). Photo bottom border removed (was a visible white line under every image).
+
+**Testimonials — centered single-card carousel with photos** (`ProxeLanding.tsx`, `landing.css`):
+- Replaced the 3-card horizontal scroll with a single-card centered carousel. Auto-advances every 6.5s, pauses on hover, click-to-jump dot nav. Cross-fades with a small Y-translate + scale.
+- Three testimonials with photos in `public/testimonials/`: Ankush Verma (Coachly Academy), Priya Sharma (Helix Health), Rohan Kapoor (Skyline Realty). 48px circular avatars with `object-fit: cover`, lavender border, purple glow shadow. Gradient-initials fallback path retained for any future no-photo testimonial.
+- Removed the `Placeholder` tag.
+- Dot nav fixed — the global `.proxe-root button { background: none; border: none }` reset was wiping the dot bg/border, so they painted invisible. Bumped the selector to `.tm-dots .tm-dot` (higher specificity) and switched to a solid white pill with opacity (45% inactive → 100% active 36px pill) for max contrast.
+
+User-facing: every CTA opens a real lead-capture modal, pricing finally reads as a proper 3-tier ladder with the middle plan as the obvious choice, the industries showcase is back to swipeable cards with a hero-sized photo and serif title, and the testimonials section has real-feel founder photos with proper dot navigation.
+
 ## 2026-05-21 · feat: Industries grid + hero font + Card 2 rewrite + score gradient + Lenis tune
 
 Batched five things into one push.

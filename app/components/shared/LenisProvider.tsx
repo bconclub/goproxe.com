@@ -36,6 +36,10 @@ export default function LenisProvider() {
       touchMultiplier: 1.5,
     });
 
+    // Expose globally so other components (e.g. the Industries carousel)
+    // can drive page scroll explicitly when handing off wheel events.
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     let rafId = 0;
     function raf(time: number) {
       lenis.raf(time);
@@ -46,6 +50,7 @@ export default function LenisProvider() {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      delete (window as unknown as { __lenis?: Lenis }).__lenis;
     };
   }, []);
 

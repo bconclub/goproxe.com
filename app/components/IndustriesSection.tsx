@@ -33,6 +33,7 @@ import {
 } from 'react-icons/fi';
 import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/lu';
 import { SiWhatsapp } from 'react-icons/si';
+import { useDeployModal } from '../contexts/DeployModalContext';
 
 type Activity = { Icon: React.ElementType; top: string; sub: string };
 type Step = { Icon: React.ElementType; label: string };
@@ -224,7 +225,9 @@ const INDUSTRIES: Industry[] = [
 
 export default function IndustriesSection() {
   const ref = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
+  const { openModal } = useDeployModal();
 
   useEffect(() => {
     const el = ref.current;
@@ -232,6 +235,101 @@ export default function IndustriesSection() {
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.08 });
     io.observe(el);
     return () => io.disconnect();
+  }, []);
+
+  // Click-drag horizontal scrolling for desktop mouse users. Listeners on
+  // window with `contains()` so child elements (images, activity pills,
+  // SVGs) can't eat events. Touch / pen use native overflow-x scroll.
+  useEffect(() => {
+    const car = trackRef.current;
+    if (!car) return;
+    let startX = 0;
+    let startScroll = 0;
+    let dragging = false;
+    let dragged = false;
+
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      if (!car.contains(e.target as Node)) return;
+      if ((e.target as HTMLElement).closest('.ind-arrow')) return;
+      if (e.button !== 0) return;
+      startX = e.clientX;
+      startScroll = car.scrollLeft;
+      dragging = true;
+      dragged = false;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      if (!dragged && Math.abs(dx) < 3) return;
+      if (!dragged) { dragged = true; car.classList.add('ind-grid--dragging'); }
+      car.scrollLeft = startScroll - dx;
+      e.preventDefault();
+    };
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      requestAnimationFrame(() => car.classList.remove('ind-grid--dragging'));
+    };
+
+    // Wheel-to-horizontal with proper end-of-track hand-off to Lenis.
+    //
+    // Two cases per wheel tick:
+    //   1. Carousel can still scroll in the wheel's direction →
+    //      consume the delta into scrollLeft.
+    //   2. Carousel is at the boundary in that direction →
+    //      explicitly forward the delta to Lenis (window.__lenis) so
+    //      the page resumes scrolling. We DON'T rely on event
+    //      propagation here because Lenis's outer listener was racy
+    //      against our boundary check on some wheel devices.
+    //
+    // Both cases preventDefault so the browser's native scroll never
+    // double-acts on this wheel tick.
+    const onWheel = (e: WheelEvent) => {
+      // Trackpad two-finger horizontal swipe — let the browser handle
+      // native horizontal scroll on the overflow-x:auto track.
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if (e.deltaY === 0) return;
+
+      const maxScroll = car.scrollWidth - car.clientWidth;
+      const atStart = car.scrollLeft <= 0;
+      const atEnd   = car.scrollLeft >= maxScroll - 1;
+      const goingUp   = e.deltaY < 0;
+      const goingDown = e.deltaY > 0;
+
+      // At a boundary in the wheel's direction → hand off to page scroll.
+      if ((goingUp && atStart) || (goingDown && atEnd)) {
+        const lenis = (window as unknown as { __lenis?: { scroll: number; scrollTo: (target: number, opts?: Record<string, unknown>) => void } }).__lenis;
+        if (lenis) {
+          e.preventDefault();
+          e.stopPropagation();
+          lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: false, lerp: 0.1 });
+        }
+        // If Lenis isn't there for any reason, let the native wheel
+        // bubble through — browser will scroll the page.
+        return;
+      }
+
+      // Otherwise consume: scroll the carousel horizontally and stop
+      // the event from reaching Lenis (which would also scroll the
+      // page and feel like a "double scroll").
+      e.preventDefault();
+      e.stopPropagation();
+      car.scrollLeft += e.deltaY;
+    };
+
+    window.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    car.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      car.removeEventListener('wheel', onWheel);
+    };
   }, []);
 
   return (
@@ -253,8 +351,9 @@ export default function IndustriesSection() {
           </p>
         </div>
 
-        {/* 3×3 grid — 8 industries + 1 "your business?" CTA */}
-        <div className="ind-grid">
+        {/* Horizontal carousel — drag or use arrows to scroll through 8 industries + 1 CTA card */}
+        <div className="ind-track-wrap">
+        <div ref={trackRef} className="ind-grid">
           {INDUSTRIES.map((u) => (
             <article
               key={u.id}
@@ -310,7 +409,7 @@ export default function IndustriesSection() {
             </article>
           ))}
 
-          {/* 9th slot — "your business?" CTA card */}
+          {/* Last slot — "your business?" CTA card */}
           <article className="ind-card ind-card--cta" style={{ ['--acc' as keyof React.CSSProperties as string]: '#a78bfa' }}>
             <div className="ind-cta-inner">
               <span className="ind-cta-ico"><FiPlus size={28} /></span>
@@ -319,12 +418,14 @@ export default function IndustriesSection() {
                 We train PROXe on your playbook — your offers, objections, and tone.
                 If your customers chat, call, or click, we handle it.
               </p>
-              <a href="#contact" className="ind-cta-btn">
+              <button type="button" onClick={openModal} className="ind-cta-btn">
                 Talk to us <FiArrowRight size={16} />
-              </a>
+              </button>
             </div>
           </article>
         </div>
+        </div>
+
       </div>
     </section>
   );

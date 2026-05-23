@@ -1717,8 +1717,13 @@ body:has(.proxe-root) {
   font-weight: 500;
   font-family: var(--proxe-font-sans);
   border: 1px solid transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
+button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: none; font-family: inherit; }
 
 .proxe-root .proxe-btn-primary {
   background: #EDE9FE; /* faded violet */
@@ -3399,6 +3404,154 @@ body:has(.proxe-root) {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--proxe-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TESTIMONIALS — centered single-card carousel with dot nav
+═══════════════════════════════════════════════════════════════ */
+.tm-stage {
+  max-width: 760px;
+  margin: 28px auto 0;
+  padding: 0 8px;
+}
+.tm-card-wrap {
+  position: relative;
+  min-height: 260px;
+}
+.tm-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding: 36px 40px 32px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(124, 58, 237, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(14, 9, 38, 0.72) 0%, rgba(10, 7, 30, 0.82) 100%);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  border-radius: 22px;
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.45),
+    0 0 60px rgba(124, 58, 237, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tm-card--active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.tm-quote-mark {
+  font-family: var(--proxe-font-heading);
+  font-size: 64px;
+  line-height: 0.7;
+  color: rgba(196, 181, 253, 0.45);
+  position: absolute;
+  top: 20px;
+  left: 28px;
+  user-select: none;
+}
+.tm-quote {
+  font-family: var(--proxe-font-heading);
+  letter-spacing: 0.012em;
+  font-size: 24px;
+  line-height: 1.42;
+  font-weight: 400;
+  color: #f5f3ff;
+  margin: 0;
+  text-align: center;
+  padding: 0 12px;
+}
+.tm-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.tm-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--proxe-font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
+}
+.tm-avatar--photo {
+  object-fit: cover;
+  background: #1a1233;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+  border-color: rgba(196, 181, 253, 0.45);
+}
+.tm-author-meta {
+  text-align: left;
+  line-height: 1.25;
+}
+.tm-author-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+.tm-author-role {
+  font-family: var(--proxe-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.75);
+  margin-top: 2px;
+}
+
+/* Dot nav */
+.tm-dots {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+/* NOTE: specificity bumped to .tm-dots .tm-dot so it beats the global
+   `.proxe-root button { background: none; border: none; }` reset
+   earlier in this file. Without this, the dots paint invisibly. */
+.tm-dots .tm-dot {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border-radius: 999px;
+  border: 0;
+  background: #ffffff;
+  opacity: 0.45;
+  cursor: pointer;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease,
+              background 0.25s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.tm-dots .tm-dot:hover { opacity: 0.85; }
+.tm-dots .tm-dot--active {
+  width: 36px;
+  opacity: 1;
+  background: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .tm-card { padding: 32px 22px 26px; min-height: 280px; }
+  .tm-card-wrap { min-height: 280px; }
+  .tm-quote { font-size: 20px; }
+  .tm-quote-mark { font-size: 52px; top: 14px; left: 18px; }
 }
 
 .proxe-placeholder-tag {
@@ -8031,11 +8184,12 @@ body:has(.proxe-root) {
   z-index: 2;
   transform: translate(-50%, -50%);
 }
-.cap-agent-mesh-node--tl { left: 18.75%; top: 25.7%; }   /* 60/320, 36/140 */
-.cap-agent-mesh-node--tc { left: 50%;    top: 25.7%; }   /* 160/320 */
-.cap-agent-mesh-node--tr { left: 81.25%; top: 25.7%; }   /* 260/320 */
-.cap-agent-mesh-node--bl { left: 34.375%;top: 74.3%; }   /* 110/320, 104/140 */
-.cap-agent-mesh-node--br { left: 65.625%;top: 74.3%; }   /* 210/320 */
+/* Flowchart-style layout: 2 left → 1 center → 2 right */
+.cap-agent-mesh-node--tl { left: 18.75%; top: 22.9%; }   /* 60/320,  32/140 */
+.cap-agent-mesh-node--bl { left: 18.75%; top: 77.1%; }   /* 60/320,  108/140 */
+.cap-agent-mesh-node--m  { left: 50%;    top: 50%;   }   /* 160/320, 70/140 */
+.cap-agent-mesh-node--tr { left: 81.25%; top: 22.9%; }   /* 260/320, 32/140 */
+.cap-agent-mesh-node--br { left: 81.25%; top: 77.1%; }   /* 260/320, 108/140 */
 .cap-agent-ring {
   width: 38px;
   height: 38px;
@@ -8054,11 +8208,12 @@ body:has(.proxe-root) {
 }
 /* Sequential brand-color pulse across the mesh (top-left → top-center
    → top-right → bottom-right → bottom-left, like a circuit) */
+/* Pulse order follows the flow: TL/BL → M → TR/BR */
 .cap-agent-mesh-node--tl .cap-agent-ring { animation-delay: 0s;   }
-.cap-agent-mesh-node--tc .cap-agent-ring { animation-delay: 1.8s; }
-.cap-agent-mesh-node--tr .cap-agent-ring { animation-delay: 3.6s; }
-.cap-agent-mesh-node--br .cap-agent-ring { animation-delay: 5.4s; }
-.cap-agent-mesh-node--bl .cap-agent-ring { animation-delay: 7.2s; }
+.cap-agent-mesh-node--bl .cap-agent-ring { animation-delay: 1.4s; }
+.cap-agent-mesh-node--m  .cap-agent-ring { animation-delay: 2.8s; }
+.cap-agent-mesh-node--tr .cap-agent-ring { animation-delay: 4.2s; }
+.cap-agent-mesh-node--br .cap-agent-ring { animation-delay: 5.6s; }
 @keyframes capAgentRingPulse {
   0%, 12%, 100% {
     background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(124, 58, 237, 0.10));
@@ -8327,21 +8482,26 @@ body:has(.proxe-root) {
        drag to scroll, no snap. The wrap extends past the container's right
        edge so the next card peeks out on the right. ── */
 .ind-track-wrap {
-  /* No longer used — kept selector in case any markup still references it */
   position: relative;
   margin: 0 0 16px;
-  width: 100%;
+  /* Extend past the container's right edge so the next card visibly peeks */
+  width: calc(100% + max(24px, (100vw - 1200px) / 2 + 24px));
+  overflow: visible;
 }
 .ind-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  padding: 4px 4px 24px;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 4px 28px;
   margin: 0 -4px;
+  cursor: grab;
   user-select: none;
-  /* touch-action: auto (default) so native horizontal swipe scrolls the
-     carousel and vertical swipe scrolls the page. JS click-drag only
-     handles mouse events (skips touch) so the two don't collide. */
+  /* touch-action: auto (default) for native swipe-scroll on mobile;
+     JS click-drag only handles mouse events so the two don't collide. */
   touch-action: pan-x pan-y;
 }
 .ind-grid::-webkit-scrollbar { display: none; }
@@ -8359,7 +8519,8 @@ body:has(.proxe-root) {
 .ind-card {
   --acc: #a78bfa;
   position: relative;
-  width: auto;
+  /* Carousel: fixed-width cards, no shrinking */
+  flex: 0 0 440px;
   background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 18px;
@@ -8378,9 +8539,8 @@ body:has(.proxe-root) {
 /* ── Top "image" panel with floating activity cards ── */
 .ind-top {
   position: relative;
-  height: 200px;
+  height: 240px;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .ind-top--photo {
   background-size: cover;
@@ -8495,12 +8655,11 @@ body:has(.proxe-root) {
 .ind-title {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 400;
   color: #fff;
-  letter-spacing: 0.015em;
-  line-height: 1.15;
-  margin: 0 0 6px;
+  line-height: 1.12;
+  margin: 0 0 8px;
 }
 .ind-desc {
   font-size: 12.5px;
@@ -8649,8 +8808,6 @@ body:has(.proxe-root) {
 }
 .ind-arrow:active { transform: scale(0.96); }
 
-/* ── Arrows (legacy carousel controls — grid mode hides them) ── */
-.ind-arrows { display: none !important; }
 
 /* ── "Your business?" CTA card (9th slot in grid) ── */
 .ind-card--cta {
@@ -8712,10 +8869,14 @@ body:has(.proxe-root) {
   background: color-mix(in srgb, var(--acc) 22%, rgba(255,255,255,0.02));
   border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
   color: #fff;
+  font-family: inherit;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 .ind-cta-btn:hover {
@@ -8724,16 +8885,23 @@ body:has(.proxe-root) {
   transform: translateY(-1px);
 }
 
-/* ── Responsive ── */
+/* ── Responsive — keep the carousel on every breakpoint, just shrink
+   the card width so 1+ peek visibly on smaller screens ── */
 @media (max-width: 1024px) {
-  .ind-grid { grid-template-columns: repeat(2, 1fr); }
+  .ind-card { flex: 0 0 400px; }
+  .ind-top { height: 220px; }
+  .ind-title { font-size: 26px; }
 }
 @media (max-width: 880px) {
   .ind-header { grid-template-columns: 1fr; gap: 12px; }
-  .ind-top { height: 160px; }
+  .ind-card { flex: 0 0 340px; }
+  .ind-top { height: 200px; }
+  .ind-title { font-size: 24px; }
 }
 @media (max-width: 600px) {
-  .ind-grid { grid-template-columns: 1fr; gap: 14px; }
+  .ind-card { flex: 0 0 calc(100vw - 56px); max-width: 380px; }
+  .ind-top { height: 200px; }
+  .ind-title { font-size: 23px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -8758,7 +8926,13 @@ body:has(.proxe-root) {
 .pr-section.pr-in .pr-sub        { opacity: 1; transform: none; transition-delay: 0.12s; }
 .pr-section.pr-in .pr-header-vis { opacity: 1; transform: none; transition-delay: 0.16s; }
 .pr-section.pr-in .pr-card       { opacity: 1; transform: none; transition-delay: 0.22s; }
-.pr-section.pr-in .pr-card--popular { transition-delay: 0.30s; }
+/* Higher-specificity rule so the popular card keeps its lifted+scaled
+   final transform AFTER the entry animation lands. Otherwise the generic
+   .pr-card rule above wins and resets transform to none. */
+.pr-section.pr-in .pr-card.pr-card--popular {
+  transform: translateY(-12px) scale(1.035);
+  transition-delay: 0.30s;
+}
 .pr-section.pr-in .pr-trust      { opacity: 1; transform: none; transition-delay: 0.38s; }
 
 /* ── Header ── */
@@ -8895,6 +9069,11 @@ body:has(.proxe-root) {
   gap: 18px;
   margin-bottom: 22px;
 }
+.pr-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
 .pr-card {
   position: relative;
   background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
@@ -8903,9 +9082,10 @@ body:has(.proxe-root) {
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  padding: 26px 28px 24px;
+  padding: 28px 26px 24px;
   display: flex;
   flex-direction: column;
+  gap: 18px;
   gap: 14px;
 }
 /* Same dark card body as Starter — the only highlight is a bright
@@ -8913,12 +9093,32 @@ body:has(.proxe-root) {
 .pr-card--popular {
   border: 1.5px solid transparent;
   background:
-    linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%) padding-box,
+    radial-gradient(120% 90% at 50% 0%, rgba(124, 58, 237, 0.18) 0%, transparent 55%) padding-box,
+    linear-gradient(180deg, rgba(14, 9, 38, 0.85) 0%, rgba(10, 7, 30, 0.95) 100%) padding-box,
     linear-gradient(135deg, #c4b5fd 0%, #a78bfa 50%, #7c3aed 100%) border-box;
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.35),
-    0 0 24px rgba(124, 58, 237, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  /* Visually win: slightly larger + lifted relative to siblings */
+  transform: translateY(-12px) scale(1.035);
+  z-index: 2;
+}
+.pr-card--popular .pr-card-popular-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 50% 110%, rgba(167, 139, 250, 0.25) 0%, transparent 70%);
+  z-index: 0;
+}
+.pr-card-tier--popular {
+  background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
 }
 
 .pr-card-tag {
@@ -9085,15 +9285,21 @@ body:has(.proxe-root) {
   gap: 8px;
   height: 50px;
   border-radius: 999px;
+  font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
+button.pr-cta { padding: 0 22px; }
 .pr-cta--ghost {
   color: #fff;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(196, 181, 253, 0.55);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 .pr-cta--ghost:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -9102,13 +9308,23 @@ body:has(.proxe-root) {
 }
 .pr-cta--primary {
   color: #fff;
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #ec4899 110%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 55%, #7c3aed 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.30);
+  box-shadow:
+    0 10px 30px rgba(124, 58, 237, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  font-weight: 700;
 }
 .pr-cta--primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(124, 58, 237, 0.55);
+  box-shadow:
+    0 16px 44px rgba(124, 58, 237, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.pr-cta--ghost:hover {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(196, 181, 253, 0.9);
+  transform: translateY(-2px);
 }
 
 /* ── Trust strip ── */
@@ -9146,6 +9362,182 @@ body:has(.proxe-root) {
 .pr-trust-top { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.1; }
 .pr-trust-bot { font-size: 10.5px; color: rgba(255, 255, 255, 0.5); margin-top: 2px; }
 
+/* ═══════════════════════════════════════════════════════════════
+   PRICING — 3-tier card layout (Starter / Unlimited / Enterprise)
+═══════════════════════════════════════════════════════════════ */
+
+.pr-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+.pr-card-tier {
+  font-family: var(--proxe-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.78);
+}
+.pr-card-sub {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  min-height: 40px;
+}
+.pr-card-price--custom { align-items: baseline; }
+.pr-card-num--custom {
+  font-style: italic;
+  font-size: 56px;
+}
+.pr-card-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 50%, transparent 100%);
+  margin: 4px 0 2px;
+}
+.pr-card-features-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.7);
+  position: relative;
+  z-index: 1;
+}
+/* Pull each list snug against its label (cancels the .pr-card flex gap) */
+.pr-card-features-label + .pr-list { margin-top: -10px; }
+
+/* Floating "MOST POPULAR" pill anchored to the top edge of the card */
+.pr-card-popular-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--proxe-font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa 60%, #c4b5fd);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 7px 16px;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  z-index: 3;
+  white-space: nowrap;
+}
+
+/* ── Marquee highlight box — the headline feature of each tier ── */
+.pr-card-marquee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  position: relative;
+  z-index: 1;
+}
+.pr-card-marquee-ico {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.20);
+  border: 1px solid rgba(124, 58, 237, 0.40);
+  color: #c4b5fd;
+}
+.pr-card-marquee-ico--inf {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+.pr-card-marquee-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pr-card-marquee-big {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.25;
+}
+.pr-card-marquee-big strong { font-weight: 700; }
+.pr-card-marquee-small {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.3;
+}
+
+/* Unlimited variant — gradient-tinted background to draw the eye */
+.pr-card-marquee--unlimited {
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.22) 0%, rgba(167, 139, 250, 0.10) 100%);
+  border-color: rgba(167, 139, 250, 0.40);
+  box-shadow: 0 0 24px rgba(124, 58, 237, 0.25);
+}
+.pr-card-marquee--unlimited .pr-card-marquee-ico {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  border-color: rgba(255, 255, 255, 0.30);
+  color: #fff;
+}
+
+/* ── Channels list — compact 2-column variant ── */
+.pr-list--channels {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 14px !important;
+}
+.pr-list--channels li {
+  font-size: 12.5px !important;
+  color: rgba(255, 255, 255, 0.85);
+  gap: 8px !important;
+}
+.pr-list--channels .pr-list-ico {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Enterprise variant — subtle gold-tinted accent ring to set it apart
+   without competing with the popular middle tier's purple gradient ring */
+.pr-card--enterprise {
+  border-color: rgba(196, 181, 253, 0.18);
+}
+
+/* List items in new layout — tick is on the LEFT (not right), small,
+   greenish; channel icon (if present) sits between tick and label. */
+.pr-grid--3 .pr-list { gap: 10px; }
+.pr-grid--3 .pr-list li {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+  gap: 9px;
+}
+.pr-grid--3 .pr-list .pr-list-tick {
+  margin-left: 0;
+  width: 18px;
+  height: 18px;
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(167, 139, 250, 0.45);
+  color: #c4b5fd;
+  flex-shrink: 0;
+}
+.pr-grid--3 .pr-list .pr-list-ico {
+  width: 18px;
+  height: 18px;
+}
+
+/* CTA pinned to the bottom of the card so all three buttons align */
+.pr-grid--3 .pr-cta { margin-top: auto; }
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .pr-header {
@@ -9156,6 +9548,13 @@ body:has(.proxe-root) {
   .pr-trust { grid-template-columns: repeat(3, 1fr); }
   .pr-trust-item:nth-child(3) { border-right: none; }
 }
+@media (max-width: 980px) {
+  .pr-grid--3 { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .pr-card-popular-badge { top: -12px; }
+  /* Cards are stacked on mobile — drop the lift/scale so the popular
+     card doesn't visually overlap its siblings. */
+  .pr-section.pr-in .pr-card.pr-card--popular { transform: none; }
+}
 @media (max-width: 760px) {
   .pr-section { padding: 60px 0 80px; }
   .pr-grid { grid-template-columns: 1fr; }
@@ -9164,7 +9563,8 @@ body:has(.proxe-root) {
   .pr-callout { display: none; }
   .pr-trust { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px 6px; }
   .pr-trust-item { border-right: none; padding: 6px 10px; }
-  .pr-card { padding: 22px 20px 20px; }
+  .pr-card { padding: 24px 22px 22px; }
   .pr-card-num { font-size: 44px; }
+  .pr-card-num--custom { font-size: 44px; }
 }
 

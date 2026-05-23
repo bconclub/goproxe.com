@@ -15,6 +15,7 @@ import {
   FiUser,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiInstagram } from 'react-icons/si';
+import { FiGlobe } from 'react-icons/fi';
 
 /* ─────────────────────────────────────────────────────────────
    ORB — SVG-based: glowing core + radiating rays + orbit rings + particles
@@ -138,40 +139,41 @@ function FollowupFlow() {
 }
 
 function AgentNetwork() {
-  // 5 channel agents arranged in a peer-to-peer mesh (NOT a line).
-  // Top row: 3 agents; bottom row: 2 agents offset between them.
-  // Bidirectional arrow-style connectors between every adjacent pair —
-  // each agent talks to its neighbors. Each agent pulses in its own
-  // brand color in turn on a 9s cycle.
+  // Flowchart-style layout (NOT a W):
+  //   2 input agents (left)  →  1 orchestrator (center)  →  2 output agents (right)
+  //
+  //   tl  ╲                     ╱  tr
+  //         ─→  m   ─→
+  //   bl  ╱                     ╲  br
+  //
+  // Each agent pulses in its own brand color in turn on a 9s cycle.
   const nodes = [
-    { Icon: SiWhatsapp,      color: '#25d366', pos: 'tl' },  // top-left
-    { Icon: FiMessageCircle, color: '#a78bfa', pos: 'tc' },  // top-center
-    { Icon: FiPhone,         color: '#60a5fa', pos: 'tr' },  // top-right
-    { Icon: FiMail,          color: '#c084fc', pos: 'bl' },  // bottom-left
-    { Icon: FiMessageCircle, color: '#34d399', pos: 'br' },  // bottom-right
+    { Icon: SiWhatsapp,      color: '#25d366', pos: 'tl' },  // top-left  — WhatsApp input
+    { Icon: FiGlobe,         color: '#a78bfa', pos: 'bl' },  // bottom-left — Web input
+    { Icon: FiPhone,         color: '#c4b5fd', pos: 'm'  },  // center — Voice / orchestrator
+    { Icon: FiMail,          color: '#60a5fa', pos: 'tr' },  // top-right — Email output
+    { Icon: FiMessageCircle, color: '#34d399', pos: 'br' },  // bottom-right — SMS output
   ];
   return (
     <div className="cap-mini cap-mini--agents">
-      {/* Mesh connectors — each line is bidirectional (no real arrowheads,
-          just glowing dotted edges between peers) */}
+      {/* Flow connectors — directional dashed edges with arrowheads */}
       <svg className="cap-agent-mesh" viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
         <defs>
-          <linearGradient id="capAgentEdge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%"   stopColor="rgba(167,139,250,0.20)" />
-            <stop offset="50%"  stopColor="rgba(196,181,253,0.85)" />
-            <stop offset="100%" stopColor="rgba(167,139,250,0.20)" />
+          <linearGradient id="capAgentEdge" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="rgba(167,139,250,0.25)" />
+            <stop offset="55%"  stopColor="rgba(196,181,253,0.90)" />
+            <stop offset="100%" stopColor="rgba(167,139,250,0.25)" />
           </linearGradient>
+          <marker id="capAgentArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="rgba(196,181,253,0.85)" />
+          </marker>
         </defs>
-        {/* Top row peer edges */}
-        <line x1="60"  y1="36" x2="160" y2="36" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        <line x1="160" y1="36" x2="260" y2="36" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        {/* Bottom row peer edge */}
-        <line x1="110" y1="104" x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        {/* Cross-row diagonals */}
-        <line x1="60"  y1="36"  x2="110" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        <line x1="160" y1="36"  x2="110" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        <line x1="160" y1="36"  x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
-        <line x1="260" y1="36"  x2="210" y2="104" stroke="url(#capAgentEdge)" strokeWidth="1.2" strokeDasharray="3 4" />
+        {/* Left side: TL → M and BL → M (fan-in) */}
+        <line x1="60"  y1="32"  x2="146" y2="64" stroke="url(#capAgentEdge)" strokeWidth="1.3" strokeDasharray="3 4" markerEnd="url(#capAgentArrow)" />
+        <line x1="60"  y1="108" x2="146" y2="76" stroke="url(#capAgentEdge)" strokeWidth="1.3" strokeDasharray="3 4" markerEnd="url(#capAgentArrow)" />
+        {/* Right side: M → TR and M → BR (fan-out) */}
+        <line x1="174" y1="64"  x2="260" y2="32"  stroke="url(#capAgentEdge)" strokeWidth="1.3" strokeDasharray="3 4" markerEnd="url(#capAgentArrow)" />
+        <line x1="174" y1="76"  x2="260" y2="108" stroke="url(#capAgentEdge)" strokeWidth="1.3" strokeDasharray="3 4" markerEnd="url(#capAgentArrow)" />
       </svg>
       {nodes.map((n, i) => (
         <div

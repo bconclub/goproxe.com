@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
+import { DeployModalProvider } from './contexts/DeployModalContext';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://goproxe.com'),
@@ -33,7 +34,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <LenisProvider />
-        {children}
+        <DeployModalProvider>
+          {children}
+        </DeployModalProvider>
       </body>
     </html>
   );
