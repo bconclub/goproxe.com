@@ -3776,19 +3776,19 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* ===== 15. Footer CTA ===== */
 /* ═══════════════════════════════════════════════════════════════
    CLOSING CTA (.proxe-cc-*) — glass card, eyebrow chip, split
-   headline, primary button + trust strip, corner sparkles, light
-   beam underneath. Sits between testimonials/FAQ and the footer.
+   headline, primary button + trust strip, border rays, and side glow.
+   Sits between testimonials/FAQ and the footer.
 ═══════════════════════════════════════════════════════════════ */
 .proxe-cc {
   position: relative;
   padding: 100px 0 80px;
-  background: transparent;
+  background:
+    radial-gradient(60% 90% at 50% 40%, rgba(88, 28, 135, 0.14) 0%, transparent 62%),
+    transparent;
   overflow: hidden;
 }
-/* Neon-border treatment — the BORDER LINE itself is the light source.
-   Background stays flat (no radial blooms inside, no inset sheen). The
-   box-shadow uses zero offset (0 0 ...) so glow emanates equally
-   outward from the border in every direction. */
+/* Border-light CTA card: the side points act like the light source,
+   with the border carrying a soft ray across the glass surface. */
 .proxe-cc-card {
   position: relative;
   margin: 0 auto;
@@ -3796,18 +3796,60 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   padding: 64px 48px 56px;
   text-align: center;
   border-radius: 28px;
-  background: rgba(10, 6, 30, 0.40);
-  border: 1px solid rgba(196, 181, 253, 0.55);
+  isolation: isolate;
+  overflow: visible;
+  background:
+    radial-gradient(80% 95% at 50% 0%, rgba(124, 58, 237, 0.22) 0%, rgba(10, 6, 30, 0.08) 52%, transparent 100%),
+    linear-gradient(180deg, rgba(20, 13, 58, 0.72) 0%, rgba(12, 7, 35, 0.72) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.28);
   box-shadow:
-    0 0 0 1px rgba(196, 181, 253, 0.10),     /* tight 1px outer line for depth */
-    0 0 24px rgba(167, 139, 250, 0.38),      /* close-in neon halo */
-    0 0 80px rgba(124, 58, 237, 0.22),       /* mid bloom */
-    0 0 160px rgba(124, 58, 237, 0.10);      /* atmospheric outer wash */
+    0 0 0 1px rgba(167, 139, 250, 0.08),
+    0 0 72px rgba(124, 58, 237, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* Eyebrow chip — "AI THAT CLOSES" */
+.proxe-cc-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    radial-gradient(18px 120px at 0% 50%, rgba(255, 255, 255, 0.98) 0%, rgba(196, 181, 253, 0.95) 18%, rgba(124, 58, 237, 0.70) 42%, transparent 74%),
+    radial-gradient(18px 120px at 100% 50%, rgba(255, 255, 255, 0.98) 0%, rgba(196, 181, 253, 0.95) 18%, rgba(124, 58, 237, 0.70) 42%, transparent 74%),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.85), rgba(196, 181, 253, 0.30) 18%, rgba(196, 181, 253, 0.14) 50%, rgba(196, 181, 253, 0.30) 82%, rgba(124, 58, 237, 0.85));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.proxe-cc-card::after {
+  content: "";
+  position: absolute;
+  inset: -64px -120px;
+  border-radius: 40px;
+  background:
+    radial-gradient(140px 260px at 0% 50%, rgba(124, 58, 237, 0.48) 0%, rgba(124, 58, 237, 0.18) 38%, transparent 72%),
+    radial-gradient(140px 260px at 100% 50%, rgba(124, 58, 237, 0.48) 0%, rgba(124, 58, 237, 0.18) 38%, transparent 72%),
+    linear-gradient(90deg, transparent 8%, rgba(167, 139, 250, 0.10) 50%, transparent 92%);
+  filter: blur(18px);
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.proxe-cc-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Eyebrow chip — "AI THAT CONVERTS" */
 .proxe-cc-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -3854,46 +3896,31 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   margin: 0 auto;
 }
 
+.proxe-root .proxe-cc-cta {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.70),
+    0 0 18px rgba(196, 181, 253, 0.72),
+    0 0 44px rgba(124, 58, 237, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.proxe-root .proxe-cc-cta .proxe-hero-big-cta-icon {
+  background: linear-gradient(135deg, #171022 0%, #6d28d9 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 18px rgba(124, 58, 237, 0.72);
+}
+
 /* Trust strip — already styled via .proxe-hero-trust; just center under CTA */
 .proxe-cc-trust {
   margin-top: 36px !important;
 }
 
-/* Corner sparkle dots — small lavender glows at each card corner */
-.proxe-cc-spark {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c4b5fd;
-  box-shadow:
-    0 0 12px rgba(196, 181, 253, 0.85),
-    0 0 24px rgba(167, 139, 250, 0.55);
-  pointer-events: none;
-}
-.proxe-cc-spark--tl { top: 22%; left: -5px; }
-.proxe-cc-spark--tr { top: 22%; right: -5px; }
-.proxe-cc-spark--bl { bottom: 28%; left: 16%; opacity: 0.6; width: 6px; height: 6px; }
-.proxe-cc-spark--br { bottom: 28%; right: 16%; opacity: 0.6; width: 6px; height: 6px; }
-
-/* Light beam under the card — fades into the footer area */
-.proxe-cc-beam {
-  position: absolute;
-  left: 50%;
-  bottom: -1px;
-  width: 40%;
-  height: 60px;
-  transform: translateX(-50%);
-  background: radial-gradient(50% 100% at 50% 0%, rgba(196, 181, 253, 0.55) 0%, transparent 70%);
-  filter: blur(2px);
-  pointer-events: none;
-}
-
 @media (max-width: 760px) {
   .proxe-cc { padding: 60px 0 40px; }
   .proxe-cc-card { padding: 44px 24px 40px; border-radius: 22px; }
+  .proxe-cc-card::after { inset: -48px -54px; filter: blur(16px); }
   .proxe-cc-eyebrow { font-size: 10px; padding: 6px 12px; margin-bottom: 22px; }
-  .proxe-cc-spark--bl, .proxe-cc-spark--br { display: none; }
 }
 
 /* Old class kept for backwards compat — JSX no longer uses it. */
@@ -6930,7 +6957,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   flex-shrink: 0;
 }
 .cd-msn-back { color: rgba(255,255,255,0.8); display: flex; align-items: center; }
-.cd-msn-hdr-av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #0695FF, #A033FF); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cd-msn-hdr-av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #0695FF, #A033FF); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cd-msn-hdr-av svg { color: #fff; fill: currentColor; }
 .cd-msn-hdr-info { flex: 1; }
 .cd-msn-hdr-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
 .cd-msn-hdr-active { font-size: 11px; color: rgba(255,255,255,0.55); }
@@ -8002,15 +8030,94 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
    ── */
 .cap-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.72fr) minmax(260px, 0.72fr);
+  grid-template-rows: minmax(306px, 1fr) minmax(306px, 1fr);
+  gap: 16px;
   position: relative;
 }
 .cap-card--capture  { grid-column: 2; grid-row: 1; }
 .cap-card--followup { grid-column: 3; grid-row: 1; }
 .cap-card--agents   { grid-column: 2; grid-row: 2; }
 .cap-card--security { grid-column: 3; grid-row: 2; }
+
+/* Uniform 3-col layout (5 same-size cards) — overrides the asymmetric
+   hero+sides grid above. All cards share the same .cap-card shell. */
+.cap-grid--uniform {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  gap: 16px;
+}
+.cap-grid--uniform .cap-card--memory,
+.cap-grid--uniform .cap-card--capture,
+.cap-grid--uniform .cap-card--followup,
+.cap-grid--uniform .cap-card--agents,
+.cap-grid--uniform .cap-card--security {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+/* Compact Unified Memory vis — same physical box as ChannelConstellation
+   so the card heights match. 4 channel pips fan into a central PROXe orb. */
+.cap-mini--mem {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  margin-top: auto;
+}
+.cap-mem-mini-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.cap-mem-mini-pip {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 6, 30, 0.85);
+  border: 1px solid rgba(196, 181, 253, 0.30);
+  z-index: 2;
+}
+.cap-mem-mini-pip--tl { left: 8%;  top: 12%; }
+.cap-mem-mini-pip--tr { right: 8%; top: 12%; }
+.cap-mem-mini-pip--bl { left: 8%;  bottom: 12%; }
+.cap-mem-mini-pip--br { right: 8%; bottom: 12%; }
+.cap-mem-mini-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(196, 181, 253, 0.5) 0%, rgba(124, 58, 237, 0.85) 55%, rgba(76, 29, 149, 0.95) 100%);
+  border: 1.2px solid rgba(196, 181, 253, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 0 18px rgba(167, 139, 250, 0.45);
+}
+.cap-mem-mini-core img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(1.1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+}
+
+/* Responsive — all cards stack to 1 col on mobile, same width */
+@media (max-width: 980px) {
+  .cap-grid--uniform { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .cap-grid--uniform { grid-template-columns: 1fr; }
+}
 
 /* ─────────────────────────────────────────────────────────────
    HERO CARD — Unified Memory
@@ -8027,7 +8134,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  padding: 24px 26px 22px;
+  padding: 28px 28px 26px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -8065,21 +8172,21 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .cap-hero-title {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
-  font-size: 38px;
+  font-size: clamp(30px, 2.9vw, 44px);
   font-weight: 400;
   color: #fff;
   letter-spacing: 0.015em;
-  line-height: 1.05;
-  margin: 0 0 12px;
+  line-height: 1.08;
+  margin: 0 0 10px;
   position: relative;
   z-index: 1;
 }
 .cap-hero-sub {
   /* Stacked below the title, plain text — no box. */
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 13.5px;
+  line-height: 1.52;
   color: rgba(255, 255, 255, 0.62);
-  margin: 0 0 22px;
+  margin: 0 0 18px;
   position: relative;
   z-index: 1;
 }
@@ -8090,11 +8197,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   position: relative;
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.05fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 24px;
   align-items: center;
-  min-height: 340px;
-  padding: 12px 0 28px;
+  min-height: 330px;
+  padding: 10px 0 24px;
   z-index: 1;
 }
 .cap-connectors {
@@ -8103,56 +8210,93 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   width: 100%;
   height: 100%;
   pointer-events: none;
+  overflow: visible;
   z-index: 0;
+  /* No viewBox — JS sets x1/y1/x2/y2 in pixel space directly */
   filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.5));
 }
+.cap-connector-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+.cap-connector-dot {
+  opacity: 0;
+  filter: drop-shadow(0 0 5px rgba(196, 181, 253, 0.85));
+}
 .cap-channels, .cap-orb-wrap, .cap-right { position: relative; z-index: 1; }
+
+.cap-section.cap-in .cap-connector-path {
+  animation: capLineDraw 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.52s forwards;
+}
+.cap-section.cap-in .cap-connector-dot {
+  animation: capPiecePop 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.72s forwards;
+}
 
 /* Channel feed (left) */
 .cap-channels {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .cap-channel {
   --accent: #a78bfa;
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px 10px 13px;
-  background: rgba(18, 12, 40, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  background:
+    linear-gradient(180deg, rgba(27, 17, 57, 0.78), rgba(13, 8, 35, 0.78));
+  border: 1px solid rgba(196, 181, 253, 0.16);
   border-radius: 12px;
   min-width: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 28px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transform: translateX(-18px) scale(0.98);
 }
 .cap-channel::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  border-radius: 2px;
+  inset: 0;
+  border-radius: inherit;
+  border-left: 2px solid var(--accent);
+  opacity: 0.9;
+  pointer-events: none;
+}
+.cap-channel::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-  opacity: 0.85;
+  box-shadow: 0 0 12px var(--accent);
 }
 .cap-channel-ico {
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-  color: var(--accent);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 78%, #ffffff 8%), color-mix(in srgb, var(--accent) 48%, #111026 45%));
+  border: 1px solid color-mix(in srgb, var(--accent) 62%, rgba(255, 255, 255, 0.18));
+  color: #fff;
   flex-shrink: 0;
+  box-shadow:
+    0 0 14px color-mix(in srgb, var(--accent) 48%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .cap-channel-txt { flex: 1; min-width: 0; }
-.cap-channel-name { font-size: 11.5px; font-weight: 600; color: #fff; }
-.cap-channel-sub  { font-size: 10px;   color: rgba(255, 255, 255, 0.45); margin-top: 1px; }
+.cap-channel-name { font-size: 13px; font-weight: 700; color: #fff; }
+.cap-channel-sub  { font-size: 10.5px; line-height: 1.25; color: rgba(255, 255, 255, 0.56); margin-top: 2px; }
 
 /* ── Orb (center) — compact glowing sphere ── */
 .cap-orb-wrap {
@@ -8163,8 +8307,31 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.88);
+}
+.cap-orb-wrap::before,
+.cap-orb-wrap::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cap-orb-wrap::before {
+  inset: 28px;
+  border: 1px solid rgba(216, 180, 254, 0.42);
+  box-shadow:
+    0 0 0 6px rgba(124, 58, 237, 0.10),
+    0 0 32px rgba(167, 139, 250, 0.36);
+}
+.cap-orb-wrap::after {
+  inset: 17px;
+  border: 1px dashed rgba(196, 181, 253, 0.22);
+  animation: capMemoryRingSpin 18s linear infinite;
 }
 .cap-orb-svg {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 22px rgba(167, 139, 250, 0.55));
@@ -8177,6 +8344,10 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   from { transform: rotate(0); }
   to   { transform: rotate(360deg); }
 }
+@keyframes capMemoryRingSpin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
 
 /* Right column: profile + memory — more padding/gap for breathing room */
 .cap-right {
@@ -8185,19 +8356,25 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   gap: 14px;
 }
 .cap-profile {
-  background: rgba(18, 12, 40, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background:
+    linear-gradient(180deg, rgba(24, 16, 54, 0.72), rgba(12, 8, 32, 0.74));
+  border: 1px solid rgba(196, 181, 253, 0.20);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 16px 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transform: translateX(18px) scale(0.98);
 }
 .cap-profile-tag {
   font-family: var(--proxe-font-mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(167, 139, 250, 0.85);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 .cap-profile ul {
   list-style: none;
@@ -8205,31 +8382,36 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0;
 }
 .cap-profile li {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.85);
+  gap: 11px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.88);
 }
-.cap-profile-bullet {
-  width: 13px;
-  text-align: center;
-  font-size: 11px;
+.cap-profile li:first-child { border-top: none; padding-top: 0; }
+.cap-profile li:last-child { padding-bottom: 0; }
+.cap-profile li svg {
+  color: #c4b5fd;
+  flex-shrink: 0;
 }
-.cap-profile-bullet--1 { color: #c4b5fd; }
-.cap-profile-bullet--2 { color: #a78bfa; }
-.cap-profile-bullet--3 { color: #c084fc; }
-.cap-profile-bullet--4 { color: #818cf8; }
 
 .cap-memory {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(18, 12, 40, 0.85));
-  border: 1px solid rgba(124, 58, 237, 0.4);
+  background:
+    linear-gradient(145deg, rgba(124, 58, 237, 0.30), rgba(18, 12, 40, 0.86));
+  border: 1px solid rgba(167, 139, 250, 0.34);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 34px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transform: translateX(18px) scale(0.98);
 }
 .cap-memory-hdr {
   display: flex;
@@ -8239,8 +8421,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   white-space: nowrap;
 }
 .cap-memory-av {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8250,11 +8432,18 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   box-shadow: 0 0 8px rgba(167, 139, 250, 0.65);
   flex-shrink: 0;
 }
-.cap-memory-name { font-size: 11.5px; font-weight: 700; color: #fff; }
+.cap-memory-name {
+  font-family: var(--proxe-font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ddd6fe;
+}
 .cap-memory-time { font-size: 10px; color: rgba(255, 255, 255, 0.45); margin-left: auto; }
 .cap-memory p {
-  font-size: 11.5px;
-  line-height: 1.45;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.78);
   margin: 0 0 6px;
 }
@@ -8266,49 +8455,105 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   100% { opacity: 0.3; }
 }
 
-/* Hero stats — now a VERTICAL column on the right of the heading */
+.cap-section.cap-in .cap-orb-wrap {
+  animation: capPiecePop 0.62s cubic-bezier(0.16, 1, 0.3, 1) 0.34s forwards;
+}
+.cap-section.cap-in .cap-channel {
+  animation: capPieceInLeft 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.cap-section.cap-in .cap-channel:nth-child(1) { animation-delay: 0.42s; }
+.cap-section.cap-in .cap-channel:nth-child(2) { animation-delay: 0.48s; }
+.cap-section.cap-in .cap-channel:nth-child(3) { animation-delay: 0.54s; }
+.cap-section.cap-in .cap-channel:nth-child(4) { animation-delay: 0.60s; }
+.cap-section.cap-in .cap-profile {
+  animation: capPieceInRight 0.58s cubic-bezier(0.16, 1, 0.3, 1) 0.54s forwards;
+}
+.cap-section.cap-in .cap-memory {
+  animation: capPieceInRight 0.58s cubic-bezier(0.16, 1, 0.3, 1) 0.64s forwards;
+}
+
+@keyframes capPieceInLeft {
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes capPieceInRight {
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes capPiecePop {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes capLineDraw {
+  to { opacity: 1; stroke-dashoffset: 0; }
+}
+
 .cap-hero-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px 14px;
-  background: rgba(15, 10, 38, 0.55);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  padding: 22px 20px;
+  background:
+    linear-gradient(180deg, rgba(18, 12, 40, 0.72), rgba(10, 6, 30, 0.58));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   position: relative;
   z-index: 1;
 }
 .cap-stat {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  justify-items: center;
+  text-align: center;
   align-items: center;
-  gap: 10px;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  column-gap: 14px;
+  row-gap: 6px;
+  padding: 0 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
-.cap-stat:last-child { border-bottom: none; padding-bottom: 0; }
-.cap-stat:first-child { padding-top: 0; }
+.cap-stat:last-child { border-right: none; }
+.cap-stat--memory {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  row-gap: 5px;
+}
+.cap-stat--memory .cap-stat-val {
+  font-size: 58px;
+  line-height: 0.68;
+  color: #ddd6fe;
+}
 .cap-stat-ico {
-  width: 30px;
-  height: 30px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: rgba(124, 58, 237, 0.20);
-  border: 1px solid rgba(124, 58, 237, 0.4);
-  color: #c4b5fd;
-  font-size: 14px;
-  flex-shrink: 0;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(196, 181, 253, 0.28);
+  color: rgba(216, 180, 254, 0.88);
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.22);
+  font-size: 25px;
+  line-height: 1;
+}
+.cap-stat-ico svg {
+  width: 20px;
+  height: 20px;
 }
 .cap-stat-val {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
-  font-size: 22px;
+  font-size: 31px;
   font-weight: 400;
   color: #fff;
   line-height: 1;
 }
-.cap-stat-lbl { font-size: 10.5px; color: rgba(255, 255, 255, 0.55); margin-top: 4px; }
+.cap-stat-lbl {
+  grid-column: 1 / -1;
+  justify-self: center;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+  margin-top: 0;
+  white-space: nowrap;
+}
 
 /* ─────────────────────────────────────────────────────────────
    SIDE CARDS (2×2)
@@ -8324,7 +8569,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   padding: 22px 22px 18px;
   display: flex;
   flex-direction: column;
-  min-height: 230px;
+  min-height: 306px;
   overflow: hidden;
   transition: border-color 0.25s, transform 0.25s, background 0.25s;
 }
@@ -8399,8 +8644,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .cap-mini {
   position: relative;
   flex: 1 1 auto;
-  min-height: 80px;
-  margin-bottom: 14px;
+  min-height: 168px;
+  margin: auto 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8458,7 +8703,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* Constellation — 3D-style tilted orbits with floating channel pips */
 .cap-mini--const {
   position: relative;
-  min-height: 120px;
+  min-height: 168px;
 }
 .cap-const-orbits {
   position: absolute;
@@ -8519,10 +8764,25 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* Followup flow — each node is dim by default; a 5s cycle pulses
    them sequentially: purple → blue → amber → green (and green
    holds for ~1s before the loop restarts). */
-.cap-mini--flow { gap: 2px; justify-content: center; }
+.cap-mini--flow {
+  min-height: 168px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  gap: 0;
+  padding: 0 6px;
+}
+.cap-flow-step {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 11px;
+  width: 100%;
+}
 .cap-flow-node {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   border-radius: 50%;
   /* Dim resting state — pulse animations brighten each in turn */
@@ -8537,16 +8797,24 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition: background 0.35s, border-color 0.35s, color 0.35s, box-shadow 0.35s;
 }
-.cap-flow-dash { flex-shrink: 0; }
 .cap-flow-node svg { width: 16px; height: 16px; }
+.cap-flow-label {
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(220, 215, 245, 0.70);
+  white-space: nowrap;
+}
+.cap-flow-node--done + .cap-flow-label {
+  color: rgba(134, 239, 172, 0.92);
+}
 /* `--done` no longer needs special styling — the green is now provided
    by capFlowStep4 keyframes. */
 
 /* Sequential pulse — nth-child(1,3,5,7) are the 4 nodes (dashes are 2,4,6) */
-.cap-card--followup .cap-mini--flow .cap-flow-node:nth-child(1) { animation: capFlowStep1 5s ease-in-out infinite; }
-.cap-card--followup .cap-mini--flow .cap-flow-node:nth-child(3) { animation: capFlowStep2 5s ease-in-out infinite; }
-.cap-card--followup .cap-mini--flow .cap-flow-node:nth-child(5) { animation: capFlowStep3 5s ease-in-out infinite; }
-.cap-card--followup .cap-mini--flow .cap-flow-node:nth-child(7) { animation: capFlowStep4 5s ease-in-out infinite; }
+.cap-card--followup .cap-flow-step:nth-child(1) .cap-flow-node { animation: capFlowStep1 5s ease-in-out infinite; }
+.cap-card--followup .cap-flow-step:nth-child(2) .cap-flow-node { animation: capFlowStep2 5s ease-in-out infinite; }
+.cap-card--followup .cap-flow-step:nth-child(3) .cap-flow-node { animation: capFlowStep3 5s ease-in-out infinite; }
+.cap-card--followup .cap-flow-step:nth-child(4) .cap-flow-node { animation: capFlowStep4 5s ease-in-out infinite; }
 
 @keyframes capFlowStep1 {
   0%, 22% { /* highlighted purple */
@@ -8606,15 +8874,17 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   }
 }
 .cap-flow-dash {
-  width: 14px;
+  position: absolute;
+  left: calc(50% + 25px);
+  top: 19px;
+  width: calc(100% - 50px);
   height: 1px;
   background-image: repeating-linear-gradient(90deg, rgba(167, 139, 250, 0.55) 0 3px, transparent 3px 6px);
-  position: relative;
 }
 .cap-flow-dash::after {
   content: '›';
   position: absolute;
-  right: -4px;
+  right: -7px;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(167, 139, 250, 0.7);
@@ -8624,8 +8894,137 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 
 /* Multi-Agent System — peer-to-peer mesh. 5 agents: 3 on top row,
    2 offset on bottom row. SVG draws the edge lines between peers. */
-.cap-mini--agents { min-height: 140px; position: relative; }
-.cap-card--agents .cap-mini { min-height: 140px; }
+.cap-mini--agents { min-height: 154px; position: relative; }
+.cap-card--agents .cap-mini { min-height: 154px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MULTI-AGENT HUB v3 — PROXe orchestrator at center, 5 channels
+   orbit around it, concentric rings + dashed spokes connect them.
+═══════════════════════════════════════════════════════════════ */
+.cap-agent-hub {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Central PROXe orchestrator orb — sized for the small card vis area */
+.cap-agent-hub-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(196, 181, 253, 0.5) 0%, rgba(124, 58, 237, 0.85) 55%, rgba(76, 29, 149, 0.95) 100%);
+  border: 1.5px solid rgba(196, 181, 253, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow:
+    0 0 0 3px rgba(167, 139, 250, 0.12),
+    0 0 16px rgba(167, 139, 250, 0.45),
+    0 0 36px rgba(124, 58, 237, 0.30),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  animation: capHubPulse 6s ease-in-out infinite;
+}
+.cap-agent-hub-logo {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+  filter: brightness(1.1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+}
+@keyframes capHubPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px rgba(167, 139, 250, 0.12),
+      0 0 24px rgba(167, 139, 250, 0.45),
+      0 0 60px rgba(124, 58, 237, 0.35),
+      inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(167, 139, 250, 0.18),
+      0 0 40px rgba(167, 139, 250, 0.6),
+      0 0 80px rgba(124, 58, 237, 0.5),
+      inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Orbital channel nodes — positioned via inline left/top % */
+.cap-agent-orbit-node {
+  --brand: #a78bfa;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  animation: capOrbitPulse 6s ease-in-out infinite;
+}
+.cap-agent-orbit-ring {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--brand) 34%, rgba(167, 139, 250, 0.12)), rgba(124, 58, 237, 0.10));
+  border: 1px solid color-mix(in srgb, var(--brand) 58%, rgba(255, 255, 255, 0.16));
+  color: var(--brand);
+  box-shadow:
+    0 6px 14px color-mix(in srgb, var(--brand) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.cap-agent-orbit-ring svg { width: 13px; height: 13px; }
+/* Tiny status dot — top-right of every channel node */
+.cap-agent-orbit-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--brand) 80%, transparent);
+}
+.cap-agent-orbit-label {
+  font-family: var(--proxe-font-sans);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(220, 215, 245, 0.85);
+  background: rgba(10, 6, 30, 0.76);
+  border: 1px solid rgba(167, 139, 250, 0.16);
+  border-radius: 999px;
+  padding: 1px 6px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+/* Sequential pulse — each channel briefly highlights in turn */
+@keyframes capOrbitPulse {
+  0%, 88%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  10% {
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+.cap-agent-orbit-node--web { animation-delay: 0s; }
+.cap-agent-orbit-node--voi { animation-delay: 1.2s; }
+.cap-agent-orbit-node--sms { animation-delay: 2.4s; }
+.cap-agent-orbit-node--mai { animation-delay: 3.6s; }
+.cap-agent-orbit-node--wa  { animation-delay: 4.8s; }
 
 .cap-agent-mesh {
   position: absolute;
@@ -8699,70 +9098,45 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   }
 }
 
-/* Shield — radar pulses expanding outward + a "verified" check badge */
-.cap-mini--shield { min-height: 110px; }
-.cap-mini--shield .cap-shield-ring {
-  position: absolute;
-  left: 50%; top: 50%;
-  border-radius: 50%;
-  border: 1px solid rgba(167, 139, 250, 0.30);
-  transform: translate(-50%, -50%);
+/* Enterprise Security — larger shield visual with compact proof badges */
+.cap-mini--shield {
+  min-height: 190px;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 0;
 }
-.cap-mini--shield .cap-shield-ring--1 { width: 52px; height: 52px; border-color: rgba(167, 139, 250, 0.35); }
-.cap-mini--shield .cap-shield-ring--2 { width: 36px; height: 36px; border-color: rgba(167, 139, 250, 0.55); }
-.cap-mini--shield .cap-shield-pulse {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 32px; height: 32px;
-  margin-left: -16px; margin-top: -16px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(167, 139, 250, 0.55);
-  opacity: 0;
-  animation: capShieldPulse 3s ease-out infinite;
+.cap-shield-svg {
+  width: min(100%, 270px);
+  height: 150px;
+  overflow: visible;
+  filter:
+    drop-shadow(0 0 18px rgba(167, 139, 250, 0.42))
+    drop-shadow(0 18px 26px rgba(0, 0, 0, 0.26));
 }
-.cap-shield-pulse--2 { animation-delay: 1s; }
-.cap-shield-pulse--3 { animation-delay: 2s; }
-@keyframes capShieldPulse {
-  0%   { transform: scale(0.6); opacity: 0; }
-  20%  { opacity: 0.85; }
-  100% { transform: scale(3); opacity: 0; }
+.cap-security-badges {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
-.cap-mini--shield .cap-shield-core {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 40px; height: 40px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e9d5ff, #c4b5fd 35%, #7c3aed 85%, #4c1d95 100%);
-  color: #fff;
-  display: flex;
+.cap-security-badges span {
+  min-width: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 0 22px rgba(167, 139, 250, 0.65),
-    0 4px 14px rgba(124, 58, 237, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  z-index: 2;
+  gap: 5px;
+  padding: 8px 6px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.20);
+  color: rgba(220, 252, 231, 0.9);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
 }
-/* Small "verified" badge that pings on its own loop */
-.cap-shield-verified {
-  position: absolute;
-  left: calc(50% + 14px);
-  top:  calc(50% + 10px);
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4ade80, #16a34a);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
-  z-index: 3;
-  animation: capShieldVerified 3s ease-in-out infinite;
-}
-@keyframes capShieldVerified {
-  0%, 70%, 100% { transform: scale(1);    opacity: 1; }
-  85%           { transform: scale(1.15); opacity: 0.7; }
+.cap-security-badges svg {
+  color: #4ade80;
+  flex-shrink: 0;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -8858,8 +9232,22 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   .cap-orb-wrap { width: 140px; height: 140px; margin: 0 auto; }
   .cap-hero-title { font-size: 28px; }
   .cap-hero-header { grid-template-columns: 1fr; gap: 14px; }
-  .cap-hero-stats { padding: 12px 14px; gap: 8px; }
-  .cap-stat { padding: 4px 0; }
+  .cap-hero-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 8px; gap: 0; }
+  .cap-stat {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    row-gap: 5px;
+    padding: 0 6px;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: none;
+  }
+  .cap-stat:last-child { border-right: none; }
+  .cap-stat-ico { width: 28px; height: 28px; }
+  .cap-stat-ico svg { width: 14px; height: 14px; }
+  .cap-stat-val { font-size: 24px; }
+  .cap-stat--memory .cap-stat-val { font-size: 34px; line-height: 0.78; }
+  .cap-stat-lbl { font-size: 9.5px; white-space: normal; line-height: 1.15; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -9391,7 +9779,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
    final transform AFTER the entry animation lands. Otherwise the generic
    .pr-card rule above wins and resets transform to none. */
 .pr-section.pr-in .pr-card.pr-card--popular {
-  transform: translateY(-12px) scale(1.035);
+  transform: translateY(-16px) scale(1.045);
   transition-delay: 0.30s;
 }
 .pr-section.pr-in .pr-trust      { opacity: 1; transform: none; transition-delay: 0.38s; }
@@ -9443,7 +9831,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* Header right vis — channel pips → curved lines → hex orb + callout */
 .pr-header-vis {
   position: relative;
-  min-height: 200px;
+  min-height: 214px;
   padding-top: 6px;
 }
 .pr-channels-row {
@@ -9480,19 +9868,36 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   position: absolute;
   left: 0;
   right: 0;
-  top: 40px;
-  height: 120px;
+  top: 38px;
+  height: 142px;
   width: 100%;
   pointer-events: none;
-  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.4));
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.45));
   z-index: 1;
+}
+.pr-channel-wire-line,
+.pr-channel-wire-glow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 4 5;
+}
+.pr-channel-wire-glow {
+  stroke-width: 5;
+  stroke-opacity: 0.12;
+}
+.pr-channel-wire-line {
+  stroke-width: 1.45;
+  stroke-opacity: 0.80;
+}
+.pr-channel-wire-dot {
+  filter: drop-shadow(0 0 7px rgba(196, 181, 253, 0.75));
 }
 .pr-hex {
   position: absolute;
   left: 50%;
-  bottom: 36px;
-  width: 84px;
-  height: 92px;
+  bottom: 26px;
+  width: 92px;
+  height: 100px;
   transform: translateX(-50%);
   filter: drop-shadow(0 0 18px rgba(167, 139, 250, 0.55));
   z-index: 2;
@@ -9532,38 +9937,78 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 }
 .pr-grid--3 {
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 20px;
   align-items: stretch;
+  overflow: visible;
 }
 .pr-card {
   position: relative;
-  background: linear-gradient(180deg, rgba(8, 6, 24, 0.55) 0%, rgba(12, 9, 32, 0.65) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  isolation: isolate;
+  overflow: visible;
+  background:
+    radial-gradient(90% 70% at 50% 0%, rgba(124, 58, 237, 0.16), transparent 68%),
+    linear-gradient(180deg, rgba(20, 12, 55, 0.72) 0%, rgba(10, 6, 30, 0.82) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.14);
   border-radius: 22px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 54px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   padding: 28px 26px 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
   gap: 14px;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+}
+.pr-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 21px;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 42%),
+    radial-gradient(75% 55% at 50% 100%, rgba(124, 58, 237, 0.10), transparent 72%);
+  z-index: 0;
+}
+.pr-card:hover {
+  border-color: rgba(196, 181, 253, 0.26);
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.44),
+    0 0 34px rgba(124, 58, 237, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 /* Same dark card body as Starter — the only highlight is a bright
    gradient border + a soft outer purple glow. No washed-out background. */
 .pr-card--popular {
   border: 1.5px solid transparent;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(124, 58, 237, 0.18) 0%, transparent 55%) padding-box,
-    linear-gradient(180deg, rgba(14, 9, 38, 0.85) 0%, rgba(10, 7, 30, 0.95) 100%) padding-box,
-    linear-gradient(135deg, #c4b5fd 0%, #a78bfa 50%, #7c3aed 100%) border-box;
+    radial-gradient(115% 85% at 50% -8%, rgba(196, 181, 253, 0.30) 0%, rgba(124, 58, 237, 0.20) 42%, transparent 68%) padding-box,
+    linear-gradient(180deg, rgba(30, 20, 72, 0.92) 0%, rgba(13, 8, 35, 0.96) 100%) padding-box,
+    linear-gradient(145deg, #ede9fe 0%, #c4b5fd 20%, #8b5cf6 58%, #6d28d9 100%) border-box;
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.55),
-    0 0 60px rgba(124, 58, 237, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    0 30px 86px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(196, 181, 253, 0.16),
+    0 0 72px rgba(124, 58, 237, 0.48),
+    0 0 130px rgba(167, 139, 250, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   /* Visually win: slightly larger + lifted relative to siblings */
-  transform: translateY(-12px) scale(1.035);
+  transform: translateY(-16px) scale(1.045);
   z-index: 2;
+}
+.pr-card--popular::after {
+  content: "";
+  position: absolute;
+  inset: -34px -28px;
+  border-radius: 32px;
+  background:
+    radial-gradient(55% 45% at 50% 8%, rgba(216, 180, 254, 0.40), transparent 72%),
+    radial-gradient(62% 50% at 50% 100%, rgba(124, 58, 237, 0.40), transparent 76%);
+  filter: blur(18px);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: -1;
 }
 .pr-card--popular .pr-card-popular-glow {
   position: absolute;
@@ -9571,7 +10016,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   border-radius: inherit;
   pointer-events: none;
   background:
-    radial-gradient(60% 50% at 50% 110%, rgba(167, 139, 250, 0.25) 0%, transparent 70%);
+    radial-gradient(70% 45% at 50% 110%, rgba(167, 139, 250, 0.32) 0%, transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 38%);
   z-index: 0;
 }
 .pr-card-tier--popular {
@@ -9758,9 +10204,12 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 button.pr-cta { padding: 0 22px; }
 .pr-cta--ghost {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid rgba(196, 181, 253, 0.55);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  background:
+    linear-gradient(180deg, rgba(124, 58, 237, 0.16), rgba(15, 10, 38, 0.70));
+  border: 1.5px solid rgba(196, 181, 253, 0.24);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .pr-cta--ghost:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -9769,11 +10218,14 @@ button.pr-cta { padding: 0 22px; }
 }
 .pr-cta--primary {
   color: #fff;
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 55%, #7c3aed 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.30);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), transparent 42%),
+    linear-gradient(135deg, #6d28d9 0%, #a78bfa 48%, #7c3aed 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.42);
   box-shadow:
-    0 10px 30px rgba(124, 58, 237, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 14px 38px rgba(124, 58, 237, 0.62),
+    0 0 34px rgba(167, 139, 250, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
   font-weight: 700;
 }
 .pr-cta--primary:hover {
@@ -9896,23 +10348,27 @@ button.pr-cta { padding: 0 22px; }
   align-items: center;
   gap: 12px;
   padding: 14px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(196, 181, 253, 0.14);
   border-radius: 14px;
   position: relative;
   z-index: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .pr-card-marquee-ico {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(124, 58, 237, 0.20);
-  border: 1px solid rgba(124, 58, 237, 0.40);
-  color: #c4b5fd;
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.26), rgba(124, 58, 237, 0.16));
+  border: 1px solid rgba(196, 181, 253, 0.28);
+  color: #ddd6fe;
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.18);
 }
 .pr-card-marquee-ico--inf {
   font-size: 22px;
@@ -9941,14 +10397,20 @@ button.pr-cta { padding: 0 22px; }
 /* Unlimited variant — gradient-tinted background to draw the eye */
 .pr-card-marquee--unlimited {
   background:
-    linear-gradient(135deg, rgba(124, 58, 237, 0.22) 0%, rgba(167, 139, 250, 0.10) 100%);
-  border-color: rgba(167, 139, 250, 0.40);
-  box-shadow: 0 0 24px rgba(124, 58, 237, 0.25);
+    radial-gradient(90% 120% at 10% 0%, rgba(196, 181, 253, 0.22), transparent 54%),
+    linear-gradient(135deg, rgba(124, 58, 237, 0.32) 0%, rgba(167, 139, 250, 0.13) 100%);
+  border-color: rgba(196, 181, 253, 0.44);
+  box-shadow:
+    0 0 30px rgba(124, 58, 237, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 .pr-card-marquee--unlimited .pr-card-marquee-ico {
   background: linear-gradient(135deg, #7c3aed, #a78bfa);
   border-color: rgba(255, 255, 255, 0.30);
   color: #fff;
+  box-shadow:
+    0 0 26px rgba(167, 139, 250, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
 /* ── Channels list — compact 2-column variant ── */

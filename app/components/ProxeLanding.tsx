@@ -835,6 +835,20 @@ function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]
 }
 
 /* ===== Messenger ===== */
+/** Inline Facebook Messenger glyph. `fillRule="evenodd"` is critical so the
+ *  lightning bolt is CARVED OUT of the speech bubble rather than overlaid on
+ *  top of it — without it, the path paints as a solid white blob and you
+ *  lose the recognizable logo shape entirely. */
+const MessengerGlyph = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M16 .533C7.163.533 0 7.214 0 15.453c0 4.693 2.325 8.886 5.953 11.62V32l5.443-2.987c1.453.4 2.99.62 4.604.62 8.837 0 16-6.681 16-14.92C32 7.215 24.837.533 16 .533Zm1.59 20.097-4.075-4.348-7.952 4.348 8.748-9.29 4.174 4.348 7.85-4.348-8.745 9.29Z"
+    />
+  </svg>
+);
+
 function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]; isActive: boolean }) {
   const { shownCount, isTyping } = useConversationPlayer(channel.messages, isActive);
   const visible = channel.messages.slice(0, shownCount);
@@ -846,7 +860,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
       <div className="ms-header">
         <div className="ms-h-left">
           <svg className="ms-h-back" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-          <div className="ms-h-avatar"><SiMessenger size={18} /><span className="ms-h-online" /></div>
+          <div className="ms-h-avatar"><MessengerGlyph size={18} /><span className="ms-h-online" /></div>
           <div className="ms-meta">
             <div className="ms-name">PROXe</div>
             <div className="ms-status">Active now</div>
@@ -865,7 +879,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
             <div key={i} className={`ms-row ms-row--${side} ${last ? 'is-last' : ''} is-first conv-msg-in`}>
               {m.from === 'proxe' && (
                 <div className="ms-bubble-avatar">
-                  {last && <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger size={14} /></div>}
+                  {last && <div className="ms-h-avatar ms-h-avatar--small"><MessengerGlyph size={14} /></div>}
                 </div>
               )}
               <div className="ms-bubble">{m.text}</div>
@@ -875,7 +889,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
         {isTyping && (
           <div className="ms-row ms-row--ai is-last is-first conv-msg-in">
             <div className="ms-bubble-avatar">
-              <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger size={14} /></div>
+              <div className="ms-h-avatar ms-h-avatar--small"><MessengerGlyph size={14} /></div>
             </div>
             <div className="ms-bubble ms-bubble--typing"><span /><span /><span /></div>
           </div>
@@ -1398,30 +1412,43 @@ export default function ProxeLanding() {
           <div className="proxe-faq">
             <FaqItem
               question="How fast is setup?"
-              answer="Most teams are live in under a week. We plug into your existing channels and CRM, configure the voice and flows, and go."
+              answer="Most businesses go live within 48 hours. Our team handles the setup, builds your custom flows, and trains the AI on your knowledge base. No technical work from your side."
             />
             <FaqItem
               question="Do you integrate with my CRM?"
-              answer="Yes. Native connections to the common CRMs and a generic webhook option for anything custom."
-              placeholder
+              answer="PROXe replaces the need for a separate CRM by capturing, qualifying, and tracking every lead in one place. If you already use a CRM, we can sync leads, conversations, and stages into it."
             />
             <FaqItem
               question="What channels are supported?"
-              answer="Website chat, WhatsApp, Voice, Email, SMS, and Instagram DMs today. More on request."
+              answer="Website chat, WhatsApp, Instagram DM, Facebook Messenger, Email, and Voice (inbound and outbound calls). All channels share one unified memory, so customers never repeat themselves."
             />
             <FaqItem
               question="Is my data secure?"
-              answer="Encrypted at rest and in transit. Role-based access. We do not train shared models on your conversations."
-              placeholder
+              answer="Yes. All customer data is encrypted in transit and at rest. We are GDPR and CCPA compliant. Enterprise plans include SOC 2 review and private cloud deployment options."
             />
             <FaqItem
               question="Can my team take over conversations?"
-              answer="Anytime. Jump into any thread from the Command Center. PROXe hands over cleanly and resumes on your signal."
+              answer="Anytime. PROXe hands off to your team the moment you jump in, with full conversation context across every channel. The AI picks back up when you step away."
             />
             <FaqItem
-              question="What happens after 1000 conversations on Starter?"
+              question="What happens after 1,000 conversations on Starter?"
               answer="You can upgrade to Unlimited anytime. If you cross the limit mid-month, we keep things running and true-up at renewal."
-              placeholder
+            />
+            <FaqItem
+              question="What counts as a conversation?"
+              answer="One conversation equals one unique customer, no matter how many messages they send or how many channels they reach out on. Whether they message you on WhatsApp, then Instagram, then call you, it's still one conversation because it's one person. You're billed per unique customer, not per message or per channel."
+            />
+            <FaqItem
+              question="What if a lead goes silent?"
+              answer="PROXe automatically follows up across available channels. Smart nudges on WhatsApp, calls, email, and SMS bring cold prospects back. No opportunity dies from silence."
+            />
+            <FaqItem
+              question="Does it speak my customers' language?"
+              answer="Yes. PROXe handles English, Hindi, Tamil, Telugu, Malayalam, Kannada, and more. Voice supports Indian languages with native accents."
+            />
+            <FaqItem
+              question="Can I cancel anytime?"
+              answer="Yes. No long-term contracts on Starter or Unlimited. Cancel anytime, keep your data export."
             />
           </div>
         </div>
@@ -1438,7 +1465,7 @@ export default function ProxeLanding() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 3l2.39 5.84L20 11l-5.61 2.16L12 19l-2.39-5.84L4 11l5.61-2.16L12 3z" />
               </svg>
-              AI THAT CLOSES
+              AI THAT CONVERTS
             </div>
 
             <h2 className="proxe-cc-title">

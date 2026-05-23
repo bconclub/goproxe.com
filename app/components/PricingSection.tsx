@@ -101,21 +101,30 @@ export default function PricingSection() {
               ))}
             </div>
 
-            <svg className="pr-channels-lines" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="pr-channels-lines" viewBox="0 0 600 130" preserveAspectRatio="none" aria-hidden="true">
               <defs>
-                <linearGradient id="prLine" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor="rgba(196,181,253,0.6)" />
-                  <stop offset="100%" stopColor="rgba(124,58,237,0.85)" />
-                </linearGradient>
+                {CHANNELS_HEADER.map((c, i) => (
+                  <linearGradient key={c.label} id={`prLine-${i}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={c.color} stopOpacity="0.92" />
+                    <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.72" />
+                  </linearGradient>
+                ))}
               </defs>
-              <g fill="none" stroke="url(#prLine)" strokeWidth="1.4" strokeLinecap="round">
-                <path d="M 50  0 Q 300 50 300 90" />
-                <path d="M 150 0 Q 300 50 300 90" />
-                <path d="M 250 0 Q 300 50 300 90" />
-                <path d="M 350 0 Q 300 50 300 90" />
-                <path d="M 450 0 Q 300 50 300 90" />
-                <path d="M 550 0 Q 300 50 300 90" />
-              </g>
+              {[
+                'M 50 8 C 120 28 180 52 300 112',
+                'M 150 8 C 190 35 238 58 300 112',
+                'M 250 8 C 270 42 286 72 300 112',
+                'M 350 8 C 330 42 314 72 300 112',
+                'M 450 8 C 410 35 362 58 300 112',
+                'M 550 8 C 480 28 420 52 300 112',
+              ].map((d, i) => (
+                <g key={d} className="pr-channel-wire">
+                  <path className="pr-channel-wire-glow" d={d} stroke={`url(#prLine-${i})`} />
+                  <path className="pr-channel-wire-line" d={d} stroke={`url(#prLine-${i})`} />
+                  <circle className="pr-channel-wire-dot pr-channel-wire-dot--top" cx={[50, 150, 250, 350, 450, 550][i]} cy="8" r="2.4" fill={CHANNELS_HEADER[i].color} />
+                </g>
+              ))}
+              <circle className="pr-channel-wire-dot pr-channel-wire-dot--hub" cx="300" cy="112" r="3.2" fill="#ede9fe" />
             </svg>
 
             <div className="pr-hex">

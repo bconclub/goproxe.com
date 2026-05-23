@@ -535,7 +535,7 @@ function MsnChat({ isActive }: { isActive: boolean }) {
       <div className="cd-msn-hdr">
         <span className="cd-msn-back"><FiChevronLeft size={16} /></span>
         <div className="cd-msn-hdr-av">
-          <svg width="14" height="14" viewBox="0 0 24 24"><defs><linearGradient id="msn-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#0695FF"/><stop offset="100%" stopColor="#A033FF"/></linearGradient></defs><path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.94 1.32 5.57 3.4 7.37L5 22l3.5-1.9A10.83 10.83 0 0012 20.486c5.523 0 10-4.145 10-9.243C22 6.145 17.523 2 12 2z" fill="url(#msn-g)"/><path d="M7 13l2.5-3.5L12 11l2.5-3.5L17 11" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" fill="none"/></svg>
+          <SiMessenger size={15} />
         </div>
         <div className="cd-msn-hdr-info">
           <span className="cd-msn-hdr-name">Clinic PROXe</span>
