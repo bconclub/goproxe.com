@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase } from 'react-icons/fi';
+import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase, FiShield, FiZap, FiTrendingUp } from 'react-icons/fi';
 import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
 import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
@@ -649,8 +649,32 @@ function ChannelCoverflow() {
               <span className="proxe-phone-btn proxe-phone-btn--pwr" aria-hidden="true" />
               {/* Device body — overflow:hidden clips screen to rounded corners */}
               <div className="proxe-phone-outer">
-                <div className="proxe-phone-notch">
-                  <span className="proxe-phone-cam-pill" />
+                {/* Top region: Dynamic Island floats over the status bar */}
+                <div className="proxe-phone-statusbar">
+                  <span className="proxe-phone-time">9:41</span>
+                  <span className="proxe-phone-island" aria-hidden="true">
+                    <span className="proxe-phone-island-cam" />
+                  </span>
+                  <span className="proxe-phone-statusbar-right" aria-hidden="true">
+                    {/* Cellular bars */}
+                    <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true">
+                      <rect x="0"  y="7" width="3" height="4" rx="0.5" />
+                      <rect x="4"  y="5" width="3" height="6" rx="0.5" />
+                      <rect x="8"  y="3" width="3" height="8" rx="0.5" />
+                      <rect x="12" y="0" width="3" height="11" rx="0.5" />
+                    </svg>
+                    {/* WiFi */}
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+                      <path d="M1.5 3.8 A9 9 0 0 1 13.5 3.8" />
+                      <path d="M3.6 5.9 A6 6 0 0 1 11.4 5.9" />
+                      <path d="M5.7 8.0 A3 3 0 0 1 9.3 8.0" />
+                      <circle cx="7.5" cy="9.5" r="0.8" fill="currentColor" />
+                    </svg>
+                    {/* Battery */}
+                    <span className="proxe-phone-bat" aria-hidden="true">
+                      <span className="proxe-phone-bat-fill" />
+                    </span>
+                  </span>
                 </div>
                 <div className="proxe-chat-shell">
                   <PlatformChat channel={ch} isActive={i === active} />
@@ -822,7 +846,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
       <div className="ms-header">
         <div className="ms-h-left">
           <svg className="ms-h-back" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0084FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-          <div className="ms-h-avatar"><SiMessenger /><span className="ms-h-online" /></div>
+          <div className="ms-h-avatar"><SiMessenger size={18} /><span className="ms-h-online" /></div>
           <div className="ms-meta">
             <div className="ms-name">PROXe</div>
             <div className="ms-status">Active now</div>
@@ -841,7 +865,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
             <div key={i} className={`ms-row ms-row--${side} ${last ? 'is-last' : ''} is-first conv-msg-in`}>
               {m.from === 'proxe' && (
                 <div className="ms-bubble-avatar">
-                  {last && <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>}
+                  {last && <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger size={14} /></div>}
                 </div>
               )}
               <div className="ms-bubble">{m.text}</div>
@@ -851,7 +875,7 @@ function MessengerChat({ channel, isActive }: { channel: typeof CHANNELS[number]
         {isTyping && (
           <div className="ms-row ms-row--ai is-last is-first conv-msg-in">
             <div className="ms-bubble-avatar">
-              <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger /></div>
+              <div className="ms-h-avatar ms-h-avatar--small"><SiMessenger size={14} /></div>
             </div>
             <div className="ms-bubble ms-bubble--typing"><span /><span /><span /></div>
           </div>
@@ -1404,84 +1428,152 @@ export default function ProxeLanding() {
       </section>
 
       {/* ===== 15. Footer CTA ===== */}
-      <section className="proxe-footer-cta" id="book-demo">
+      {/* ===== 15. Closing CTA — glass card, eyebrow chip, split headline,
+                    primary button + trust strip ===== */}
+      <section className="proxe-cc" id="book-demo">
         <div className="proxe-container">
-          <h2 className="proxe-footer-cta-title">Stop losing leads. Start closing them.</h2>
-          <button type="button" onClick={openModal} className="proxe-btn proxe-btn-primary">
-            Book a Demo
-          </button>
+          <div className="proxe-cc-card">
+            {/* Eyebrow chip */}
+            <div className="proxe-cc-eyebrow">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3l2.39 5.84L20 11l-5.61 2.16L12 19l-2.39-5.84L4 11l5.61-2.16L12 3z" />
+              </svg>
+              AI THAT CLOSES
+            </div>
+
+            <h2 className="proxe-cc-title">
+              Stop losing leads.<br />
+              <span className="proxe-cc-title-grad">Start closing them.</span>
+            </h2>
+            <p className="proxe-cc-sub">
+              PROXe finds, remembers, and converts — across every channel.<br />
+              Your always-on revenue engine.
+            </p>
+
+            <button type="button" onClick={openModal} className="proxe-hero-big-cta proxe-cc-cta">
+              Book a Demo
+              <span className="proxe-hero-big-cta-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </span>
+            </button>
+
+            <ul className="proxe-hero-trust proxe-cc-trust">
+              <li><span className="proxe-hero-trust-ico"><FiShield size={14} /></span> No credit card</li>
+              <li><span className="proxe-hero-trust-ico"><FiZap size={14} /></span> Setup in minutes</li>
+              <li><span className="proxe-hero-trust-ico"><FiTrendingUp size={14} /></span> ROI from day one</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ===== 16. Footer ===== */}
-      <footer className="proxe-footer">
-        <div className="proxe-container">
-          <div className="proxe-footer-grid">
-            <div>
-              <img
-                src="/proxe/brand/proxe-logo-white.webp"
-                alt="PROXe"
-                className="proxe-footer-logo"
-              />
-              <p className="proxe-footer-brand-tagline">
-                The AI customer acquisition system. Every channel. One memory. Always on.
+      {/* ===== 16. Footer — outline wordmark + 5-col grid ===== */}
+      <footer className="pf">
+        {/* Giant brand wordmark, decorative — uses the actual logo asset
+            (not a CSS text-stroke outline) so the letterforms are correct. */}
+        <img
+          src="/proxe/brand/proxe-logo-white.webp"
+          alt=""
+          aria-hidden="true"
+          className="pf-wordmark-img"
+        />
+
+        <div className="proxe-container pf-inner">
+          <div className="pf-grid">
+            {/* Brand column — tagline + newsletter signup
+                (no small wordmark; the giant outline above is the brand mark) */}
+            <div className="pf-brand">
+              <p className="pf-tagline">
+                The AI customer acquisition system.<br />
+                Every channel. One memory. Always on.
               </p>
+              <form
+                className="pf-news"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const input = (e.currentTarget.elements.namedItem('email') as HTMLInputElement);
+                  // TODO: wire to your real list endpoint (Mailchimp / Resend / Loops).
+                  // For now, just log + clear.
+                  if (input?.value) {
+                    console.log('[newsletter] subscribe:', input.value);
+                    input.value = '';
+                    (e.currentTarget.querySelector('.pf-news-ok') as HTMLElement)?.classList.add('pf-news-ok--show');
+                  }
+                }}
+              >
+                <label className="pf-news-label">Get product updates</label>
+                <div className="pf-news-row">
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="you@company.com"
+                    className="pf-news-input"
+                    autoComplete="email"
+                  />
+                  <button type="submit" className="pf-news-btn">Subscribe</button>
+                </div>
+                <div className="pf-news-ok">Thanks — you&rsquo;re on the list ✓</div>
+              </form>
             </div>
-            <div>
-              <div className="proxe-footer-col-title">Product</div>
-              <ul className="proxe-footer-links">
-                <li>
-                  <a href="#features">Features</a>
-                </li>
-                <li>
-                  <a href="#pricing">Pricing</a>
-                </li>
-                <li>
-                  <a href="#voice">Live Demo</a>
-                </li>
+
+            {/* Product */}
+            <div className="pf-col">
+              <div className="pf-col-title">Product</div>
+              <ul className="pf-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#voice">Live Demo</a></li>
               </ul>
             </div>
-            <div>
-              <div className="proxe-footer-col-title">Company</div>
-              <ul className="proxe-footer-links">
-                <li>
-                  <a href="/about">About</a>
-                </li>
-                <li>
-                  <a href="mailto:hello@bconclub.com">Contact</a>
-                </li>
-                <li>
-                  <a href="#faq">FAQ</a>
-                </li>
+
+            {/* Company */}
+            <div className="pf-col">
+              <div className="pf-col-title">Company</div>
+              <ul className="pf-links">
+                <li><a href="/about">About</a></li>
+                <li><a href="mailto:hello@bconclub.com">Contact</a></li>
+                <li><a href="#faq">FAQ</a></li>
               </ul>
             </div>
-            <div>
-              <div className="proxe-footer-col-title">Legal</div>
-              <ul className="proxe-footer-links">
-                <li>
-                  <a href="/privacy">Privacy</a>
-                </li>
-                <li>
-                  <a href="/privacy">Terms</a>
-                </li>
+
+            {/* Legal */}
+            <div className="pf-col">
+              <div className="pf-col-title">Legal</div>
+              <ul className="pf-links">
+                <li><a href="/privacy">Privacy</a></li>
+                <li><a href="/privacy">Terms</a></li>
               </ul>
-              <div className="proxe-footer-col-title" style={{ marginTop: 20 }}>
-                Social
-              </div>
-              <div className="proxe-footer-socials">
-                <a href="#" aria-label="X / Twitter">
-                  <Icon.X size={14} />
+            </div>
+
+            {/* Social — circular icon buttons */}
+            <div className="pf-col">
+              <div className="pf-col-title">Social</div>
+              <div className="pf-socials">
+                <a href="#" aria-label="X / Twitter" className="pf-social">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
                 </a>
-                <a href="#" aria-label="LinkedIn">
-                  in
+                <a href="#" aria-label="LinkedIn" className="pf-social">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.778 13.019H3.555V9h3.56v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg>
                 </a>
-                <a href="#" aria-label="Instagram">
-                  ig
+                <a href="#" aria-label="Instagram" className="pf-social">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
                 </a>
               </div>
             </div>
           </div>
-          <div className="proxe-footer-copyright">© 2026 PROXe by BCON Club.</div>
+
+          <div className="pf-bottom">
+            <div className="pf-copyright">© 2026 PROXe by BCON Club. All rights reserved.</div>
+          </div>
         </div>
       </footer>
     </main>

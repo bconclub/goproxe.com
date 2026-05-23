@@ -666,22 +666,90 @@ body:has(.proxe-root) {
   flex-direction: column;
 }
 
-/* Top notch area */
-.proxe-phone-notch {
+/* iOS-style status bar — 9:41 left, Dynamic Island center (floating),
+   cellular + wifi + battery right. Sits at the very top of the device
+   body, painted on a flat dark background so the Island reads cleanly. */
+.proxe-phone-statusbar {
   flex-shrink: 0;
-  height: 38px;
+  position: relative;
+  height: 54px;
+  padding: 0 28px;
+  background: #06060c;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #06060c;
+  justify-content: space-between;
+  color: #ffffff;
+  z-index: 2;
 }
-/* Dynamic island */
-.proxe-phone-cam-pill {
-  display: block;
-  width: 118px; height: 34px;
+.proxe-phone-time {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  z-index: 2;
+}
+.proxe-phone-statusbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  z-index: 2;
+}
+/* Battery — rounded pill with a fill bar inside + tip nub */
+.proxe-phone-bat {
+  position: relative;
+  width: 24px;
+  height: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 3px;
+  padding: 1px;
+  display: inline-flex;
+}
+.proxe-phone-bat::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 5px;
+  border-radius: 0 1px 1px 0;
+  background: rgba(255, 255, 255, 0.55);
+}
+.proxe-phone-bat-fill {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 1.5px;
+  width: 82%;
+}
+
+/* Dynamic Island — centered, floats absolutely so the status bar
+   text wraps around it. Subtle inset highlight + camera dot. */
+.proxe-phone-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
   border-radius: 100px;
   background: #000;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+  box-shadow:
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 14px;
+  z-index: 1;
+}
+.proxe-phone-island-cam {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, #2a2342 0%, #07050f 60%, #000 100%);
+  box-shadow: inset 0 0 0 0.5px rgba(120, 110, 180, 0.4);
 }
 
 /* Home indicator */
@@ -1016,6 +1084,7 @@ body:has(.proxe-root) {
   color: #fff; font-size: 16px;
   flex-shrink: 0;
 }
+.ms-h-avatar svg { color: #fff; fill: #fff; }
 .ms-h-avatar--small { width: 24px; height: 24px; font-size: 12px; }
 .ms-h-online {
   position: absolute; right: -1px; bottom: -1px;
@@ -1647,31 +1716,52 @@ body:has(.proxe-root) {
 }
 
 /* The single, oversized Deploy PROXe CTA — white pill, dark chip */
-.proxe-hero-ctas .proxe-hero-big-cta {
+/* Big lavender pill CTA — used in the hero AND the closing CTA card.
+   Selector prefixed with .proxe-root to beat the global
+   `.proxe-root button { background: none; color: inherit }` reset
+   that lives earlier in this file. (Specificity 0,2,0 vs 0,1,1.) */
+.proxe-root .proxe-hero-big-cta {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 14px;
   padding: 14px 14px 14px 30px;
-  background: #EDE9FE; /* faded violet */
+  background: #ede9fe;
   color: #0a0a0a;
   font-family: var(--proxe-font-sans);
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.01em;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   box-shadow:
-    0 20px 60px -15px rgba(124, 58, 237, 0.5),
-    0 0 0 10px rgba(237, 233, 254, 0.22);
+    0 14px 38px -10px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.proxe-hero-ctas .proxe-hero-big-cta:hover {
+.proxe-root .proxe-hero-big-cta:hover {
   transform: translateY(-2px);
   background: #ffffff;
+  color: #0a0a0a;
   box-shadow:
-    0 28px 70px -15px rgba(30, 10, 80, 0.6),
-    0 0 0 12px rgba(255, 255, 255, 0.22);
+    0 18px 48px -10px rgba(124, 58, 237, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* Wider radial halo painted behind the pill — extends past the
+   button's bounds so the purple bloom feels atmospheric, not boxed. */
+.proxe-hero-big-cta-glow {
+  position: absolute;
+  inset: -60px;
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(167, 139, 250, 0.45) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(2px);
 }
 
 
@@ -1691,6 +1781,38 @@ body:has(.proxe-root) {
   transform: translateX(3px);
 }
 
+/* Trust strip under the hero CTA — three soft assurances with icons */
+.proxe-hero-trust {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+.proxe-hero-trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(220, 215, 245, 0.78);
+}
+.proxe-hero-trust-ico {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(167, 139, 250, 0.18);
+  border: 1px solid rgba(196, 181, 253, 0.30);
+  color: #c4b5fd;
+}
+
 @media (max-width: 640px) {
   .proxe-hero-big-cta {
     padding: 16px 26px 16px 22px;
@@ -1703,6 +1825,13 @@ body:has(.proxe-root) {
   .proxe-hero-big-cta-icon svg {
     width: 16px;
     height: 16px;
+  }
+  .proxe-hero-trust {
+    gap: 16px 20px;
+    margin-top: 24px;
+  }
+  .proxe-hero-trust li {
+    font-size: 12.5px;
   }
 }
 
@@ -3645,6 +3774,129 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 }
 
 /* ===== 15. Footer CTA ===== */
+/* ═══════════════════════════════════════════════════════════════
+   CLOSING CTA (.proxe-cc-*) — glass card, eyebrow chip, split
+   headline, primary button + trust strip, corner sparkles, light
+   beam underneath. Sits between testimonials/FAQ and the footer.
+═══════════════════════════════════════════════════════════════ */
+.proxe-cc {
+  position: relative;
+  padding: 100px 0 80px;
+  background: transparent;
+  overflow: hidden;
+}
+/* Neon-border treatment — the BORDER LINE itself is the light source.
+   Background stays flat (no radial blooms inside, no inset sheen). The
+   box-shadow uses zero offset (0 0 ...) so glow emanates equally
+   outward from the border in every direction. */
+.proxe-cc-card {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 64px 48px 56px;
+  text-align: center;
+  border-radius: 28px;
+  background: rgba(10, 6, 30, 0.40);
+  border: 1px solid rgba(196, 181, 253, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(196, 181, 253, 0.10),     /* tight 1px outer line for depth */
+    0 0 24px rgba(167, 139, 250, 0.38),      /* close-in neon halo */
+    0 0 80px rgba(124, 58, 237, 0.22),       /* mid bloom */
+    0 0 160px rgba(124, 58, 237, 0.10);      /* atmospheric outer wash */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Eyebrow chip — "AI THAT CLOSES" */
+.proxe-cc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.10);
+  border: 1px solid rgba(196, 181, 253, 0.30);
+  color: rgba(196, 181, 253, 0.95);
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.proxe-cc-title {
+  font-family: var(--proxe-font-heading);
+  letter-spacing: 0.012em;
+  font-size: clamp(40px, 5.6vw, 76px);
+  line-height: 1.04;
+  font-weight: 400;
+  color: #fff;
+  margin: 0 auto 18px;
+  max-width: 18ch;
+}
+.proxe-cc-title-grad {
+  background: linear-gradient(90deg, #c4b5fd 0%, #a78bfa 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.proxe-cc-sub {
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: rgba(220, 215, 245, 0.72);
+  margin: 0 auto 36px;
+  max-width: 56ch;
+}
+
+/* The CTA button reuses the hero pill styles — center it inside the card */
+.proxe-cc-cta {
+  margin: 0 auto;
+}
+
+/* Trust strip — already styled via .proxe-hero-trust; just center under CTA */
+.proxe-cc-trust {
+  margin-top: 36px !important;
+}
+
+/* Corner sparkle dots — small lavender glows at each card corner */
+.proxe-cc-spark {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c4b5fd;
+  box-shadow:
+    0 0 12px rgba(196, 181, 253, 0.85),
+    0 0 24px rgba(167, 139, 250, 0.55);
+  pointer-events: none;
+}
+.proxe-cc-spark--tl { top: 22%; left: -5px; }
+.proxe-cc-spark--tr { top: 22%; right: -5px; }
+.proxe-cc-spark--bl { bottom: 28%; left: 16%; opacity: 0.6; width: 6px; height: 6px; }
+.proxe-cc-spark--br { bottom: 28%; right: 16%; opacity: 0.6; width: 6px; height: 6px; }
+
+/* Light beam under the card — fades into the footer area */
+.proxe-cc-beam {
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 40%;
+  height: 60px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 100% at 50% 0%, rgba(196, 181, 253, 0.55) 0%, transparent 70%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .proxe-cc { padding: 60px 0 40px; }
+  .proxe-cc-card { padding: 44px 24px 40px; border-radius: 22px; }
+  .proxe-cc-eyebrow { font-size: 10px; padding: 6px 12px; margin-bottom: 22px; }
+  .proxe-cc-spark--bl, .proxe-cc-spark--br { display: none; }
+}
+
+/* Old class kept for backwards compat — JSX no longer uses it. */
 .proxe-footer-cta {
   padding: 160px 0;
   text-align: center;
@@ -3666,6 +3918,212 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 }
 
 /* ===== 16. Footer ===== */
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER v2 (.pf-*) — outline wordmark + 5-col grid
+   Replaces the old .proxe-footer block above (which is now dead).
+═══════════════════════════════════════════════════════════════ */
+.pf {
+  position: relative;
+  background: transparent;
+  padding: 0 0 32px;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Giant decorative outline wordmark — paints behind the columns
+   with a transparent fill + lavender stroke, so it reads as a soft
+   atmospheric watermark, not actual content. */
+/* Use the actual PROXe wordmark asset, scaled huge, ~12% opacity so it
+   reads as an atmospheric brand watermark behind the footer columns.
+   No CSS text-stroke — the real letterforms are in the image. */
+.pf-wordmark-img {
+  display: block;
+  width: 92%;
+  max-width: 1280px;
+  height: auto;
+  margin: 24px auto 0;
+  opacity: 0.14;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 60px rgba(124, 58, 237, 0.25));
+}
+@media (max-width: 560px) {
+  .pf-wordmark-img { width: 100%; opacity: 0.10; }
+}
+
+.pf-inner {
+  position: relative;
+  z-index: 1;
+  padding-top: 32px;
+}
+
+.pf-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Brand column (left) — tagline + newsletter signup, no small wordmark */
+.pf-brand { display: flex; flex-direction: column; gap: 16px; max-width: 340px; }
+.pf-tagline {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(220, 215, 245, 0.7);
+  margin: 0;
+}
+
+/* Newsletter form */
+.pf-news {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.pf-news-label {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.85);
+}
+.pf-news-row {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(196, 181, 253, 0.25);
+  border-radius: 999px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.pf-news-row:focus-within {
+  border-color: rgba(196, 181, 253, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.12);
+}
+.pf-news-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+}
+.pf-news-input::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+.pf-news-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  border: 0;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pf-news-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5);
+}
+
+.pf-news-note {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.01em;
+}
+.pf-news-ok {
+  font-size: 12.5px;
+  color: #a7f3d0;
+  display: none;
+}
+.pf-news-ok--show { display: block; }
+
+/* Each link column */
+.pf-col { display: flex; flex-direction: column; gap: 14px; }
+.pf-col-title {
+  font-family: var(--proxe-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.85);
+}
+.pf-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pf-links a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.pf-links a:hover { color: #fff; }
+
+/* Social — circular icon buttons */
+.pf-socials { display: flex; gap: 10px; }
+.pf-social {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(196, 181, 253, 0.28);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+.pf-social:hover {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: rgba(196, 181, 253, 0.7);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Bottom row */
+.pf-bottom {
+  margin-top: 48px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.pf-copyright {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.45);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .pf-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 36px 28px;
+  }
+  .pf-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .pf-grid { grid-template-columns: 1fr 1fr; }
+  .pf-brand { grid-column: 1 / -1; }
+  .pf-wordmark { font-size: clamp(96px, 26vw, 180px); }
+}
+
+/* Old .proxe-footer block below is dead — kept to avoid touching
+   unrelated history. The JSX no longer references those classes. */
+
 .proxe-footer {
   border-top: 1px solid var(--proxe-border);
   padding: 64px 0 32px;
@@ -6351,34 +6809,37 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .cd-ig-hdr-av { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); flex-shrink: 0; }
 .cd-ig-hdr-av img { width: 100%; height: 100%; object-fit: contain; }
 
-/* Instagram quick reply pills — horizontal scrollable chips like the real app */
+/* Instagram quick reply pills — left-aligned wrapping chips so 3+
+   pills can fit a narrow phone screen without clipping. (Real IG
+   uses a horizontal scroller, but with only 3 pills in our demo,
+   wrapping reads cleaner and avoids the rightmost pill getting
+   visually cut off against the phone bezel.) */
 .cd-ig-qr {
   display: flex !important;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
   width: 100%;
   align-items: center;
-  justify-content: flex-end;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
+  justify-content: flex-start;
+  padding: 4px 0 2px;
 }
-.cd-ig-qr::-webkit-scrollbar { display: none; }
 .cd-ig-qr-btn {
   display: inline-flex !important;
   flex-shrink: 0;
-  background: #fff !important;
+  background: transparent !important;
   border: 1px solid #0095f6 !important;
   color: #0095f6 !important;
   border-radius: 14px;
-  padding: 5px 12px;
+  padding: 5px 11px;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
   transition: background 0.15s;
   width: auto;
   white-space: nowrap;
+  max-width: 100%;
 }
 .cd-ig-qr-btn:hover { background: rgba(0,149,246,0.08) !important; }
 .cd-ig-hdr-info { flex: 1; display: flex; flex-direction: column; }

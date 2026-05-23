@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-05-21 · feat: Closing CTA glass card + footer redesign + iPhone status bar + IG/Messenger mockup polish
+
+Hero + footer overhaul, plus a bunch of mockup polish.
+
+**Closing CTA section** (`ProxeLanding.tsx`, `landing.css`) — the "Stop losing leads" block above the footer is now a full glass card matching the user's reference design:
+- Glass-card wrapper with a true **neon-border treatment** — visible 1px lavender border, with multi-stop outer `box-shadow @ 0 0 ...` emanating outward from the border line itself (no in-card radial blooms — those read as random glow, not structured boundary).
+- "AI THAT CLOSES" eyebrow chip with a small sparkle SVG, mono uppercase letterspacing in a lavender-tinted pill.
+- Split headline: "Stop losing leads." in white serif on line 1, "Start closing them." as a lavender→purple gradient-clipped text on line 2.
+- Reuses the hero's lavender pill CTA + dark arrow circle — same beautiful button, now opens the Deploy modal.
+- Trust strip below: Shield · No credit card / Lightning · Setup in minutes / Trend · ROI from day one.
+- **Fixed**: the big CTA selector was scoped under `.proxe-hero-ctas .proxe-hero-big-cta`, which meant when reused inside the closing card it lost all styles → unstyled white-on-white button. Now prefixed `.proxe-root .proxe-hero-big-cta` (specificity 0,2,0) so it beats the global `.proxe-root button { background: none }` reset.
+
+**Footer** (`ProxeLanding.tsx`, `landing.css`):
+- Brand-new `.pf-*` block — 5-col grid: Brand info / Product / Company / Legal / Social.
+- **Giant outline `PROXe` wordmark** as an atmospheric watermark above the columns — now uses the actual `proxe-logo-white.webp` brand asset at 92% width / 14% opacity (was CSS text-stroke, which didn't match the real letterforms).
+- Removed the duplicate small `<img>` PROXe wordmark from the brand column. The giant outline above is the only brand mark now.
+- **Newsletter signup** replaces the removed small wordmark — eyebrow label "GET PRODUCT UPDATES", pill input row with lavender border (focus-within state pumps the border + adds a glow), inline gradient subscribe button, success message line. TODO: wire submit to a real list endpoint.
+- Real X / LinkedIn / Instagram SVG glyphs in 38px circular buttons (no more "in"/"ig" text placeholders).
+
+**Phone mockup** (`ProxeLanding.tsx`, `landing.css`) — replaced the bare notch with a proper iOS status bar:
+- Left: `9:41` in SF Pro semibold (canonical iOS marketing time).
+- Center: **Dynamic Island** — 120×34 black pill, absolutely positioned, with a 1px inset highlight + a tiny camera-lens dot (radial gradient with faint purple tint) inside.
+- Right: cellular bars (4 ascending) + WiFi arcs + battery (rounded rect with 82% fill + tip nub), all SVG.
+
+**Mockup polish**:
+- **Instagram quick-reply pills** — were `flex-wrap: nowrap` + `justify-content: flex-end` + `overflow-x: auto`, so the third pill ("Pricing") clipped against the phone bezel. Now `flex-wrap: wrap` + `justify-content: flex-start` — pills flow to a second line if they don't fit one row, no more clipping.
+- **Messenger avatar** — `<SiMessenger />` was rendering invisible (default `1em` sizing collapsed in the flex container). Added explicit `size={18}` / `size={14}` props and a defensive `.ms-h-avatar svg { color: #fff; fill: #fff }` rule. The Messenger lightning-bolt glyph now actually appears in the avatar circles.
+
+User-facing: closing CTA + footer feel like a real designed-as-a-block end of the page, the phone mockup reads as an actual iPhone, and the IG/Messenger conversation previews don't have visual bugs.
+
 ## 2026-05-21 · feat: Deploy modal + Multi-Agent flowchart + Pricing 3 tiers + Industries carousel rework + Testimonials carousel
 
 Massive batch. The site's main conversion paths and showcase sections all got rebuilt in one pass.
