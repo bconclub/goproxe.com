@@ -1,0 +1,182 @@
+/* Inline month + time picker shown on the flip side of the deploy modal.
+   Inherits the modal's Inter font; dark glass aesthetic with violet accents. */
+
+.cal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.head { text-align: center; }
+.title {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin: 0 0 4px;
+}
+.sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* ── Month switcher ── */
+.monthRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.monthLabel {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+.navBtn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.navBtn:hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.16);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+.navBtn:disabled { opacity: 0.32; cursor: not-allowed; }
+
+/* ── Day grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.dow {
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  padding-bottom: 4px;
+}
+.empty { aspect-ratio: 1; }
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s, color 0.18s;
+}
+.day:hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: rgba(167, 139, 250, 0.45);
+}
+.day:disabled {
+  color: rgba(255, 255, 255, 0.22);
+  background: transparent;
+  cursor: not-allowed;
+}
+.day[data-today='true']:not([data-selected='true']) {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+.day[data-selected='true'] {
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  border-color: #a855f7;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.55);
+  transform: translateY(-1px);
+}
+
+/* ── Time slots ── */
+.times {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 2px;
+  animation: fadeUp 0.28s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.timesLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(196, 181, 253, 0.95);
+}
+.timeWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.timeBtn {
+  flex: 1 1 calc(33.333% - 8px);
+  min-width: 88px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.timeBtn:hover {
+  background: rgba(167, 139, 250, 0.16);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+.timeBtn[data-selected='true'] {
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.45);
+}
+
+/* ── Confirm ── */
+.confirm {
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  border: 1.5px solid rgba(196, 181, 253, 0.42);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%),
+    linear-gradient(135deg, #4c1d95 0%, #6d28d9 52%, #312e81 100%);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(167, 139, 250, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.confirm:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.4),
+    0 0 26px rgba(196, 181, 253, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+.confirm:disabled { opacity: 0.5; cursor: not-allowed; }

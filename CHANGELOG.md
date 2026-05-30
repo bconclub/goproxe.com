@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-05-31 · feat: deploy modal flip-side booking calendar
+
+The deploy modal flips to an inline month + time picker after the form, instead of
+jumping straight to /thank-you. Flow is now: fill form → **lead fires once** → card
+flips to the booking calendar → pick a day + time → **/thank-you** (no second lead).
+
+- New `BookingCalendar` (`BookingCalendar.tsx` + `.module.css`) — month grid with
+  prev/next nav, past days + Sundays disabled, time-slot pills that appear once a
+  day is chosen, and a confirm button. Opens on the first month that actually has a
+  bookable day (so landing on a month-end Sunday doesn't show an all-greyed month).
+- `DeployModal` restored to a flip card: front = capture form (fires `generate_lead`
+  on submit), back = `BookingCalendar`. Confirming a slot stores it, fires
+  `booking_confirm` (day-of-week + time, no PII), and routes to /thank-you. The lead
+  event does **not** fire again.
+- Booking persisted via `storeBooking`/`getStoredBooking` (`proxe.booking`).
+- `/thank-you` now reflects the chosen slot: "You're booked", the date + time in the
+  meta box, and an "Add to your calendar" CTA. Falls back to the generic
+  pick-a-time copy if no slot was chosen.
+- New event `booking_confirm`; `thank_you_view` / `book_call_click` now carry
+  `has_booking`.
+
+Verified end-to-end in preview: form → flip → June calendar → June 1 · 11:00 AM →
+/thank-you showing the slot. No console errors.
+
 ## 2026-05-30 · fix: don't report analytics from dev / localhost
 
 Local `npm run dev` was loading the live GA property (`G-GZ7HN8BM1M`) and sending

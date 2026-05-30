@@ -58,3 +58,28 @@ export function clearDraftMessages() {
   // no-op retained for backward compatibility
 }
 
+/** A demo slot the visitor picked on the deploy-modal calendar. */
+export interface LocalBooking {
+  /** Human label, e.g. "Tuesday, June 3". */
+  label: string;
+  /** Chosen time, e.g. "11:00 AM". */
+  time: string;
+}
+
+const bookingKey = (brand: StorageBrandKey) => `${brand}.booking`;
+
+export function storeBooking(booking: LocalBooking, brand: StorageBrandKey = 'proxe') {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(bookingKey(brand), JSON.stringify(booking));
+}
+
+export function getStoredBooking(brand: StorageBrandKey = 'proxe'): LocalBooking | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(bookingKey(brand));
+    return raw ? (JSON.parse(raw) as LocalBooking) : null;
+  } catch {
+    return null;
+  }
+}
+

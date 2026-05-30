@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { FiCalendar, FiClock, FiVideo, FiArrowRight, FiMail, FiArrowLeft } from 'react-icons/fi'
-import { getStoredUser } from '../lib/chatLocalStorage'
+import { FiCalendar, FiClock, FiVideo, FiArrowRight, FiMail, FiArrowLeft, FiCheckCircle } from 'react-icons/fi'
+import { getStoredUser, getStoredBooking, type LocalBooking } from '../lib/chatLocalStorage'
 import { track } from '../lib/analytics'
 import styles from './thankyou.module.css'
 
@@ -12,17 +12,20 @@ const FALLBACK_EMAIL = 'hello@bconclub.com'
 
 export default function ThankYouContent() {
   const [firstName, setFirstName] = useState('')
+  const [booking, setBooking] = useState<LocalBooking | null>(null)
   const viewedRef = useRef(false)
 
-  // Read the captured name (set by the deploy form before navigation) and fire
+  // Read the captured name + the slot they picked on the modal calendar, and fire
   // the thank-you view exactly once (ref guard survives StrictMode's dev double-mount).
   useEffect(() => {
     const user = getStoredUser('proxe')
     const name = user?.name?.trim().split(' ')[0] ?? ''
+    const slot = getStoredBooking('proxe')
     setFirstName(name)
+    setBooking(slot)
     if (viewedRef.current) return
     viewedRef.current = true
-    track('thank_you_view', { has_name: Boolean(name) })
+    track('thank_you_view', { has_name: Boolean(name), has_booking: Boolean(slot) })
   }, [])
 
   return (
@@ -34,21 +37,32 @@ export default function ThankYouContent() {
           </svg>
         </div>
 
-        <p className={styles.eyebrow}>Request received</p>
+        <p className={styles.eyebrow}>{booking ? 'You’re booked' : 'Request received'}</p>
         <h1 className={styles.title}>
           {firstName ? `Thank you, ${firstName}.` : 'Thank you.'}
           <br />
           <span className={styles.accent}>You&rsquo;re in.</span>
         </h1>
         <p className={styles.subtitle}>
-          We&rsquo;ve got your details. The last step is picking a time — we&rsquo;ll
-          walk you through PROXe live, tuned to your business.
+          {booking
+            ? <>Your demo is locked in. We&rsquo;ll send a Google Meet invite to your inbox — see you then.</>
+            : <>We&rsquo;ve got your details. The last step is picking a time — we&rsquo;ll walk you through PROXe live, tuned to your business.</>}
         </p>
 
         <ul className={styles.meta}>
-          <li><FiClock size={15} /> 30 minutes, end to end</li>
-          <li><FiVideo size={15} /> Google Meet · video call</li>
-          <li><FiCalendar size={15} /> Pick any open slot this week</li>
+          {booking ? (
+            <>
+              <li><FiCalendar size={15} /> {booking.label}</li>
+              <li><FiClock size={15} /> {booking.time} · 30 minutes</li>
+              <li><FiVideo size={15} /> Google Meet · video call</li>
+            </>
+          ) : (
+            <>
+              <li><FiClock size={15} /> 30 minutes, end to end</li>
+              <li><FiVideo size={15} /> Google Meet · video call</li>
+              <li><FiCalendar size={15} /> Pick any open slot this week</li>
+            </>
+          )}
         </ul>
 
         <a
@@ -56,9 +70,11 @@ export default function ThankYouContent() {
           target="_blank"
           rel="noreferrer noopener"
           className={styles.cta}
-          onClick={() => track('book_call_click', { location: 'thank_you' })}
+          onClick={() => track('book_call_click', { location: 'thank_you', has_booking: Boolean(booking) })}
         >
-          Open the calendar <FiArrowRight size={16} />
+          {booking
+            ? <>Add to your calendar <FiCheckCircle size={16} /></>
+            : <>Open the calendar <FiArrowRight size={16} /></>}
         </a>
 
         <div className={styles.altRow}>

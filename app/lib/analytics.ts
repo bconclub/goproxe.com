@@ -26,6 +26,7 @@ export type ProxeEvent =
   | 'generate_lead'        // GA4 recommended name — the lead form was submitted
   | 'lead_form_start'      // first interaction with a lead form field (funnel top)
   | 'thank_you_view'       // landed on /thank-you
+  | 'booking_confirm'      // picked a slot on the modal's flip-side calendar
   | 'book_call_click'      // clicked the calendar / "open the calendar" CTA
   // ── CTAs ────────────────────────────────────────────────────
   | 'cta_click'            // a non-modal CTA (anchor scroll) — param: location

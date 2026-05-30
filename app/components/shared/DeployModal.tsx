@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
-import { storeUserProfile, getStoredUser } from '../../lib/chatLocalStorage';
+import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
 import { track, trackLead } from '../../lib/analytics';
+import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
 interface DeployModalProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /** Flipped state — once the form is submitted, flip to the booking calendar. */
+  const [flipped, setFlipped] = useState(false);
   /** Fire `lead_form_start` only on the first field interaction per open. */
   const startedRef = useRef(false);
 
@@ -35,6 +38,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
   useEffect(() => {
     if (isOpen) {
       startedRef.current = false;
+      setFlipped(false);
       const existingUser = getStoredUser('proxe');
       if (existingUser) {
         setFormData({
@@ -108,7 +112,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
     };
     storeUserProfile(userProfile, 'proxe');
 
-    // 🎯 The lead event — GA4 `generate_lead` + Meta `Lead` (no PII in params).
+    // 🎯 The lead event fires HERE, once, the moment the form is captured —
+    // GA4 `generate_lead` + Meta `Lead` (no PII in params). It does NOT fire
+    // again on the booking step or the thank-you page.
     trackLead({
       source: 'deploy_modal',
       hasBrand: Boolean(userProfile.brandName),
@@ -117,19 +123,35 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
 
     onFormSubmit?.();
     setIsSubmitting(false);
+    setFlipped(true); // ✨ flip to the booking calendar — no navigation yet
+  };
+
+  // Visitor picked a slot on the flip-side calendar → record it (no second lead
+  // event) and hand off to the thank-you page.
+  const handleBookingConfirm = (slot: BookingSlot) => {
+    storeBooking({ label: slot.label, time: slot.time }, 'proxe');
+    track('booking_confirm', {
+      source: 'deploy_modal',
+      day_of_week: new Date(slot.iso).toLocaleDateString('en-US', { weekday: 'long' }),
+      time: slot.time,
+    });
     onClose();
-    router.push('/thank-you'); // hand off to the confirmation + booking page
+    router.push('/thank-you');
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
   };
 
+  const firstName = formData.name.trim().split(' ')[0];
+
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
       <div className={styles.flipScene}>
-        {/* Capture form — on submit we route to /thank-you for the booking step. */}
-        <div className={styles.modalContainer}>
+        <div className={`${styles.flipCard}${flipped ? ' ' + styles.flipCardFlipped : ''}`}>
+
+          {/* ───── FRONT FACE — capture form (fires the lead on submit) ───── */}
+          <div className={`${styles.flipFace} ${styles.flipFront} ${styles.modalContainer}`}>
             <button
               className={styles.closeButton}
               onClick={onClose}
@@ -223,6 +245,27 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
                 {isSubmitting ? 'Sending...' : 'Continue →'}
               </button>
             </form>
+          </div>
+
+          {/* ───── BACK FACE — inline booking calendar (no second lead event) ───── */}
+          <div className={`${styles.flipFace} ${styles.flipBack} ${styles.modalContainer}`}>
+            <button
+              className={styles.closeButton}
+              onClick={onClose}
+              aria-label="Close modal"
+              type="button"
+            >×</button>
+            {/* Only mount the calendar once flipped, so its month/today state is
+                fresh and the entry animation plays on reveal. */}
+            {flipped && (
+              <BookingCalendar
+                firstName={firstName}
+                isSubmitting={isSubmitting}
+                onConfirm={handleBookingConfirm}
+              />
+            )}
+          </div>
+
         </div>
       </div>
     </div>
