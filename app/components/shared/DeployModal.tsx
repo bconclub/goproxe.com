@@ -112,8 +112,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
     };
     storeUserProfile(userProfile, 'proxe');
 
-    // 🎯 The lead event fires HERE, once, the moment the form is captured —
-    // GA4 `generate_lead` + Meta `Lead` (no PII in params). It does NOT fire
+    // 🎯 The conversion fires HERE, once, the moment the form is captured —
+    // GA4 `form_completed` + Meta `Lead` (no PII in params). It does NOT fire
     // again on the booking step or the thank-you page.
     trackLead({
       source: 'deploy_modal',

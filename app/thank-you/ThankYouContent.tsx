@@ -25,7 +25,7 @@ export default function ThankYouContent() {
     setBooking(slot)
     if (viewedRef.current) return
     viewedRef.current = true
-    track('thank_you_view', { has_name: Boolean(name), has_booking: Boolean(slot) })
+    track('demo_booked', { has_name: Boolean(name), has_booking: Boolean(slot) })
   }, [])
 
   return (

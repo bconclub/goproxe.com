@@ -143,7 +143,7 @@ export function DeployFormInline({
     // Store for the brand
     storeUserProfile(userProfileData, 'proxe');
 
-    // 🎯 The lead event — GA4 `generate_lead` + Meta `Lead`.
+    // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
     trackLead({
       source: 'chat_widget',
       hasWebsite: Boolean(userProfileData.websiteUrl),

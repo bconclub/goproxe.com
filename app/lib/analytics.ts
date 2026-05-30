@@ -23,9 +23,9 @@ declare global {
 /** Every custom event we emit. Keep this list in sync with the GA4 dashboard. */
 export type ProxeEvent =
   // ── Conversion ──────────────────────────────────────────────
-  | 'generate_lead'        // GA4 recommended name — the lead form was submitted
+  | 'form_completed'       // the deploy form was submitted (the captured lead)
   | 'lead_form_start'      // first interaction with a lead form field (funnel top)
-  | 'thank_you_view'       // landed on /thank-you
+  | 'demo_booked'          // reached /thank-you after picking a slot
   | 'booking_confirm'      // picked a slot on the modal's flip-side calendar
   | 'book_call_click'      // clicked the calendar / "open the calendar" CTA
   // ── CTAs ────────────────────────────────────────────────────
@@ -62,9 +62,9 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
     /* never let analytics throw into product code */
   }
 
-  // Meta Pixel — map our lead event onto the pixel's standard "Lead" event.
+  // Meta Pixel — a completed form is a "Lead" in the pixel's standard taxonomy.
   try {
-    if (event === 'generate_lead') {
+    if (event === 'form_completed') {
       window.fbq?.('track', 'Lead', params)
     }
   } catch {
@@ -73,12 +73,12 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
 }
 
 /**
- * Convenience for the single most important event: a captured lead. Fires the
- * GA4 `generate_lead` + Meta `Lead`, carrying non-PII context only (we send the
- * source + whether a brand/site was provided, never the raw email/phone).
+ * Convenience for the single most important event: a completed deploy form. Fires
+ * the GA4 `form_completed` + Meta `Lead`, carrying non-PII context only (we send
+ * the source + whether a brand/site was provided, never the raw email/phone).
  */
 export function trackLead(meta: { source?: string; hasBrand?: boolean; hasWebsite?: boolean } = {}): void {
-  track('generate_lead', {
+  track('form_completed', {
     source: meta.source ?? 'deploy_form',
     has_brand: meta.hasBrand ?? false,
     has_website: meta.hasWebsite ?? false,

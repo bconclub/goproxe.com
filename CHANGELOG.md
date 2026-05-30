@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-05-31 · chore: rename analytics events for clarity
+
+- `generate_lead` → `form_completed` (the deploy form was submitted). Still maps to
+  Meta `Lead` and keeps the `value`/`currency` params.
+- `thank_you_view` → `demo_booked` (reached /thank-you after picking a slot).
+
+Note: `form_completed` is a custom name (not the GA4-recommended `generate_lead`), so
+if you mark it as a Key Event / conversion in GA4 it won't auto-inherit the recommended
+lead semantics — flag it manually in Admin → Events.
+
 ## 2026-05-31 · feat: deploy modal flip-side booking calendar
 
 The deploy modal flips to an inline month + time picker after the form, instead of
