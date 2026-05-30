@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
+import AnalyticsScripts from './components/shared/AnalyticsScripts';
 import { DeployModalProvider } from './contexts/DeployModalContext';
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <AnalyticsScripts />
         <LenisProvider />
         <DeployModalProvider>
           {children}

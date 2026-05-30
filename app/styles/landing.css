@@ -9946,8 +9946,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   isolation: isolate;
   overflow: visible;
   background:
-    radial-gradient(90% 70% at 50% 0%, rgba(124, 58, 237, 0.16), transparent 68%),
-    linear-gradient(180deg, rgba(20, 12, 55, 0.72) 0%, rgba(10, 6, 30, 0.82) 100%);
+    linear-gradient(180deg, rgba(18, 10, 50, 0.82) 0%, rgba(9, 6, 28, 0.9) 100%);
   border: 1px solid rgba(196, 181, 253, 0.14);
   border-radius: 22px;
   box-shadow:
@@ -9967,16 +9966,14 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   inset: 1px;
   border-radius: 21px;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 42%),
-    radial-gradient(75% 55% at 50% 100%, rgba(124, 58, 237, 0.10), transparent 72%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 34%);
   z-index: 0;
 }
 .pr-card:hover {
   border-color: rgba(196, 181, 253, 0.26);
   box-shadow:
     0 22px 64px rgba(0, 0, 0, 0.44),
-    0 0 34px rgba(124, 58, 237, 0.16),
+    0 0 0 1px rgba(196, 181, 253, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 /* Same dark card body as Starter — the only highlight is a bright
@@ -9984,15 +9981,13 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .pr-card--popular {
   border: 1.5px solid transparent;
   background:
-    radial-gradient(115% 85% at 50% -8%, rgba(196, 181, 253, 0.30) 0%, rgba(124, 58, 237, 0.20) 42%, transparent 68%) padding-box,
-    linear-gradient(180deg, rgba(30, 20, 72, 0.92) 0%, rgba(13, 8, 35, 0.96) 100%) padding-box,
-    linear-gradient(145deg, #ede9fe 0%, #c4b5fd 20%, #8b5cf6 58%, #6d28d9 100%) border-box;
+    linear-gradient(180deg, rgba(17, 10, 45, 0.98) 0%, rgba(11, 7, 31, 0.99) 100%) padding-box,
+    linear-gradient(145deg, #f5f3ff 0%, #c4b5fd 18%, #8b5cf6 54%, #4f46e5 100%) border-box;
   box-shadow:
-    0 30px 86px rgba(0, 0, 0, 0.58),
-    0 0 0 1px rgba(196, 181, 253, 0.16),
-    0 0 72px rgba(124, 58, 237, 0.48),
-    0 0 130px rgba(167, 139, 250, 0.20),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    0 28px 76px rgba(0, 0, 0, 0.56),
+    0 0 0 1px rgba(196, 181, 253, 0.18),
+    0 0 22px rgba(167, 139, 250, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
   /* Visually win: slightly larger + lifted relative to siblings */
   transform: translateY(-16px) scale(1.045);
   z-index: 2;
@@ -10000,13 +9995,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .pr-card--popular::after {
   content: "";
   position: absolute;
-  inset: -34px -28px;
+  inset: -2px;
   border-radius: 32px;
-  background:
-    radial-gradient(55% 45% at 50% 8%, rgba(216, 180, 254, 0.40), transparent 72%),
-    radial-gradient(62% 50% at 50% 100%, rgba(124, 58, 237, 0.40), transparent 76%);
-  filter: blur(18px);
-  opacity: 0.85;
+  background: linear-gradient(145deg, rgba(245, 243, 255, 0.18), rgba(167, 139, 250, 0.12) 44%, rgba(79, 70, 229, 0.1));
+  filter: blur(5px);
+  opacity: 0.42;
   pointer-events: none;
   z-index: -1;
 }
@@ -10015,9 +10008,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background:
-    radial-gradient(70% 45% at 50% 110%, rgba(167, 139, 250, 0.32) 0%, transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 38%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 22%);
   z-index: 0;
 }
 .pr-card-tier--popular {
@@ -10219,20 +10210,21 @@ button.pr-cta { padding: 0 22px; }
 .pr-cta--primary {
   color: #fff;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.10), transparent 42%),
-    linear-gradient(135deg, #6d28d9 0%, #a78bfa 48%, #7c3aed 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.42);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%),
+    linear-gradient(135deg, #4c1d95 0%, #6d28d9 52%, #312e81 100%);
+  border: 1.5px solid rgba(196, 181, 253, 0.42);
   box-shadow:
-    0 14px 38px rgba(124, 58, 237, 0.62),
-    0 0 34px rgba(167, 139, 250, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+    0 12px 30px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(167, 139, 250, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
   font-weight: 700;
 }
 .pr-cta--primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 16px 44px rgba(124, 58, 237, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 14px 34px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(196, 181, 253, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .pr-cta--ghost:hover {
   background: rgba(167, 139, 250, 0.14);
@@ -10333,11 +10325,11 @@ button.pr-cta { padding: 0 22px; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #fff;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa 60%, #c4b5fd);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #6d28d9, #a78bfa 68%, #c4b5fd);
+  border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: 999px;
   padding: 7px 16px;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 18px rgba(167, 139, 250, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   z-index: 3;
   white-space: nowrap;
 }
@@ -10397,11 +10389,10 @@ button.pr-cta { padding: 0 22px; }
 /* Unlimited variant — gradient-tinted background to draw the eye */
 .pr-card-marquee--unlimited {
   background:
-    radial-gradient(90% 120% at 10% 0%, rgba(196, 181, 253, 0.22), transparent 54%),
-    linear-gradient(135deg, rgba(124, 58, 237, 0.32) 0%, rgba(167, 139, 250, 0.13) 100%);
-  border-color: rgba(196, 181, 253, 0.44);
+    linear-gradient(135deg, rgba(124, 58, 237, 0.18) 0%, rgba(30, 24, 72, 0.34) 100%);
+  border-color: rgba(196, 181, 253, 0.34);
   box-shadow:
-    0 0 30px rgba(124, 58, 237, 0.32),
+    0 0 0 1px rgba(196, 181, 253, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 .pr-card-marquee--unlimited .pr-card-marquee-ico {
@@ -10409,7 +10400,7 @@ button.pr-cta { padding: 0 22px; }
   border-color: rgba(255, 255, 255, 0.30);
   color: #fff;
   box-shadow:
-    0 0 26px rgba(167, 139, 250, 0.55),
+    0 0 16px rgba(167, 139, 250, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
