@@ -9976,41 +9976,37 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
     0 0 0 1px rgba(196, 181, 253, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
-/* Same dark card body as Starter — the only highlight is a bright
-   gradient border + a soft outer purple glow. No washed-out background. */
+/* Identical dark body to the other cards — the ONLY differentiator is a bright,
+   even neon-violet border ring. No washed background, no diffuse halo, no white
+   bleed in the corner. */
 .pr-card--popular {
-  border: 1.5px solid transparent;
+  border: 1.5px solid #a855f7;
+  /* Same body fill as the base .pr-card so it reads as one of the set. */
   background:
-    linear-gradient(180deg, rgba(17, 10, 45, 0.98) 0%, rgba(11, 7, 31, 0.99) 100%) padding-box,
-    linear-gradient(145deg, #f5f3ff 0%, #c4b5fd 18%, #8b5cf6 54%, #4f46e5 100%) border-box;
+    linear-gradient(180deg, rgba(18, 10, 50, 0.82) 0%, rgba(9, 6, 28, 0.9) 100%);
   box-shadow:
-    0 28px 76px rgba(0, 0, 0, 0.56),
-    0 0 0 1px rgba(196, 181, 253, 0.18),
-    0 0 22px rgba(167, 139, 250, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 18px 54px rgba(0, 0, 0, 0.38),
+    /* tight, even neon ring — same colour all the way around */
+    0 0 0 1px rgba(168, 85, 247, 0.55),
+    0 0 14px rgba(168, 85, 247, 0.6),
+    0 0 30px rgba(124, 58, 237, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   /* Visually win: slightly larger + lifted relative to siblings */
   transform: translateY(-16px) scale(1.045);
   z-index: 2;
 }
-.pr-card--popular::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 32px;
-  background: linear-gradient(145deg, rgba(245, 243, 255, 0.18), rgba(167, 139, 250, 0.12) 44%, rgba(79, 70, 229, 0.1));
-  filter: blur(5px);
-  opacity: 0.42;
-  pointer-events: none;
-  z-index: -1;
+.pr-card--popular:hover {
+  border-color: #b975ff;
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.44),
+    0 0 0 1px rgba(168, 85, 247, 0.7),
+    0 0 18px rgba(168, 85, 247, 0.75),
+    0 0 38px rgba(124, 58, 237, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
-.pr-card--popular .pr-card-popular-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 22%);
-  z-index: 0;
-}
+/* Glow elements retired — the neon border ring above is the whole effect now. */
+.pr-card--popular::after { display: none; }
+.pr-card--popular .pr-card-popular-glow { display: none; }
 .pr-card-tier--popular {
   background: linear-gradient(135deg, #c4b5fd, #a78bfa);
   -webkit-background-clip: text;
@@ -10325,11 +10321,15 @@ button.pr-cta { padding: 0 22px; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #fff;
-  background: linear-gradient(135deg, #6d28d9, #a78bfa 68%, #c4b5fd);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  /* Deep, saturated violet so the white text stays high-contrast — no light
+     lavender end (that washed the text out). Matches the card's neon border. */
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  border: 1px solid #a855f7;
   border-radius: 999px;
   padding: 7px 16px;
-  box-shadow: 0 0 18px rgba(167, 139, 250, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 0 14px rgba(168, 85, 247, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   z-index: 3;
   white-space: nowrap;
 }
