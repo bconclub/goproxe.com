@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-30 · fix: don't report analytics from dev / localhost
+
+Local `npm run dev` was loading the live GA property (`G-GZ7HN8BM1M`) and sending
+real hits — so preview testing showed up as extra users/events in the dashboard.
+Now `AnalyticsScripts` renders nothing unless `NODE_ENV === 'production'`, and
+`track()` additionally short-circuits on localhost / loopback hosts (belt-and-
+suspenders for a prod build run locally). The deployed site is unaffected.
+
+Also confirmed the `thank_you_view` event fires exactly **once** per visit (verified
+in the raw GA `/g/collect` beacons); the inflated realtime counts were cumulative
+dev-testing hits, and the two "Thank you" page titles were the pre/post title-fix
+transition (old `Thank you · PROXe · PROXe` vs current `Thank you · PROXe`).
+
 ## 2026-05-30 · feat: /thank-you page + site-wide analytics events (lead tracking)
 
 Added a dedicated confirmation page and a single, typed analytics layer that fans

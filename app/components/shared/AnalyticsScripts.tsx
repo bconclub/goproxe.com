@@ -6,6 +6,11 @@ const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
 const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || 'u43ad5p156'
 
 const AnalyticsScripts = () => {
+  // Only load tags in a production build. `npm run dev` (NODE_ENV=development)
+  // must NOT report to the live GA property — otherwise local testing shows up
+  // as real users/events in the dashboard.
+  if (process.env.NODE_ENV !== 'production') return null
+
   return (
     <>
       {googleAnalyticsId && (

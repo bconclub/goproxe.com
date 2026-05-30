@@ -41,9 +41,17 @@ export type ProxeEvent =
 
 type EventParams = Record<string, string | number | boolean | undefined>
 
+/** True on localhost / loopback — we never want dev hits in the live property. */
+function isLocalHost(): boolean {
+  if (typeof window === 'undefined') return false
+  const h = window.location.hostname
+  return h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '[::1]'
+}
+
 /** Fire a custom event to every analytics tag present. Safe to call anywhere. */
 export function track(event: ProxeEvent, params: EventParams = {}): void {
   if (typeof window === 'undefined') return
+  if (isLocalHost()) return
 
   // GA4 — use the beacon transport so the hit survives a page navigation
   // (important for conversion events fired right before router.push).
