@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { FiCalendar, FiMail, FiArrowRight, FiClock, FiVideo, FiCheck } from 'react-icons/fi';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser } from '../../lib/chatLocalStorage';
+import { track, trackLead } from '../../lib/analytics';
 
 interface DeployModalProps {
   isOpen: boolean;
@@ -11,11 +12,8 @@ interface DeployModalProps {
   onFormSubmit?: () => void;
 }
 
-// Replace this with your real scheduling link (Calendly / Cal.com / SavvyCal).
-const BOOKING_URL = 'https://cal.com/bconclub/proxe-intro';
-const FALLBACK_EMAIL = 'hello@bconclub.com';
-
 export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployModalProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,8 +23,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  /** Flipped state — when true, the card shows the "Book a call" back face. */
-  const [flipped, setFlipped] = useState(false);
+  /** Fire `lead_form_start` only on the first field interaction per open. */
+  const startedRef = useRef(false);
 
   const cleanPhoneNumber = (phone: string | null | undefined): string => {
     if (!phone) return '';
@@ -36,7 +34,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
   // Pre-fill from any stored profile each time we open.
   useEffect(() => {
     if (isOpen) {
-      setFlipped(false);
+      startedRef.current = false;
       const existingUser = getStoredUser('proxe');
       if (existingUser) {
         setFormData({
@@ -70,6 +68,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track('lead_form_start', { source: 'deploy_modal' });
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
@@ -106,24 +108,28 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
     };
     storeUserProfile(userProfile, 'proxe');
 
-    setIsSubmitting(false);
-    setFlipped(true); // ✨ flip to the "Book a call" face
+    // 🎯 The lead event — GA4 `generate_lead` + Meta `Lead` (no PII in params).
+    trackLead({
+      source: 'deploy_modal',
+      hasBrand: Boolean(userProfile.brandName),
+      hasWebsite: Boolean(userProfile.websiteUrl),
+    });
+
     onFormSubmit?.();
+    setIsSubmitting(false);
+    onClose();
+    router.push('/thank-you'); // hand off to the confirmation + booking page
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const firstName = formData.name.trim().split(' ')[0] || 'there';
-
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
       <div className={styles.flipScene}>
-        <div className={`${styles.flipCard}${flipped ? ' ' + styles.flipCardFlipped : ''}`}>
-
-          {/* ───── FRONT FACE — capture form ───── */}
-          <div className={`${styles.flipFace} ${styles.flipFront} ${styles.modalContainer}`}>
+        {/* Capture form — on submit we route to /thank-you for the booking step. */}
+        <div className={styles.modalContainer}>
             <button
               className={styles.closeButton}
               onClick={onClose}
@@ -217,55 +223,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
                 {isSubmitting ? 'Sending...' : 'Continue →'}
               </button>
             </form>
-          </div>
-
-          {/* ───── BACK FACE — book a call ───── */}
-          <div className={`${styles.flipFace} ${styles.flipBack} ${styles.modalContainer}`}>
-            <button
-              className={styles.closeButton}
-              onClick={onClose}
-              aria-label="Close modal"
-              type="button"
-            >×</button>
-
-            <div className={styles.bookCheck}>
-              <FiCheck size={28} />
-            </div>
-
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Almost there, {firstName} 👋</h2>
-              <p className={styles.modalSubtitle}>
-                We&rsquo;ve got your details. Pick a 30-min slot and we&rsquo;ll walk you through
-                PROXe live, tuned to your business.
-              </p>
-            </div>
-
-            <ul className={styles.bookMeta}>
-              <li><FiClock size={14} /> 30 minutes</li>
-              <li><FiVideo size={14} /> Google Meet · video call</li>
-              <li><FiCalendar size={14} /> Pick any open slot this week</li>
-            </ul>
-
-            <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={styles.submitButton}
-              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-            >
-              Open the calendar <FiArrowRight size={16} />
-            </a>
-
-            <div className={styles.bookAltRow}>
-              <a
-                href={`mailto:${FALLBACK_EMAIL}?subject=PROXe%20Demo%20Request&body=Hi%20team%2C%0A%0AI%27d%20love%20to%20see%20PROXe%20live.%20My%20details%20are%20attached%20via%20the%20form.%0A%0AThanks!`}
-                className={styles.bookAltLink}
-              >
-                <FiMail size={13} /> or email us instead
-              </a>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>

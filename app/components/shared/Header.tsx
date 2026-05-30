@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import styles from './Header.module.css';
 import { useDeployModal } from '../../contexts/DeployModalContext';
+import { track } from '../../lib/analytics';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { openModal } = useDeployModal();
 
-  const handleDeployClick = () => {
-    openModal();
+  const handleDeployClick = (source: string) => {
+    openModal(source);
     setMenuOpen(false);
   };
 
@@ -18,9 +19,9 @@ export default function Header() {
       <div className={styles.navContainer}>
         <img src="/proxe/assets/Proxe-Logo.png" alt="PROXe Logo" className={styles.logo} />
         <nav className={styles.nav}>
-          <a href="#" className={styles.navLink}>Features</a>
-          <a href="#" className={styles.navLink}>Pricing</a>
-          <button className={styles.deployButton} onClick={handleDeployClick}>Deploy</button>
+          <a href="#" className={styles.navLink} onClick={() => track('nav_click', { label: 'features', location: 'header' })}>Features</a>
+          <a href="#" className={styles.navLink} onClick={() => track('nav_click', { label: 'pricing', location: 'header' })}>Pricing</a>
+          <button className={styles.deployButton} onClick={() => handleDeployClick('header_deploy')}>Deploy</button>
         </nav>
         <div className={styles.mobileNav}>
           <button 
@@ -31,7 +32,7 @@ export default function Header() {
           >
             <span className={styles.plusIcon}>+</span>
           </button>
-          <button className={styles.mobileDeployButton} onClick={handleDeployClick}>Deploy</button>
+          <button className={styles.mobileDeployButton} onClick={() => handleDeployClick('header_mobile_deploy')}>Deploy</button>
         </div>
       </div>
       {menuOpen && (

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { BrandConfig } from '../../configs';
 import { storeUserProfile, getStoredUser } from '../../lib/chatLocalStorage';
+import { track, trackLead } from '../../lib/analytics';
 import styles from './ChatWidget.module.css';
 
 interface DeployFormInlineProps {
@@ -65,8 +66,14 @@ export function DeployFormInline({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  const startedRef = useRef(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track('lead_form_start', { source: 'chat_widget' });
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name]) {
@@ -135,7 +142,13 @@ export function DeployFormInline({
     
     // Store for the brand
     storeUserProfile(userProfileData, 'proxe');
-    
+
+    // 🎯 The lead event — GA4 `generate_lead` + Meta `Lead`.
+    trackLead({
+      source: 'chat_widget',
+      hasWebsite: Boolean(userProfileData.websiteUrl),
+    });
+
     // Notify parent of contact submission
     if (onContactSubmit) {
       await onContactSubmit(userProfileData);

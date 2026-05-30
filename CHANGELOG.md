@@ -1,5 +1,49 @@
 # Changelog
 
+## 2026-05-30 · feat: /thank-you page + site-wide analytics events (lead tracking)
+
+Added a dedicated confirmation page and a single, typed analytics layer that fans
+custom events out to GA4 (gtag) + the Meta Pixel.
+
+**New analytics layer** (`lib/analytics.ts`) — one SSR-safe `track(event, params)`
+that guards every `gtag`/`fbq` call (both load `afterInteractive`, so early clicks
+won't throw). Uses GA4 `transport_type: 'beacon'` so conversion hits survive the
+navigation to `/thank-you`. A `ProxeEvent` union is the single source of truth for
+every event name. Helpers: `trackLead()` (fires GA4 `generate_lead` + Meta `Lead`,
+**PII-free** — sends `source` / `has_brand` / `has_website` / `value`, never the raw
+email or phone) and `initScrollDepthTracking()` (one-shot 25/50/75/90% milestones).
+
+**The lead event** — `generate_lead` now fires on every deploy-form submit, from both
+the global `DeployModal` and the chat-widget `DeployFormInline`.
+
+**New `/thank-you` page** (`app/thank-you/*`) — self-contained route (own server page
+for fonts/metadata + `ThankYouContent` client view + `thankyou.module.css`). Same
+visual language as the landing: deep-purple field, frosted glass card with a neon
+lavender edge, Instrument Serif headline, drifting aurora. Reads the captured name
+from local storage to greet the visitor ("Thank you, {name}."), hosts the calendar
+CTA + email fallback, and is `noindex`. On submit, `DeployModal` now fires the lead
+event then `router.push('/thank-you')` — replacing the old in-modal flip-to-booking
+face (flip state + back face removed).
+
+**Custom events wired across the page** (param in parens):
+- `deploy_modal_open` (source) — centralized in `DeployModalContext.openModal(source)`;
+  every deploy CTA passes where it came from: `header_deploy`, `header_mobile_deploy`,
+  `floating_header`, `closing_cta`, `scroll_popup`, `ig_demo`, `industries`,
+  `pricing_starter` / `pricing_unlimited` / `pricing_enterprise`.
+- `lead_form_start` (source) — first field interaction on either form (funnel top).
+- `generate_lead`, `thank_you_view`, `book_call_click` — the conversion funnel tail.
+- `cta_click` (location) — non-modal hero anchor CTAs.
+- `channel_demo_select` (channel, surface) — `ChannelDemo` dial + landing coverflow.
+- `voice_demo_start` — tapping the live VapiOrb.
+- `video_unmute` — un-muting the hero demo video.
+- `faq_open` (question), `nav_click` (label, location), `newsletter_subscribe`,
+  `scroll_depth` (percent).
+
+Verified live in the dev preview: modal open → form start → `generate_lead`
+(currency/value/has_brand/has_website) → route to `/thank-you` → `thank_you_view`
+(name-personalized, StrictMode-guarded to fire once) → `book_call_click`. No console
+errors.
+
 ## 2026-05-21 · feat: Closing CTA glass card + footer redesign + iPhone status bar + IG/Messenger mockup polish
 
 Hero + footer overhaul, plus a bunch of mockup polish.

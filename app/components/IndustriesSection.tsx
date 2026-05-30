@@ -418,7 +418,7 @@ export default function IndustriesSection() {
                 We train PROXe on your playbook — your offers, objections, and tone.
                 If your customers chat, call, or click, we handle it.
               </p>
-              <button type="button" onClick={openModal} className="ind-cta-btn">
+              <button type="button" onClick={() => openModal('industries')} className="ind-cta-btn">
                 Talk to us <FiArrowRight size={16} />
               </button>
             </div>

@@ -195,7 +195,7 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <button type="button" onClick={openModal} className="pr-cta pr-cta--ghost">
+            <button type="button" onClick={() => openModal('pricing_starter')} className="pr-cta pr-cta--ghost">
               Deploy PROXe <FiArrowRight size={14} />
             </button>
           </article>
@@ -249,7 +249,7 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <button type="button" onClick={openModal} className="pr-cta pr-cta--primary">
+            <button type="button" onClick={() => openModal('pricing_unlimited')} className="pr-cta pr-cta--primary">
               Deploy PROXe <FiArrowRight size={14} />
             </button>
           </article>
@@ -286,7 +286,7 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <button type="button" onClick={openModal} className="pr-cta pr-cta--ghost">
+            <button type="button" onClick={() => openModal('pricing_enterprise')} className="pr-cta pr-cta--ghost">
               Talk to sales <FiArrowRight size={14} />
             </button>
           </article>

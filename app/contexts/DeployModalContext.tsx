@@ -2,9 +2,11 @@
 
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import DeployModal from '../components/shared/DeployModal';
+import { track } from '../lib/analytics';
 
 interface DeployModalContextType {
-  openModal: () => void;
+  /** @param source where the open was triggered from (for analytics) */
+  openModal: (source?: string) => void;
   closeModal: () => void;
   isOpen: boolean;
   setOnFormSubmit: (callback: (() => void) | null) => void;
@@ -16,7 +18,10 @@ export function DeployModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [onFormSubmitCallback, setOnFormSubmitCallback] = useState<(() => void) | null>(null);
 
-  const openModal = () => setIsOpen(true);
+  const openModal = (source = 'unknown') => {
+    track('deploy_modal_open', { source });
+    setIsOpen(true);
+  };
   const closeModal = () => setIsOpen(false);
   
   const setOnFormSubmit = useCallback((callback: (() => void) | null) => {

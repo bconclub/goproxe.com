@@ -12,6 +12,7 @@ import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
 import { useDeployModal } from '../contexts/DeployModalContext';
+import { track, initScrollDepthTracking } from '../lib/analytics';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -162,7 +163,7 @@ function FaqItem({ question, answer, placeholder }: { question: string; answer: 
   const [open, setOpen] = useState(false);
   return (
     <div className="proxe-faq-item" data-open={open}>
-      <button className="proxe-faq-trigger" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button className="proxe-faq-trigger" onClick={() => { if (!open) track('faq_open', { question }); setOpen((o) => !o); }} aria-expanded={open}>
         <span>{question}</span>
         <span className="proxe-faq-plus" aria-hidden="true" />
       </button>
@@ -238,7 +239,7 @@ function ScrollPopup({ triggerRef }: { triggerRef: React.RefObject<HTMLElement |
           <button
             type="button"
             className="proxe-btn proxe-btn-primary"
-            onClick={() => { setOpen(false); openDeployModal(); }}
+            onClick={() => { setOpen(false); openDeployModal('scroll_popup'); }}
           >
             Book a Demo
           </button>
@@ -612,7 +613,7 @@ function ChannelCoverflow() {
               type="button"
               className="proxe-channel-item"
               data-active={i === active}
-              onClick={() => { setActive(i); lockManual(); }}
+              onClick={() => { setActive(i); lockManual(); track('channel_demo_select', { channel: c.name.toLowerCase(), surface: 'coverflow' }); }}
               aria-label={c.name}
               style={{
                 transform: `translateX(${dist === 0 ? 0 : -dist * 14}px)`,
@@ -817,7 +818,7 @@ function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]
         ))}
         {lastMsg?.type === 'bookdemo' && (
           <div className="ig-row ig-row--ai conv-msg-in">
-            <button type="button" className="ig-book-btn" onClick={openModal}>Book a Demo</button>
+            <button type="button" className="ig-book-btn" onClick={() => openModal('ig_demo')}>Book a Demo</button>
           </div>
         )}
         {isTyping && (
@@ -1186,6 +1187,9 @@ export default function ProxeLanding() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Fire scroll-depth milestones (25/50/75/90%) once per session.
+  useEffect(() => initScrollDepthTracking(), []);
+
   // Play/pause the demo video based on viewport visibility.
   // Waits until >=50% of the frame is in view (i.e. the 3D fold-in has landed),
   // then sends Vimeo a `play`. Pauses again when the user scrolls away, for perf.
@@ -1253,6 +1257,7 @@ export default function ProxeLanding() {
       );
     }
     setVideoMuted(nextMuted);
+    if (!nextMuted) track('video_unmute', { video: 'hero_demo' });
   };
 
   return (
@@ -1302,7 +1307,7 @@ export default function ProxeLanding() {
             className="proxe-nav-logo-icon"
           />
         </a>
-        <button type="button" onClick={openModal} className="proxe-float-cta">
+        <button type="button" onClick={() => openModal('floating_header')} className="proxe-float-cta">
           {/* Two labels — full on top, short when [data-scrolled='true']. */}
           <span className="proxe-float-cta-full">Deploy PROXe</span>
           <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
@@ -1322,7 +1327,7 @@ export default function ProxeLanding() {
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and pushes the ready-to-buy ones to you.
           </p>
           <div className="proxe-hero-ctas">
-            <a href="#voice" className="proxe-hero-big-cta">
+            <a href="#voice" className="proxe-hero-big-cta" onClick={() => track('cta_click', { location: 'hero_whats_proxe' })}>
               What&rsquo;s PROXe?
               <span className="proxe-hero-big-cta-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1477,7 +1482,7 @@ export default function ProxeLanding() {
               Your always-on revenue engine.
             </p>
 
-            <button type="button" onClick={openModal} className="proxe-hero-big-cta proxe-cc-cta">
+            <button type="button" onClick={() => openModal('closing_cta')} className="proxe-hero-big-cta proxe-cc-cta">
               Book a Demo
               <span className="proxe-hero-big-cta-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1508,7 +1513,16 @@ export default function ProxeLanding() {
         />
 
         <div className="proxe-container pf-inner">
-          <div className="pf-grid">
+          <div
+            className="pf-grid"
+            onClick={(e) => {
+              const a = (e.target as HTMLElement).closest('a');
+              if (a) {
+                const label = a.getAttribute('aria-label') || a.textContent?.trim() || a.getAttribute('href') || 'link';
+                track('nav_click', { label, location: 'footer' });
+              }
+            }}
+          >
             {/* Brand column — tagline + newsletter signup
                 (no small wordmark; the giant outline above is the brand mark) */}
             <div className="pf-brand">
@@ -1524,6 +1538,7 @@ export default function ProxeLanding() {
                   // TODO: wire to your real list endpoint (Mailchimp / Resend / Loops).
                   // For now, just log + clear.
                   if (input?.value) {
+                    track('newsletter_subscribe', { location: 'footer' });
                     console.log('[newsletter] subscribe:', input.value);
                     input.value = '';
                     (e.currentTarget.querySelector('.pf-news-ok') as HTMLElement)?.classList.add('pf-news-ok--show');

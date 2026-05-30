@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SiWhatsapp, SiInstagram, SiMessenger } from 'react-icons/si';
 import { FiPhone, FiGlobe, FiCheck, FiCalendar, FiChevronLeft } from 'react-icons/fi';
 import VapiOrb from './VapiOrb';
+import { track } from '../lib/analytics';
 
 /* ═══════════════════════════════════════════════════════════════
    TYPES
@@ -820,7 +821,7 @@ export default function ChannelDemo() {
                 <button
                   key={id}
                   className={`cd-nav-item${isActive ? ' cd-nav-item--active' : ''}`}
-                  onClick={() => { setActive(id); setPaused(false); }}
+                  onClick={() => { setActive(id); setPaused(false); track('channel_demo_select', { channel: id, surface: 'channel_demo' }); }}
                   style={isMobile
                     ? { opacity: isActive ? 1 : 0.55 }
                     : { transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`, opacity }

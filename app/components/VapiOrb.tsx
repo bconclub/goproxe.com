@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Vapi from '@vapi-ai/web';
 import Grainient from './Grainient';
+import { track } from '../lib/analytics';
 
 const PUBLIC_API_KEY = 'f2b9a58e-d2c8-427b-847c-fc54a87c6a61';
 const ASSISTANT_ID = 'be61e583-de32-4df8-a04f-104f6c3a7b6e';
@@ -158,6 +159,7 @@ export default function VapiOrb() {
 
     setError(null);
     setState('connecting');
+    track('voice_demo_start');
     try {
       await vapi.start(ASSISTANT_ID);
     } catch (err) {
