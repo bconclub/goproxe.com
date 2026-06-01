@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { BrandConfig } from '../../configs';
 import { storeUserProfile, getStoredUser } from '../../lib/chatLocalStorage';
 import { track, trackLead } from '../../lib/analytics';
+import { submitLead } from '../../lib/leads';
 import styles from './ChatWidget.module.css';
 
 interface DeployFormInlineProps {
@@ -147,6 +148,16 @@ export function DeployFormInline({
     trackLead({
       source: 'chat_widget',
       hasWebsite: Boolean(userProfileData.websiteUrl),
+    });
+
+    // Persist the lead to the Google Sheet (via /api/lead).
+    await submitLead({
+      type: 'lead',
+      name: userProfileData.name,
+      email: userProfileData.email,
+      phone: userProfileData.phone,
+      websiteUrl: userProfileData.websiteUrl,
+      source: 'chat_widget',
     });
 
     // Notify parent of contact submission

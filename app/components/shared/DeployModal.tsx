@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
 import { track, trackLead } from '../../lib/analytics';
+import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
 interface DeployModalProps {
@@ -97,8 +98,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    // Simulate API call — replace with real endpoint later.
-    await new Promise(resolve => setTimeout(resolve, 900));
 
     const userProfile = {
       name: formData.name.trim(),
@@ -121,6 +120,20 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
       hasWebsite: Boolean(userProfile.websiteUrl),
     });
 
+    // Persist the actual contact details to the Google Sheet (via /api/lead).
+    // Captured HERE — the moment the form completes — so we keep the lead even
+    // if they bail on the calendar. Awaited so the "Sending…" state is honest,
+    // but it never blocks: submitLead resolves false on any failure.
+    await submitLead({
+      type: 'lead',
+      name: userProfile.name,
+      email: userProfile.email,
+      phone: userProfile.phone,
+      brandName: userProfile.brandName,
+      websiteUrl: userProfile.websiteUrl,
+      source: 'deploy_modal',
+    });
+
     onFormSubmit?.();
     setIsSubmitting(false);
     setFlipped(true); // ✨ flip to the booking calendar — no navigation yet
@@ -134,6 +147,13 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
       source: 'deploy_modal',
       day_of_week: new Date(slot.iso).toLocaleDateString('en-US', { weekday: 'long' }),
       time: slot.time,
+    });
+    // Update the same lead row (matched by email) with the chosen slot.
+    submitLead({
+      type: 'booking',
+      email: formData.email.trim(),
+      bookingLabel: slot.label,
+      bookingTime: slot.time,
     });
     onClose();
     router.push('/thank-you');

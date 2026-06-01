@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-05-31 · feat: persist leads to a Google Sheet
+
+Leads were going nowhere retrievable — the deploy form only wrote to the visitor's
+own localStorage + an anonymized GA event (a `setTimeout` stood in for a real API).
+Now every submission is written to the leads spreadsheet.
+
+Flow: `submitLead()` (`lib/leads.ts`) → `POST /api/lead` (server route, hides the
+URL) → Google Apps Script Web App → the sheet. The Apps Script upserts by email.
+
+- `POST /api/lead` forwards to `LEADS_WEBHOOK_URL` (server-only env). If unset it
+  returns `{ ok:false, reason:'not_configured' }` so the form still works — leads
+  just aren't written yet. Never throws to the client.
+- `DeployModal`: the lead row is written the moment the **form** completes (so we
+  keep leads who skip the calendar); confirming a slot sends a **booking** update
+  that fills the same row's Booking columns (matched by email). Removed the old
+  fake `setTimeout` placeholder.
+- `DeployFormInline` (chat form) writes leads the same way.
+- `google-apps-script/leads-sheet.gs` + README — paste into the sheet's Apps Script,
+  deploy as a Web App, set `LEADS_WEBHOOK_URL`. Sheet ID is pre-filled.
+
+Verified in preview: form submit posts the full contact payload, booking confirm
+posts the slot — both to /api/lead. No console errors.
+
+**Action required:** deploy the Apps Script and set `LEADS_WEBHOOK_URL` (see
+`google-apps-script/README.md`) before the sheet starts filling.
+
 ## 2026-05-31 · chore: rename analytics events for clarity
 
 - `generate_lead` → `form_completed` (the deploy form was submitted). Still maps to
