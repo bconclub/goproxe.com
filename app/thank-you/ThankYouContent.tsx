@@ -1,13 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { FiCalendar, FiClock, FiVideo, FiArrowRight, FiMail, FiArrowLeft, FiCheckCircle } from 'react-icons/fi'
+import { FiCalendar, FiClock, FiVideo, FiMail, FiArrowLeft } from 'react-icons/fi'
 import { getStoredUser, getStoredBooking, type LocalBooking } from '../lib/chatLocalStorage'
 import { track } from '../lib/analytics'
 import styles from './thankyou.module.css'
 
-/** Keep these in sync with <DeployModal /> — the real scheduling + fallback. */
-const BOOKING_URL = 'https://cal.com/bconclub/proxe-intro'
 const FALLBACK_EMAIL = 'hello@bconclub.com'
 
 export default function ThankYouContent() {
@@ -65,24 +63,12 @@ export default function ThankYouContent() {
           )}
         </ul>
 
-        <a
-          href={BOOKING_URL}
-          target="_blank"
-          rel="noreferrer noopener"
-          className={styles.cta}
-          onClick={() => track('book_call_click', { location: 'thank_you', has_booking: Boolean(booking) })}
-        >
-          {booking
-            ? <>Add to your calendar <FiCheckCircle size={16} /></>
-            : <>Open the calendar <FiArrowRight size={16} /></>}
-        </a>
-
         <div className={styles.altRow}>
           <a
             href={`mailto:${FALLBACK_EMAIL}?subject=PROXe%20Demo%20Request`}
             className={styles.altLink}
           >
-            <FiMail size={13} /> or email us instead
+            <FiMail size={13} /> Email us instead
           </a>
           <a href="/" className={styles.altLink}>
             <FiArrowLeft size={13} /> back to home

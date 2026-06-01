@@ -27,7 +27,6 @@ export type ProxeEvent =
   | 'lead_form_start'      // first interaction with a lead form field (funnel top)
   | 'demo_booked'          // reached /thank-you after picking a slot
   | 'booking_confirm'      // picked a slot on the modal's flip-side calendar
-  | 'book_call_click'      // clicked the calendar / "open the calendar" CTA
   // ── CTAs ────────────────────────────────────────────────────
   | 'cta_click'            // a non-modal CTA (anchor scroll) — param: location
   | 'deploy_modal_open'    // the deploy modal was opened — param: source
