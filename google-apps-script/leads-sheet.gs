@@ -31,17 +31,17 @@ var HEADERS = [
 function getSheet_() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName(TAB_NAME) || ss.getSheets()[0];
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(HEADERS);
-    sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
-  }
+  // Always keep row 1 as the canonical header row (self-heals new columns).
+  sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
   return sheet;
 }
 
 /** Find the 1-based row index of the most recent row matching this email. */
 function findRowByEmail_(sheet, email) {
   if (!email) return -1;
-  var values = sheet.getRange(2, 3, Math.max(sheet.getLastRow() - 1, 0), 1).getValues(); // col C = Email
+  var last = sheet.getLastRow();
+  if (last < 2) return -1; // only the header row exists — nothing to match
+  var values = sheet.getRange(2, 3, last - 1, 1).getValues(); // col C = Email
   for (var i = values.length - 1; i >= 0; i--) {
     if (String(values[i][0]).trim().toLowerCase() === email.trim().toLowerCase()) {
       return i + 2; // +2: header row + 0-based → 1-based
