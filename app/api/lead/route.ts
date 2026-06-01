@@ -30,6 +30,13 @@ interface LeadPayload {
   source?: string
   bookingLabel?: string
   bookingTime?: string
+  // First-touch attribution
+  channel?: string
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  referrer?: string
+  landingPage?: string
 }
 
 export async function POST(request: Request) {
@@ -65,6 +72,12 @@ export async function POST(request: Request) {
         source: body.source ?? '',
         bookingDate: body.bookingLabel ?? '',
         bookingTime: body.bookingTime ?? '',
+        channel: body.channel ?? '',
+        utmSource: body.utmSource ?? '',
+        utmMedium: body.utmMedium ?? '',
+        utmCampaign: body.utmCampaign ?? '',
+        referrer: body.referrer ?? '',
+        landingPage: body.landingPage ?? '',
         receivedAt: new Date().toISOString(),
       }),
       // Apps Script web apps 302-redirect to googleusercontent; follow it.

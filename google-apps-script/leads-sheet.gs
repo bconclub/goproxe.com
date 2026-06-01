@@ -21,10 +21,11 @@
  */
 
 var SHEET_ID = '1Kn-q0yfMZLEJ6mWqvMdQVfMhRfTg8dWTmSdxyW3bw6E';
-var TAB_NAME = 'Leads'; // change if your tab has a different name
+var TAB_NAME = 'Web Leads'; // the tab data is written to
 var HEADERS = [
   'Received At', 'Name', 'Email', 'Phone', 'Brand', 'Website',
-  'Source', 'Booking Date', 'Booking Time',
+  'CTA', 'Booking Date', 'Booking Time',
+  'Channel', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'Referrer', 'Landing Page',
 ];
 
 function getSheet_() {
@@ -66,14 +67,18 @@ function doPost(e) {
         sheet.appendRow([
           data.receivedAt || new Date().toISOString(), '', email, '', '', '',
           data.source || '', data.bookingDate || '', data.bookingTime || '',
+          data.channel || '', data.utmSource || '', data.utmMedium || '',
+          data.utmCampaign || '', data.referrer || '', data.landingPage || '',
         ]);
       }
     } else {
-      // 'lead' — upsert the contact row.
+      // 'lead' — upsert the contact row (incl. first-touch attribution).
       var row = [
         data.receivedAt || new Date().toISOString(),
         data.name || '', email, data.phone || '', data.brand || '',
         data.website || '', data.source || '', data.bookingDate || '', data.bookingTime || '',
+        data.channel || '', data.utmSource || '', data.utmMedium || '',
+        data.utmCampaign || '', data.referrer || '', data.landingPage || '',
       ];
       if (existingRow > 0) {
         sheet.getRange(existingRow, 1, 1, HEADERS.length).setValues([row]);

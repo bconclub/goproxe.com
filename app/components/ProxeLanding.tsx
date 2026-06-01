@@ -13,6 +13,7 @@ import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { track, initScrollDepthTracking } from '../lib/analytics';
+import { captureAttribution } from '../lib/attribution';
 
 /**
  * Voice call is now handled inline via the @vapi-ai/web SDK in <VapiOrb />.
@@ -1189,6 +1190,9 @@ export default function ProxeLanding() {
 
   // Fire scroll-depth milestones (25/50/75/90%) once per session.
   useEffect(() => initScrollDepthTracking(), []);
+
+  // Capture first-touch traffic attribution (UTM / referrer) on landing.
+  useEffect(() => { captureAttribution(); }, []);
 
   // Play/pause the demo video based on viewport visibility.
   // Waits until >=50% of the frame is in view (i.e. the 3D fold-in has landed),
