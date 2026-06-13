@@ -1,0 +1,170 @@
+/* ============================================================
+   Shared styling for long-form legal pages (/privacy-policy,
+   /data-deletion). Same visual language as the landing + thank-you:
+   deep-purple field, frosted reading column, Instrument Serif
+   headings + Inter body. Self-contained — no landing.css dependency.
+   ============================================================ */
+
+.page {
+  min-height: 100vh;
+  padding: 72px 20px 96px;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-proxe-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background:
+    radial-gradient(120% 70% at 50% -5%, rgba(124, 58, 237, 0.20), transparent 55%),
+    linear-gradient(180deg, #0c0721 0%, #08051a 55%, #06040f 100%);
+  color: #fff;
+}
+
+/* Soft drifting aurora — calm, behind the content. */
+.page::before {
+  content: '';
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  top: -180px;
+  left: -140px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.28), transparent 70%);
+}
+
+/* ── Reading column ── */
+.column {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.85);
+  margin: 0 0 12px;
+}
+
+.title {
+  font-family: var(--font-proxe-heading), 'Instrument Serif', serif;
+  font-size: 46px;
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 0 0 14px;
+  color: #fff;
+}
+.title .accent {
+  background: linear-gradient(135deg, #ede9fe 0%, #c4b5fd 45%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lede {
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(226, 220, 250, 0.78);
+  margin: 0 0 8px;
+  max-width: 620px;
+}
+
+.updated {
+  font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(196, 181, 253, 0.6);
+  margin: 0 0 36px;
+}
+
+/* ── Document body ── */
+.body {
+  background:
+    linear-gradient(180deg, rgba(20, 13, 48, 0.55) 0%, rgba(11, 7, 30, 0.62) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.14);
+  border-radius: 20px;
+  padding: 40px 40px 34px;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.section + .section { margin-top: 28px; }
+
+.section h2 {
+  font-family: var(--font-proxe-heading), 'Instrument Serif', serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: #f1edff;
+}
+
+.section p,
+.section li {
+  font-size: 15px;
+  line-height: 1.68;
+  color: rgba(220, 215, 245, 0.82);
+  margin: 0 0 12px;
+}
+
+.section ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+.section li { margin-bottom: 6px; }
+
+.section a {
+  color: #c4b5fd;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196, 181, 253, 0.35);
+  transition: color 0.2s, border-color 0.2s;
+}
+.section a:hover { color: #ede9fe; border-color: rgba(237, 233, 254, 0.7); }
+
+.section strong { color: #ede9fe; font-weight: 600; }
+
+/* Highlighted action box (how to request deletion). */
+.callout {
+  margin: 18px 0 4px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.34);
+}
+.callout p { margin: 0; color: rgba(232, 227, 252, 0.92); }
+
+/* ── Footer row ── */
+.footer {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.backLink:hover { color: rgba(196, 181, 253, 1); }
+.brand { display: flex; align-items: center; gap: 8px; opacity: 0.7; }
+.brand img { height: 18px; width: auto; }
+
+@media (max-width: 640px) {
+  .page { padding: 52px 16px 72px; }
+  .title { font-size: 36px; }
+  .body { padding: 28px 22px 24px; border-radius: 16px; }
+  .section h2 { font-size: 21px; }
+}
