@@ -21,11 +21,7 @@ const mono = JetBrains_Mono({
   variable: '--font-proxe-mono',
 });
 
-export const metadata = {
-  title: 'PROXe · The AI Customer Acquisition System',
-  description:
-    'PROXe captures every lead across Website, WhatsApp, social, and calls. Keeps the conversation alive. Delivers ready-to-buy prospects to your team.',
-};
+// Title / description / OG inherited from the root layout metadata.
 
 export default function Page() {
   return (
