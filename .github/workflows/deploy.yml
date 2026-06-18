@@ -17,7 +17,10 @@ jobs:
           script: |
             set -e
             cd /var/www/goproxe
-            git pull origin main
+            # Force-sync to origin/main. reset --hard never fails on a dirty tree
+            # or a stray untracked file, and it leaves untracked .env.local intact.
+            git fetch origin
+            git reset --hard origin/main
             npm ci --production=false
             rm -rf .next
             export NODE_OPTIONS="--max-old-space-size=2048"
