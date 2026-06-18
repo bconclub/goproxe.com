@@ -6,7 +6,9 @@ import Grainient from './Grainient';
 import { track } from '../lib/analytics';
 
 const PUBLIC_API_KEY = 'f2b9a58e-d2c8-427b-847c-fc54a87c6a61';
-const ASSISTANT_ID = 'be61e583-de32-4df8-a04f-104f6c3a7b6e';
+// "PROXe Website Demo" assistant (Vapi). Recreated 2026-06 after the previous
+// one (be61e583…) was deleted from the Vapi account — cloned from PROXe Inbound.
+const ASSISTANT_ID = 'b0dc8ed9-8d5c-46b4-85d8-dc68a2bd6e52';
 
 type OrbState = 'idle' | 'connecting' | 'listening' | 'speaking' | 'ending';
 
