@@ -750,6 +750,9 @@ export default function ChannelDemo() {
   const [active, setActive] = useState('voice');
   const [paused, setPaused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  // True while a live voice call is connecting/running, so the carousel never
+  // auto-advances and cuts the user off mid-call.
+  const [voiceActive, setVoiceActive] = useState(false);
   const SLIDE_MS = 10000;
 
   useEffect(() => {
@@ -770,16 +773,17 @@ export default function ChannelDemo() {
     setPaused(false);
   };
 
-  // Auto-advance through channels with a timer
+  // Auto-advance through channels with a timer — held while hovering (paused)
+  // or while a voice call is live (voiceActive), so it never cuts the user off.
   useEffect(() => {
-    if (paused) return;
+    if (paused || voiceActive) return;
     const t = setTimeout(() => {
       const idx = CHANNELS.findIndex(c => c.id === active);
       const next = CHANNELS[(idx + 1) % CHANNELS.length];
       setActive(next.id);
     }, SLIDE_MS);
     return () => clearTimeout(t);
-  }, [active, paused]);
+  }, [active, paused, voiceActive]);
 
   return (
     <section className="cd-section" id="voice">
@@ -833,7 +837,7 @@ export default function ChannelDemo() {
                     <span
                       className="cd-nav-progress"
                       key={`${id}-${Date.now()}`}
-                      style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
+                      style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: (paused || voiceActive) ? 'paused' : 'running' }}
                     />
                   )}
                 </button>
@@ -850,7 +854,7 @@ export default function ChannelDemo() {
           >
             {active === 'voice' && (
               <div className="cd-voice-stage" key="voice">
-                <VapiOrb />
+                <VapiOrb onActiveChange={setVoiceActive} />
               </div>
             )}
             {active === 'whatsapp' && (

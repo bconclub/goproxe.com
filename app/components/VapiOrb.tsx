@@ -55,7 +55,13 @@ function ConnectingRing() {
   );
 }
 
-export default function VapiOrb() {
+interface VapiOrbProps {
+  /** Notified true while a call is connecting/live, false when idle. Lets a
+   *  parent (e.g. the channel carousel) avoid auto-advancing mid-call. */
+  onActiveChange?: (active: boolean) => void;
+}
+
+export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
   const vapiRef = useRef<Vapi | null>(null);
   const [state, setState] = useState<OrbState>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -144,6 +150,15 @@ export default function VapiOrb() {
       vapiRef.current = null;
     };
   }, []);
+
+  // Report call activity up: any non-idle state means a call is in progress.
+  useEffect(() => {
+    onActiveChange?.(state !== 'idle');
+  }, [state, onActiveChange]);
+
+  // If the orb unmounts mid-call (e.g. user switches channels), clear the flag
+  // so the parent carousel can resume.
+  useEffect(() => () => onActiveChange?.(false), [onActiveChange]);
 
   const handleClick = async () => {
     const vapi = vapiRef.current;
