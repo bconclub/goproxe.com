@@ -5,8 +5,11 @@ import Vapi from '@vapi-ai/web';
 import Grainient from './Grainient';
 import { track } from '../lib/analytics';
 
-const PUBLIC_API_KEY = 'f2b9a58e-d2c8-427b-847c-fc54a87c6a61';
-// "PROXe Website Demo" assistant (Vapi). Recreated 2026-06 after the previous
+// Vapi "PROXe Website Demo" public key — scoped to the site-demo assistant only,
+// so it's safe to ship in the client bundle. (Replaces the old f2b9a58e… key,
+// which was rotated/invalidated → "unauthorized" → VOICE CALL FAILED.)
+const PUBLIC_API_KEY = '522e68b4-a075-4349-9771-1f93a48227d2';
+// "PROXe Site Demo" assistant (Vapi). Recreated 2026-06 after the previous
 // one (be61e583…) was deleted from the Vapi account — cloned from PROXe Inbound.
 const ASSISTANT_ID = 'b0dc8ed9-8d5c-46b4-85d8-dc68a2bd6e52';
 
