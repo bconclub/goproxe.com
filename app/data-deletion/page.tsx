@@ -9,7 +9,7 @@ const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--
 
 // Keep in sync with the same constant on /privacy-policy.
 const CONTACT_EMAIL = 'connect@bconclub.com'
-const LAST_UPDATED = 'June 13, 2026'
+const LAST_UPDATED = 'June 19, 2026'
 
 export const metadata: Metadata = {
   title: 'Data Deletion',
@@ -69,6 +69,18 @@ export default function DataDeletionPage() {
                 messaging metadata, and related interaction history. This data is used only to
                 respond to your enquiry and manage that business&rsquo;s communication
                 workflows.
+              </p>
+            </section>
+
+            <section className={styles.section}>
+              <h2>WhatsApp Platform Data</h2>
+              <p>
+                If you interact with a business through WhatsApp, we receive data through
+                Meta&rsquo;s WhatsApp Business API, including your phone number, message content,
+                sender name, message templates, conversation history, and delivery metadata. This
+                data is used only to respond to your enquiry and manage that business&rsquo;s
+                communication workflows. We do not sell or share this data outside the business
+                you contacted.
               </p>
             </section>
 

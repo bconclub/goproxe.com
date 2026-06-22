@@ -9,7 +9,7 @@ const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--
 
 // One place to change the contact address used across the legal pages.
 const CONTACT_EMAIL = 'connect@bconclub.com'
-const LAST_UPDATED = 'June 13, 2026'
+const LAST_UPDATED = 'June 19, 2026'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -67,6 +67,30 @@ export default function PrivacyPolicyPage() {
                 connected account. This data is used only to respond to enquiries and manage
                 that business&rsquo;s communication workflows. <strong>We do not sell this
                 data</strong>, and we do not use it for advertising or unrelated purposes.
+              </p>
+            </section>
+
+            <section className={styles.section}>
+              <h2>WhatsApp Platform Data</h2>
+              <p>
+                PROXe receives data through Meta&rsquo;s WhatsApp Business API, including phone
+                numbers, message content, sender names, message templates, conversation history,
+                and delivery metadata. This data is used only to handle conversations and
+                follow-ups on behalf of the business you contacted. We do not sell or share this
+                data outside the business, and we do not use it for advertising or unrelated
+                purposes.
+              </p>
+            </section>
+
+            <section className={styles.section}>
+              <h2>Automated Processing</h2>
+              <p>
+                Messages, comments, and enquiries received through PROXe are processed by AI
+                systems to understand intent, generate responses, qualify leads, and route
+                conversations to the appropriate business. A human team at the business you
+                contacted may also review your messages. You can request to opt out of automated
+                processing by emailing{' '}
+                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
               </p>
             </section>
 
