@@ -10452,6 +10452,117 @@ button.pr-cta { padding: 0 22px; }
 /* CTA pinned to the bottom of the card so all three buttons align */
 .pr-grid--3 .pr-cta { margin-top: auto; }
 
+/* ── Currency toggle (INR ⇄ USD) ── */
+.pr-billing-toggle {
+  display: inline-flex;
+  gap: 3px;
+  margin-top: 20px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.pr-billing-opt {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.62);
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
+  transition: color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+}
+.pr-billing-opt:hover { color: rgba(255, 255, 255, 0.9); }
+.pr-billing-opt--active {
+  color: #fff;
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
+  box-shadow:
+    0 4px 14px rgba(124, 58, 237, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* ── "Top-up" price variant (Credits card) ── */
+.pr-card-num--packs {
+  font-size: 30px;
+  font-style: normal;
+  letter-spacing: 0.01em;
+}
+
+/* ── Credit packs row ── */
+.pr-credit-packs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  margin-top: -6px;
+}
+.pr-credit-pack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 6px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(196, 181, 253, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: border-color 0.22s ease, background 0.22s ease;
+}
+.pr-credit-pack:hover {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(124, 58, 237, 0.12);
+}
+.pr-credit-pack-name {
+  font-family: var(--proxe-font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+.pr-credit-pack-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ── Extra-seat add-on line (Core card) ── */
+.pr-card-addon {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.66);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(196, 181, 253, 0.22);
+  position: relative;
+  z-index: 1;
+}
+.pr-card-addon strong { color: #fff; font-weight: 700; }
+.pr-card-addon-ico {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  color: #c4b5fd;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .pr-header {

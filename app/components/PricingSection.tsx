@@ -9,13 +9,9 @@ import {
   FiPhone,
   FiCheck,
   FiArrowRight,
-  FiZap,
   FiUsers,
-  FiCpu,
-  FiCheckCircle,
-  FiShield,
+  FiZap,
   FiAward,
-  FiTrendingUp,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
@@ -29,7 +25,7 @@ const CHANNELS_HEADER = [
   { Icon: FiPhone,       label: 'Voice',        color: '#f472b6' },
 ];
 
-const STARTER_CHANNELS = [
+const CORE_CHANNELS = [
   { Icon: FiGlobe,       label: 'Website chat',       color: '#a78bfa' },
   { Icon: SiWhatsapp,    label: 'WhatsApp',           color: '#25d366' },
   { Icon: FiInstagram,   label: 'Instagram DM',       color: '#c084fc' },
@@ -38,30 +34,63 @@ const STARTER_CHANNELS = [
   { Icon: FiPhone,       label: 'Voice',              color: '#f472b6' },
 ];
 
-const STARTER_FEATURES = [
-  'Unified memory across channels',
+const CORE_FEATURES = [
+  '~200–300 conversations covered in base',
+  'Unified memory across every channel',
+  'Live analytics dashboard',
   'Automated follow-ups',
 ];
 
-const UNLIMITED_FEATURES = [
-  'Multi-agent orchestration',
-  'AI follow-ups & reactivation',
-  'Priority infrastructure access',
-  'Advanced analytics dashboard',
+const CREDIT_FEATURES = [
+  'One pool across every channel',
+  'Powers campaigns & broadcasts',
+  'Powers outbound voice calls',
+  'Absorbs heavy-volume spikes',
 ];
 
-const ENTERPRISE_FEATURES = [
-  'Dedicated customer success manager',
+const SCALE_FEATURES = [
+  'Multi-location deployment',
+  'Unlimited seats',
+  'Volume credit rates',
+  'Priority support & onboarding',
   'Custom integrations & API access',
-  'On-prem / private cloud deployment',
-  '99.99% uptime SLA',
-  'Volume-based pricing',
   'SOC 2 & GDPR compliance review',
 ];
+
+/** Currency-specific price strings. INR is the home-market default. */
+type Currency = 'inr' | 'usd';
+const PRICES: Record<Currency, {
+  symbol: string;
+  core: string;
+  seat: string;
+  packs: { label: string; value: string }[];
+}> = {
+  inr: {
+    symbol: '₹',
+    core: '9,999',
+    seat: '₹999',
+    packs: [
+      { label: 'Starter', value: '₹2,000' },
+      { label: 'Growth',  value: '₹5,000' },
+      { label: 'Scale',   value: '₹10,000' },
+    ],
+  },
+  usd: {
+    symbol: '$',
+    core: '149',
+    seat: '$15',
+    packs: [
+      { label: 'Starter', value: '$25' },
+      { label: 'Growth',  value: '$60' },
+      { label: 'Scale',   value: '$120' },
+    ],
+  },
+};
 
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
+  const [currency, setCurrency] = useState<Currency>('inr');
   const { openModal } = useDeployModal();
 
   useEffect(() => {
@@ -72,6 +101,21 @@ export default function PricingSection() {
     return () => io.disconnect();
   }, []);
 
+  // Default to INR at home (India), USD everywhere else. Runs client-side only
+  // so there's no SSR/hydration mismatch — initial render is always INR.
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      const lang = typeof navigator !== 'undefined' ? navigator.language : '';
+      const isIndia = tz === 'Asia/Kolkata' || /-IN$/i.test(lang);
+      if (!isIndia) setCurrency('usd');
+    } catch {
+      /* keep INR default */
+    }
+  }, []);
+
+  const p = PRICES[currency];
+
   return (
     <section ref={ref} id="pricing" className={`pr-section${vis ? ' pr-in' : ''}`}>
       <div className="proxe-container">
@@ -80,15 +124,37 @@ export default function PricingSection() {
           <div className="pr-header-left">
             <div className="pr-label">PRICING</div>
             <h2 className="pr-h2">
-              Start capturing <span className="pr-h2-grad">every conversation.</span>
+              One plan. <span className="pr-h2-grad">Every channel.</span>
             </h2>
             <p className="pr-sub">
-              Across every channel. With one unified memory.<br />
-              Scale from your first lead to infinite conversations.
+              A flat base that covers everyday conversations — then a shared credit
+              pool that scales with your campaigns and voice.
             </p>
+
+            {/* INR ⇄ USD toggle */}
+            <div className="pr-billing-toggle" role="tablist" aria-label="Currency">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={currency === 'inr'}
+                className={`pr-billing-opt${currency === 'inr' ? ' pr-billing-opt--active' : ''}`}
+                onClick={() => setCurrency('inr')}
+              >
+                🇮🇳 INR
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={currency === 'usd'}
+                className={`pr-billing-opt${currency === 'usd' ? ' pr-billing-opt--active' : ''}`}
+                onClick={() => setCurrency('usd')}
+              >
+                🌐 USD
+              </button>
+            </div>
           </div>
 
-          {/* Right: channel icons → curved lines → central orb + "One memory" callout */}
+          {/* Right: channel icons → curved lines → central orb */}
           <div className="pr-header-vis">
             <div className="pr-channels-row">
               {CHANNELS_HEADER.map((c) => (
@@ -150,34 +216,37 @@ export default function PricingSection() {
           </div>
         </div>
 
-        {/* 3-tier cards */}
+        {/* 3-tier cards: Core (hero) · Credits · Scale */}
         <div className="pr-grid pr-grid--3">
 
-          {/* ─── STARTER ─── */}
-          <article className="pr-card">
+          {/* ─── PROXe CORE (the everyday plan) ─── */}
+          <article className="pr-card pr-card--popular">
+            <span className="pr-card-popular-badge">CORE PLAN</span>
+            <span className="pr-card-popular-glow" aria-hidden />
             <div className="pr-card-head">
-              <div className="pr-card-tier">Starter</div>
+              <div className="pr-card-tier pr-card-tier--popular">PROXe Core</div>
               <div className="pr-card-price">
-                <span className="pr-card-num">$249</span>
+                <span className="pr-card-num">{p.symbol}{p.core}</span>
                 <span className="pr-card-mo">/month</span>
               </div>
               <div className="pr-card-sub">
-                For growing businesses getting serious about conversations.
+                Everything you need to capture and convert — live on every channel.
               </div>
             </div>
 
-            {/* Marquee feature box — the headline thing they're buying */}
-            <div className="pr-card-marquee">
+            <div className="pr-card-marquee pr-card-marquee--unlimited">
               <span className="pr-card-marquee-ico"><FiMessageCircle size={16} /></span>
               <div className="pr-card-marquee-txt">
-                <div className="pr-card-marquee-big"><strong>1,000</strong> conversations</div>
-                <div className="pr-card-marquee-small">per month, across every channel</div>
+                <div className="pr-card-marquee-big">
+                  <strong className="pr-grad-text">All channels</strong>, one memory
+                </div>
+                <div className="pr-card-marquee-small">WhatsApp · Web · Instagram · Voice · Dashboard</div>
               </div>
             </div>
 
             <div className="pr-card-features-label">All channels included:</div>
             <ul className="pr-list pr-list--channels">
-              {STARTER_CHANNELS.map((c) => (
+              {CORE_CHANNELS.map((c) => (
                 <li key={c.label}>
                   <span className="pr-list-ico" style={{ color: c.color }}><c.Icon size={14} /></span>
                   <span>{c.label}</span>
@@ -187,7 +256,7 @@ export default function PricingSection() {
 
             <div className="pr-card-features-label">Plus:</div>
             <ul className="pr-list">
-              {STARTER_FEATURES.map((f) => (
+              {CORE_FEATURES.map((f) => (
                 <li key={f}>
                   <span className="pr-list-tick"><FiCheck size={11} /></span>
                   <span>{f}</span>
@@ -195,74 +264,71 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <button type="button" onClick={() => openModal('pricing_starter')} className="pr-cta pr-cta--ghost">
+            <div className="pr-card-addon">
+              <span className="pr-card-addon-ico"><FiUsers size={13} /></span>
+              <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
+            </div>
+
+            <button type="button" onClick={() => openModal('pricing_core')} className="pr-cta pr-cta--primary">
               Deploy PROXe <FiArrowRight size={14} />
             </button>
           </article>
 
-          {/* ─── UNLIMITED (MOST POPULAR) ─── */}
-          <article className="pr-card pr-card--popular">
-            <span className="pr-card-popular-badge">MOST POPULAR</span>
-            {/* Subtle inner glow accent — only on the popular card */}
-            <span className="pr-card-popular-glow" aria-hidden />
+          {/* ─── CREDITS (unified top-up pool) ─── */}
+          <article className="pr-card">
             <div className="pr-card-head">
-              <div className="pr-card-tier pr-card-tier--popular">Unlimited</div>
-              <div className="pr-card-price">
-                <span className="pr-card-num">$449</span>
-                <span className="pr-card-mo">/month</span>
+              <div className="pr-card-tier">Credits</div>
+              <div className="pr-card-price pr-card-price--custom">
+                <span className="pr-card-num pr-card-num--packs">Top-up</span>
+                <span className="pr-card-mo">as you grow</span>
               </div>
               <div className="pr-card-sub">
-                Built for businesses scaling acquisition without limits.
+                A shared pool that fuels the heavy stuff — pay only for what you use.
               </div>
             </div>
 
-            {/* Marquee — "Unlimited" hits hardest as a gradient callout */}
-            <div className="pr-card-marquee pr-card-marquee--unlimited">
+            <div className="pr-card-marquee">
               <span className="pr-card-marquee-ico pr-card-marquee-ico--inf">∞</span>
               <div className="pr-card-marquee-txt">
-                <div className="pr-card-marquee-big">
-                  <strong className="pr-grad-text">Unlimited</strong> conversations
-                </div>
-                <div className="pr-card-marquee-small">No cap. Scale to a million chats a month.</div>
+                <div className="pr-card-marquee-big">One unified pool</div>
+                <div className="pr-card-marquee-small">No subscription — top up anytime</div>
               </div>
             </div>
 
-            <div className="pr-card-features-label">All channels included:</div>
-            <ul className="pr-list pr-list--channels">
-              {STARTER_CHANNELS.map((c) => (
-                <li key={c.label}>
-                  <span className="pr-list-ico" style={{ color: c.color }}><c.Icon size={14} /></span>
-                  <span>{c.label}</span>
-                </li>
+            <div className="pr-card-features-label">Choose a pack:</div>
+            <div className="pr-credit-packs">
+              {p.packs.map((pack) => (
+                <div key={pack.label} className="pr-credit-pack">
+                  <span className="pr-credit-pack-name">{pack.label}</span>
+                  <span className="pr-credit-pack-value">{pack.value}</span>
+                </div>
               ))}
-            </ul>
-
-            <div className="pr-card-features-label">
-              Everything in <span className="pr-grad-text">Starter</span>, plus:
             </div>
+
+            <div className="pr-card-features-label">Credits power:</div>
             <ul className="pr-list">
-              {UNLIMITED_FEATURES.map((f) => (
+              {CREDIT_FEATURES.map((f) => (
                 <li key={f}>
-                  <span className="pr-list-tick"><FiCheck size={11} /></span>
+                  <span className="pr-list-tick"><FiZap size={11} /></span>
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
 
-            <button type="button" onClick={() => openModal('pricing_unlimited')} className="pr-cta pr-cta--primary">
-              Deploy PROXe <FiArrowRight size={14} />
+            <button type="button" onClick={() => openModal('pricing_credits')} className="pr-cta pr-cta--ghost">
+              Add credits <FiArrowRight size={14} />
             </button>
           </article>
 
-          {/* ─── ENTERPRISE — CUSTOM ─── */}
+          {/* ─── SCALE — CUSTOM ─── */}
           <article className="pr-card pr-card--enterprise">
             <div className="pr-card-head">
-              <div className="pr-card-tier">Enterprise</div>
+              <div className="pr-card-tier">Scale</div>
               <div className="pr-card-price pr-card-price--custom">
                 <span className="pr-card-num pr-card-num--custom">Custom</span>
               </div>
               <div className="pr-card-sub">
-                For enterprises that need dedicated support, custom infra, and SLAs.
+                For multi-location operators that need volume rates and dedicated support.
               </div>
             </div>
 
@@ -270,15 +336,15 @@ export default function PricingSection() {
               <span className="pr-card-marquee-ico"><FiAward size={16} /></span>
               <div className="pr-card-marquee-txt">
                 <div className="pr-card-marquee-big">Tailored to your scale</div>
-                <div className="pr-card-marquee-small">Custom volume pricing + dedicated team</div>
+                <div className="pr-card-marquee-small">Volume credit rates + a dedicated team</div>
               </div>
             </div>
 
             <div className="pr-card-features-label">
-              Everything in <span className="pr-grad-text">Unlimited</span>, plus:
+              Everything in <span className="pr-grad-text">Core</span>, plus:
             </div>
             <ul className="pr-list">
-              {ENTERPRISE_FEATURES.map((f) => (
+              {SCALE_FEATURES.map((f) => (
                 <li key={f}>
                   <span className="pr-list-tick"><FiCheck size={11} /></span>
                   <span>{f}</span>
@@ -286,7 +352,7 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <button type="button" onClick={() => openModal('pricing_enterprise')} className="pr-cta pr-cta--ghost">
+            <button type="button" onClick={() => openModal('pricing_scale')} className="pr-cta pr-cta--ghost">
               Talk to sales <FiArrowRight size={14} />
             </button>
           </article>
