@@ -34,7 +34,7 @@ const CORE_CHANNELS = [
 ];
 
 const CORE_FEATURES = [
-  '~200–300 conversations covered in base',
+  'Up to 500 leads managed per month',
   'Unified memory across every channel',
   'Live analytics dashboard',
   'Automated follow-ups',
