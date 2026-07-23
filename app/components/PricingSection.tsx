@@ -10,7 +10,6 @@ import {
   FiCheck,
   FiArrowRight,
   FiUsers,
-  FiZap,
   FiAward,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
@@ -41,17 +40,10 @@ const CORE_FEATURES = [
   'Automated follow-ups',
 ];
 
-const CREDIT_FEATURES = [
-  'One pool across every channel',
-  'Powers campaigns & broadcasts',
-  'Powers outbound voice calls',
-  'Absorbs heavy-volume spikes',
-];
-
 const SCALE_FEATURES = [
   'Multi-location deployment',
   'Unlimited seats',
-  'Volume credit rates',
+  'Volume-based pricing',
   'Priority support & onboarding',
   'Custom integrations & API access',
   'SOC 2 & GDPR compliance review',
@@ -63,28 +55,9 @@ const PRICES: Record<Currency, {
   symbol: string;
   core: string;
   seat: string;
-  packs: { label: string; value: string }[];
 }> = {
-  inr: {
-    symbol: '₹',
-    core: '9,999',
-    seat: '₹999',
-    packs: [
-      { label: 'Starter', value: '₹2,000' },
-      { label: 'Growth',  value: '₹5,000' },
-      { label: 'Scale',   value: '₹10,000' },
-    ],
-  },
-  usd: {
-    symbol: '$',
-    core: '149',
-    seat: '$15',
-    packs: [
-      { label: 'Starter', value: '$25' },
-      { label: 'Growth',  value: '$60' },
-      { label: 'Scale',   value: '$120' },
-    ],
-  },
+  inr: { symbol: '₹', core: '9,999', seat: '₹999' },
+  usd: { symbol: '$', core: '149',   seat: '$15' },
 };
 
 export default function PricingSection() {
@@ -127,8 +100,8 @@ export default function PricingSection() {
               One plan. <span className="pr-h2-grad">Every channel.</span>
             </h2>
             <p className="pr-sub">
-              A flat base that covers everyday conversations — then a shared credit
-              pool that scales with your campaigns and voice.
+              One flat cost. Every channel, one unified memory,
+              your whole team on board.
             </p>
 
             {/* INR ⇄ USD toggle */}
@@ -216,8 +189,8 @@ export default function PricingSection() {
           </div>
         </div>
 
-        {/* 3-tier cards: Core (hero) · Credits · Scale */}
-        <div className="pr-grid pr-grid--3">
+        {/* 2-tier cards: Core (hero) · Scale */}
+        <div className="pr-grid pr-grid--3 pr-grid--duo">
 
           {/* ─── PROXe CORE (the everyday plan) ─── */}
           <article className="pr-card pr-card--popular">
@@ -274,52 +247,6 @@ export default function PricingSection() {
             </button>
           </article>
 
-          {/* ─── CREDITS (unified top-up pool) ─── */}
-          <article className="pr-card">
-            <div className="pr-card-head">
-              <div className="pr-card-tier">Credits</div>
-              <div className="pr-card-price pr-card-price--custom">
-                <span className="pr-card-num pr-card-num--packs">Top-up</span>
-                <span className="pr-card-mo">as you grow</span>
-              </div>
-              <div className="pr-card-sub">
-                A shared pool that fuels the heavy stuff — pay only for what you use.
-              </div>
-            </div>
-
-            <div className="pr-card-marquee">
-              <span className="pr-card-marquee-ico pr-card-marquee-ico--inf">∞</span>
-              <div className="pr-card-marquee-txt">
-                <div className="pr-card-marquee-big">One unified pool</div>
-                <div className="pr-card-marquee-small">No subscription — top up anytime</div>
-              </div>
-            </div>
-
-            <div className="pr-card-features-label">Choose a pack:</div>
-            <div className="pr-credit-packs">
-              {p.packs.map((pack) => (
-                <div key={pack.label} className="pr-credit-pack">
-                  <span className="pr-credit-pack-name">{pack.label}</span>
-                  <span className="pr-credit-pack-value">{pack.value}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="pr-card-features-label">Credits power:</div>
-            <ul className="pr-list">
-              {CREDIT_FEATURES.map((f) => (
-                <li key={f}>
-                  <span className="pr-list-tick"><FiZap size={11} /></span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button type="button" onClick={() => openModal('pricing_credits')} className="pr-cta pr-cta--ghost">
-              Add credits <FiArrowRight size={14} />
-            </button>
-          </article>
-
           {/* ─── SCALE — CUSTOM ─── */}
           <article className="pr-card pr-card--enterprise">
             <div className="pr-card-head">
@@ -336,7 +263,7 @@ export default function PricingSection() {
               <span className="pr-card-marquee-ico"><FiAward size={16} /></span>
               <div className="pr-card-marquee-txt">
                 <div className="pr-card-marquee-big">Tailored to your scale</div>
-                <div className="pr-card-marquee-small">Volume credit rates + a dedicated team</div>
+                <div className="pr-card-marquee-small">Volume pricing + a dedicated team</div>
               </div>
             </div>
 

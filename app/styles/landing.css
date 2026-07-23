@@ -10487,51 +10487,13 @@ button.pr-cta { padding: 0 22px; }
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* ── "Top-up" price variant (Credits card) ── */
-.pr-card-num--packs {
-  font-size: 30px;
-  font-style: normal;
-  letter-spacing: 0.01em;
-}
-
-/* ── Credit packs row ── */
-.pr-credit-packs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  position: relative;
-  z-index: 1;
-  margin-top: -6px;
-}
-.pr-credit-pack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 10px 6px;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(196, 181, 253, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: border-color 0.22s ease, background 0.22s ease;
-}
-.pr-credit-pack:hover {
-  border-color: rgba(167, 139, 250, 0.4);
-  background: rgba(124, 58, 237, 0.12);
-}
-.pr-credit-pack-name {
-  font-family: var(--proxe-font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #c4b5fd;
-}
-.pr-credit-pack-value {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
+/* ── Two-card layout (Core + Scale) — keeps the pr-grid--3 list styling but
+   narrows to two centered columns so the pair doesn't stretch edge-to-edge ── */
+.pr-grid--3.pr-grid--duo {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── Extra-seat add-on line (Core card) ── */
