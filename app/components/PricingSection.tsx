@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   FiGlobe,
   FiInstagram,
@@ -60,6 +60,34 @@ const PRICES: Record<Currency, {
   usd: { symbol: '$', core: '149',   seat: '$15' },
 };
 
+/**
+ * Which market is this visitor in? India → INR, everyone else → USD.
+ *
+ * Timezone is the strongest signal (it's the device's actual location, and
+ * unlike IP it survives most VPNs people use for streaming). Language tags are
+ * the backup for travellers/dual-locale setups. If every signal is unreadable
+ * we fall back to INR — India is the home market.
+ */
+function detectCurrency(): Currency {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    // Both spellings are in the wild — Calcutta is the legacy tzdata alias.
+    if (/^Asia\/(Kolkata|Calcutta)$/i.test(tz)) return 'inr';
+
+    const locales = [navigator.language, ...(navigator.languages || [])];
+    if (locales.some((l) => /-IN\b/i.test(l || ''))) return 'inr';
+
+    // A readable, non-India signal → international pricing.
+    if (tz || locales.length) return 'usd';
+    return 'inr';
+  } catch {
+    return 'inr';
+  }
+}
+
+/** Layout effect on the client, plain effect on the server (no SSR warning). */
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
@@ -74,17 +102,11 @@ export default function PricingSection() {
     return () => io.disconnect();
   }, []);
 
-  // Default to INR at home (India), USD everywhere else. Runs client-side only
-  // so there's no SSR/hydration mismatch — initial render is always INR.
-  useEffect(() => {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-      const lang = typeof navigator !== 'undefined' ? navigator.language : '';
-      const isIndia = tz === 'Asia/Kolkata' || /-IN$/i.test(lang);
-      if (!isIndia) setCurrency('usd');
-    } catch {
-      /* keep INR default */
-    }
+  // SSR renders INR, then we correct to the visitor's market. A *layout* effect
+  // runs after hydration but BEFORE the browser paints, so international
+  // visitors never see ₹9,999 flash to $149 — they only ever see $149.
+  useIsomorphicLayoutEffect(() => {
+    setCurrency(detectCurrency());
   }, []);
 
   const p = PRICES[currency];
@@ -249,10 +271,12 @@ export default function PricingSection() {
 
           {/* ─── SCALE — CUSTOM ─── */}
           <article className="pr-card pr-card--enterprise">
+            <span className="pr-card-scale-badge">FOR LARGER TEAMS</span>
             <div className="pr-card-head">
               <div className="pr-card-tier">Scale</div>
               <div className="pr-card-price pr-card-price--custom">
                 <span className="pr-card-num pr-card-num--custom">Custom</span>
+                <span className="pr-card-mo">volume pricing</span>
               </div>
               <div className="pr-card-sub">
                 For multi-location operators that need volume rates and dedicated support.
@@ -278,6 +302,11 @@ export default function PricingSection() {
                 </li>
               ))}
             </ul>
+
+            <div className="pr-card-addon">
+              <span className="pr-card-addon-ico"><FiPhone size={13} /></span>
+              <span><strong>Quoted on a short call.</strong> Custom contracts &amp; invoicing.</span>
+            </div>
 
             <button type="button" onClick={() => openModal('pricing_scale')} className="pr-cta pr-cta--ghost">
               Talk to sales <FiArrowRight size={14} />
