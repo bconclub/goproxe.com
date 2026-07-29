@@ -160,6 +160,120 @@ export async function upsertProxeLead(input: SupabaseLeadInput): Promise<Supabas
   }
 }
 
+export interface BillingEventInput {
+  eventType: string
+  webhookId?: string
+  email?: string | null
+  name?: string | null
+  subscriptionId?: string | null
+  paymentId?: string | null
+  productId?: string | null
+  status?: string | null
+  currency?: string | null
+  /** Minor units as Dodo sends them (paise / cents). */
+  amountMinor?: number | null
+  nextBillingDate?: string | null
+  market?: string | null
+  seats?: number | null
+  occurredAt?: string | null
+}
+
+/**
+ * Fold a verified Dodo billing event onto the customer's `all_leads` row, under
+ * `unified_context.billing`. One record then carries the whole story: where the
+ * lead came from, what they talked about, and what they now pay.
+ *
+ * Matched by email + brand. A payer we've never seen as a lead (e.g. someone who
+ * went straight to a payment link) is INSERTED rather than dropped — losing a
+ * paying customer because they skipped the form would be the worse failure. Such
+ * rows have no phone, so `customer_phone_normalized` stays null and the usual
+ * phone-based dedupe simply doesn't apply to them.
+ */
+export async function recordBillingEvent(input: BillingEventInput): Promise<SupabaseLeadResult> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return { ok: false, reason: 'not_configured' }
+
+  const email = trimOrNull(input.email)
+  if (!email) return { ok: false, reason: 'no_match' }
+
+  const billing = {
+    status: input.status ?? null,
+    last_event: input.eventType,
+    last_event_at: input.occurredAt ?? new Date().toISOString(),
+    webhook_id: input.webhookId ?? null,
+    subscription_id: input.subscriptionId ?? null,
+    payment_id: input.paymentId ?? null,
+    product_id: input.productId ?? null,
+    currency: input.currency ?? null,
+    amount_minor: input.amountMinor ?? null,
+    next_billing_date: input.nextBillingDate ?? null,
+    market: input.market ?? null,
+    seats: input.seats ?? null,
+    provider: 'dodo',
+  }
+
+  try {
+    const { data: existing, error: fetchError } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('email', email)
+      .eq('brand', BRAND)
+      .order('last_interaction_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (fetchError) {
+      console.error('[leadsSupabase] billing fetch failed', fetchError.code, fetchError.message)
+      return { ok: false, reason: 'db_error' }
+    }
+
+    if (existing) {
+      const existingContext = (existing.unified_context as Record<string, any>) || {}
+      const { error: updateError } = await supabase
+        .from('all_leads')
+        .update({
+          last_touchpoint: 'billing',
+          last_interaction_at: new Date().toISOString(),
+          unified_context: {
+            ...existingContext,
+            billing: { ...(existingContext.billing || {}), ...billing },
+          },
+        })
+        .eq('id', existing.id)
+
+      if (updateError) {
+        console.error('[leadsSupabase] billing update failed', updateError.code, updateError.message)
+        return { ok: false, reason: 'db_error' }
+      }
+      return { ok: true, leadId: existing.id as string }
+    }
+
+    // Never seen this payer — create the row so the customer isn't lost.
+    const { data: created, error: createError } = await supabase
+      .from('all_leads')
+      .insert({
+        customer_name: trimOrNull(input.name),
+        email,
+        first_touchpoint: 'billing',
+        last_touchpoint: 'billing',
+        last_interaction_at: new Date().toISOString(),
+        brand: BRAND,
+        unified_context: { billing },
+      })
+      .select('id')
+      .single()
+
+    if (createError) {
+      console.error('[leadsSupabase] billing insert failed', createError.code, createError.message)
+      return { ok: false, reason: 'db_error' }
+    }
+    return { ok: true, leadId: (created?.id as string) ?? null }
+  } catch (err) {
+    console.error('[leadsSupabase] billing event threw', err)
+    return { ok: false, reason: 'db_error' }
+  }
+}
+
 /**
  * Record a booking against an existing `all_leads` row. The booking payload only
  * carries an email (the calendar step), so we match by email + brand and fold
