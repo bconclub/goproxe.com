@@ -1180,7 +1180,7 @@ export default function ProxeLanding() {
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [videoMuted, setVideoMuted] = useState(true);
-  const { openModal } = useDeployModal();
+  const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
@@ -1311,7 +1311,7 @@ export default function ProxeLanding() {
             className="proxe-nav-logo-icon"
           />
         </a>
-        <button type="button" onClick={() => openModal('floating_header')} className="proxe-float-cta">
+        <button type="button" onClick={() => void startDeploy('floating_header')} className="proxe-float-cta">
           {/* Two labels — full on top, short when [data-scrolled='true']. */}
           <span className="proxe-float-cta-full">Deploy PROXe</span>
           <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>

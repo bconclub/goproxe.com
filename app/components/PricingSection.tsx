@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fi';
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
+import { detectMarket, type Market } from '../lib/market';
 
 const CHANNELS_HEADER = [
   { Icon: FiGlobe,       label: 'Web',          color: '#a78bfa' },
@@ -50,8 +51,7 @@ const SCALE_FEATURES = [
 ];
 
 /** Currency-specific price strings. INR is the home-market default. */
-type Currency = 'inr' | 'usd';
-const PRICES: Record<Currency, {
+const PRICES: Record<Market, {
   symbol: string;
   core: string;
   seat: string;
@@ -60,39 +60,14 @@ const PRICES: Record<Currency, {
   usd: { symbol: '$', core: '149',   seat: '$15' },
 };
 
-/**
- * Which market is this visitor in? India → INR, everyone else → USD.
- *
- * Timezone is the strongest signal (it's the device's actual location, and
- * unlike IP it survives most VPNs people use for streaming). Language tags are
- * the backup for travellers/dual-locale setups. If every signal is unreadable
- * we fall back to INR — India is the home market.
- */
-function detectCurrency(): Currency {
-  try {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    // Both spellings are in the wild — Calcutta is the legacy tzdata alias.
-    if (/^Asia\/(Kolkata|Calcutta)$/i.test(tz)) return 'inr';
-
-    const locales = [navigator.language, ...(navigator.languages || [])];
-    if (locales.some((l) => /-IN\b/i.test(l || ''))) return 'inr';
-
-    // A readable, non-India signal → international pricing.
-    if (tz || locales.length) return 'usd';
-    return 'inr';
-  } catch {
-    return 'inr';
-  }
-}
-
 /** Layout effect on the client, plain effect on the server (no SSR warning). */
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
-  const [currency, setCurrency] = useState<Currency>('inr');
-  const { openModal } = useDeployModal();
+  const [currency, setCurrency] = useState<Market>('inr');
+  const { openModal, startDeploy, isStartingCheckout } = useDeployModal();
 
   useEffect(() => {
     const el = ref.current;
@@ -106,7 +81,7 @@ export default function PricingSection() {
   // runs after hydration but BEFORE the browser paints, so international
   // visitors never see ₹9,999 flash to $149 — they only ever see $149.
   useIsomorphicLayoutEffect(() => {
-    setCurrency(detectCurrency());
+    setCurrency(detectMarket());
   }, []);
 
   const p = PRICES[currency];
@@ -264,8 +239,13 @@ export default function PricingSection() {
               <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
             </div>
 
-            <button type="button" onClick={() => openModal('pricing_core')} className="pr-cta pr-cta--primary">
-              Deploy PROXe <FiArrowRight size={14} />
+            <button
+              type="button"
+              onClick={() => void startDeploy('pricing_core')}
+              disabled={isStartingCheckout}
+              className="pr-cta pr-cta--primary"
+            >
+              {isStartingCheckout ? 'Opening checkout…' : <>Deploy PROXe <FiArrowRight size={14} /></>}
             </button>
           </article>
 

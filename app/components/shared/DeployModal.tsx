@@ -12,9 +12,23 @@ interface DeployModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFormSubmit?: () => void;
+  /** Which CTA opened this — decides whether it reads as sales or as deploy. */
+  source?: string;
 }
 
-export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployModalProps) {
+/**
+ * Sources that are explicitly a "talk to a human" ask. Everything else reached
+ * this modal as a Deploy click (either a fallback from checkout, or a nav CTA),
+ * so it keeps the deploy wording.
+ */
+const SALES_SOURCES = new Set([
+  'pricing_scale',
+  'industries',
+  'ig_demo',
+  'closing_cta',
+]);
+
+export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'unknown' }: DeployModalProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
@@ -164,6 +178,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
   };
 
   const firstName = formData.name.trim().split(' ')[0];
+  const isSales = SALES_SOURCES.has(source);
 
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
@@ -180,9 +195,11 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit }: DeployMod
             >×</button>
 
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Deploy PROXe</h2>
+              <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
               <p className={styles.modalSubtitle}>
-                Tell us about you. Next we&rsquo;ll pick a time to walk through it live.
+                {isSales
+                  ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
+                  : 'Tell us about you. Next we’ll pick a time to walk through it live.'}
               </p>
             </div>
 

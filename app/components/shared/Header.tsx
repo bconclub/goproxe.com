@@ -7,10 +7,12 @@ import { track } from '../../lib/analytics';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { openModal } = useDeployModal();
+  const { startDeploy } = useDeployModal();
 
+  // "Deploy" goes straight to checkout; startDeploy falls back to the contact
+  // modal on its own if a session can't be opened.
   const handleDeployClick = (source: string) => {
-    openModal(source);
+    void startDeploy(source);
     setMenuOpen(false);
   };
 
