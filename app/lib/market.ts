@@ -14,6 +14,25 @@
 
 export type Market = 'inr' | 'usd'
 
+/**
+ * The founding-member Core price as a NUMBER, per market.
+ *
+ * PricingSection renders these as display strings ('9,999'), which cannot be
+ * sent to an ad platform — Meta's Purchase value must be a bare number in the
+ * currency's major unit. Keeping the numeric truth here means the value we
+ * report as revenue is the same one we quote and charge; if the price moves,
+ * it moves in one place.
+ */
+export const CORE_PLAN: Record<Market, { value: number; currency: string }> = {
+  inr: { value: 9999, currency: 'INR' },
+  usd: { value: 149, currency: 'USD' },
+}
+
+/** Purchase/checkout value for whichever market this visitor is in. */
+export function planValue(): { value: number; currency: string } {
+  return CORE_PLAN[detectMarket()]
+}
+
 export function detectMarket(): Market {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''

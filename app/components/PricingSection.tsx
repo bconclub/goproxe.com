@@ -15,6 +15,7 @@ import {
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { detectMarket, type Market } from '../lib/market';
+import { track } from '../lib/analytics';
 
 const CHANNELS_HEADER = [
   { Icon: FiGlobe,       label: 'Web',          color: '#a78bfa' },
@@ -70,6 +71,7 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffec
 
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
+  const seenRef = useRef(false);
   const [vis, setVis] = useState(false);
   const [currency, setCurrency] = useState<Market>('inr');
   const { openModal, startDeploy, isStartingCheckout } = useDeployModal();
@@ -77,7 +79,18 @@ export default function PricingSection() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.06 });
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      setVis(true);
+      // Reaching the pricing block is the clearest buying signal short of a
+      // click, and it is what Meta retargeting audiences are built from. Fires
+      // once: the observer is disconnected as soon as it triggers.
+      if (!seenRef.current) {
+        seenRef.current = true;
+        track('pricing_view', { market: detectMarket() });
+      }
+      io.disconnect();
+    }, { threshold: 0.06 });
     io.observe(el);
     return () => io.disconnect();
   }, []);

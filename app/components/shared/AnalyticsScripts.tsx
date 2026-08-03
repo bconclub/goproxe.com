@@ -2,7 +2,13 @@ import Script from 'next/script'
 
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GZ7HN8BM1M'
 const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID
-const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
+// Defaulted like GA/Clarity above, deliberately. A pixel id is public by
+// definition (it ships in the client bundle and is readable in any page's
+// source), so there is nothing to protect by holding it in env — and env is
+// exactly what kept this pixel dark: the loader below was written months ago
+// but NEXT_PUBLIC_META_PIXEL_ID was never set in Vercel, so the guard was
+// always false and the site has never reported a single ad conversion.
+const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1480338647459819'
 const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || 'u43ad5p156'
 
 const AnalyticsScripts = () => {

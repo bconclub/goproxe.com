@@ -7,6 +7,16 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3002,
       "autoPort": false
+    },
+    {
+      "name": "proxe-platform",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd /d C:\\Users\\user\\Builds\\wt-proxe-bootstrap\\core&&set BRAND_ID=proxe&&set NEXT_DIST_DIR=.next-proxe&&node scripts/stage-brand.js&&npx next dev -p 4010"
+      ],
+      "port": 4010,
+      "autoPort": false
     }
   ]
 }

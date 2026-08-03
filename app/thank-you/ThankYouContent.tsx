@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { FiCalendar, FiClock, FiVideo, FiMail, FiArrowLeft } from 'react-icons/fi'
 import { getStoredUser, getStoredBooking, storeBooking, type LocalBooking } from '../lib/chatLocalStorage'
-import { track } from '../lib/analytics'
+import { track, trackPurchase } from '../lib/analytics'
 import { submitLead } from '../lib/leads'
 import BookingCalendar, { type BookingSlot } from '../components/shared/BookingCalendar'
 import styles from './thankyou.module.css'
@@ -30,10 +30,16 @@ export default function ThankYouContent() {
     setHydrated(true)
     if (viewedRef.current) return
     viewedRef.current = true
-    track(paid ? 'checkout_complete' : 'demo_booked', {
+    const meta = {
       has_name: Boolean(user?.name),
       has_booking: Boolean(getStoredBooking('proxe')),
-    })
+    }
+    // A paid return is the only revenue event on the site — it goes through
+    // trackPurchase so Meta receives the real subscription amount in the
+    // buyer's own currency (Purchase with no value reports as zero revenue,
+    // which makes every campaign look like it earned nothing).
+    if (paid) trackPurchase(meta)
+    else track('demo_booked', meta)
   }, [paid])
 
   /**

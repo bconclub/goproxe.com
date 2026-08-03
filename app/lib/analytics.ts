@@ -11,6 +11,8 @@
  * ad-hoc strings.
  */
 
+import { planValue } from './market'
+
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
@@ -41,8 +43,45 @@ export type ProxeEvent =
   | 'video_unmute'         // un-muted the hero video
   | 'faq_open'             // expanded a FAQ item — param: question
   | 'scroll_depth'         // crossed a 25/50/75/90% scroll milestone — param: percent
+  | 'pricing_view'         // the pricing section scrolled into view (buying intent)
 
 type EventParams = Record<string, string | number | boolean | undefined>
+
+/**
+ * How each event reaches the Meta Pixel.
+ *
+ * Meta splits events in two: a fixed list of STANDARD names (`fbq('track', …)`)
+ * that its ad-delivery optimisation and Ads Manager reporting understand
+ * natively, and anything else, which must go through `fbq('trackCustom', …)`.
+ * Sending a non-standard name via 'track' is silently ignored by optimisation —
+ * the event shows in the pixel debugger but cannot be optimised toward, which
+ * is the failure mode that quietly wastes ad spend. So the mapping is explicit.
+ *
+ * Standard names used here are exactly as Meta spells them; do not rename.
+ */
+const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
+  form_completed: 'Lead',
+  checkout_start: 'InitiateCheckout',
+  checkout_complete: 'Purchase',
+  demo_booked: 'Schedule',
+  booking_confirm: 'Schedule',
+  newsletter_subscribe: 'CompleteRegistration',
+  pricing_view: 'ViewContent',
+}
+
+/** Custom (non-standard) Meta names, PascalCase per Meta's convention. */
+const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
+  lead_form_start: 'LeadFormStart',
+  checkout_unavailable: 'CheckoutUnavailable',
+  cta_click: 'CTAClick',
+  deploy_modal_open: 'DeployModalOpen',
+  nav_click: 'NavClick',
+  channel_demo_select: 'ChannelDemoSelect',
+  voice_demo_start: 'VoiceDemoStart',
+  video_unmute: 'VideoUnmute',
+  faq_open: 'FAQOpen',
+  scroll_depth: 'ScrollDepth',
+}
 
 /** True on localhost / loopback — we never want dev hits in the live property. */
 function isLocalHost(): boolean {
@@ -64,10 +103,15 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
     /* never let analytics throw into product code */
   }
 
-  // Meta Pixel — a completed form is a "Lead" in the pixel's standard taxonomy.
+  // Meta Pixel — every event reaches the pixel, standard names via 'track' so
+  // ad delivery can optimise toward them, everything else via 'trackCustom'.
   try {
-    if (event === 'form_completed') {
-      window.fbq?.('track', 'Lead', params)
+    const standard = META_STANDARD[event]
+    if (standard) {
+      window.fbq?.('track', standard, params)
+    } else {
+      const custom = META_CUSTOM[event]
+      if (custom) window.fbq?.('trackCustom', custom, params)
     }
   } catch {
     /* no-op */
@@ -80,13 +124,37 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
  * the source + whether a brand/site was provided, never the raw email/phone).
  */
 export function trackLead(meta: { source?: string; hasBrand?: boolean; hasWebsite?: boolean } = {}): void {
+  // Value is the Core plan price in the visitor's own market, not a flat 1 USD.
+  // Meta's value-optimised bidding ranks leads by this number, so quoting every
+  // lead at $1 told it an Indian signup and an international one were worth the
+  // same; they differ by ~20x at the real subscription prices.
+  const { value, currency } = planValue()
   track('form_completed', {
     source: meta.source ?? 'deploy_form',
     has_brand: meta.hasBrand ?? false,
     has_website: meta.hasWebsite ?? false,
-    currency: 'USD',
-    value: 1,
+    currency,
+    value,
   })
+}
+
+/**
+ * Checkout handed off to Dodo. Carries the real amount so Meta can compare
+ * spend against pipeline, not just count clicks.
+ */
+export function trackCheckoutStart(source: string): void {
+  const { value, currency } = planValue()
+  track('checkout_start', { source, currency, value })
+}
+
+/**
+ * Returned from Dodo with ?checkout=success — a real, recurring subscription.
+ * This is the only event that reports revenue, so ROAS in Ads Manager is only
+ * as correct as this call.
+ */
+export function trackPurchase(meta: EventParams = {}): void {
+  const { value, currency } = planValue()
+  track('checkout_complete', { ...meta, currency, value })
 }
 
 /**

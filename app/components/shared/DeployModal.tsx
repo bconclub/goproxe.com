@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
-import { track, trackLead } from '../../lib/analytics';
+import { track, trackLead, trackCheckoutStart } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { detectMarket } from '../../lib/market';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
@@ -167,7 +167,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     // Buy intent: hand off to Dodo, prefilled with what they just typed, so
     // nobody types their name and email twice. The onboarding call is booked
     // AFTER payment, on /thank-you?checkout=success.
-    track('checkout_start', { source });
+    trackCheckoutStart(source);
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',

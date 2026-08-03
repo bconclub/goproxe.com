@@ -1,5 +1,46 @@
 # Changelog
 
+## 2026-08-03 21:05 IST · feat(analytics): v0.1.3 — turn the Meta Pixel on and map every event to it
+
+The Meta Pixel loader had been in `AnalyticsScripts.tsx` for months but never
+fired once: it was gated on `NEXT_PUBLIC_META_PIXEL_ID`, which was never set in
+Vercel, so the guard was always false. Every ad conversion the site has ever
+driven went unreported.
+
+- Pixel id `1480338647459819` is now a hardcoded default, same pattern GA4 and
+  Clarity already use in this file. A pixel id ships in the client bundle and is
+  readable in page source, so there is nothing env was protecting — and env is
+  precisely what kept it dark.
+- All 17 landing events now reach the pixel, not just `form_completed`. Meta
+  only optimises toward its own STANDARD event names, so the mapping is
+  explicit: 7 standard (`Lead`, `InitiateCheckout`, `Purchase`, `Schedule`,
+  `CompleteRegistration`, `ViewContent`) via `fbq('track')`, 10 custom via
+  `fbq('trackCustom')`. A non-standard name sent through 'track' is silently
+  dropped by ad delivery — visible in the debugger, useless for optimisation.
+- `Purchase` now carries real revenue. It previously fired with no value at all,
+  which reports every campaign as earning zero. New `trackPurchase()` sends the
+  actual subscription amount in the buyer's own currency.
+- `Lead` value was a flat `1 USD` for everyone. It now sends the market's real
+  Core price, so value-optimised bidding stops treating an Indian signup and an
+  international one as worth the same (they differ ~20x).
+- Numeric prices moved to `CORE_PLAN` / `planValue()` in `lib/market.ts` so the
+  amount reported as revenue is the same one quoted and charged. PricingSection
+  holds display strings ('9,999') which cannot be sent to an ad platform.
+- New `pricing_view` event (Meta `ViewContent`) fires once when the pricing
+  section scrolls into view — the clearest buying signal short of a click, and
+  what retargeting audiences get built from.
+
+User-facing: no visible change. Analytics/ads instrumentation only.
+
+Clarity (`u43ad5p156`) and GA4 (`G-GZ7HN8BM1M`) were already correct and live;
+verified, not changed.
+
+Verified against a production build served locally: pixel init + noscript
+fallback, GA4 config and Clarity tag all present in the served HTML; all 16 Meta
+names compiled into the client bundle; 17/17 events mapped with no unmapped
+events, no orphan mappings, and no invalid standard names.
+
+
 ## 2026-05-31 · feat: persist leads to a Google Sheet
 
 Leads were going nowhere retrievable — the deploy form only wrote to the visitor's
