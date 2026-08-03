@@ -2603,6 +2603,68 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   align-items: center;
   gap: 24px;
   padding: 40px 0;
+  /* Live amplitude (0–1) of whoever is speaking, written every frame by
+     VapiOrb's rAF loop. Everything below reads it, so the orb moves WITH the
+     voice instead of running a timed animation that ignores the audio. */
+  --orb-level: 0;
+  --orb-active: 0;
+}
+
+/* Voice-reactive layers ─────────────────────────────────────────────────────
+   Scale is deliberately small (max ~7%): the orb should feel like it's
+   breathing, not bouncing. The glow and rim carry most of the expression. */
+.proxe-voice-orb[data-vapi-state='listening'],
+.proxe-voice-orb[data-vapi-state='speaking'] {
+  transform: scale(calc(1 + var(--orb-level) * 0.07));
+  transition: transform 90ms linear;
+}
+
+/* Halo blooms with the voice — warm violet for the agent, cool cyan-lilac
+   while the visitor talks, so you can see who holds the floor. */
+.proxe-voice-orb-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: calc(0.18 + var(--orb-level) * 0.8);
+  transform: scale(calc(1 + var(--orb-level) * 0.18));
+  transition: opacity 110ms linear, transform 110ms linear;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.55) 0%, rgba(124, 58, 237, 0.22) 45%, transparent 70%);
+  filter: blur(22px);
+  z-index: 0;
+}
+.proxe-voice-orb[data-speaker='user'] .proxe-voice-orb-glow {
+  background: radial-gradient(circle, rgba(125, 211, 252, 0.5) 0%, rgba(56, 189, 248, 0.2) 45%, transparent 70%);
+}
+
+/* Rim brightens on peaks — the "vibration" read at a glance. */
+.proxe-voice-orb[data-vapi-state='listening'] .proxe-voice-orb-rim,
+.proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-rim {
+  box-shadow:
+    0 0 calc(10px + var(--orb-level) * 34px) rgba(196, 181, 253, calc(0.25 + var(--orb-level) * 0.65)),
+    inset 0 0 calc(6px + var(--orb-level) * 20px) rgba(255, 255, 255, calc(0.1 + var(--orb-level) * 0.35));
+  transition: box-shadow 110ms linear;
+}
+
+/* While live, the idle 3.2s pulse would fight the audio — hand the ring over
+   to the amplitude instead. */
+.proxe-voice-orb[data-vapi-state='listening'] .proxe-voice-orb-ring,
+.proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-ring {
+  animation: none;
+  opacity: calc(0.55 + var(--orb-level) * 0.45);
+  transform: scale(calc(1 + var(--orb-level) * 0.12));
+  transition: opacity 110ms linear, transform 110ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-voice-orb[data-vapi-state='listening'],
+  .proxe-voice-orb[data-vapi-state='speaking'],
+  .proxe-voice-orb-glow,
+  .proxe-voice-orb[data-vapi-state='listening'] .proxe-voice-orb-ring,
+  .proxe-voice-orb[data-vapi-state='speaking'] .proxe-voice-orb-ring {
+    transform: none;
+    transition: none;
+  }
 }
 
 .proxe-voice-orb {

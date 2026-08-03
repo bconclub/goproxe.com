@@ -77,32 +77,72 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
 
   const isActiveRef = useRef(false);
-  const volumeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  /** Smoothed 0–1 amplitude of whoever is currently speaking. */
+  const levelRef = useRef(0);
 
   const stopVolumePolling = () => {
-    if (volumeTimerRef.current) {
-      clearInterval(volumeTimerRef.current);
-      volumeTimerRef.current = null;
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
+    wrapRef.current?.style.setProperty('--orb-level', '0');
   };
 
   /**
-   * User-speaking detection: the SDK's onModeChange only reports the AGENT's
-   * mode, so we poll mic input volume while live and light the cool halo when
-   * the visitor is talking.
+   * Audio-reactive loop.
+   *
+   * Two jobs, one rAF:
+   *  • drives `--orb-level` from the LIVE amplitude of whoever is talking, so
+   *    the orb actually moves with the voice instead of running a fixed
+   *    animation — the agent's own output volume when it speaks, the mic when
+   *    the visitor does.
+   *  • detects user speech (the SDK's onModeChange only reports the AGENT's
+   *    mode, so the cool halo needs its own signal).
+   *
+   * Smoothing is asymmetric on purpose: attack fast so consonants land, decay
+   * slow so it settles instead of strobing. Written straight to a CSS custom
+   * property — no React state per frame.
    */
   const startVolumePolling = () => {
     stopVolumePolling();
-    volumeTimerRef.current = setInterval(async () => {
+    let userSpeaking = false;
+
+    const tick = async () => {
       const session = sessionRef.current;
       if (!session || !isActiveRef.current) return;
+
       try {
-        const volume = await session.getInputVolume();
-        setIsUserSpeaking(volume > 0.08);
+        const [inVol, outVol] = await Promise.all([
+          session.getInputVolume(),
+          session.getOutputVolume(),
+        ]);
+
+        // Whoever is louder owns the orb this frame.
+        const speaking = outVol > 0.02 || inVol > 0.06;
+        const raw = Math.min(1, Math.max(outVol, inVol * 0.9) * 2.2);
+
+        const prev = levelRef.current;
+        const smoothing = raw > prev ? 0.45 : 0.12; // fast attack, slow release
+        const next = prev + (raw - prev) * smoothing;
+        levelRef.current = next;
+        wrapRef.current?.style.setProperty('--orb-level', next.toFixed(3));
+        wrapRef.current?.style.setProperty('--orb-active', speaking ? '1' : '0');
+
+        const nowUserSpeaking = inVol > 0.06 && inVol > outVol;
+        if (nowUserSpeaking !== userSpeaking) {
+          userSpeaking = nowUserSpeaking;
+          setIsUserSpeaking(nowUserSpeaking);
+        }
       } catch {
-        /* volume is cosmetic — never let it break the call */
+        /* amplitude is cosmetic — never let it break the call */
       }
-    }, 250);
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
   };
 
   const teardown = () => {
@@ -208,7 +248,7 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
     showAssistantWave ? 'assistant' : showUserWave ? 'user' : 'idle';
 
   return (
-    <div className="proxe-voice-orb-wrap">
+    <div className="proxe-voice-orb-wrap" ref={wrapRef}>
       <button
         type="button"
         className="proxe-voice-orb"
@@ -220,6 +260,8 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
         onClick={handleClick}
       >
         {state === 'connecting' ? <ConnectingRing /> : null}
+        {/* Voice-reactive halo — opacity/scale driven by --orb-level. */}
+        <span className="proxe-voice-orb-glow" aria-hidden="true" />
         <span className="proxe-voice-orb-ring" aria-hidden="true" />
         <span className="proxe-voice-orb-inner" aria-hidden="true">
           <Grainient
