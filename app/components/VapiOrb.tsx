@@ -1,17 +1,24 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Vapi from '@vapi-ai/web';
+import { Conversation } from '@elevenlabs/client';
 import Grainient from './Grainient';
 import { track } from '../lib/analytics';
 
-// Vapi "PROXe Website Demo" public key — scoped to the site-demo assistant only,
-// so it's safe to ship in the client bundle. (Replaces the old f2b9a58e… key,
-// which was rotated/invalidated → "unauthorized" → VOICE CALL FAILED.)
-const PUBLIC_API_KEY = '522e68b4-a075-4349-9771-1f93a48227d2';
-// "PROXe Site Demo" assistant (Vapi). Recreated 2026-06 after the previous
-// one (be61e583…) was deleted from the Vapi account — cloned from PROXe Inbound.
-const ASSISTANT_ID = 'b0dc8ed9-8d5c-46b4-85d8-dc68a2bd6e52';
+/**
+ * Voice demo orb — ElevenLabs Agents edition.
+ *
+ * Replaced the Vapi SDK after repeated breakage (rotated keys, deleted
+ * assistants → "VOICE CALL FAILED" on the live site). Same orb, same states,
+ * same CSS contract (`data-vapi-state` attribute name kept — landing.css keys
+ * 10 selectors off it); only the transport changed.
+ *
+ * The agent is a PUBLIC ElevenLabs agent, so the ID is safe in the client
+ * bundle and no API key ships to the browser. Lock abuse down in the
+ * ElevenLabs dashboard instead: Agent → Security → allowlist goproxe.com.
+ */
+const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? '';
+const agentConfigured = AGENT_ID !== '' && !AGENT_ID.startsWith('PASTE_');
 
 type OrbState = 'idle' | 'connecting' | 'listening' | 'speaking' | 'ending';
 
@@ -25,8 +32,8 @@ const LABELS: Record<OrbState, string> = {
 
 /* ---------- Connecting ring -------------------------------------------------
  * Single arc that fills 0→100% over ~1.2s (one-shot), then settles into a
- * steady full ring with a subtle glow pulse until call-start fires (state
- * transitions to 'listening' and this component unmounts).
+ * steady full ring with a subtle glow pulse until the session connects
+ * (state transitions to 'listening' and this component unmounts).
  * -------------------------------------------------------------------------- */
 function ConnectingRing() {
   return (
@@ -61,94 +68,62 @@ interface VapiOrbProps {
   onActiveChange?: (active: boolean) => void;
 }
 
+type Session = Awaited<ReturnType<typeof Conversation.startSession>>;
+
 export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
-  const vapiRef = useRef<Vapi | null>(null);
+  const sessionRef = useRef<Session | null>(null);
   const [state, setState] = useState<OrbState>('idle');
   const [error, setError] = useState<string | null>(null);
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
 
   const isActiveRef = useRef(false);
-  const userSpeakTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const volumeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Clear the user-speaking debounce timer.
-  const clearUserSpeakTimer = () => {
-    if (userSpeakTimerRef.current) {
-      clearTimeout(userSpeakTimerRef.current);
-      userSpeakTimerRef.current = null;
+  const stopVolumePolling = () => {
+    if (volumeTimerRef.current) {
+      clearInterval(volumeTimerRef.current);
+      volumeTimerRef.current = null;
     }
   };
 
-  useEffect(() => {
-    const vapi = new Vapi(PUBLIC_API_KEY);
-    vapiRef.current = vapi;
-
-    const handleCallStart = () => {
-      isActiveRef.current = true;
-      setState('listening');
-      setError(null);
-    };
-    const handleCallEnd = () => {
-      isActiveRef.current = false;
-      setState('idle');
-      setIsUserSpeaking(false);
-      clearUserSpeakTimer();
-    };
-    const handleSpeechStart = () => {
-      // Vapi's `speech-start` is the assistant starting to speak.
-      if (isActiveRef.current) setState('speaking');
-    };
-    const handleSpeechEnd = () => {
-      if (isActiveRef.current) setState('listening');
-    };
-    /**
-     * Vapi message stream — we use it to detect *user* speaking.
-     * Partial user transcripts arrive while the user talks; we set
-     * isUserSpeaking=true on each one and clear it 700ms after the last.
-     */
-    const handleMessage = (msg: unknown) => {
-      const m = msg as { type?: string; role?: string };
-      if (!m || typeof m !== 'object') return;
-      if (m.type === 'transcript' && m.role === 'user') {
-        setIsUserSpeaking(true);
-        clearUserSpeakTimer();
-        userSpeakTimerRef.current = setTimeout(() => setIsUserSpeaking(false), 700);
-      }
-    };
-    const handleError = (err: unknown) => {
-      console.error('[VapiOrb] error', err);
-      isActiveRef.current = false;
-      setError(
-        typeof err === 'object' && err && 'message' in err
-          ? String((err as { message?: unknown }).message ?? 'Voice call failed')
-          : 'Voice call failed'
-      );
-      setState('idle');
-      setIsUserSpeaking(false);
-      clearUserSpeakTimer();
-    };
-
-    vapi.on('call-start', handleCallStart);
-    vapi.on('call-end', handleCallEnd);
-    vapi.on('speech-start', handleSpeechStart);
-    vapi.on('speech-end', handleSpeechEnd);
-    vapi.on('message', handleMessage);
-    vapi.on('error', handleError);
-
-    return () => {
-      vapi.off('call-start', handleCallStart);
-      vapi.off('call-end', handleCallEnd);
-      vapi.off('speech-start', handleSpeechStart);
-      vapi.off('speech-end', handleSpeechEnd);
-      vapi.off('message', handleMessage);
-      vapi.off('error', handleError);
-      clearUserSpeakTimer();
+  /**
+   * User-speaking detection: the SDK's onModeChange only reports the AGENT's
+   * mode, so we poll mic input volume while live and light the cool halo when
+   * the visitor is talking.
+   */
+  const startVolumePolling = () => {
+    stopVolumePolling();
+    volumeTimerRef.current = setInterval(async () => {
+      const session = sessionRef.current;
+      if (!session || !isActiveRef.current) return;
       try {
-        vapi.stop();
+        const volume = await session.getInputVolume();
+        setIsUserSpeaking(volume > 0.08);
       } catch {
-        /* no-op */
+        /* volume is cosmetic — never let it break the call */
       }
-      vapiRef.current = null;
+    }, 250);
+  };
+
+  const teardown = () => {
+    isActiveRef.current = false;
+    stopVolumePolling();
+    setIsUserSpeaking(false);
+    sessionRef.current = null;
+  };
+
+  // End any live session if the orb unmounts mid-call (channel switch etc.).
+  useEffect(() => {
+    return () => {
+      const session = sessionRef.current;
+      teardown();
+      if (session) {
+        session.endSession().catch(() => {
+          /* already gone */
+        });
+      }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Report call activity up: any non-idle state means a call is in progress.
@@ -156,40 +131,69 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
     onActiveChange?.(state !== 'idle');
   }, [state, onActiveChange]);
 
-  // If the orb unmounts mid-call (e.g. user switches channels), clear the flag
-  // so the parent carousel can resume.
+  // If the orb unmounts mid-call, clear the flag so the parent can resume.
   useEffect(() => () => onActiveChange?.(false), [onActiveChange]);
 
   const handleClick = async () => {
-    const vapi = vapiRef.current;
-    if (!vapi) return;
     if (state === 'connecting' || state === 'ending') return;
 
+    // Live → end the call.
     if (isActiveRef.current) {
+      const session = sessionRef.current;
       setState('ending');
       try {
-        vapi.stop();
+        await session?.endSession();
       } catch (err) {
-        console.error('[VapiOrb] stop failed', err);
-        isActiveRef.current = false;
-        setState('idle');
+        console.error('[VoiceOrb] end failed', err);
       }
+      teardown();
+      setState('idle');
+      return;
+    }
+
+    if (!agentConfigured) {
+      setError('Voice demo not configured');
       return;
     }
 
     setError(null);
     setState('connecting');
     track('voice_demo_start');
+
     try {
-      await vapi.start(ASSISTANT_ID);
+      // Mic permission first — a clearer failure than a mid-connect error.
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const session = await Conversation.startSession({
+        agentId: AGENT_ID,
+        onConnect: () => {
+          isActiveRef.current = true;
+          setState('listening');
+          setError(null);
+          startVolumePolling();
+        },
+        onDisconnect: () => {
+          teardown();
+          setState('idle');
+        },
+        onModeChange: (mode: { mode: string }) => {
+          if (!isActiveRef.current) return;
+          setState(mode.mode === 'speaking' ? 'speaking' : 'listening');
+        },
+        onError: (message: unknown) => {
+          console.error('[VoiceOrb] error', message);
+          teardown();
+          setError(typeof message === 'string' ? message : 'Voice call failed');
+          setState('idle');
+        },
+      });
+      sessionRef.current = session;
     } catch (err) {
-      console.error('[VapiOrb] start failed', err);
-      setError(
-        typeof err === 'object' && err && 'message' in err
-          ? String((err as { message?: unknown }).message ?? 'Could not start call')
-          : 'Could not start call'
-      );
-      isActiveRef.current = false;
+      console.error('[VoiceOrb] start failed', err);
+      teardown();
+      const isMicDenied =
+        typeof err === 'object' && err !== null && (err as { name?: string }).name === 'NotAllowedError';
+      setError(isMicDenied ? 'Microphone access is needed for the voice demo' : 'Could not start call');
       setState('idle');
     }
   };
@@ -239,9 +243,6 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
             saturation={1.1}
             zoom={0.7}
           />
-          {/* Wave overlay removed per user feedback — the spinning waves
-              were redundant with the Grainient swirl. State is now
-              communicated only via the halo color (data-speaker). */}
         </span>
         <span className="proxe-voice-orb-shine" aria-hidden="true" />
         <span className="proxe-voice-orb-rim" aria-hidden="true" />
