@@ -2892,15 +2892,18 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
    Vapi's ~1s connects, but ElevenLabs' WebRTC handshake runs several seconds
    and the frozen ring read as "nothing happening".) The arc spins via
    transform so it composites on the GPU; dasharray stays fixed. */
+/* The dash travels around the circle via stroke-dashoffset — no transform, so
+   there is no transform-origin to resolve. (Rotating the circle with a CSS
+   transform swung the arc out on a huge radius: transform-box/origin on an SVG
+   child is not dependable, and the element's own rotate() attribute fought the
+   animation.) pathLength=100 makes the maths unit-free. */
 .proxe-voice-orb-connecting-arc {
   stroke-dasharray: 25 75;
-  stroke-dashoffset: 0;
-  transform-origin: 50% 50%;
-  animation: proxeOrbConnectingSweep 1.1s linear infinite;
+  animation: proxeOrbConnectingSweep 1.2s linear infinite;
 }
 @keyframes proxeOrbConnectingSweep {
-  0%   { transform: rotate(-90deg); }
-  100% { transform: rotate(270deg); }
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -100; }
 }
 @keyframes proxeOrbConnectingPulse {
   0%, 100% {
