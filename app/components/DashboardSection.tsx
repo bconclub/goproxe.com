@@ -393,21 +393,20 @@ export default function DashboardSection() {
           </div>
         </div>
 
-        {/* ── Slide 2: Conversations (real screenshot) ── */}
+        {/* ── Slides 2–5: real product screenshots (PII selectively blurred) ── */}
         <div ref={el => { slideRefs.current[1] = el; }} className={`db2-browser db2-slide${revealedSlides.has(1) ? ' db2-slide--in' : ''}`}>
           <div className="db2-chrome">
             <div className="db2-chrome-dots"><span /><span /><span /></div>
             <div className="db2-chrome-url">
               <span className="db2-chrome-lock">🔒</span>
-              app.proxe.ai/conversations
+              app.proxe.ai/dashboard
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/home/Conversations.webp" alt="PROXe Conversations" />
+            <img src="/proxe/showcase/dashboard.webp" alt="PROXe Dashboard — live acquisition metrics" />
           </div>
         </div>
 
-        {/* ── Slide 3: Leads (real screenshot) ── */}
         <div ref={el => { slideRefs.current[2] = el; }} className={`db2-browser db2-slide${revealedSlides.has(2) ? ' db2-slide--in' : ''}`}>
           <div className="db2-chrome">
             <div className="db2-chrome-dots"><span /><span /><span /></div>
@@ -417,7 +416,33 @@ export default function DashboardSection() {
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/home/Leads.webp" alt="PROXe Leads" />
+            <img src="/proxe/showcase/leads.webp" alt="PROXe Leads — every lead scored and staged" />
+          </div>
+        </div>
+
+        <div ref={el => { slideRefs.current[3] = el; }} className={`db2-browser db2-slide${revealedSlides.has(3) ? ' db2-slide--in' : ''}`}>
+          <div className="db2-chrome">
+            <div className="db2-chrome-dots"><span /><span /><span /></div>
+            <div className="db2-chrome-url">
+              <span className="db2-chrome-lock">🔒</span>
+              app.proxe.ai/conversations
+            </div>
+          </div>
+          <div className="db2-shot">
+            <img src="/proxe/showcase/chats.webp" alt="PROXe Inbox — live WhatsApp conversation with booking" />
+          </div>
+        </div>
+
+        <div ref={el => { slideRefs.current[4] = el; }} className={`db2-browser db2-slide${revealedSlides.has(4) ? ' db2-slide--in' : ''}`}>
+          <div className="db2-chrome">
+            <div className="db2-chrome-dots"><span /><span /><span /></div>
+            <div className="db2-chrome-url">
+              <span className="db2-chrome-lock">🔒</span>
+              app.proxe.ai/knowledge
+            </div>
+          </div>
+          <div className="db2-shot">
+            <img src="/proxe/showcase/knowledge.webp" alt="PROXe Knowledge — everything your agent knows, mapped" />
           </div>
         </div>
 
