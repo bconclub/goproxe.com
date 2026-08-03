@@ -59,21 +59,31 @@ function trimOrNull(v: string | null | undefined): string | null {
   return t || null
 }
 
-/** Attribution + brand/site/source folded into unified_context.web. */
+/**
+ * Attribution + brand/site/source folded into unified_context.web.
+ *
+ * Only carries keys the submission actually has a value for — a later, thinner
+ * submit (e.g. the booking step, or a retargeting form with no website field)
+ * must never null-out what an earlier submit captured. Merges are shallow
+ * spreads, so an absent key preserves the existing value.
+ */
 function buildContext(input: SupabaseLeadInput) {
-  const web: Record<string, unknown> = {
-    source: input.source || null,
-    brand_name: trimOrNull(input.brandName),
-    website_url: trimOrNull(input.websiteUrl),
-    attribution: {
-      channel: input.channel || null,
-      utm_source: input.utmSource || null,
-      utm_medium: input.utmMedium || null,
-      utm_campaign: input.utmCampaign || null,
-      referrer: input.referrer || null,
-      landing_page: input.landingPage || null,
-    },
-  }
+  const web: Record<string, unknown> = {}
+  if (input.source) web.source = input.source
+  const brandName = trimOrNull(input.brandName)
+  if (brandName) web.brand_name = brandName
+  const websiteUrl = trimOrNull(input.websiteUrl)
+  if (websiteUrl) web.website_url = websiteUrl
+
+  const attribution: Record<string, unknown> = {}
+  if (input.channel) attribution.channel = input.channel
+  if (input.utmSource) attribution.utm_source = input.utmSource
+  if (input.utmMedium) attribution.utm_medium = input.utmMedium
+  if (input.utmCampaign) attribution.utm_campaign = input.utmCampaign
+  if (input.referrer) attribution.referrer = input.referrer
+  if (input.landingPage) attribution.landing_page = input.landingPage
+  if (Object.keys(attribution).length > 0) web.attribution = attribution
+
   return { web }
 }
 
@@ -157,6 +167,65 @@ export async function upsertProxeLead(input: SupabaseLeadInput): Promise<Supabas
   } catch (err) {
     console.error('[leadsSupabase] upsert threw', err)
     return { ok: false, reason: 'db_error' }
+  }
+}
+
+/**
+ * Stamp `unified_context.billing.checkout_started_at` on a lead the moment we
+ * hand them to Dodo.
+ *
+ * This is what makes abandonment visible: the lead row already exists (captured
+ * before payment), the webhook writes `status` only once money actually moves,
+ * so anyone with a `checkout_started_at` and no `payment_id` bailed on the
+ * payment page. Server-side on purpose — it does not depend on the visitor
+ * coming back to the site.
+ *
+ * Never throws; a failed stamp must not block checkout.
+ */
+export async function markCheckoutStarted(input: {
+  email?: string | null
+  sessionId?: string | null
+  market?: string | null
+  source?: string | null
+}): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+
+  const email = trimOrNull(input.email)
+  if (!email) return
+
+  try {
+    const { data: existing } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('email', email)
+      .eq('brand', BRAND)
+      .order('last_interaction_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!existing) return
+
+    const ctx = (existing.unified_context as Record<string, any>) || {}
+    await supabase
+      .from('all_leads')
+      .update({
+        last_interaction_at: new Date().toISOString(),
+        unified_context: {
+          ...ctx,
+          billing: {
+            ...(ctx.billing || {}),
+            checkout_started_at: new Date().toISOString(),
+            checkout_session_id: input.sessionId ?? null,
+            checkout_market: input.market ?? null,
+            checkout_source: input.source ?? null,
+            provider: 'dodo',
+          },
+        },
+      })
+      .eq('id', existing.id)
+  } catch (err) {
+    console.error('[leadsSupabase] markCheckoutStarted failed', err)
   }
 }
 

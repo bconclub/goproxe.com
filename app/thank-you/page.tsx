@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 import ThankYouContent from './ThankYouContent'
@@ -33,7 +34,12 @@ export default function ThankYouPage() {
       className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}
       data-proxe-theme="light"
     >
-      <ThankYouContent />
+      {/* ThankYouContent reads ?checkout=success via useSearchParams, which
+          must sit inside a Suspense boundary or the whole route opts out of
+          static rendering (and the build errors). */}
+      <Suspense fallback={null}>
+        <ThankYouContent />
+      </Suspense>
     </div>
   )
 }

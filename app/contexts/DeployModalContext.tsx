@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import DeployModal from '../components/shared/DeployModal';
 import { track } from '../lib/analytics';
-import { detectMarket } from '../lib/market';
 
 interface DeployModalContextType {
   /** @param source where the open was triggered from (for analytics) */
@@ -37,41 +36,17 @@ export function DeployModalProvider({ children }: { children: ReactNode }) {
   const closeModal = () => setIsOpen(false);
 
   /**
-   * A "Deploy" click now goes straight to Dodo checkout rather than collecting
-   * a form first — buying is the intent, so don't put a form in front of it.
+   * A "Deploy" click opens the capture form first, and the form hands off to
+   * Dodo checkout on submit (see DeployModal).
    *
-   * The contact modal is the FALLBACK, not the default: if checkout can't be
-   * opened (products not configured yet, network blip, Dodo down) we open the
-   * modal instead so the click still leads somewhere. A dead Deploy button
-   * would be worse than a form.
+   * Details BEFORE payment on purpose: we keep the lead even when someone
+   * abandons the checkout page, and their name/email prefill the Dodo form
+   * instead of being typed twice. The booking calendar then moves to AFTER
+   * payment (/thank-you?checkout=success) as an onboarding call.
    */
   const startDeploy = useCallback(async (source = 'unknown') => {
-    if (isStartingCheckout) return;
-    setIsStartingCheckout(true);
-    track('checkout_start', { source });
-
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ market: detectMarket(), source }),
-      });
-      const data = await res.json().catch(() => null);
-
-      if (data?.ok && data.checkoutUrl) {
-        // Full navigation, not router.push — checkout is hosted by Dodo.
-        window.location.href = data.checkoutUrl as string;
-        return; // keep the busy state through the redirect
-      }
-
-      track('checkout_unavailable', { source, reason: data?.reason ?? 'unknown' });
-      openModal(source);
-    } catch {
-      track('checkout_unavailable', { source, reason: 'network_error' });
-      openModal(source);
-    }
-    setIsStartingCheckout(false);
-  }, [isStartingCheckout]);
+    openModal(source);
+  }, []);
   
   const setOnFormSubmit = useCallback((callback: (() => void) | null) => {
     setOnFormSubmitCallback(() => callback);

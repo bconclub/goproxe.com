@@ -27,8 +27,9 @@ export type ProxeEvent =
   | 'lead_form_start'      // first interaction with a lead form field (funnel top)
   | 'demo_booked'          // reached /thank-you after picking a slot
   | 'booking_confirm'      // picked a slot on the modal's flip-side calendar
-  | 'checkout_start'       // a Deploy CTA was clicked — param: source
-  | 'checkout_unavailable' // checkout couldn't open, fell back to the contact modal
+  | 'checkout_start'       // the deploy form was submitted, handing off to Dodo
+  | 'checkout_unavailable' // checkout couldn't open, fell back to the calendar
+  | 'checkout_complete'    // returned from Dodo with ?checkout=success
   // ── CTAs ────────────────────────────────────────────────────
   | 'cta_click'            // a non-modal CTA (anchor scroll) — param: location
   | 'deploy_modal_open'    // the deploy modal was opened — param: source

@@ -6,6 +6,7 @@ import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
 import { track, trackLead } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
+import { detectMarket } from '../../lib/market';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
 interface DeployModalProps {
@@ -26,6 +27,8 @@ const SALES_SOURCES = new Set([
   'industries',
   'ig_demo',
   'closing_cta',
+  'pricing_core_call', // "Not ready? Book a call" under the Core CTA
+  'header_call',
 ]);
 
 export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'unknown' }: DeployModalProps) {
@@ -83,6 +86,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
+  // Declared before handleSubmit uses it — sales sources book a call, everyone
+  // else is buy intent and goes to checkout.
+  const isSales = SALES_SOURCES.has(source);
+
   if (!isOpen) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -134,9 +141,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       hasWebsite: Boolean(userProfile.websiteUrl),
     });
 
-    // Persist the actual contact details to the Google Sheet (via /api/lead).
-    // Captured HERE — the moment the form completes — so we keep the lead even
-    // if they bail on the calendar. Awaited so the "Sending…" state is honest,
+    // Persist the actual contact details (Supabase + sheet, via /api/lead).
+    // Captured HERE — before any payment — so we keep the lead even if they
+    // abandon the Dodo checkout page. Awaited so the button state is honest,
     // but it never blocks: submitLead resolves false on any failure.
     await submitLead({
       type: 'lead',
@@ -145,12 +152,49 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       phone: userProfile.phone,
       brandName: userProfile.brandName,
       websiteUrl: userProfile.websiteUrl,
-      source: 'deploy_modal',
+      source: isSales ? `${source}_sales` : 'deploy_modal',
     });
 
     onFormSubmit?.();
+
+    // Sales enquiries never hit checkout — they pick a call slot right here.
+    if (isSales) {
+      setIsSubmitting(false);
+      setFlipped(true);
+      return;
+    }
+
+    // Buy intent: hand off to Dodo, prefilled with what they just typed, so
+    // nobody types their name and email twice. The onboarding call is booked
+    // AFTER payment, on /thank-you?checkout=success.
+    track('checkout_start', { source });
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          market: detectMarket(),
+          source,
+          name: userProfile.name,
+          email: userProfile.email,
+          brandName: userProfile.brandName,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (data?.ok && data.checkoutUrl) {
+        // Full navigation — checkout is hosted by Dodo. Keep the busy state.
+        window.location.href = data.checkoutUrl as string;
+        return;
+      }
+      // Checkout unavailable (products unset, Dodo down): don't strand them —
+      // fall through to the calendar so the lead still converts to a call.
+      track('checkout_unavailable', { source, reason: data?.reason ?? 'unknown' });
+    } catch {
+      track('checkout_unavailable', { source, reason: 'network_error' });
+    }
+
     setIsSubmitting(false);
-    setFlipped(true); // ✨ flip to the booking calendar — no navigation yet
+    setFlipped(true);
   };
 
   // Visitor picked a slot on the flip-side calendar → record it (no second lead
@@ -178,7 +222,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   };
 
   const firstName = formData.name.trim().split(' ')[0];
-  const isSales = SALES_SOURCES.has(source);
 
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
@@ -199,7 +242,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               <p className={styles.modalSubtitle}>
                 {isSales
                   ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
-                  : 'Tell us about you. Next we’ll pick a time to walk through it live.'}
+                  : 'Tell us where PROXe is going. Next: secure checkout, then you pick your onboarding call.'}
               </p>
             </div>
 
@@ -279,7 +322,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Sending...' : 'Continue →'}
+                {isSubmitting
+                  ? (isSales ? 'Sending…' : 'Opening secure checkout…')
+                  : (isSales ? 'Continue →' : 'Continue to payment →')}
               </button>
             </form>
           </div>

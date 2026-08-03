@@ -8,6 +8,7 @@ import {
   INCLUDED_SEATS,
   type Market,
 } from '../../lib/dodo'
+import { markCheckoutStarted } from '../../lib/leadsSupabase'
 
 /**
  * Checkout session → Dodo Payments.
@@ -37,6 +38,8 @@ interface CheckoutPayload {
   name?: string
   email?: string
   brandName?: string
+  /** Where the click came from, carried into Dodo metadata + the lead row. */
+  source?: string
 }
 
 export async function POST(request: Request) {
@@ -90,7 +93,10 @@ export async function POST(request: Request) {
       // Only send a customer object when we actually have an email — Dodo
       // collects it on the hosted page otherwise.
       ...(email ? { customer: { email, name: name || '' } } : {}),
-      ...(body.brandName?.trim() ? { customer_business_name: body.brandName.trim() } : {}),
+      // NOTE: customer_business_name is deliberately NOT sent. Dodo rejects it
+      // with 400 "customer_business_name cannot be provided without tax_id",
+      // and we don't collect a GST/VAT number on the landing form. The brand
+      // name still reaches us via metadata below.
       return_url: `${siteUrl}/thank-you?checkout=success`,
       cancel_url: `${siteUrl}/#pricing`,
       customization: { theme: 'dark' },
@@ -108,6 +114,16 @@ export async function POST(request: Request) {
       console.error('[api/checkout] session created without a checkout_url', session.session_id)
       return NextResponse.json({ ok: false, reason: 'no_checkout_url' }, { status: 502 })
     }
+
+    // Stamp the lead as "reached the payment page". Combined with the webhook
+    // (which only writes on real money movement), this is what surfaces
+    // abandoned checkouts. Awaited but non-fatal.
+    await markCheckoutStarted({
+      email,
+      sessionId: session.session_id,
+      market,
+      source: body.source ?? null,
+    })
 
     return NextResponse.json({
       ok: true,

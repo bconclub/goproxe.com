@@ -4143,6 +4143,19 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   text-align: center;
   letter-spacing: 0.01em;
 }
+.pf-copyright-link {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196, 181, 253, 0.35);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.pf-copyright-link:hover {
+  color: #fff;
+  border-bottom-color: rgba(196, 181, 253, 0.9);
+}
+
+
 
 /* Responsive */
 @media (max-width: 980px) {
@@ -10652,3 +10665,43 @@ button.pr-cta { padding: 0 22px; }
   .pr-card-num--custom { font-size: 44px; }
 }
 
+/* Quiet secondary CTA under a card's primary button — the "talk to a human
+   first" door, deliberately lower contrast so it never competes with Deploy. */
+.pr-cta-secondary {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  padding: 4px 0 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  transition: color 0.2s ease;
+}
+.pr-cta-secondary:hover {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Mobile: section rhythm ─────────────────────────────────────────────────
+   Every section carried its desktop padding (up to 140px top) onto phones,
+   which stacked into screenfuls of empty between sections. Trim globally at
+   one breakpoint rather than per-section, so the rhythm stays consistent. */
+@media (max-width: 860px) {
+  #product { padding-top: 92px; padding-bottom: 56px; }
+  .proxe-hero-video { padding-bottom: 44px; }
+  .proxe-section { padding-top: 48px; padding-bottom: 48px; }
+  .hiw-section { padding-top: 64px; padding-bottom: 64px; }
+  .ind-section { padding-top: 52px; padding-bottom: 56px; }
+  #pricing { padding-top: 44px; padding-bottom: 52px; }
+  .db2-section { padding-top: 52px; padding-bottom: 56px; }
+  .cap-section { padding-top: 48px; padding-bottom: 52px; }
+  .faq-section, #faq { padding-top: 44px; padding-bottom: 48px; }
+  .book-demo-section, #book-demo { padding-top: 44px; padding-bottom: 32px; }
+}

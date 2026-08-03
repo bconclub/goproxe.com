@@ -110,7 +110,7 @@ export default function PricingSection() {
                 className={`pr-billing-opt${currency === 'inr' ? ' pr-billing-opt--active' : ''}`}
                 onClick={() => setCurrency('inr')}
               >
-                🇮🇳 INR
+                India
               </button>
               <button
                 type="button"
@@ -119,7 +119,7 @@ export default function PricingSection() {
                 className={`pr-billing-opt${currency === 'usd' ? ' pr-billing-opt--active' : ''}`}
                 onClick={() => setCurrency('usd')}
               >
-                🌐 USD
+                Rest of world
               </button>
             </div>
           </div>
@@ -246,6 +246,16 @@ export default function PricingSection() {
               className="pr-cta pr-cta--primary"
             >
               {isStartingCheckout ? 'Opening checkout…' : <>Deploy PROXe <FiArrowRight size={14} /></>}
+            </button>
+
+            {/* Deploy now leads to payment, so the "talk first" path needs its
+                own door — not everyone buys before speaking to someone. */}
+            <button
+              type="button"
+              onClick={() => openModal('pricing_core_call')}
+              className="pr-cta-secondary"
+            >
+              Not ready? Book a call
             </button>
           </article>
 

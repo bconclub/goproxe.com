@@ -509,7 +509,7 @@ export default function CapabilitiesSection() {
   ];
 
   return (
-    <section ref={ref} className={`cap-section${vis ? ' cap-in' : ''}`}>
+    <section ref={ref} id="features" className={`cap-section${vis ? ' cap-in' : ''}`}>
       <div className="proxe-container">
         {/* Header (outside the framed container) — 2-col: heading left, sub right */}
         <div className="cap-label">

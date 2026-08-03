@@ -211,8 +211,18 @@
   color: rgba(226, 220, 250, 0.6);
 }
 
+/* Post-payment onboarding scheduler. The card is narrow by design, so the
+   calendar gets the full width back and a little breathing room. */
+.scheduler {
+  margin-top: 26px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 480px) {
   .card { padding: 36px 24px 30px; border-radius: 20px; }
   .title { font-size: 32px; }
   .subtitle { font-size: 14px; }
+  .scheduler { margin-top: 20px; }
 }
