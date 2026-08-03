@@ -2821,14 +2821,20 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   /* Pulse only kicks in after the fill completes (delay matches fill duration). */
   animation: proxeOrbConnectingPulse 1.8s ease-in-out 2.4s infinite;
 }
+/* Indeterminate sweep: a 25%-length arc orbiting the ring for as long as the
+   connect takes. (Was a one-shot 2.4s fill that then froze solid — fine for
+   Vapi's ~1s connects, but ElevenLabs' WebRTC handshake runs several seconds
+   and the frozen ring read as "nothing happening".) The arc spins via
+   transform so it composites on the GPU; dasharray stays fixed. */
 .proxe-voice-orb-connecting-arc {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: proxeOrbConnectingFill 2.4s linear forwards;
+  stroke-dasharray: 25 75;
+  stroke-dashoffset: 0;
+  transform-origin: 50% 50%;
+  animation: proxeOrbConnectingSweep 1.1s linear infinite;
 }
-@keyframes proxeOrbConnectingFill {
-  0%   { stroke-dashoffset: 100; }
-  100% { stroke-dashoffset: 0; }
+@keyframes proxeOrbConnectingSweep {
+  0%   { transform: rotate(-90deg); }
+  100% { transform: rotate(270deg); }
 }
 @keyframes proxeOrbConnectingPulse {
   0%, 100% {

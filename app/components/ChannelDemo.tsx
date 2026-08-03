@@ -773,10 +773,13 @@ export default function ChannelDemo() {
     setPaused(false);
   };
 
-  // Auto-advance through channels with a timer — held while hovering (paused)
-  // or while a voice call is live (voiceActive), so it never cuts the user off.
+  // Voice is the hero of this section: the live orb stays front and center and
+  // the carousel NEVER auto-rotates away from it. Auto-advance only runs while
+  // the visitor is already exploring the other channels (so a wanderer gets the
+  // full tour), and any pass through the wheel parks back on voice. Held while
+  // hovering (paused) or during a live call (voiceActive).
   useEffect(() => {
-    if (paused || voiceActive) return;
+    if (paused || voiceActive || active === 'voice') return;
     const t = setTimeout(() => {
       const idx = CHANNELS.findIndex(c => c.id === active);
       const next = CHANNELS[(idx + 1) % CHANNELS.length];
@@ -837,7 +840,11 @@ export default function ChannelDemo() {
                     <span
                       className="cd-nav-progress"
                       key={`${id}-${Date.now()}`}
-                      style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: (paused || voiceActive) ? 'paused' : 'running' }}
+                      style={{
+                        animationDuration: `${SLIDE_MS}ms`,
+                        // No countdown on voice — the hero never auto-advances.
+                        animationPlayState: (paused || voiceActive || id === 'voice') ? 'paused' : 'running',
+                      }}
                     />
                   )}
                 </button>
