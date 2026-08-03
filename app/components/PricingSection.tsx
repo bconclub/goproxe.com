@@ -54,11 +54,16 @@ const SCALE_FEATURES = [
 const PRICES: Record<Market, {
   symbol: string;
   core: string;
+  /** Anchor price the founding rate is discounted from. */
+  was: string;
   seat: string;
 }> = {
-  inr: { symbol: '₹', core: '9,999', seat: '₹999' },
-  usd: { symbol: '$', core: '149',   seat: '$15' },
+  inr: { symbol: '₹', core: '9,999', was: '24,999', seat: '₹999' },
+  usd: { symbol: '$', core: '149',   was: '299',    seat: '$15' },
 };
+
+/** How many founding seats the offer is capped at. */
+const FOUNDING_LIMIT = 50;
 
 /** Layout effect on the client, plain effect on the server (no SSR warning). */
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -92,13 +97,13 @@ export default function PricingSection() {
         {/* Header */}
         <div className="pr-header">
           <div className="pr-header-left">
-            <div className="pr-label">PRICING</div>
+            <div className="pr-label">FOUNDING MEMBER PRICING</div>
             <h2 className="pr-h2">
-              One plan. <span className="pr-h2-grad">Every channel.</span>
+              Your entire marketing department. <span className="pr-h2-grad">One price.</span>
             </h2>
             <p className="pr-sub">
-              One flat cost. Every channel, one unified memory,
-              your whole team on board.
+              Every channel, one unified memory, your whole team on board.
+              Locked for life for the first {FOUNDING_LIMIT} businesses.
             </p>
 
             {/* INR ⇄ USD toggle */}
@@ -191,10 +196,18 @@ export default function PricingSection() {
 
           {/* ─── PROXe CORE (the everyday plan) ─── */}
           <article className="pr-card pr-card--popular">
-            <span className="pr-card-popular-badge">CORE PLAN</span>
+            <span className="pr-card-popular-badge">FOUNDING MEMBER</span>
             <span className="pr-card-popular-glow" aria-hidden />
             <div className="pr-card-head">
               <div className="pr-card-tier pr-card-tier--popular">PROXe Core</div>
+              {/* Anchor first, struck through — the founding rate reads as a
+                  discount off a real list price rather than the price itself. */}
+              <div className="pr-card-was">
+                <s aria-label={`Regular price ${p.symbol}${p.was} per month`}>
+                  {p.symbol}{p.was}
+                </s>
+                <span className="pr-card-was-note">Locked for life</span>
+              </div>
               <div className="pr-card-price">
                 <span className="pr-card-num">{p.symbol}{p.core}</span>
                 <span className="pr-card-mo">/month</span>
