@@ -1,5 +1,46 @@
 # Changelog
 
+## 2026-08-03 22:10 IST · feat(checkout): v0.1.4 — lean Dodo checkout, full prefill, INR mandate ceiling
+
+The hosted Dodo page opened with the order summary expanded and every optional
+field switched on. Each option below defaults to ON in Dodo, so each line is a
+field or panel deliberately removed.
+
+- `show_order_details: false` — the summary no longer opens expanded. On mobile
+  this genuinely collapses it and lifts the first form field to 264px from the
+  top. On desktop Dodo renders the summary as a fixed side panel regardless;
+  that part is their layout and is not configurable.
+- `allow_discount_code: false` — an empty "promo code?" box only invites people
+  to leave and hunt for one. No public codes exist on founding pricing.
+- `allow_tax_id: false` — we don't collect GST/VAT, so the field was dead weight.
+- `allow_currency_selection: false` — we quote by detected market and charge in
+  that same currency. A switcher on Dodo's page would let someone see ₹9,999 and
+  be billed $149, the exact mismatch shared market detection exists to prevent.
+- `minimal_address: true` — only zipcode required; street/city/state aren't
+  needed to bill a subscription and every required field costs completions.
+- `redirect_immediately: true` — skips Dodo's own success screen and lands the
+  buyer straight on /thank-you, where the onboarding call gets booked.
+
+Prefill now covers phone. The deploy form already collected it and sent it to
+our lead API, but never to Dodo, so buyers retyped a number they'd given one
+screen earlier. Name, email and phone all arrive prefilled; country resolves
+to IN automatically.
+
+INR e-mandate ceiling set explicitly to ₹25,000 (`mandate_min_amount_inr_paise`).
+RBI recurring card payments authorise a maximum amount up front. Dodo sends
+`max(this, actual charge)` and falls back to a ₹15,000 default, so ₹9,999 works
+today by luck — but a customer adding 6+ seats at ₹999 crosses ₹15,000 and the
+renewal fails a month later, silently. The ceiling costs the customer nothing
+(they're still only charged the real amount) and cannot be raised later without
+re-subscribing everyone. This closes the renewal risk flagged earlier.
+
+User-facing: shorter, faster checkout with fewer fields to fill.
+
+Verified against the live Dodo API: every option accepted (session
+cks_0NkbN3iVWDV6R0gylDJjP), and the rendered page confirms name/email/phone
+prefilled, no promo field, no currency switcher, address reduced to zipcode.
+
+
 ## 2026-08-03 21:05 IST · feat(analytics): v0.1.3 — turn the Meta Pixel on and map every event to it
 
 The Meta Pixel loader had been in `AnalyticsScripts.tsx` for months but never

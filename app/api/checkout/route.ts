@@ -37,6 +37,7 @@ interface CheckoutPayload {
   seats?: number
   name?: string
   email?: string
+  phone?: string
   brandName?: string
   /** Where the click came from, carried into Dodo metadata + the lead row. */
   source?: string
@@ -85,21 +86,61 @@ export async function POST(request: Request) {
 
   const email = body.email?.trim()
   const name = body.name?.trim()
+  const phone = body.phone?.trim()
 
   try {
     const session = await client.checkoutSessions.create({
       product_cart: productCart,
       ...(billingCurrency ? { billing_currency: billingCurrency } : {}),
       // Only send a customer object when we actually have an email — Dodo
-      // collects it on the hosted page otherwise.
-      ...(email ? { customer: { email, name: name || '' } } : {}),
+      // collects it on the hosted page otherwise. Phone rides along so nothing
+      // the buyer already typed on our form has to be typed again.
+      ...(email
+        ? { customer: { email, name: name || '', ...(phone ? { phone_number: phone } : {}) } }
+        : {}),
       // NOTE: customer_business_name is deliberately NOT sent. Dodo rejects it
       // with 400 "customer_business_name cannot be provided without tax_id",
       // and we don't collect a GST/VAT number on the landing form. The brand
       // name still reaches us via metadata below.
       return_url: `${siteUrl}/thank-you?checkout=success`,
       cancel_url: `${siteUrl}/#pricing`,
-      customization: { theme: 'dark' },
+      // A lean checkout: pay and get out. Everything below defaults to ON in
+      // Dodo, so each line is a field or panel deliberately removed.
+      customization: {
+        theme: 'dark',
+        // The order summary defaults to expanded, which pushes the card fields
+        // below the fold and re-opens the "is this the right price?" question
+        // at the worst moment. Collapsed — still one tap away, not in the way.
+        show_order_details: false,
+        show_on_demand_tag: false,
+      },
+      feature_flags: {
+        // We already quote by detected market and charge in that same currency
+        // (lib/market.ts). A currency switcher on Dodo's page would let someone
+        // see ₹9,999 here and be billed $149 there — the exact mismatch the
+        // shared market detection exists to prevent.
+        allow_currency_selection: false,
+        // No public discount codes on founding pricing. An empty "promo code?"
+        // box only invites people to leave and hunt for one.
+        allow_discount_code: false,
+        // We do not collect GST/VAT (see the customer_business_name note above),
+        // so the tax-id field is dead weight on the form.
+        allow_tax_id: false,
+        // Skip Dodo's own success interstitial and land straight on /thank-you,
+        // which is where the onboarding call gets booked.
+        redirect_immediately: true,
+      },
+      // Only the zipcode is required. Street/city/state are not needed to bill a
+      // subscription and every extra required field costs completions.
+      minimal_address: true,
+      // INR e-mandate ceiling. RBI recurring card payments authorise a maximum
+      // amount up front; Dodo sends max(this, actual charge) and falls back to a
+      // ₹15,000 default. At ₹9,999 the default happens to work, but it breaks
+      // the moment a customer adds 6+ seats at ₹999 (₹15,993 > ₹15,000) — the
+      // renewal would fail a month later, silently. Raising the ceiling costs
+      // the customer nothing (they are still only charged the real amount) and
+      // cannot be changed later without re-subscribing everyone.
+      ...(market === 'inr' ? { mandate_min_amount_inr_paise: 2_500_000 } : {}),
       // Carried through to the webhook so we can match the payment back to the
       // lead without a second lookup.
       metadata: {

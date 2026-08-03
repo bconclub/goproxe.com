@@ -177,6 +177,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
           source,
           name: userProfile.name,
           email: userProfile.email,
+          // Sent so Dodo prefills it too. Without this the buyer retypes on the
+          // hosted page a phone number they just gave us one screen earlier.
+          phone: userProfile.phone,
           brandName: userProfile.brandName,
         }),
       });
