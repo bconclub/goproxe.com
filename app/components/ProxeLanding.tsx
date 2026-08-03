@@ -1386,23 +1386,24 @@ export default function ProxeLanding() {
       {/* ===== 2. How It Works — animated feature cards ===== */}
       <HowItWorks />
 
-      {/* ===== 3. See PROXe in Action — full-screen sliding previews ===== */}
+      {/* ===== 3. See PROXe in Action — the live voice demo is the hero ===== */}
       <ChannelDemo />
 
-      {/* ===== 4. Dashboard preview ===== */}
+      {/* ===== 4. Industries — "it works for MY business" lands right after
+             seeing it work, while the demo is still fresh ===== */}
+      <IndustriesSection />
+
+      {/* ===== 5. Pricing — ask for the sale once relevance is established ===== */}
+      <PricingSection />
+
+      {/* ===== 6. Dashboard preview — proof of what you get after buying ===== */}
       <DashboardSection />
 
       {/* ===== 8. Scroll-triggered popup — disabled for now ===== */}
       {/* <ScrollPopup triggerRef={pillarsRef} /> */}
 
-      {/* ===== 9. Capabilities — redesigned hero+grid layout ===== */}
+      {/* ===== 9. Capabilities — depth for those still reading ===== */}
       <CapabilitiesSection />
-
-      {/* ===== 11. Industries — redesigned with activity cards + flows + trust row ===== */}
-      <IndustriesSection />
-
-      {/* ===== 12. Pricing — redesigned with channel diagram + trust strip ===== */}
-      <PricingSection />
 
       {/* ===== 13. Testimonials — centered single-card carousel with dot nav ===== */}
       <section className="proxe-section">

@@ -6229,19 +6229,71 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   .cd-nav-item {
     flex: 0 0 auto;
     min-width: 0;
-    padding: 10px 14px;
+    padding: 10px;
     scroll-snap-align: start;
     gap: 0;
   }
+  /* Affordance: a row of bare grey icons read as decoration, not a control.
+     Keep every icon visible but label the ACTIVE one and give it a filled
+     pill, so the strip obviously selects something. */
   .cd-nav-item .cd-nav-label { display: none; }
+  .cd-nav-item--active .cd-nav-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .cd-nav-item {
+    gap: 8px;
+    border-radius: 999px;
+    transition: background 0.25s ease, opacity 0.25s ease;
+  }
+  .cd-nav-item--active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(167, 139, 250, 0.18));
+    border: 1px solid rgba(196, 181, 253, 0.45);
+  }
   .cd-nav-item .cd-nav-icon { width: 24px; height: 24px; }
   .cd-nav-item .cd-nav-progress { display: none; }
+  /* Five icons plus one expanded label fit inside 390px, so centre the strip
+     rather than letting it scroll — a scrolled strip clipped the active
+     label ("oice"). Snap/overflow stay as a fallback for narrower phones. */
+  .cd-nav {
+    justify-content: center;
+    scroll-snap-type: none;
+    scrollbar-width: none;
+    /* Desktop's 24px gap overflowed 342px of usable width by ~57px, which is
+       what scrolled the active pill half off-screen. */
+    gap: 8px;
+  }
+  .cd-nav::-webkit-scrollbar { display: none; }
+  .cd-nav-item { scroll-snap-align: none; }
+
+  /* The base rule pins height:640px; mobile only ever set min-height, so the
+     voice orb (~240px tall) sat in a 640px box with ~400px of dead air.
+     Let content size it. `contain: size` must go too, or an auto-height box
+     collapses to zero. */
   .cd-preview {
-    min-height: 460px;
-    padding: 16px;
+    height: auto;
+    min-height: 0;
+    contain: layout;
+    padding: 12px 8px;
   }
   /* Dial arrows make no sense on mobile — channel selection is the icon strip on top */
   .cd-dial-controls { display: none; }
+  /* 100/110 desktop padding is a screenful of empty on a phone. */
+  .cd-section { padding: 56px 0 60px; }
+
+  /* The voice stage is deliberately phone-frame-sized on desktop so swapping
+     channels causes no layout shift. On a phone that trade is wrong: the orb
+     is ~240px and the rest is dead air. Size it to the orb instead — a small
+     shift on channel change beats a screen of emptiness. */
+  .cd-voice-stage {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 8px 0 0;
+  }
+  .cd-stage { gap: 10px; }
 }
 
 /* ── WhatsApp sub-tabs ── */
@@ -10572,7 +10624,12 @@ button.pr-cta { padding: 0 22px; }
   .pr-trust-item:nth-child(3) { border-right: none; }
 }
 @media (max-width: 980px) {
-  .pr-grid--3 { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  /* Both selectors: .pr-grid--3.pr-grid--duo (0,2,0) outranks a bare
+     .pr-grid--3 (0,1,0), and media queries add no specificity — without the
+     compound selector here the two-card layout stayed side-by-side on phones
+     and overflowed the viewport. */
+  .pr-grid--3,
+  .pr-grid--3.pr-grid--duo { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
   .pr-card-popular-badge { top: -12px; }
   /* Cards are stacked on mobile — drop the lift/scale so the popular
      card doesn't visually overlap its siblings. */
