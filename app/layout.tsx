@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
+import ProxeWidget from './components/shared/ProxeWidget';
 import { DeployModalProvider } from './contexts/DeployModalContext';
 
 const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Customer Acquisition System';
@@ -51,6 +52,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AnalyticsScripts />
+        {/* The real PROXe agent, live on its own site. */}
+        <ProxeWidget />
         <LenisProvider />
         <DeployModalProvider>
           {children}
