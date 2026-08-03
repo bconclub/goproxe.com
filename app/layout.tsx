@@ -15,9 +15,18 @@ export const metadata: Metadata = {
     template: '%s · PROXe',
   },
   description: DESCRIPTION,
+  // Explicit list so every surface gets the right file: the .ico carries
+  // 16/32/48 for browser tabs and Windows shortcuts, the PNGs cover retina
+  // tabs, Android/PWA installs and the iOS home screen.
   icons: {
-    icon: '/proxe/favicon.ico',
-    apple: '/proxe/brand/proxe-app-icon-1024.png',
+    icon: [
+      { url: '/proxe/favicon.ico', sizes: '16x16 32x32 48x48' },
+      { url: '/proxe/icon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/proxe/icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/proxe/icon-512.png', type: 'image/png', sizes: '512x512' },
+    ],
+    shortcut: '/proxe/favicon.ico',
+    apple: [{ url: '/proxe/brand/proxe-app-icon-1024.png', sizes: '180x180' }],
   },
   openGraph: {
     title: TITLE,
