@@ -70,18 +70,27 @@ export default function HeroPhoneCapture() {
     // Capture the lead AND start the dial in parallel — the ring must start
     // while they are still looking at the page. Neither blocks the other;
     // the lead sink alone failing must not stop the call, and vice versa.
+    // Read the BODY, not just the HTTP status. The route answers 200 for
+    // several outcomes that are not "a phone is ringing" - most importantly the
+    // cooldown guard - so trusting r.ok alone showed "Ringing… pick up" when
+    // nothing had been dialled.
     const [, dial] = await Promise.all([
       submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone' }),
       fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: trimmed, market: detectMarket() }),
-      }).then((r) => r.ok).catch(() => false),
+      })
+        .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
+        .catch(() => ({ ok: false, reason: 'network_error' })),
     ]);
 
-    if (!dial) {
-      // Lead is captured either way — promise a callback instead of a ring.
-      setError('Number saved — PROXe will call you shortly.');
+    if (!dial?.ok) {
+      setError(
+        dial?.reason === 'recently_called'
+          ? 'We just called you. Check your phone, or try again in a minute.'
+          : 'Number saved. PROXe will call you shortly.'
+      );
       setStatus('idle');
       return;
     }

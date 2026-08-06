@@ -62,7 +62,11 @@ HOW TO TALK
 - Never claim a certification, integration or customer you have not been told about here.
 - Never use the words "hero section", "form", "submission" or "lead capture" about them. They are a person, not a funnel step.`
 
-const PHONE_COOLDOWN_MS = 5 * 60 * 1000
+// 90s, not 5 minutes. Long enough to swallow a double-tap or an impatient
+// second press, short enough that someone deliberately testing the demo is not
+// locked out. Five minutes made the product look broken to the one person most
+// likely to be trying it repeatedly: us.
+const PHONE_COOLDOWN_MS = 90 * 1000
 const IP_COOLDOWN_MS = 60 * 1000
 const lastByPhone = new Map<string, number>()
 const lastByIp = new Map<string, number>()
@@ -118,8 +122,12 @@ export async function POST(request: Request) {
   const now = Date.now()
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   if (now - (lastByPhone.get(phone) ?? 0) < PHONE_COOLDOWN_MS || now - (lastByIp.get(ip) ?? 0) < IP_COOLDOWN_MS) {
-    // Already ringing (or just rang) — report ok so the UX stays calm.
-    return NextResponse.json({ ok: true, reason: 'cooldown' })
+    // Suppressed by the guard: NO call was placed. This used to answer
+    // { ok: true } to "keep the UX calm", which meant the page showed
+    // "Ringing… pick up" while nothing dialled — the product silently lying
+    // about the one thing it exists to prove. Say what actually happened and
+    // let the caller decide.
+    return NextResponse.json({ ok: false, reason: 'recently_called' })
   }
   lastByPhone.set(phone, now)
   lastByIp.set(ip, now)
@@ -164,7 +172,16 @@ export async function POST(request: Request) {
       // the one a human should pick up, and it is invisible if we only log
       // successes.
       await recordCallbackDial({ phone, status: 'failed', reason: `http_${res.status}` })
-      return NextResponse.json({ ok: false, reason: 'dial_failed' }, { status: 502 })
+      // Surface WHY, not just "failed". 401 here means the ELEVENLABS_API_KEY
+      // on this server is wrong or revoked - the single most likely cause after
+      // a key rotation, and previously indistinguishable from a bad number or a
+      // dead agent without shell access to read the logs. Only the status code
+      // is exposed, never the key or the response body.
+      const reason =
+        res.status === 401 ? 'elevenlabs_auth_failed'
+        : res.status === 404 ? 'agent_or_number_not_found'
+        : `dial_failed_${res.status}`
+      return NextResponse.json({ ok: false, reason }, { status: 502 })
     }
 
     const dialed = await res.json().catch(() => ({} as Record<string, unknown>))
