@@ -127,51 +127,32 @@ export async function POST(request: Request) {
   sweep(lastByIp, IP_COOLDOWN_MS)
 
   try {
-    const base = {
-      agent_id: AGENT_ID,
-      agent_phone_number_id: PHONE_NUMBER_ID,
-      to_number: phone,
-    }
-
-    // Script lives HERE, not in the ElevenLabs dashboard, so it is reviewable
-    // and versioned with the page that triggers it. The agent's own configured
-    // opening narrated our funnel back at the person - "you clicked on a hero
-    // section, you dropped your details" - which tells them what they just did
-    // instead of what PROXe is.
-    const withScript = {
-      ...base,
-      conversation_initiation_client_data: {
-        conversation_config_override: {
-          agent: { first_message: FIRST_MESSAGE, prompt: { prompt: SYSTEM_PROMPT } },
-          tts: { voice_id: VOICE_ID },
-        },
-      },
-    }
-
-    const dial = (payload: unknown) =>
-      fetch('https://api.elevenlabs.io/v1/convai/sip-trunk/outbound-call', {
-        method: 'POST',
-        headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-    let res = await dial(withScript)
-
-    // ElevenLabs REJECTS a call carrying overrides the agent has not enabled in
-    // its security settings - it does not quietly ignore them. Shipping the
-    // override without that toggle therefore stopped the phone ringing at all,
-    // which is far worse than a wrong opening line. So: if the scripted dial is
-    // refused, immediately place the plain call. A caller with the old script
-    // still gets a call; only the wording suffers until the toggle is on.
-    if (!res.ok && res.status >= 400 && res.status < 500) {
-      const why = await res.text().catch(() => '')
-      console.error(
-        '[api/callback] scripted dial refused, falling back to plain dial',
-        res.status,
-        why.slice(0, 300)
-      )
-      res = await dial(base)
-    }
+    // PLAIN DIAL ONLY.
+    //
+    // v0.2.0 sent the script as a conversation_config_override and calls stopped
+    // working. v0.2.2 added a 4xx fallback, which did not help: ElevenLabs
+    // ACCEPTS the request (HTTP 200) and the conversation then fails to
+    // initialise, so the phone rings and drops the moment it is answered. A 200
+    // means no fallback can detect it.
+    //
+    // Two attempts, two live breakages, both because the override cannot be
+    // tested from here - the local ELEVENLABS_API_KEY returns 401, so every
+    // version of this shipped on an assumption. A call that rings and dies is
+    // worse than a call with the wrong opening line, so the override stays out
+    // until it can be verified against a working key.
+    //
+    // FIRST_MESSAGE and SYSTEM_PROMPT above are kept deliberately: they are the
+    // reviewed copy, ready to reinstate, and are also exactly what should be
+    // pasted into the agent's own configuration in the meantime.
+    const res = await fetch('https://api.elevenlabs.io/v1/convai/sip-trunk/outbound-call', {
+      method: 'POST',
+      headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        agent_id: AGENT_ID,
+        agent_phone_number_id: PHONE_NUMBER_ID,
+        to_number: phone,
+      }),
+    })
 
     if (!res.ok) {
       const detail = await res.text().catch(() => '')

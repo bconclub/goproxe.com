@@ -400,11 +400,21 @@ body:has(.proxe-root) {
   text-shadow: 0 1px 3px rgba(10, 20, 60, 0.55);
 }
 
+/* Each written line is its own unbreakable block, so the headline is two lines
+   on every screen instead of breaking again mid-phrase and stranding "Lead".
+   Because the line cannot wrap, the type has to be small enough that the
+   longest one ("Never Miss a Lead") fits the width: 9.2vw puts it at ~36px on a
+   390px phone, which is the largest it can be there without overflowing. The
+   140px ceiling is untouched, so desktop keeps its scale. */
+.proxe-hero-line {
+  display: block;
+  white-space: nowrap;
+}
 .proxe-hero-title {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
   font-weight: 400;
-  font-size: clamp(56px, 13.6vw, 140px);
+  font-size: clamp(30px, 9.2vw, 140px);
   line-height: 0.98;
   letter-spacing: 0.015em;
   margin: 0;

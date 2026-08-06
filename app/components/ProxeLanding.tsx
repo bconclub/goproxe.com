@@ -1385,10 +1385,14 @@ export default function ProxeLanding() {
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
           <div className="proxe-hero-eyebrow">AI Customer System</div>
+          {/* Two lines, and only two. The <br> alone did not hold: on a phone
+              "Never Miss a Lead" was wide enough to wrap again, so the headline
+              read as three ragged lines with "Lead" stranded on its own. Each
+              line is now its own non-breaking block, so the break lands where
+              it is written or not at all. */}
           <h1 className="proxe-hero-title">
-            Never Miss a Lead
-            <br />
-            Ever Again.
+            <span className="proxe-hero-line">Never Miss a Lead</span>
+            <span className="proxe-hero-line">Ever Again.</span>
           </h1>
           <p className="proxe-hero-subtitle">
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and keeps them warm until they&rsquo;re ready to buy.
