@@ -10860,7 +10860,9 @@ button.pr-cta { padding: 0 22px; }
   align-items: center;
   gap: 6px;
   width: 100%;
-  max-width: 440px;
+  /* Just wide enough for a 12-digit international number + the call circle —
+     a full-width bar read as a form; this reads as one gesture. */
+  max-width: 320px;
   margin: 28px auto 0;
   padding: 6px;
   border-radius: 999px;
@@ -10915,22 +10917,77 @@ button.pr-cta { padding: 0 22px; }
   cursor: default;
   transform: none;
 }
-/* Morphs into the call state the moment a number is being typed — brand
-   gradient, phone icon, soft breathing glow that invites the tap. */
+/* The first digit collapses the pill into a circle. A ring around it fills
+   digit by digit (driven inline via stroke-dashoffset, full at 10) — entering
+   a number literally charges the call button. */
 .proxe-root .proxe-hero-phone-btn--call {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  position: relative;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
+}
+.proxe-hero-phone-btn-ringtrack {
+  position: absolute;
+  inset: -1px;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+}
+.proxe-hero-phone-btn-ringfill {
+  transition: stroke-dashoffset 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Ring complete → the circle lights up and breathes: tap me. */
+.proxe-root .proxe-hero-phone-btn--ready {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   animation: proxeCallBreathe 2.4s ease-in-out infinite;
 }
-.proxe-root .proxe-hero-phone-btn--call:hover {
+.proxe-root .proxe-hero-phone-btn--ready:hover {
   box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55);
+}
+/* Dial in flight — the full ring spins while the SIP leg connects. */
+.proxe-root .proxe-hero-phone-btn--dialing .proxe-hero-phone-btn-ringtrack {
+  animation: proxeHeroDialSpin 1s linear infinite;
+}
+@keyframes proxeHeroDialSpin {
+  to { transform: rotate(360deg); }
 }
 @keyframes proxeCallBreathe {
   0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.55); }
   50%      { box-shadow: 0 0 0 9px rgba(139, 92, 246, 0); }
 }
+/* Ringing… — two soft expanding rings, like a call wave leaving the page. */
+.proxe-hero-phone-done-ring {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #CDFC2E;
+  flex-shrink: 0;
+}
+.proxe-hero-phone-done-ring::before,
+.proxe-hero-phone-done-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(205, 252, 46, 0.8);
+  animation: proxeHeroRingWave 1.6s ease-out infinite;
+}
+.proxe-hero-phone-done-ring::after { animation-delay: 0.8s; }
+@keyframes proxeHeroRingWave {
+  from { transform: scale(1);   opacity: 1; }
+  to   { transform: scale(2.6); opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .proxe-root .proxe-hero-phone-btn--call { animation: none; }
+  .proxe-root .proxe-hero-phone-btn--ready,
+  .proxe-root .proxe-hero-phone-btn--dialing .proxe-hero-phone-btn-ringtrack,
+  .proxe-hero-phone-done-ring::before,
+  .proxe-hero-phone-done-ring::after {
+    animation: none;
+  }
 }
 .proxe-hero-phone-hint {
   margin: 10px auto 0;

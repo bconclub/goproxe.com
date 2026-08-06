@@ -7,7 +7,7 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
 /**
- * Hero quick-capture: one phone field, one tap, callback promised.
+ * Hero quick-capture: one phone field, one tap, PROXe dials back in seconds.
  *
  * The lowest-friction conversion on the page — no name, no email, no modal.
  * Lands in the same /api/lead sink as the deploy form (Supabase `all_leads`
@@ -15,6 +15,12 @@ import { detectMarket } from '../../lib/market';
  * touches merge onto one row). Fires the same funnel events as the deploy
  * form (`lead_form_start` → `form_completed`/Meta `Lead`) with
  * source: 'hero_phone' so ad platforms can optimise toward it from day one.
+ *
+ * The button is the interaction: an empty field shows a "Talk to PROXe" pill;
+ * the first digit collapses it into a circle whose ring fills digit by digit
+ * (full at 10 — a complete local number). A full ring lights the brand
+ * gradient and breathes; the tap POSTs /api/callback, which has the ElevenLabs
+ * "PROXe Website Callback" agent dial them from our SIP number. Then: Ringing…
  */
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
@@ -29,6 +35,10 @@ export default function HeroPhoneCapture() {
   useEffect(() => {
     setPlaceholder(detectMarket() === 'inr' ? '+91 98765 43210' : '+1 555 000 1234');
   }, []);
+
+  const digitCount = phone.replace(/\D/g, '').length;
+  const progress = Math.min(digitCount / 10, 1);
+  const ready = progress >= 1;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!startedRef.current) {
@@ -57,25 +67,42 @@ export default function HeroPhoneCapture() {
     // capture must never wipe a name/email captured elsewhere.
     storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, promptedPhone: true }, 'proxe');
 
-    // Fire-and-forget to Supabase + sheet; never blocks the success state —
-    // the lead is already in GA and localStorage even if the sink hiccups.
-    await submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone' });
+    // Capture the lead AND start the dial in parallel — the ring must start
+    // while they are still looking at the page. Neither blocks the other;
+    // the lead sink alone failing must not stop the call, and vice versa.
+    const [, dial] = await Promise.all([
+      submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone' }),
+      fetch('/api/callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: trimmed, market: detectMarket() }),
+      }).then((r) => r.ok).catch(() => false),
+    ]);
 
+    if (!dial) {
+      // Lead is captured either way — promise a callback instead of a ring.
+      setError('Number saved — PROXe will call you shortly.');
+      setStatus('idle');
+      return;
+    }
     setStatus('done');
   };
 
   if (status === 'done') {
     return (
       <div className="proxe-hero-phone-done" role="status">
-        <span className="proxe-hero-phone-done-ico" aria-hidden="true">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </span>
-        Got it. PROXe will call you right now.
+        <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
+        Ringing… pick up.
       </div>
     );
   }
+
+  const typing = phone.trim().length > 0;
+  const btnClass =
+    'proxe-hero-phone-btn' +
+    (typing ? ' proxe-hero-phone-btn--call' : '') +
+    (ready ? ' proxe-hero-phone-btn--ready' : '') +
+    (status === 'submitting' ? ' proxe-hero-phone-btn--dialing' : '');
 
   return (
     <>
@@ -93,27 +120,39 @@ export default function HeroPhoneCapture() {
         />
         <button
           type="submit"
-          className={`proxe-hero-phone-btn${phone.trim() ? ' proxe-hero-phone-btn--call' : ''}`}
+          className={btnClass}
           disabled={status === 'submitting'}
+          aria-label={typing ? 'Call me now' : 'Talk to PROXe'}
         >
-          {status === 'submitting' ? (
-            'Calling…'
-          ) : phone.trim() ? (
+          {typing ? (
             <>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {/* Progress ring — fills digit by digit, full at 10. */}
+              <svg className="proxe-hero-phone-btn-ringtrack" viewBox="0 0 52 52" aria-hidden="true">
+                <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="2.5" />
+                <circle
+                  className="proxe-hero-phone-btn-ringfill"
+                  cx="26"
+                  cy="26"
+                  r="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  pathLength={100}
+                  strokeDasharray="100"
+                  strokeDashoffset={100 - progress * 100}
+                  transform="rotate(-90 26 26)"
+                />
+              </svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
-              Call me
             </>
           ) : (
             'Talk to PROXe'
           )}
         </button>
       </form>
-      {/* No always-on hint — the promise ("PROXe will call you right now")
-          shows in the done state, after they tap Call. NOTE: the dialler
-          behind that promise is still not wired (lead lands in Supabase,
-          nothing dials it yet). */}
       {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
     </>
   );

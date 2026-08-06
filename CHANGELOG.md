@@ -1,5 +1,26 @@
 ﻿# Changelog
 
+## 2026-08-06 17:10 IST · feat(hero): v0.1.11 — the ring-fill call circle, wired to a real dialler
+
+- User-facing: hero capture is now one gesture — "Talk to PROXe" pill collapses
+  into a circle on the first digit; a ring around it fills digit by digit
+  (full at 10), lights the brand gradient, and the tap makes PROXe actually
+  call the visitor. Success state: "Ringing… pick up." with a call-wave pulse.
+- NEW /api/callback: ElevenLabs outbound dial from our SIP number
+  (+91 80467 33388) as the new "PROXe Website Callback" agent
+  (`agent_6201kzbayp7zenc8d3v86sa4zwra`) — a website-greeter persona, distinct
+  from the on-page demo orb. E.164 normalisation by market, per-phone (5 min) +
+  per-IP (60s) cooldowns, failed dials don't burn the cooldown, dial failure
+  falls back to "Number saved — PROXe will call you shortly."
+- Lead capture and dial fire in parallel; neither blocks the other.
+- Hero pill narrowed to 320px — number-width, not form-width.
+- Idle button label: "Talk to PROXe" (was "Get a callback"); always-on hint
+  line removed.
+- Orb connecting ring: reduced-motion users saw the 25% arc frozen mid-sweep
+  ("stuck at quarter") — now shows a full steady ring instead.
+- Deploy note: VPS .env.local must contain ELEVENLABS_API_KEY or the hero
+  saves leads without ringing (route logs + returns 503).
+
 ## 2026-08-06 16:05 IST Â· feat(hero): v0.1.10 â€” bigger headline, Call-me morph button, tighter copy
 
 - Hero headline scaled up (`clamp(56px, 13.6vw, 140px)`) after several rounds
