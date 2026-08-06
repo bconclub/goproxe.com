@@ -1188,6 +1188,9 @@ export default function ProxeLanding() {
   const [videoMuted, setVideoMuted] = useState(true);
   const videoPlayingRef = useRef(false);
   const videoMutedRef = useRef(true);
+  /** Set once the visitor touches Mute/Unmute. From then on the autoplay
+      fallback keeps its hands off: their choice outranks our heuristic. */
+  const userSetVolumeRef = useRef(false);
   const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -1250,10 +1253,17 @@ export default function ProxeLanding() {
     let fallbackTimer: number | undefined;
     const playWithFallback = () => {
       send('play');
+      // Never fight a deliberate unmute. This guard exists for ONE case: the
+      // browser refusing unmuted autoplay on load. Since the video now loads
+      // muted, the only way videoMutedRef goes false is a user pressing Unmute
+      // - so without this check the observer re-muted them ~1.5s later, every
+      // time the hero re-entered view. The control appeared broken because
+      // something was undoing it.
+      if (userSetVolumeRef.current) return;
       if (videoMutedRef.current) return; // already muted — play always allowed
       window.clearTimeout(fallbackTimer);
       fallbackTimer = window.setTimeout(() => {
-        if (!videoPlayingRef.current && !videoMutedRef.current) {
+        if (!videoPlayingRef.current && !videoMutedRef.current && !userSetVolumeRef.current) {
           send('setMuted', true);
           videoMutedRef.current = true;
           setVideoMuted(true);
@@ -1310,6 +1320,8 @@ export default function ProxeLanding() {
   const toggleVideoMute = () => {
     const iframe = videoIframeRef.current;
     if (!iframe?.contentWindow) return;
+    // Their choice now wins over the autoplay fallback, permanently.
+    userSetVolumeRef.current = true;
     const nextMuted = !videoMuted;
     // Vimeo Player API over postMessage
     iframe.contentWindow.postMessage(
