@@ -2986,6 +2986,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   .proxe-voice-orb-livedot {
     animation: none;
   }
+  /* With the sweep off, the 25%-dash reads as a ring stuck at quarter.
+     Show a full steady ring instead. */
+  .proxe-voice-orb-connecting-arc {
+    stroke-dasharray: none;
+  }
 }
 
 .proxe-voice-orb-error {

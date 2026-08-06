@@ -106,19 +106,15 @@ export default function HeroPhoneCapture() {
               Call me
             </>
           ) : (
-            'Get a callback'
+            'Talk to PROXe'
           )}
         </button>
       </form>
-      {/* Hint reads "right away" because the intent is that the PROXe voice
-          agent dials the moment this submits. That dialler is NOT wired yet
-          (the lead lands in Supabase and nothing calls it), so until it is,
-          this line and the success copy promise something we do not do. */}
-      {error ? (
-        <p className="proxe-hero-phone-error" role="alert">{error}</p>
-      ) : (
-        <p className="proxe-hero-phone-hint">PROXe calls you right away.</p>
-      )}
+      {/* No always-on hint — the promise ("PROXe will call you right now")
+          shows in the done state, after they tap Call. NOTE: the dialler
+          behind that promise is still not wired (lead lands in Supabase,
+          nothing dials it yet). */}
+      {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
     </>
   );
 }
