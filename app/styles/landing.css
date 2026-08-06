@@ -390,13 +390,18 @@ body:has(.proxe-root) {
   align-items: center;
 }
 
+/* Eyebrow. Dimmed rather than shrunk: at 11px in full white it was competing
+   for attention it does not deserve while being hard to read. 12.5px at 70%
+   opacity labels the section without pulling the eye off the headline, which is
+   what an eyebrow is for. Tighter bottom margin ties it TO the heading instead
+   of leaving it floating between the nav and the H1. */
 .proxe-hero-eyebrow {
   font-family: var(--proxe-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-size: 12.5px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.95);
-  margin-bottom: 28px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 18px;
   text-shadow: 0 1px 3px rgba(10, 20, 60, 0.55);
 }
 
@@ -427,12 +432,26 @@ body:has(.proxe-root) {
     0 1px 2px rgba(10, 20, 60, 0.35);
 }
 
+/* Sub-headline, sized on a modular scale rather than by eye.
+   The heading runs to 140px and this was 15.5px: a ratio of ~7.6 to 1 in a
+   single step, so the eye jumped from billboard to fine print with nothing in
+   between and the sentence that explains the product read as a caption.
+   ~21px puts it near two steps of a 1.5 scale below the heading - still clearly
+   subordinate, but able to hold its own line of argument.
+   Measure drops 64ch -> 52ch because centred text needs a shorter line: with no
+   fixed left edge, long lines make the eye hunt for the start of the next one.
+   Line-height eases 1.7 -> 1.5, since larger text needs proportionally less. */
 .proxe-hero-subtitle {
-  margin: 28px auto 0;
-  max-width: 64ch;
+  margin: 26px auto 0;
+  /* px, not ch. `52ch` measured 685px and 66 characters here, because `ch` is
+     the width of the "0" glyph and Hubot Sans's is far wider than the average
+     letter. 580px lands at ~52 real characters, which is the range centred text
+     actually reads well in. */
+  max-width: 580px;
   color: rgba(255, 255, 255, 0.92);
-  font-size: 15.5px;
-  line-height: 1.7;
+  font-size: clamp(16px, 1.5vw, 23px);
+  line-height: 1.5;
+  letter-spacing: 0.005em;
   text-shadow: 0 1px 4px rgba(10, 20, 60, 0.5);
 }
 
@@ -11155,3 +11174,16 @@ button.pr-cta { padding: 0 22px; }
   .pr-grid { gap: 12px; margin-bottom: 8px; }
   .pr-cta { padding-top: 9px; padding-bottom: 9px; }
 }
+
+/* Post-call next step. Replaces the "calling you" line once the call is
+   underway: a live-looking status that never changes starts reading as stuck,
+   and by then the person is talking to PROXe, not looking at a form. */
+.proxe-hero-phone-next {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  padding-bottom: 1px;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+.proxe-hero-phone-next:hover { border-bottom-color: #fff; opacity: 0.9; }

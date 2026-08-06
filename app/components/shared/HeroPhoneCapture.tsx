@@ -30,6 +30,10 @@ export default function HeroPhoneCapture() {
   // don't exist during SSR — setting it in render would risk a hydration
   // mismatch between the server's fallback and the client's real market.
   const [placeholder, setPlaceholder] = useState('Your phone number');
+  /** Flips ~20s after the dial: long enough that the phone has rung and been
+      answered, after which "PROXe is calling you" is stale and the space is
+      better spent pointing somewhere. */
+  const [callSettled, setCallSettled] = useState(false);
   const startedRef = useRef(false);
 
   useEffect(() => {
@@ -95,13 +99,28 @@ export default function HeroPhoneCapture() {
       return;
     }
     setStatus('done');
+    window.setTimeout(() => setCallSettled(true), 20000);
   };
 
   if (status === 'done') {
+    // States what we did, not what their phone is about to do. "Ringing… pick
+    // up." narrates and instructs, and it is a claim we cannot actually verify
+    // - we know the dial was accepted, not that anything rang. After a beat the
+    // panel steps aside for a next action, because by then they are on the
+    // call and the capture field has nothing left to say.
     return (
       <div className="proxe-hero-phone-done" role="status">
-        <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
-        Ringing… pick up.
+        {!callSettled ? (
+          <>
+            <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
+            PROXe is calling you.
+          </>
+        ) : (
+          <a href="#voice" className="proxe-hero-phone-next">
+            While you talk, see what else PROXe does
+            <span aria-hidden="true"> →</span>
+          </a>
+        )}
       </div>
     );
   }
