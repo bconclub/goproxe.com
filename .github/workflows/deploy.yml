@@ -20,6 +20,11 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          # Default is 10m. Runs 265 and 266 died at 892s and 745s with the VPS
+          # showing 4-10% CPU and 2.7GB of 8GB RAM used, i.e. not starved - the
+          # command was simply being cut off mid-build. npm ci plus a cold
+          # Next build can exceed 10m on a 2-core box.
+          command_timeout: 25m
           script: |
             set -e
             cd /var/www/goproxe
