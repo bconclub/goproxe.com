@@ -34,7 +34,15 @@ jobs:
             git reset --hard origin/main
             npm ci --production=false
             rm -rf .next
-            export NODE_OPTIONS="--max-old-space-size=2048"
-            npm run build
+            # 4GB, not 2GB. Runs 266 and 268 hung for 745s and 904s and then
+            # failed, on a box showing 4-10% CPU and 2.7GB of 8GB RAM used at
+            # sample time. A Next build OOM-killed against a 2GB heap looks
+            # exactly like that: long stall, then death, with the spike too
+            # brief to appear in 30-minute metrics. The VPS has 8GB, so 4GB is
+            # affordable and still leaves room for the running app.
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            # Show what actually happened; without this a remote failure is
+            # invisible from GitHub's side.
+            npm run build || { echo "[deploy] BUILD FAILED"; tail -40 ~/.npm/_logs/*.log 2>/dev/null; exit 1; }
             pm2 restart goproxe || pm2 start npm --name goproxe -- start
             pm2 save
