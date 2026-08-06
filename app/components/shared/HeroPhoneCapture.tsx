@@ -106,7 +106,7 @@ export default function HeroPhoneCapture() {
       {error ? (
         <p className="proxe-hero-phone-error" role="alert">{error}</p>
       ) : (
-        <p className="proxe-hero-phone-hint">PROXe calls you right away. No spam, ever.</p>
+        <p className="proxe-hero-phone-hint">PROXe calls you right away.</p>
       )}
     </>
   );

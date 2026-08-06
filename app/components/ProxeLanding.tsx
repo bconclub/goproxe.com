@@ -1391,21 +1391,10 @@ export default function ProxeLanding() {
             Ever Again.
           </h1>
           <p className="proxe-hero-subtitle">
-            PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and pushes the ready-to-buy ones to you.
+            PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and keeps them warm until they&rsquo;re ready to buy.
           </p>
           {/* Quick capture — phone in, callback out. The primary hero action. */}
           <HeroPhoneCapture />
-          <div className="proxe-hero-ctas">
-            <a href="#voice" className="proxe-hero-big-cta" onClick={() => track('cta_click', { location: 'hero_whats_proxe' })}>
-              What&rsquo;s PROXe?
-              <span className="proxe-hero-big-cta-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-            </a>
-          </div>
         </div>
       </section>
 

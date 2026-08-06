@@ -404,7 +404,7 @@ body:has(.proxe-root) {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
   font-weight: 400;
-  font-size: clamp(34px, 9vw, 112px);
+  font-size: clamp(52px, 12.5vw, 130px);
   line-height: 0.98;
   letter-spacing: 0.015em;
   margin: 0;
@@ -421,7 +421,7 @@ body:has(.proxe-root) {
   margin: 28px auto 0;
   max-width: 64ch;
   color: rgba(255, 255, 255, 0.92);
-  font-size: 17px;
+  font-size: 15.5px;
   line-height: 1.7;
   text-shadow: 0 1px 4px rgba(10, 20, 60, 0.5);
 }
@@ -9899,12 +9899,25 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* ═══════════════════════════════════════════════════════════════
    PRICING SECTION — redesigned
 ═══════════════════════════════════════════════════════════════ */
+/* Pricing is meant to be taken in as ONE screen: header, both cards and the
+   trust line, no scrolling mid-decision. Measured at 1280x800 it was 1283px
+   tall, so it overflowed by 483px and the Deploy button sat below the fold.
+
+   min-height + centring makes the section own the viewport; the short-viewport
+   block further down does the actual fitting. Deliberately min-height and not
+   height, so if a translation or a longer feature list grows the content past
+   the viewport it spills normally instead of being clipped. */
 .pr-section {
   position: relative;
-  padding: 80px 0 100px;
+  min-height: 100vh;
+  min-height: 100svh; /* mobile: excludes the browser chrome that 100vh ignores */
+  display: flex;
+  align-items: center;
+  padding: 56px 0 60px;
   background: transparent;
   overflow: hidden;
 }
+.pr-section > .proxe-container { width: 100%; }
 
 /* Reveal */
 .pr-label, .pr-h2, .pr-sub, .pr-header-vis, .pr-card, .pr-trust {
@@ -10973,4 +10986,66 @@ button.pr-cta { padding: 0 22px; }
     width: 14px;
     height: 14px;
   }
+}
+
+/* ==========================================================================
+   Pricing — short-viewport fit
+   Laptops are ~800px tall and the section needs ~1280px at its natural size.
+   Rather than crushing the design on every display, everything below applies
+   only when the viewport is genuinely short, so large screens keep the
+   generous spacing they were designed with.
+   ========================================================================== */
+@media (max-height: 900px) and (min-width: 861px) {
+  .pr-section { padding: 22px 0 24px; }
+  .pr-header { margin-bottom: 12px; gap: 12px; }
+  .pr-label { margin-bottom: 8px; }
+  .pr-h2 { font-size: clamp(20px, 2.4vw, 30px); margin-bottom: 8px; }
+  .pr-sub { font-size: 12.5px; line-height: 1.45; }
+  .pr-header-vis { min-height: 150px; }
+  .pr-grid { margin-bottom: 12px; gap: 16px; }
+
+  .pr-card { padding: 16px 18px 15px; gap: 7px; border-radius: 16px; }
+  .pr-card-headline { padding: 8px 10px; font-size: 13px; gap: 7px; }
+  .pr-list { gap: 4px; }
+  .pr-list li { font-size: 12px; gap: 8px; }
+  .pr-card-addon { padding: 6px 9px; font-size: 11.5px; }
+  .pr-card-num { font-size: 42px; }
+  .pr-card-sub { font-size: 12.5px; }
+  .pr-trust { font-size: 12px; }
+
+  /* The marquee says "All channels, one memory / WhatsApp - Web - Instagram -
+     Voice - Dashboard" and the channel list directly beneath it names the same
+     six channels with icons. On a short screen that duplication costs ~82px of
+     the height that pushes the Deploy button below the fold. The list is the
+     more informative of the two, so the marquee goes. */
+  .pr-card-marquee { display: none; }
+
+  /* Decorative channel-orbit diagram. Purely ornamental, and it alone sets the
+     header's height on short screens. Hidden, and the header collapses to one
+     column so the copy uses the full width instead of leaving a gap. */
+  .pr-header-vis { display: none; }
+  .pr-header { grid-template-columns: 1fr; }
+  .pr-sub { max-width: 640px; }
+
+  /* Six channels across three columns instead of two: same information, two
+     rows instead of three. */
+  .pr-list--channels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Very short (a 720p laptop with browser chrome) — trim once more. */
+@media (max-height: 760px) and (min-width: 861px) {
+  .pr-section { padding: 14px 0 16px; }
+  .pr-header { margin-bottom: 10px; }
+  .pr-h2 { font-size: clamp(19px, 2.2vw, 26px); margin-bottom: 6px; }
+  .pr-sub { font-size: 12px; }
+  .pr-card { padding: 13px 15px 12px; gap: 5px; }
+  .pr-card-head { gap: 4px; }
+  .pr-list { gap: 3px; }
+  .pr-list li { font-size: 11.5px; gap: 7px; }
+  .pr-card-features-label { font-size: 10.5px; }
+  .pr-card-addon { padding: 5px 8px; font-size: 11px; }
+  .pr-card-num { font-size: 32px; }
+  .pr-card-sub { font-size: 11.5px; }
+  .pr-grid { gap: 12px; margin-bottom: 8px; }
+  .pr-cta { padding-top: 9px; padding-bottom: 9px; }
 }
