@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { recordCallbackDial } from '../../lib/leadsSupabase'
 
 /**
  * Hero phone capture → instant outbound call from the PROXe voice agent.
@@ -21,6 +22,45 @@ import { NextResponse } from 'next/server'
 const API_KEY = process.env.ELEVENLABS_API_KEY
 const AGENT_ID = process.env.ELEVENLABS_CALLBACK_AGENT_ID || 'agent_6201kzbayp7zenc8d3v86sa4zwra'
 const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_6501kwq4tr8kfats4mezvr37krw9'
+
+/** Calling voice. Identifier, not a secret; env overrides without a deploy. */
+const VOICE_ID = process.env.ELEVENLABS_CALLBACK_VOICE_ID || '0muxiGNHAVvmM1qWRtyV'
+
+/**
+ * The opening line. It leads with what PROXe IS, because the call itself is the
+ * proof: they tapped a number on a website and the AI rang back in seconds.
+ * Narrating their own click back at them ("you clicked the hero section, you
+ * dropped your details") tells them what they already know and sounds like a
+ * machine reading its logs.
+ */
+const FIRST_MESSAGE =
+  "Hi, this is PROXe. I'm the AI that answers every lead a business gets, on WhatsApp, website chat, Instagram, and calls like this one. You just watched me do it. What does your business do?"
+
+/**
+ * Voice context. Deliberately short: on a phone call the model has no screen to
+ * fall back on, and long instructions make it ramble. Facts here must match the
+ * pricing card (PricingSection.tsx) - if they drift, the caller is quoted one
+ * price and charged another.
+ */
+const SYSTEM_PROMPT = `You are PROXe, an AI customer acquisition system, speaking on a phone call you placed yourself.
+
+WHO YOU ARE
+PROXe captures every lead a business gets across website chat, WhatsApp, Instagram DM, Facebook Messenger, email and voice. One unified memory across all of them, so a customer never repeats themselves. You follow up automatically, score every lead, and hand the ready-to-buy ones to the owner's team.
+
+WHY THIS CALL MATTERS
+This person left their number on goproxe.com seconds ago and you rang immediately. That speed is the entire pitch: most businesses lose leads because nobody replies fast enough. Do not explain that you were triggered by a form. Just be the demonstration.
+
+PRICING (only if asked)
+Core is 9,999 rupees a month in India, or 149 dollars internationally. That covers every channel, up to 500 leads managed per month, and 2 team seats. Extra seats are 999 rupees each. Multi-location or high volume is quoted on a call.
+
+HOW TO TALK
+- This is a phone call. One or two sentences per turn, never a paragraph.
+- Ask one question at a time, then stop and actually listen.
+- Find out what their business is and where they lose leads today. That is the goal of this call.
+- If they are interested, offer to send details on WhatsApp or book a short call with the team.
+- If they are busy or it is a bad time, say so is fine, offer to message instead, and let them go politely.
+- Never claim a certification, integration or customer you have not been told about here.
+- Never use the words "hero section", "form", "submission" or "lead capture" about them. They are a person, not a funnel step.`
 
 const PHONE_COOLDOWN_MS = 5 * 60 * 1000
 const IP_COOLDOWN_MS = 60 * 1000
@@ -94,6 +134,25 @@ export async function POST(request: Request) {
         agent_id: AGENT_ID,
         agent_phone_number_id: PHONE_NUMBER_ID,
         to_number: phone,
+        // Script lives HERE, not in the ElevenLabs dashboard, so it is
+        // reviewable and versioned with the page that triggers it. The agent's
+        // own configured opening narrated our funnel back at the person -
+        // "you clicked on a hero section, you dropped your details" - which
+        // tells them what they just did instead of what PROXe is, and sounds
+        // like a machine reading its own logs.
+        //
+        // NOTE: ElevenLabs only applies these when the agent has the matching
+        // overrides enabled in its security settings. If the opening is still
+        // the old one after deploying, that toggle is why.
+        conversation_initiation_client_data: {
+          conversation_config_override: {
+            agent: {
+              first_message: FIRST_MESSAGE,
+              prompt: { prompt: SYSTEM_PROMPT },
+            },
+            tts: { voice_id: VOICE_ID },
+          },
+        },
       }),
     })
     if (!res.ok) {
@@ -102,8 +161,19 @@ export async function POST(request: Request) {
       // A failed dial shouldn't lock them out of retrying.
       lastByPhone.delete(phone)
       lastByIp.delete(ip)
+      // Record the failure too: a lead we tried and could not reach is exactly
+      // the one a human should pick up, and it is invisible if we only log
+      // successes.
+      await recordCallbackDial({ phone, status: 'failed', reason: `http_${res.status}` })
       return NextResponse.json({ ok: false, reason: 'dial_failed' }, { status: 502 })
     }
+
+    const dialed = await res.json().catch(() => ({} as Record<string, unknown>))
+    await recordCallbackDial({
+      phone,
+      status: 'dialing',
+      conversationId: (dialed?.conversation_id as string) ?? null,
+    })
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[api/callback] dial threw', err)

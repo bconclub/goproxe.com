@@ -229,6 +229,84 @@ export async function markCheckoutStarted(input: {
   }
 }
 
+/**
+ * Stamp an outbound callback onto the lead it belongs to.
+ *
+ * Every hero-capture call is a real conversation with a real prospect, and
+ * until now it happened entirely outside the system: the lead row said someone
+ * left a number, and nothing recorded that PROXe rang them, whether it
+ * connected, or that a conversation exists. The dashboard could not show what
+ * was actually happening to a lead.
+ *
+ * Matched on phone (the only thing the hero capture collects) rather than
+ * email, and written under `unified_context.voice` alongside the existing
+ * `web` and `billing` namespaces.
+ */
+export async function recordCallbackDial(input: {
+  phone?: string | null
+  status: 'dialing' | 'failed'
+  reason?: string | null
+  conversationId?: string | null
+}): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+
+  const normalized = normalizePhone(input.phone ?? '')
+  if (!normalized) return
+
+  try {
+    const { data: existing } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('customer_phone_normalized', normalized)
+      .eq('brand', BRAND)
+      .order('last_interaction_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    // The lead is written in parallel with the dial, so on a first-ever capture
+    // this can lose the race. No row means nothing to annotate; the next call
+    // for the same number will find it.
+    if (!existing) return
+
+    const ctx = (existing.unified_context as Record<string, any>) || {}
+    const prior = (ctx.voice || {}) as Record<string, any>
+    const history = Array.isArray(prior.calls) ? prior.calls : []
+
+    await supabase
+      .from('all_leads')
+      .update({
+        last_touchpoint: 'voice',
+        last_interaction_at: new Date().toISOString(),
+        unified_context: {
+          ...ctx,
+          voice: {
+            ...prior,
+            last_call_at: new Date().toISOString(),
+            last_call_status: input.status,
+            last_call_reason: input.reason ?? null,
+            provider: 'elevenlabs',
+            source: 'hero_phone',
+            // Keep the last 10 attempts so a repeat caller reads as a history
+            // rather than a single overwritten timestamp.
+            calls: [
+              ...history.slice(-9),
+              {
+                at: new Date().toISOString(),
+                status: input.status,
+                reason: input.reason ?? null,
+                conversation_id: input.conversationId ?? null,
+              },
+            ],
+          },
+        },
+      })
+      .eq('id', existing.id)
+  } catch (err) {
+    console.error('[leadsSupabase] recordCallbackDial failed', err)
+  }
+}
+
 export interface BillingEventInput {
   eventType: string
   webhookId?: string
