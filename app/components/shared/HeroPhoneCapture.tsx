@@ -102,7 +102,10 @@ export default function HeroPhoneCapture() {
       {error ? (
         <p className="proxe-hero-phone-error" role="alert">{error}</p>
       ) : (
-        <p className="proxe-hero-phone-hint">We call back within minutes. No spam, ever.</p>
+        {/* "Within minutes" was a promise nothing on our side keeps: these
+            leads land in Supabase and no dialler picks them up. Promising a
+            response time we miss is worse than a modest one we hit. */}
+        <p className="proxe-hero-phone-hint">We call back during business hours. No spam, ever.</p>
       )}
     </>
   );

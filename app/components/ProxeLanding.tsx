@@ -1180,13 +1180,14 @@ export default function ProxeLanding() {
   const videoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  // Start with sound ON — the fallback effect below drops to muted playback
-  // if the browser's autoplay policy blocks unmuted audio (Chrome/Safari do
-  // without a prior tap). Once the user scrolls past, the observer pauses it
-  // anyway, so sound-on-load is low-risk.
-  const [videoMuted, setVideoMuted] = useState(false);
+  // Load MUTED. Sound-on-load looked bolder but fought the browser: Chrome and
+  // Safari refuse to autoplay unmuted video without a prior interaction, so the
+  // hero opened on a frozen frame and only recovered once the mute-and-retry
+  // fallback fired. Muted autoplay is always permitted, so the video just
+  // plays, and the Unmute pill turns sound on for anyone who wants it.
+  const [videoMuted, setVideoMuted] = useState(true);
   const videoPlayingRef = useRef(false);
-  const videoMutedRef = useRef(false);
+  const videoMutedRef = useRef(true);
   const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -1414,7 +1415,7 @@ export default function ProxeLanding() {
           <div className="proxe-hero-video-inner">
             <iframe
               ref={videoIframeRef}
-              src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=0&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
+              src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
               title="PROXe demo"
               allow="autoplay; fullscreen; picture-in-picture"
               frameBorder={0}
@@ -1498,19 +1499,19 @@ export default function ProxeLanding() {
             />
             <FaqItem
               question="Is my data secure?"
-              answer="Yes. All customer data is encrypted in transit and at rest. We are GDPR and CCPA compliant. Enterprise plans include SOC 2 review and private cloud deployment options."
+              answer="Yes. All customer data is encrypted in transit and at rest. We are GDPR and CCPA compliant. Scale includes a SOC 2 and GDPR compliance review and private cloud deployment options."
             />
             <FaqItem
               question="Can my team take over conversations?"
               answer="Anytime. PROXe hands off to your team the moment you jump in, with full conversation context across every channel. The AI picks back up when you step away."
             />
             <FaqItem
-              question="What happens after 1,000 conversations on Starter?"
-              answer="You can upgrade to Unlimited anytime. If you cross the limit mid-month, we keep things running and true-up at renewal."
+              question="What happens if I go over 500 leads in a month?"
+              answer="Nothing switches off. We keep everything running and true up at renewal, and if you are consistently above 500 we move you to Scale on volume pricing. No lead is ever dropped for hitting a limit."
             />
             <FaqItem
-              question="What counts as a conversation?"
-              answer="One conversation equals one unique customer, no matter how many messages they send or how many channels they reach out on. Whether they message you on WhatsApp, then Instagram, then call you, it's still one conversation because it's one person. You're billed per unique customer, not per message or per channel."
+              question="What counts as a lead?"
+              answer="One lead is one unique person, no matter how many messages they send or how many channels they use. If someone messages you on WhatsApp, then Instagram, then calls, that is still one lead because it is one person. You are counted per person, never per message or per channel."
             />
             <FaqItem
               question="What if a lead goes silent?"
@@ -1522,7 +1523,7 @@ export default function ProxeLanding() {
             />
             <FaqItem
               question="Can I cancel anytime?"
-              answer="Yes. No long-term contracts on Starter or Unlimited. Cancel anytime, keep your data export."
+              answer="Yes. No long-term contracts on Core. Cancel anytime, keep your data export."
             />
           </div>
         </div>

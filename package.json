@@ -1,10 +1,12 @@
 {
   "name": "goproxe",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "description": "PROXe — The AI Customer Acquisition System (goproxe.com)",
   "scripts": {
     "dev": "next dev -p 3002",
+    "check:copy": "node scripts/check-copy-consistency.cjs",
+    "prebuild": "node scripts/check-copy-consistency.cjs",
     "build": "next build",
     "start": "next start -p 3002",
     "lint": "next lint"
