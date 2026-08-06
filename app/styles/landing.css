@@ -17,7 +17,10 @@
   --proxe-glass: rgba(255, 255, 255, 0.1);
 
   --proxe-font-sans: var(--font-proxe-sans), 'Inter', system-ui, -apple-system, sans-serif;
-  --proxe-font-heading: var(--font-proxe-heading), 'Instrument Serif', Georgia, serif;
+  /* Hubot Sans (Fontsource variable, loaded in layout.tsx) — bold sans
+     headlines. Instrument Serif stays available via --font-proxe-heading for
+     any element that opts back into the serif accent. */
+  --proxe-font-heading: 'Hubot Sans Variable', var(--font-proxe-sans), 'Inter', system-ui, sans-serif;
   /* Back-compat alias: older rules still reference --proxe-font-serif */
   --proxe-font-serif: var(--proxe-font-heading);
   --proxe-font-mono: var(--font-proxe-mono), 'JetBrains Mono', 'SF Mono', Menlo, monospace;
@@ -10801,4 +10804,159 @@ button.pr-cta { padding: 0 22px; }
   .cap-section { padding-top: 48px; padding-bottom: 52px; }
   .faq-section, #faq { padding-top: 44px; padding-bottom: 48px; }
   .book-demo-section, #book-demo { padding-top: 44px; padding-bottom: 32px; }
+}
+
+/* ═══ Hubot Sans headline pass ══════════════════════════════════════
+   The variable font defaults to 400, which reads as body text at headline
+   sizes. Every big section heading gets real weight; sans also tracks
+   tighter than the old serif did. Placed last in the file so it wins the
+   equal-specificity tie against each class's own `font-weight: 400`. */
+.proxe-hero-title, .ph-headline, .proxe-problem-line, .proxe-pillars-h2,
+.proxe-voice-title, .proxe-cc-title, .proxe-footer-cta-title, .hiw-h2,
+.db2-h2, .db-h2, .cd-headline, .proxe-hub-heading, .cap-h2, .cap-hero-title,
+.ind-h2, .pr-h2 {
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+/* ═══ Hero phone capture — the fastest possible conversion ═══════════
+   One field, one tap: phone in, callback promised. Glass pill matching
+   the site's card language; button is solid white so it reads as THE
+   action on the page. */
+.proxe-hero-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 440px;
+  margin: 28px auto 0;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(10, 20, 60, 0.25);
+}
+.proxe-root .proxe-hero-phone-input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 8px 0 18px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: #ffffff;
+  font-family: var(--proxe-font-sans);
+  font-size: 16px; /* ≥16px so iOS Safari doesn't zoom the viewport on focus */
+  letter-spacing: 0.01em;
+}
+.proxe-root .proxe-hero-phone-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+.proxe-root .proxe-hero-phone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: var(--proxe-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 0;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.proxe-root .proxe-hero-phone-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.proxe-root .proxe-hero-phone-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+  transform: none;
+}
+.proxe-hero-phone-hint {
+  margin: 10px auto 0;
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 3px rgba(10, 20, 60, 0.5);
+}
+.proxe-hero-phone-error {
+  margin: 8px auto 0;
+  font-size: 13px;
+  color: #fecaca;
+  text-shadow: 0 1px 3px rgba(10, 20, 60, 0.5);
+}
+.proxe-hero-phone-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 440px;
+  margin: 28px auto 0;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.proxe-hero-phone-done-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.9);
+  color: #052e16;
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .proxe-root .proxe-hero-phone-btn {
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  .proxe-root .proxe-hero-phone-input {
+    padding-left: 14px;
+  }
+}
+
+/* ═══ Mobile mute toggle — quiet chip, not a CTA ═════════════════════
+   The base (desktop) rule above carries `.proxe-root` specificity, so the
+   earlier 640px override without the prefix never actually applied — the
+   pill shipped at full desktop size on phones. This block outweighs it. */
+@media (max-width: 640px) {
+  .proxe-root .proxe-hero-video-mute {
+    right: 10px;
+    bottom: 10px;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.55);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .proxe-root .proxe-hero-video-mute span {
+    display: none;
+  }
+  .proxe-root .proxe-hero-video-mute svg {
+    width: 14px;
+    height: 14px;
+  }
 }

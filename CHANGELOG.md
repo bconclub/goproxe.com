@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-08-06 14:15 IST · feat(hero): v0.1.5 — phone quick-capture, sound-on video, Hubot Sans headings
+
+- Hero phone capture: one `tel` field + "Get a callback" pill under the hero
+  subtitle — the lowest-friction conversion on the page. Fires the same funnel
+  events as the deploy form (`lead_form_start` → `form_completed`/Meta `Lead`,
+  source `hero_phone`), lands in the same `/api/lead` sink (Supabase
+  `all_leads` upserts by phone, sheet backup), and pre-fills the chat widget
+  via localStorage (merged, never clobbers a stored name/email).
+- Demo video now starts with sound ON. If the browser blocks unmuted autoplay,
+  a 1.5s fallback drops to muted playback (silent playing beats a frozen
+  frame); `timeupdate` subscription is the playing signal so an
+  already-playing video is never wrongly muted, and scrolling away cancels the
+  pending fallback.
+- Headings switched from Instrument Serif to Hubot Sans (Fontsource variable,
+  weight 650, tighter tracking) across every big section headline.
+- Mobile mute toggle shrunk to a 30px translucent chip — the old 640px
+  override lacked the `.proxe-root` specificity prefix, so phones were
+  getting the full 88×40 desktop pill.
+- User-facing: hero gains a phone→callback field; demo video plays with sound
+  where the browser allows; all headlines render in a bold sans.
+- (pending push)
+
 ## 2026-08-03 22:10 IST · feat(checkout): v0.1.4 — lean Dodo checkout, full prefill, INR mandate ceiling
 
 The hosted Dodo page opened with the order summary expanded and every optional

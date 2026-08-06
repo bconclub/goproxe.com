@@ -11,6 +11,7 @@ import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
+import HeroPhoneCapture from './shared/HeroPhoneCapture';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { track, initScrollDepthTracking } from '../lib/analytics';
 import { captureAttribution } from '../lib/attribution';
@@ -1179,7 +1180,13 @@ export default function ProxeLanding() {
   const videoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [videoMuted, setVideoMuted] = useState(true);
+  // Start with sound ON — the fallback effect below drops to muted playback
+  // if the browser's autoplay policy blocks unmuted audio (Chrome/Safari do
+  // without a prior tap). Once the user scrolls past, the observer pauses it
+  // anyway, so sound-on-load is low-risk.
+  const [videoMuted, setVideoMuted] = useState(false);
+  const videoPlayingRef = useRef(false);
+  const videoMutedRef = useRef(false);
   const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -1203,25 +1210,79 @@ export default function ProxeLanding() {
     const target = iframe.parentElement;
     if (!target) return;
 
-    const send = (method: 'play' | 'pause') => {
+    const send = (method: string, value?: unknown) => {
       iframe.contentWindow?.postMessage(
-        JSON.stringify({ method }),
+        JSON.stringify(value === undefined ? { method } : { method, value }),
         'https://player.vimeo.com'
       );
+    };
+
+    // Track actual playback state from the player so the unmuted-autoplay
+    // fallback knows whether the browser let the video run with sound.
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== 'https://player.vimeo.com') return;
+      let data: { event?: string } | null = null;
+      try {
+        data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+      } catch {
+        return;
+      }
+      if (data?.event === 'ready') {
+        send('addEventListener', 'play');
+        send('addEventListener', 'pause');
+        // timeupdate is the ground truth: it only ticks during real playback,
+        // and catches the case where playback began before our 'play'
+        // subscription landed (fast autoplay) — without it the fallback
+        // would wrongly mute a video already running with sound.
+        send('addEventListener', 'timeupdate');
+      } else if (data?.event === 'play' || data?.event === 'timeupdate') {
+        videoPlayingRef.current = true;
+      } else if (data?.event === 'pause') {
+        videoPlayingRef.current = false;
+      }
+    };
+    window.addEventListener('message', onMessage);
+
+    // Ask for playback, then verify it actually started. If the browser
+    // blocked unmuted autoplay, mute and retry — a silent playing video
+    // beats a frozen frame. The visible Unmute pill restores sound.
+    let fallbackTimer: number | undefined;
+    const playWithFallback = () => {
+      send('play');
+      if (videoMutedRef.current) return; // already muted — play always allowed
+      window.clearTimeout(fallbackTimer);
+      fallbackTimer = window.setTimeout(() => {
+        if (!videoPlayingRef.current && !videoMutedRef.current) {
+          send('setMuted', true);
+          videoMutedRef.current = true;
+          setVideoMuted(true);
+          send('play');
+        }
+      }, 1500);
     };
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) send('play');
-          else send('pause');
+          if (entry.isIntersecting) {
+            playWithFallback();
+          } else {
+            // Scrolled away — cancel any pending fallback so it can't mute a
+            // video the visitor deliberately left with sound on.
+            window.clearTimeout(fallbackTimer);
+            send('pause');
+          }
         });
       },
       { threshold: 0.5 }
     );
 
     io.observe(target);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      window.removeEventListener('message', onMessage);
+      window.clearTimeout(fallbackTimer);
+    };
   }, []);
 
   // 3D landing animation: tilt the video frame until it scrolls into view.
@@ -1261,6 +1322,7 @@ export default function ProxeLanding() {
       );
     }
     setVideoMuted(nextMuted);
+    videoMutedRef.current = nextMuted;
     if (!nextMuted) track('video_unmute', { video: 'hero_demo' });
   };
 
@@ -1330,6 +1392,8 @@ export default function ProxeLanding() {
           <p className="proxe-hero-subtitle">
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and pushes the ready-to-buy ones to you.
           </p>
+          {/* Quick capture — phone in, callback out. The primary hero action. */}
+          <HeroPhoneCapture />
           <div className="proxe-hero-ctas">
             <a href="#voice" className="proxe-hero-big-cta" onClick={() => track('cta_click', { location: 'hero_whats_proxe' })}>
               What&rsquo;s PROXe?
@@ -1350,7 +1414,7 @@ export default function ProxeLanding() {
           <div className="proxe-hero-video-inner">
             <iframe
               ref={videoIframeRef}
-              src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
+              src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=0&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
               title="PROXe demo"
               allow="autoplay; fullscreen; picture-in-picture"
               frameBorder={0}

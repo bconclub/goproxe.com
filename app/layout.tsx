@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import '@fontsource-variable/hubot-sans';
 import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
