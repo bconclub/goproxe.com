@@ -6,11 +6,6 @@ on:
 
 # Never run two deploys against the VPS at once — a newer push cancels an
 # in-progress deploy so they don't race on `reset --hard` / `rm -rf .next` / build.
-#
-# Caveat worth knowing: cancelling the WORKFLOW does not kill the command already
-# running on the VPS over SSH. The remote build keeps going, so a fast follow-up
-# push can reach `git reset --hard` while the previous build is mid-flight. The
-# flock in the script below is what actually prevents that.
 concurrency:
   group: deploy-vps
   cancel-in-progress: true
@@ -19,32 +14,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (for the deploy script)
-        uses: actions/checkout@v4
-
-      # Roughly 3 of every 7 deploys were failing at 38-45s, where a real build
-      # takes 91-96s — i.e. dying before `npm run build` ever started. VPS
-      # metrics rule out the server: CPU 4-14%, 2.7GB of 8GB RAM, 43% disk free,
-      # 97 days uptime. That leaves the SSH connection itself, which
-      # appleboy/ssh-action does not retry. One retry turns a transient
-      # connection failure into a slower deploy instead of a failed one.
       - name: Deploy via SSH
-        id: deploy
-        continue-on-error: true
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          command_timeout: 20m
-          script_path: scripts/vps-deploy.sh
-
-      - name: Retry once if the connection dropped
-        if: steps.deploy.outcome == 'failure'
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          command_timeout: 20m
-          script_path: scripts/vps-deploy.sh
+          script: |
+            set -e
+            cd /var/www/goproxe
+            # Force-sync to origin/main. reset --hard never fails on a dirty tree
+            # or a stray untracked file, and it leaves untracked .env.local intact.
+            git fetch origin
+            git reset --hard origin/main
+            npm ci --production=false
+            rm -rf .next
+            export NODE_OPTIONS="--max-old-space-size=2048"
+            npm run build
+            pm2 restart goproxe || pm2 start npm --name goproxe -- start
+            pm2 save
