@@ -44,7 +44,7 @@ export default function HeroPhoneCapture() {
     const trimmed = phone.trim();
     const digits = trimmed.replace(/\D/g, '');
     if (digits.length < 8 || digits.length > 15) {
-      setError('That number looks incomplete — check and try again.');
+      setError('That number looks incomplete. Check and try again.');
       return;
     }
     setStatus('submitting');
@@ -72,7 +72,7 @@ export default function HeroPhoneCapture() {
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </span>
-        Got it — expect a call back from PROXe shortly.
+        Got it. PROXe will call you right now.
       </div>
     );
   }
@@ -102,10 +102,11 @@ export default function HeroPhoneCapture() {
       {error ? (
         <p className="proxe-hero-phone-error" role="alert">{error}</p>
       ) : (
-        {/* "Within minutes" was a promise nothing on our side keeps: these
-            leads land in Supabase and no dialler picks them up. Promising a
-            response time we miss is worse than a modest one we hit. */}
-        <p className="proxe-hero-phone-hint">We call back during business hours. No spam, ever.</p>
+        {/* Reads "right away" because the intent is that the PROXe voice agent
+            dials the moment this submits. That dialler is NOT wired yet (the
+            lead lands in Supabase and nothing calls it), so until it is, this
+            line and the success copy are a promise the product does not keep. */}
+        <p className="proxe-hero-phone-hint">PROXe calls you right away. No spam, ever.</p>
       )}
     </>
   );
