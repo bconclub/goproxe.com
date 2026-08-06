@@ -476,7 +476,11 @@ function ShieldVis() {
         <path d="M110 91 V99" stroke="#2e1065" strokeWidth="3" strokeLinecap="round" />
       </svg>
       <div className="cap-security-badges" aria-hidden="true">
-        <span><FiCheckCircle size={13} /> SOC 2</span>
+        {/* "SOC 2 aligned", not "SOC 2". A bare checkmark next to SOC 2 reads
+            as a completed audit and certification we do not hold. Aligned is
+            the honest claim: we build to the controls. Change this the day the
+            report is actually issued, not before. */}
+        <span><FiCheckCircle size={13} /> SOC 2 aligned</span>
         <span><FiLock size={13} /> E2E</span>
         <span><FiZap size={13} /> 99.9%</span>
       </div>

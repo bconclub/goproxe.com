@@ -1499,7 +1499,7 @@ export default function ProxeLanding() {
             />
             <FaqItem
               question="Is my data secure?"
-              answer="Yes. All customer data is encrypted in transit and at rest. We are GDPR and CCPA compliant. Scale includes a SOC 2 and GDPR compliance review and private cloud deployment options."
+              answer="Yes. All customer data is encrypted in transit and at rest. We are GDPR and CCPA compliant, and built to SOC 2 controls, though we are not yet SOC 2 certified. Scale includes a compliance review and private cloud deployment options."
             />
             <FaqItem
               question="Can my team take over conversations?"

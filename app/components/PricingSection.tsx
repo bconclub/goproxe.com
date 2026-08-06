@@ -11,6 +11,7 @@ import {
   FiArrowRight,
   FiUsers,
   FiAward,
+  FiRepeat,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
@@ -48,7 +49,7 @@ const SCALE_FEATURES = [
   'Volume-based pricing',
   'Priority support & onboarding',
   'Custom integrations & API access',
-  'SOC 2 & GDPR compliance review',
+  'SOC 2 aligned & GDPR compliance review',
 ];
 
 /** Currency-specific price strings. INR is the home-market default. */
@@ -272,6 +273,18 @@ export default function PricingSection() {
             <div className="pr-card-addon">
               <span className="pr-card-addon-ico"><FiUsers size={13} /></span>
               <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
+            </div>
+
+            {/* How billing actually behaves, stated before the card is entered
+                rather than discovered on an invoice. The 500 is the same number
+                the feature list and the FAQ use; the FAQ answer for going over
+                says exactly this. */}
+            <div className="pr-card-addon">
+              <span className="pr-card-addon-ico"><FiRepeat size={13} /></span>
+              <span>
+                <strong>Billed monthly, cancel anytime.</strong> Past 500 leads nothing
+                switches off, we true up at renewal.
+              </span>
             </div>
 
             <button
