@@ -1,6 +1,6 @@
 {
   "name": "goproxe",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "description": "PROXe — The AI Customer Acquisition System (goproxe.com)",
   "scripts": {

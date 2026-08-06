@@ -10930,50 +10930,38 @@ button.pr-cta { padding: 0 22px; }
 /* The first digit collapses the pill into a circle. A ring around it fills
    digit by digit (driven inline via stroke-dashoffset, full at 10) — entering
    a number literally charges the call button. */
-/* A pill, not a bare circle. The circle dropped the button's label the moment a
-   number was typed, so the primary action became an unlabelled 46px dot at
-   exactly the point it mattered. Auto width keeps the fill-ring and the icon
-   and gives the words somewhere to live. */
+/* Icon-only circle, with the ring filling as digits are typed. A labelled pill
+   was tried here and was worse: the words collided with the ring and the whole
+   control read as broken. The ring is the progress cue; the press feedback
+   belongs in the press, not in a caption. */
 .proxe-root .proxe-hero-phone-btn--call {
   position: relative;
-  width: auto;
-  min-width: 46px;
+  width: 46px;
   height: 46px;
-  padding: 0 18px 0 46px; /* left inset clears the ring + icon */
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  padding: 0;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.18s ease, box-shadow 0.18s ease;
 }
-/* Ready to dial: stop looking like a disabled chip and start looking like the
-   button you are meant to press. */
+/* Ready to dial: reads as the thing to press, without a word of explanation. */
 .proxe-root .proxe-hero-phone-btn--call.proxe-hero-phone-btn--ready {
   background: #ffffff;
   color: #2e1065;
-  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.28);
+  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.3);
 }
-.proxe-hero-phone-btn-label {
-  font-size: 14px;
-  font-weight: 650;
-  white-space: nowrap;
-  letter-spacing: 0.01em;
+/* Pressing it should feel like something happened. Nothing acknowledged the tap
+   before, so a slow API call read as a dead button. */
+.proxe-root .proxe-hero-phone-btn--call:active {
+  transform: scale(0.9);
 }
 .proxe-hero-phone-btn-ringtrack {
   position: absolute;
-  left: -1px;
-  top: -1px;
+  inset: -1px;
   width: 48px;
   height: 48px;
   pointer-events: none;
-}
-/* Icon sits inside the ring at the pill's left end. */
-.proxe-root .proxe-hero-phone-btn--call > svg:not(.proxe-hero-phone-btn-ringtrack) {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
 }
 .proxe-hero-phone-btn-ringfill {
   transition: stroke-dashoffset 0.3s cubic-bezier(0.22, 1, 0.36, 1);
