@@ -1384,7 +1384,7 @@ export default function ProxeLanding() {
       {/* ===== 2. Hero ===== */}
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
-          <div className="proxe-hero-eyebrow">AI Customer Acquisition</div>
+          <div className="proxe-hero-eyebrow">AI Customer System</div>
           <h1 className="proxe-hero-title">
             Never Miss a Lead
             <br />

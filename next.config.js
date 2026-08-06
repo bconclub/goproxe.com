@@ -3,6 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
+  // Two dev servers (parallel Claude sessions) sharing one .next dir corrupt
+  // each other's webpack chunks. Opt a second server into its own dist dir:
+  //   NEXT_DIST_DIR=.next-alt npx next dev -p 3003
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+
   images: {
     remotePatterns: [
       {

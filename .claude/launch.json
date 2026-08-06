@@ -10,8 +10,11 @@
     },
     {
       "name": "goproxe-dev-alt",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev", "-p", "3003"],
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set NEXT_DIST_DIR=.next-alt&&npx next dev -p 3003"
+      ],
       "port": 3003,
       "autoPort": false
     },

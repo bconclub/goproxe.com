@@ -404,7 +404,7 @@ body:has(.proxe-root) {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
   font-weight: 400;
-  font-size: clamp(52px, 12.5vw, 130px);
+  font-size: clamp(56px, 13.6vw, 140px);
   line-height: 0.98;
   letter-spacing: 0.015em;
   margin: 0;
@@ -10909,6 +10909,23 @@ button.pr-cta { padding: 0 22px; }
   opacity: 0.7;
   cursor: default;
   transform: none;
+}
+/* Morphs into the call state the moment a number is being typed — brand
+   gradient, phone icon, soft breathing glow that invites the tap. */
+.proxe-root .proxe-hero-phone-btn--call {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: #ffffff;
+  animation: proxeCallBreathe 2.4s ease-in-out infinite;
+}
+.proxe-root .proxe-hero-phone-btn--call:hover {
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55);
+}
+@keyframes proxeCallBreathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.55); }
+  50%      { box-shadow: 0 0 0 9px rgba(139, 92, 246, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proxe-root .proxe-hero-phone-btn--call { animation: none; }
 }
 .proxe-hero-phone-hint {
   margin: 10px auto 0;

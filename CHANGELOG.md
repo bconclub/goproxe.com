@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-06 16:05 IST · feat(hero): v0.1.10 — bigger headline, Call-me morph button, tighter copy
+
+- Hero headline scaled up (`clamp(56px, 13.6vw, 140px)`) after several rounds
+  of user sizing; subtitle down to 15.5px.
+- Eyebrow now reads "AI Customer System" (was "AI Customer Acquisition").
+- "What's PROXe?" CTA removed from the hero — the phone capture is the one action.
+- Phone-capture hint reads just "PROXe calls you right away." (no-spam line cut).
+- User-facing: the moment a digit is typed, "Get a callback" morphs into a
+  purple-gradient "Call me" button with a phone icon and a calm breathing glow.
+- Dev-only: second dev server can run beside another session's —
+  `NEXT_DIST_DIR=.next-alt` distDir opt-in in next.config.js, `goproxe-dev-alt`
+  launch config on port 3003, `.next-alt/` gitignored.
+- `(b58bd40)`
+
 ## 2026-08-06 14:15 IST · feat(hero): v0.1.5 — phone quick-capture, sound-on video, Hubot Sans headings
 
 - Hero phone capture: one `tel` field + "Get a callback" pill under the hero
