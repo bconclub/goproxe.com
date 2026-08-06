@@ -99,13 +99,13 @@ export default function HeroPhoneCapture() {
           {status === 'submitting' ? 'Sending…' : 'Get a callback'}
         </button>
       </form>
+      {/* Hint reads "right away" because the intent is that the PROXe voice
+          agent dials the moment this submits. That dialler is NOT wired yet
+          (the lead lands in Supabase and nothing calls it), so until it is,
+          this line and the success copy promise something we do not do. */}
       {error ? (
         <p className="proxe-hero-phone-error" role="alert">{error}</p>
       ) : (
-        {/* Reads "right away" because the intent is that the PROXe voice agent
-            dials the moment this submits. That dialler is NOT wired yet (the
-            lead lands in Supabase and nothing calls it), so until it is, this
-            line and the success copy are a promise the product does not keep. */}
         <p className="proxe-hero-phone-hint">PROXe calls you right away. No spam, ever.</p>
       )}
     </>

@@ -10505,6 +10505,20 @@ button.pr-cta { padding: 0 22px; }
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   z-index: 3;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Seats-taken count, riding inside the founding badge. Set apart with a divider
+   and a lighter weight so the badge still reads as a label first and a counter
+   second — it is real scarcity (4 actual businesses), not a ticking gimmick. */
+.pr-card-popular-count {
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* ── Marquee highlight box — the headline feature of each tier ── */

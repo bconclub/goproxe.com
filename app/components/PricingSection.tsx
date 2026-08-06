@@ -65,6 +65,12 @@ const PRICES: Record<Market, {
 
 /** How many founding seats the offer is capped at. */
 const FOUNDING_LIMIT = 50;
+/**
+ * Founding seats already taken. Hardcoded on purpose: it is four real
+ * businesses, not a fake urgency ticker, and it should only ever move when a
+ * real one is added. Names deliberately not shown.
+ */
+const FOUNDING_TAKEN = 4;
 
 /** Layout effect on the client, plain effect on the server (no SSR warning). */
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -209,7 +215,10 @@ export default function PricingSection() {
 
           {/* ─── PROXe CORE (the everyday plan) ─── */}
           <article className="pr-card pr-card--popular">
-            <span className="pr-card-popular-badge">FOUNDING MEMBER</span>
+            <span className="pr-card-popular-badge">
+              FOUNDING MEMBER
+              <span className="pr-card-popular-count">{FOUNDING_TAKEN}/{FOUNDING_LIMIT}</span>
+            </span>
             <span className="pr-card-popular-glow" aria-hidden />
             <div className="pr-card-head">
               <div className="pr-card-tier pr-card-tier--popular">PROXe Core</div>
@@ -289,7 +298,7 @@ export default function PricingSection() {
           <article className="pr-card pr-card--enterprise">
             <span className="pr-card-scale-badge">FOR LARGER TEAMS</span>
             <div className="pr-card-head">
-              <div className="pr-card-tier">Scale</div>
+              <div className="pr-card-tier">PROXe Scale</div>
               <div className="pr-card-price pr-card-price--custom">
                 <span className="pr-card-num pr-card-num--custom">Custom</span>
                 <span className="pr-card-mo">volume pricing</span>
