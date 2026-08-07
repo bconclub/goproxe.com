@@ -154,7 +154,7 @@ export default function DashboardSection() {
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/proxe/showcase/dashboard.webp" alt="PROXe Dashboard — live acquisition metrics" />
+            <img src="/proxe/showcase/dashboard.webp" alt="PROXe Dashboard: live acquisition metrics" />
           </div>
         </div>
 
@@ -167,7 +167,7 @@ export default function DashboardSection() {
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/proxe/showcase/leads.webp" alt="PROXe Leads — every lead scored and staged" />
+            <img src="/proxe/showcase/leads.webp" alt="PROXe Leads: every lead scored and staged" />
           </div>
         </div>
 
@@ -180,7 +180,7 @@ export default function DashboardSection() {
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/proxe/showcase/chats.webp" alt="PROXe Inbox — live WhatsApp conversation with booking" />
+            <img src="/proxe/showcase/chats.webp" alt="PROXe Inbox: live WhatsApp conversation with booking" />
           </div>
         </div>
 
@@ -193,7 +193,7 @@ export default function DashboardSection() {
             </div>
           </div>
           <div className="db2-shot">
-            <img src="/proxe/showcase/knowledge.webp" alt="PROXe Knowledge — everything your agent knows, mapped" />
+            <img src="/proxe/showcase/knowledge.webp" alt="PROXe Knowledge: everything your agent knows, mapped" />
           </div>
         </div>
 

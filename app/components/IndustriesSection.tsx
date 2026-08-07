@@ -415,7 +415,7 @@ export default function IndustriesSection() {
               <span className="ind-cta-ico"><FiPlus size={28} /></span>
               <h3 className="ind-cta-title">Your business next?</h3>
               <p className="ind-cta-desc">
-                We train PROXe on your playbook — your offers, objections, and tone.
+                We train PROXe on your playbook: your offers, objections, and tone.
                 If your customers chat, call, or click, we handle it.
               </p>
               <button type="button" onClick={() => openModal('industries')} className="ind-cta-btn">

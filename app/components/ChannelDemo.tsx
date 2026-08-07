@@ -430,7 +430,7 @@ function VoiceDemo({ isActive }: { isActive: boolean }) {
       <div className="cd-voice-title">
         <div className="cd-voice-phone-icon"><FiPhone size={22} /></div>
         <div className="cd-voice-name">PROXe Voice</div>
-        <div className="cd-voice-subtitle">AI Agent — Live Transcript</div>
+        <div className="cd-voice-subtitle">AI Agent · Live Transcript</div>
       </div>
       {/* Transcript */}
       <div className="cd-voice-transcript" ref={bodyRef}>
@@ -732,6 +732,26 @@ const TABS = [
 
 const WA_SUBS = Object.keys(WA);
 
+/**
+ * Bottom timeline for the voice scene.
+ *
+ * The orb is a single small circle in a 640px stage, so the lower half sat
+ * empty and nothing on screen said the carousel was about to move on. This
+ * rises into that dead space, names what's next, fills across the slide
+ * duration and drops back out as the scene changes. Keyed on the channel id by
+ * the caller so every pass restarts the animation from zero.
+ */
+function StageTimeline({ durationMs, paused }: { durationMs: number; paused: boolean }) {
+  const anim = { animationDuration: `${durationMs}ms`, animationPlayState: paused ? 'paused' : 'running' } as const;
+  return (
+    <div className="cd-timeline" style={anim} aria-hidden="true">
+      <span className="cd-timeline-track">
+        <span className="cd-timeline-fill" style={anim} />
+      </span>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════ */
@@ -773,13 +793,12 @@ export default function ChannelDemo() {
     setPaused(false);
   };
 
-  // Voice is the hero of this section: the live orb stays front and center and
-  // the carousel NEVER auto-rotates away from it. Auto-advance only runs while
-  // the visitor is already exploring the other channels (so a wanderer gets the
-  // full tour), and any pass through the wheel parks back on voice. Held while
-  // hovering (paused) or during a live call (voiceActive).
+  // Every channel auto-advances, voice included — parked on the orb the section
+  // read as a dead end, with no sign anything else was coming. Still held while
+  // hovering (paused) and, critically, during a live call (voiceActive): the
+  // carousel must never yank the scene out from under someone mid-conversation.
   useEffect(() => {
-    if (paused || voiceActive || active === 'voice') return;
+    if (paused || voiceActive) return;
     const t = setTimeout(() => {
       const idx = CHANNELS.findIndex(c => c.id === active);
       const next = CHANNELS[(idx + 1) % CHANNELS.length];
@@ -842,8 +861,7 @@ export default function ChannelDemo() {
                       key={`${id}-${Date.now()}`}
                       style={{
                         animationDuration: `${SLIDE_MS}ms`,
-                        // No countdown on voice — the hero never auto-advances.
-                        animationPlayState: (paused || voiceActive || id === 'voice') ? 'paused' : 'running',
+                        animationPlayState: (paused || voiceActive) ? 'paused' : 'running',
                       }}
                     />
                   )}
@@ -863,6 +881,11 @@ export default function ChannelDemo() {
               <div className="cd-voice-stage" key="voice">
                 <VapiOrb onActiveChange={setVoiceActive} />
               </div>
+            )}
+            {/* Hidden outright during a live call: nothing is counting down
+                then, so a countdown would be a lie. */}
+            {active === 'voice' && !voiceActive && (
+              <StageTimeline key={`tl-${active}`} durationMs={SLIDE_MS} paused={paused} />
             )}
             {active === 'whatsapp' && (
               <div className="cd-whatsapp-stage" key="whatsapp">

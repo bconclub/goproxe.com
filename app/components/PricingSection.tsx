@@ -11,7 +11,6 @@ import {
   FiArrowRight,
   FiUsers,
   FiAward,
-  FiRepeat,
 } from 'react-icons/fi';
 import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
@@ -235,8 +234,15 @@ export default function PricingSection() {
                 <span className="pr-card-num">{p.symbol}{p.core}</span>
                 <span className="pr-card-mo">/month</span>
               </div>
+              {/* Seat terms belong against the number they modify — down in the
+                  boxed add-on row they read as a late surprise, and the box cost
+                  more height than the sentence was worth. */}
+              <div className="pr-card-seats">
+                <span className="pr-card-seats-ico"><FiUsers size={12} /></span>
+                <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
+              </div>
               <div className="pr-card-sub">
-                Everything you need to capture and convert — live on every channel.
+                Everything you need to capture and convert, live on every channel.
               </div>
             </div>
 
@@ -269,23 +275,6 @@ export default function PricingSection() {
                 </li>
               ))}
             </ul>
-
-            <div className="pr-card-addon">
-              <span className="pr-card-addon-ico"><FiUsers size={13} /></span>
-              <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
-            </div>
-
-            {/* How billing actually behaves, stated before the card is entered
-                rather than discovered on an invoice. The 500 is the same number
-                the feature list and the FAQ use; the FAQ answer for going over
-                says exactly this. */}
-            <div className="pr-card-addon">
-              <span className="pr-card-addon-ico"><FiRepeat size={13} /></span>
-              <span>
-                <strong>Billed monthly, cancel anytime.</strong> Past 500 leads nothing
-                switches off, we true up at renewal.
-              </span>
-            </div>
 
             <button
               type="button"

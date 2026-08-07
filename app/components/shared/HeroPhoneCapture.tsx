@@ -16,7 +16,7 @@ import { detectMarket } from '../../lib/market';
  * form (`lead_form_start` → `form_completed`/Meta `Lead`) with
  * source: 'hero_phone' so ad platforms can optimise toward it from day one.
  *
- * The button is the interaction: an empty field shows a "Talk to PROXe" pill;
+ * The button is the interaction: an empty field shows a "Get a call back" pill;
  * the first digit collapses it into a circle whose ring fills digit by digit
  * (full at 10 — a complete local number). A full ring lights the brand
  * gradient and breathes; the tap POSTs /api/callback, which has the ElevenLabs
@@ -109,7 +109,10 @@ export default function HeroPhoneCapture() {
     // panel steps aside for a next action, because by then they are on the
     // call and the capture field has nothing left to say.
     return (
-      <div className="proxe-hero-phone-done" role="status">
+      <div
+        className={'proxe-hero-phone-done' + (callSettled ? ' proxe-hero-phone-done--next' : '')}
+        role="status"
+      >
         {!callSettled ? (
           <>
             <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
@@ -163,7 +166,7 @@ export default function HeroPhoneCapture() {
           type="submit"
           className={btnClass}
           disabled={status === 'submitting'}
-          aria-label={typing ? 'Call me now' : 'Talk to PROXe'}
+          aria-label={typing ? 'Call me now' : 'Get a call back'}
         >
           {typing ? (
             <>
@@ -190,7 +193,7 @@ export default function HeroPhoneCapture() {
               </svg>
             </>
           ) : (
-            'Talk to PROXe'
+            'Get a call back'
           )}
         </button>
       </form>

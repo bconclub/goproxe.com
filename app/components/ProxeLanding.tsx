@@ -1403,7 +1403,15 @@ export default function ProxeLanding() {
               line is now its own non-breaking block, so the break lands where
               it is written or not at all. */}
           <h1 className="proxe-hero-title">
-            <span className="proxe-hero-line">Never Miss a Lead</span>
+            {/* Split into segments so the mobile break is chosen, not left to
+                the browser. Inline on desktop (renders as one line, exactly as
+                before); block on mobile, which gives "Never Miss / a Lead /
+                Ever Again." instead of letting natural wrapping strand "Lead"
+                alone on a line. */}
+            <span className="proxe-hero-line">
+              <span className="proxe-hero-seg">Never Miss</span>{' '}
+              <span className="proxe-hero-seg">a Lead</span>
+            </span>
             <span className="proxe-hero-line">Ever Again.</span>
           </h1>
           <p className="proxe-hero-subtitle">
@@ -1553,7 +1561,7 @@ export default function ProxeLanding() {
               <span className="proxe-cc-title-grad">Start closing them.</span>
             </h2>
             <p className="proxe-cc-sub">
-              PROXe finds, remembers, and converts — across every channel.<br />
+              PROXe finds, remembers, and converts across every channel.<br />
               Your always-on revenue engine.
             </p>
 
@@ -1632,7 +1640,7 @@ export default function ProxeLanding() {
                   />
                   <button type="submit" className="pf-news-btn">Subscribe</button>
                 </div>
-                <div className="pf-news-ok">Thanks — you&rsquo;re on the list ✓</div>
+                <div className="pf-news-ok">Thanks, you&rsquo;re on the list ✓</div>
               </form>
             </div>
 

@@ -432,6 +432,30 @@ body:has(.proxe-root) {
     0 1px 2px rgba(10, 20, 60, 0.35);
 }
 
+/* Mobile only - desktop above is untouched.
+   Measured at 375px: the headline was 34.5px with the widest line ("Never Miss
+   a Lead") spanning 294px inside a 294px box. Zero headroom. Two unbreakable
+   lines are already as large as they can possibly be on a phone, so no clamp
+   change alone can grow this by even one pixel.
+   The width that IS available is vertical. Dropping `nowrap` here lets the
+   long line break, which takes the binding constraint from 8.51em down to
+   ~5.46em and roughly doubles the size the type can reach.
+   Left to natural wrapping the browser chose "Never Miss a / Lead / Ever
+   Again.", stranding "Lead" - the exact thing nowrap was added to prevent. So
+   the segments break on our terms instead: .proxe-hero-seg is inline on desktop
+   (one line, unchanged) and block here. */
+@media (max-width: 1023px) {
+  .proxe-hero-seg { display: block; }
+  .proxe-hero-title {
+    /* 14vw. Above this the binding line stops being "Never Miss" and becomes
+       "Ever Again.", which lands flush against the box edge - no overflow, but
+       no margin either, and a fallback font would push it over. */
+    font-size: clamp(38px, 14vw, 72px);
+    line-height: 1.02;
+  }
+}
+
+
 /* Sub-headline, sized on a modular scale rather than by eye.
    The heading runs to 140px and this was 15.5px: a ratio of ~7.6 to 1 in a
    single step, so the eye jumped from billboard to fine print with nothing in
@@ -448,12 +472,22 @@ body:has(.proxe-root) {
      letter. 580px lands at ~52 real characters, which is the range centred text
      actually reads well in. */
   max-width: 580px;
-  color: rgba(255, 255, 255, 0.92);
-  font-family: var(--font-proxe-heading), "Instrument Serif", Georgia, serif;
-  font-size: clamp(18px, 1.65vw, 26px);
-  line-height: 1.5;
+  /* Sans, not Instrument Serif. Instrument Serif is a DISPLAY face - it is
+     drawn to be set at 40px and up, where its thin strokes and high contrast
+     read as elegance. At ~21px those same strokes just go spindly, and the line
+     that carries the actual argument ended up looking like decoration.
+     This resolves to Inter - the site's text face - against Hubot Sans in the
+     headline. That is the pairing done the usual way round: a display face
+     carrying the 140px line, a face actually drawn for reading carrying the
+     20px one. Hierarchy then comes from size, weight and value (650 -> 400,
+     full white -> 72%) rather than from a third typeface. */
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--proxe-font-sans);
+  font-weight: 400;
+  font-size: clamp(17px, 1.55vw, 22px);
+  line-height: 1.6;
   letter-spacing: 0.005em;
-  text-shadow: 0 1px 4px rgba(10, 20, 60, 0.5);
+  text-shadow: 0 1px 4px rgba(10, 20, 60, 0.45);
 }
 
 /* ===== Channel coverflow — auto-rotating carousel =========
@@ -1288,9 +1322,12 @@ body:has(.proxe-root) {
   100% { transform: scale(1.5);  opacity: 0; }
 }
 .vc-name {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 22px; font-weight: 400;
-  letter-spacing: 0.015em;
+  /* Was Instrument Serif. Same problem as the hero sub had: a display serif
+     set at 22px goes spindly, and it was the odd face out on a page that is
+     otherwise Hubot + Inter. */
+  font-family: var(--proxe-font-heading);
+  font-size: 22px; font-weight: 600;
+  letter-spacing: 0.005em;
   color: #fff;
 }
 .vc-sub {
@@ -1362,9 +1399,9 @@ body:has(.proxe-root) {
 .web-brand { display: flex; align-items: center; gap: 10px; }
 .web-brand-text { display: flex; flex-direction: column; }
 .web-name {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 18px; font-weight: 400;
-  letter-spacing: 0.015em;
+  font-family: var(--proxe-font-heading);
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 0.005em;
   line-height: 1;
 }
 .web-status {
@@ -4438,9 +4475,9 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 
 .hiw-card {
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.6);
   overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 10px 40px rgba(23, 12, 60, 0.28), inset 0 1px 0 rgba(255,255,255,0.9);
   display: flex;
   flex-direction: column-reverse;
   min-height: 520px;
@@ -4492,10 +4529,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-card-title {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
+  /* Card is white now; ink has to follow. */
   /* Mobile 24px, desktop max 28px (was 36px — felt too big) */
   font-size: clamp(24px, 2.0vw, 28px);
   font-weight: 700;
-  color: #ffffff;
+  color: #150c30;
   margin: 0;
   line-height: 1.15;
   /* Loosened — was -0.02em which felt cramped on long titles like
@@ -4505,7 +4543,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 
 .hiw-card-desc {
   font-size: 15px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(23, 12, 60, 0.62);
   margin: 0;
   line-height: 1.7;
   max-width: 400px;
@@ -4515,8 +4553,12 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
        the colored card gradient fades inside and the animation content reads cleanly ── */
 .hiw-card-vis-wrap {
   position: relative;
-  background: linear-gradient(180deg, rgba(8,6,24,0.85) 0%, rgba(12,9,32,0.92) 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  /* Lifted out of near-black (was rgba(8,6,24,.85) → rgba(12,9,32,.92)) into
+     the page's own violet, and made translucent enough that the background
+     glow reads through. White text and the tinted rows still clear contrast
+     at this value; going lighter starts costing legibility. */
+  background: linear-gradient(180deg, #ffffff 0%, #f4f1fb 100%);
+  border-bottom: 1px solid rgba(23, 12, 60, 0.08);
   overflow: hidden;
   flex-shrink: 0;
   height: 360px;
@@ -4539,7 +4581,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-dotgrid {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(23, 12, 60, 0.13) 1px, transparent 1px);
   background-size: 18px 18px;
   pointer-events: none;
 }
@@ -4576,7 +4618,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-pill-txt {
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(23, 12, 60, 0.92);
   flex: 1;
   letter-spacing: -0.005em;
 }
@@ -4598,8 +4640,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-mem-lead {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
-  background: rgba(255,255,255,0.18);
+  color: #150c30;
+  background: rgba(23, 12, 60, 0.07);
   border-radius: 8px;
   padding: 4px 12px;
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -4629,8 +4671,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   gap: 10px;
   background:
     linear-gradient(135deg,
-      color-mix(in srgb, var(--accent) 28%, rgba(15, 10, 38, 0.5)),
-      color-mix(in srgb, var(--accent) 12%, rgba(15, 10, 38, 0.55)));
+      color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.96)),
+      color-mix(in srgb, var(--accent) 7%, rgba(255, 255, 255, 0.98)));
   border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 10px;
   padding: 10px 13px;
@@ -4638,14 +4680,13 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
-    0 2px 8px color-mix(in srgb, var(--accent) 12%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 2px 8px color-mix(in srgb, var(--accent) 14%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: opacity 0.4s ease, transform 0.4s ease, background 0.5s ease, box-shadow 0.5s ease;
 }
-/* Row text needs to read on the new tinted background instead of on white */
-.hiw-mem-row .hiw-mem-day,
-.hiw-mem-row .hiw-mem-lbl { color: #fff; }
-.hiw-mem-row .hiw-mem-day { color: rgba(255, 255, 255, 0.65); }
+/* Rows are light again, so the ink goes back to dark. */
+.hiw-mem-row .hiw-mem-lbl { color: #111827; }
+.hiw-mem-row .hiw-mem-day { color: #6b7280; }
 
 
 /* .hiw-mem-vline removed — user didn't want the connector line.
@@ -4684,7 +4725,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-mem-foot {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(255,255,255,0.9);
+  color: rgba(23, 12, 60, 0.75);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-top: 4px;
@@ -4716,7 +4757,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-score-lbl {
   font-size: 10px;
   font-weight: 700;
-  color: rgba(255,255,255,0.7);
+  color: rgba(23, 12, 60, 0.7);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -4731,7 +4772,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-score-bar-track {
   flex: 1;
   height: 6px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(23, 12, 60, 0.12);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -4745,7 +4786,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-score-num {
   font-size: 11px;
   font-weight: 800;
-  color: #fff;
+  color: #150c30;
   min-width: 20px;
   text-align: right;
 }
@@ -4918,10 +4959,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 }
 
 .hiw-react-bub--proxe {
-  background: rgba(255,255,255,0.92);
+  background: #ffffff;
   color: #111827;
+  border: 1px solid rgba(23, 12, 60, 0.10);
   border-bottom-left-radius: 3px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 5px rgba(23, 12, 60, 0.10);
 }
 
 .hiw-react-bub--lead {
@@ -4940,7 +4982,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 
 .hiw-react-meta {
   font-size: 9.5px;
-  color: rgba(255,255,255,0.38);
+  color: rgba(23, 12, 60, 0.45);
   margin-left: 2px;
 }
 
@@ -4950,10 +4992,10 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   flex-wrap: wrap;
   gap: 5px;
   font-size: 9.5px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(23, 12, 60, 0.5);
   transition: opacity 0.4s ease, transform 0.4s ease;
   padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(23, 12, 60, 0.1);
   margin-top: 2px;
 }
 
@@ -5985,8 +6027,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 /* ═══════════════════════════════════════════════════════════════
    CHANNEL DEMO SECTION
 ═══════════════════════════════════════════════════════════════ */
+/* Tightened from 100/110. The stage is a fixed 640px, so with the old padding
+   plus a 60px sub margin the whole block ran past a laptop viewport and the
+   headline scrolled off the top while the scene was centred. */
 .cd-section {
-  padding: 100px 0 110px;
+  padding: 72px 0 88px;
 }
 
 .cd-headline {
@@ -6006,7 +6051,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   color: rgba(255,255,255,0.65);
   text-align: center;
   max-width: 620px;
-  margin: 0 auto 60px;
+  margin: 0 auto 36px;
   line-height: 1.6;
 }
 
@@ -6314,6 +6359,62 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   height: 640px;
   flex-shrink: 0;
   animation: cdFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Voice scene bottom timeline ──
+   The orb occupies a fraction of the 640px stage, so the lower half was dead
+   space with no signal that the carousel was about to advance. Rises out of
+   that space, fills across the slide duration, drops back out on the switch.
+   Centred with left/right + auto margins, NOT translateX(-50%), so the
+   keyframes own `transform` outright. */
+.cd-timeline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  margin: 0 auto;
+  width: min(300px, 76%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  pointer-events: none;
+  animation: cdTimelineInOut linear forwards;
+}
+.cd-timeline-lbl {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+}
+.cd-timeline-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.cd-timeline-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.95), #7c3aed);
+  transform-origin: left center;
+  animation: cdNavProgress linear forwards;
+}
+@keyframes cdTimelineInOut {
+  0%   { opacity: 0; transform: translateY(18px); }
+  8%   { opacity: 1; transform: translateY(0); }
+  88%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(14px); }
+}
+/* Under reduced motion the slide in/out goes — it's decoration — but the fill
+   stays: it's the only thing telling you how long is left, same as the nav
+   countdown next to it. */
+@media (prefers-reduced-motion: reduce) {
+  .cd-timeline { animation: none; opacity: 1; transform: none; }
 }
 
 /* Channel stage — every channel uses this so PhoneFrame is the same size always */
@@ -6691,8 +6792,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(23, 12, 60, 0.04);
+  border: 1px solid rgba(23, 12, 60, 0.08);
   border-radius: 12px;
   width: 100%;
   position: relative;
@@ -6711,8 +6812,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   flex-shrink: 0;
 }
 .hiw-react-chat-meta { flex: 1; min-width: 0; }
-.hiw-react-chat-name { font-size: 12px; font-weight: 700; color: #fff; }
-.hiw-react-chat-sub  { font-size: 10.5px; color: rgba(255, 255, 255, 0.55); margin-top: 1px; }
+.hiw-react-chat-name { font-size: 12px; font-weight: 700; color: #150c30; }
+.hiw-react-chat-sub  { font-size: 10.5px; color: rgba(23, 12, 60, 0.55); margin-top: 1px; }
 .hiw-react-chat-dot {
   width: 8px;
   height: 8px;
@@ -10467,6 +10568,28 @@ button.pr-cta { padding: 0 22px; }
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.78);
 }
+/* Seat terms, sitting directly under the price they qualify. Deliberately NOT
+   .pr-card-addon: that row's dashed box and 24px icon chip were most of the
+   height it occupied, and two of them stacked near the CTA pushed the card
+   long. Here it's a single line - small icon, no box, no border. */
+.pr-card-seats {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: -4px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.62);
+  position: relative;
+  z-index: 1;
+}
+.pr-card-seats strong { color: rgba(255, 255, 255, 0.92); font-weight: 700; }
+.pr-card-seats-ico {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: #c4b5fd;
+}
+
 .pr-card-sub {
   font-size: 13.5px;
   line-height: 1.5;
@@ -11132,15 +11255,41 @@ button.pr-cta { padding: 0 22px; }
 /* Post-call next step. Replaces the "calling you" line once the call is
    underway: a live-looking status that never changes starts reading as stuck,
    and by then the person is talking to PROXe, not looking at a form. */
-.proxe-hero-phone-next {
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
-  padding-bottom: 1px;
-  transition: border-color 0.2s ease, opacity 0.2s ease;
+/* The wrapper keeps its green "on a call" chrome for the status line, but that
+   pill around a second pill left the CTA looking like flat text inside a dead
+   box - it read as not clickable at all. In the next-step state the wrapper
+   steps back to a bare container and the link becomes the button. */
+.proxe-hero-phone-done--next {
+  background: none;
+  border: none;
+  padding: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
-.proxe-hero-phone-next:hover { border-bottom-color: #fff; opacity: 0.9; }
+.proxe-hero-phone-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: 1px solid rgba(196, 181, 253, 0.55);
+  box-shadow: 0 8px 26px rgba(124, 58, 237, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.proxe-hero-phone-next:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 12px 34px rgba(124, 58, 237, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.proxe-hero-phone-next:active { transform: translateY(0); }
+/* The arrow leads the eye out of the hero */
+.proxe-hero-phone-next span { transition: transform 0.2s ease; }
+.proxe-hero-phone-next:hover span { transform: translateX(3px); }
 
 /* ==========================================================================
    Hero phone capture — the pill responds, not just the button
@@ -11152,38 +11301,67 @@ button.pr-cta { padding: 0 22px; }
 
 .proxe-hero-phone { position: relative; isolation: isolate; }
 
-/* Rotating gradient ring. Sits BEHIND the pill via a mask so only the 1px edge
-   shows — a border, not a glow. Brand purples, deliberately not neon: it should
-   read as considered, not as a gaming keyboard. */
+/* Rotating rainbow ring, matching the chat launcher's treatment. Sits BEHIND
+   the pill via a mask so only the 2px edge shows — a border travelling around
+   the shape, not a glow.
+   It runs from page load rather than waiting for the first keystroke: at rest
+   the pill was a flat outline with nothing marking it as the thing to use, and
+   a moving edge is what pulls the eye to it.
+   Violet stays dominant and both ends of the sweep land on brand purple, so it
+   reads as rainbow light passing over a PROXe control rather than as a generic
+   RGB effect. */
 .proxe-hero-phone::before {
   content: '';
   position: absolute;
-  inset: -1.5px;
+  inset: -2px;
   border-radius: 999px;
-  padding: 1.5px;
+  padding: 2px;
   background: conic-gradient(from var(--pill-angle, 0deg),
-    #a78bfa, #c084fc, #7c3aed, #6366f1, #a78bfa);
+    #7c3aed, #a78bfa, #22d3ee, #38bdf8, #6366f1, #c084fc, #f472b6, #a78bfa, #7c3aed);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.35s ease;
+  /* At rest the ring is present but dim and STILL — it reads as an edge, not as
+     something demanding attention. The animation is declared here and paused,
+     so engaging the field resumes it rather than restarting from 0deg. */
+  opacity: 0.28;
+  animation: proxePillSpin 6s linear infinite;
+  animation-play-state: paused;
+  transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 0;
 }
 @property --pill-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 @keyframes proxePillSpin { to { --pill-angle: 360deg; } }
 
-/* Typing: ring appears, turning slowly. */
-.proxe-hero-phone--active::before {
-  opacity: 0.55;
-  animation: proxePillSpin 4s linear infinite;
+/* The moment they click into the field: the border lights and starts turning.
+   :focus-within, not :hover — the trigger is committing to the control, and it
+   covers keyboard and touch as well as a mouse click. */
+.proxe-hero-phone:focus-within::before {
+  opacity: 1;
+  animation-play-state: running;
 }
-/* Complete number: brighter and quicker — this is the moment to press. */
+/* Typing keeps it lit even if focus is lost. */
+.proxe-hero-phone--active::before {
+  opacity: 0.9;
+  animation-play-state: running;
+  animation-duration: 4s;
+}
+/* Complete number: full brightness and quicker — this is the moment to press. */
 .proxe-hero-phone--ready::before {
   opacity: 1;
+  animation-play-state: running;
   animation-duration: 1.8s;
+}
+
+/* A ring that turns is exactly the motion this setting exists to silence. The
+   border still lights on focus, it just doesn't spin. */
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hero-phone::before,
+  .proxe-hero-phone:focus-within::before,
+  .proxe-hero-phone--active::before,
+  .proxe-hero-phone--ready::before { animation: none; }
 }
 .proxe-hero-phone--ready {
   box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);

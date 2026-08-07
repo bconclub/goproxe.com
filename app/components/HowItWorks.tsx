@@ -290,10 +290,14 @@ const ICONS = [
   <svg key="cl" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
 ];
 
+/* White cards on the purple page, rather than dark cards that read as holes
+   punched into it. Each keeps a trace of its channel colour in the wash so the
+   three are still distinguishable, but the base is white and the type on them
+   is dark ink. */
 const CARD_ACCENTS = [
-  { grad: 'linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(14,11,34,0.55) 100%)', icon: 'rgba(167,139,250,1)' },
-  { grad: 'linear-gradient(135deg, rgba(14,165,233,0.14) 0%, rgba(8,20,60,0.55) 100%)',  icon: 'rgba(125,211,252,1)' },
-  { grad: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(6,30,18,0.55)  100%)',   icon: 'rgba(74,222,128,1)'  },
+  { grad: 'linear-gradient(160deg, #ffffff 0%, #f3efff 100%)', icon: 'rgba(124,58,237,1)' },
+  { grad: 'linear-gradient(160deg, #ffffff 0%, #ecf5ff 100%)', icon: 'rgba(2,132,199,1)'  },
+  { grad: 'linear-gradient(160deg, #ffffff 0%, #ecfbf1 100%)', icon: 'rgba(22,163,74,1)'  },
 ];
 
 type CardSpec = { title: string; desc: string; Vis: React.FC<{ on: boolean }> };

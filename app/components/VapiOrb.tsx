@@ -70,6 +70,44 @@ interface VapiOrbProps {
 
 type Session = Awaited<ReturnType<typeof Conversation.startSession>>;
 
+/**
+ * How much louder than unity to play the agent.
+ *
+ * The PROXe voice (txk8uOzZ0iCh0B9mFSRG — the same one that makes the outbound
+ * calls) is mastered far quieter than the voice it replaced. Rendering the same
+ * sentence through both and measuring the raw PCM:
+ *
+ *     old voice   RMS -17.5 dBFS   peak 0.86
+ *     PROXe voice RMS -36.0 dBFS   peak 0.098
+ *
+ * ~18 dB down, i.e. about an eighth of the amplitude. That is the voice's own
+ * mastering, not the transport — it measures the same over WebRTC and over SIP.
+ * `use_speaker_boost` recovers only ~0.5 dB, so it is not the lever.
+ *
+ * There is no output-gain knob on the ElevenLabs side, and `session.setVolume()`
+ * can't help: VoiceConversation clamps it to 0–1 and 1 is already the default.
+ * The underlying output controller's own setVolume does NOT clamp, and it
+ * stores the value on a field that playAudio re-applies to the gain node on
+ * every chunk — so setting it there survives the stream.
+ *
+ * 5.5x puts the measured peak at ~0.64, which restores normal loudness and
+ * still tolerates an utterance ~1.8x hotter than the sample before it would
+ * clip against the destination. Do not raise this without re-measuring: there
+ * is no limiter in the chain to catch an overshoot.
+ */
+const OUTPUT_GAIN = 5.5;
+
+/** Reaches past the public API into the output controller; feature-detected so
+    an SDK rename degrades to normal volume rather than throwing mid-call. */
+function boostOutput(session: Session) {
+  try {
+    const out = (session as unknown as { output?: { setVolume?: (v: number) => void } }).output;
+    if (out && typeof out.setVolume === 'function') out.setVolume(OUTPUT_GAIN);
+  } catch {
+    /* Non-fatal: the call still works, just at stock volume. */
+  }
+}
+
 export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
   const sessionRef = useRef<Session | null>(null);
   const [state, setState] = useState<OrbState>('idle');
@@ -228,6 +266,7 @@ export default function VapiOrb({ onActiveChange }: VapiOrbProps = {}) {
         },
       });
       sessionRef.current = session;
+      boostOutput(session);
     } catch (err) {
       console.error('[VoiceOrb] start failed', err);
       teardown();
