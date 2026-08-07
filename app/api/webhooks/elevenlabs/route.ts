@@ -93,6 +93,20 @@ export async function POST(request: NextRequest) {
       at: t.time_in_call_secs ?? null,
     }))
 
+  // Structured extraction, configured as `data_collection` on the agent. The
+  // transcript alone left every voice lead nameless: the caller says their name
+  // out loud, the agent even confirms the pronunciation, and none of it reached
+  // the record because nothing was reading it back out.
+  // Results arrive as { field: { value, rationale } } — take .value, and treat
+  // the empty string the prompt asks for as "not given" rather than a name.
+  const collected = (d.analysis?.data_collection_results ?? {}) as Record<string, any>
+  const pick = (k: string): string | null => {
+    const raw = collected?.[k]
+    const v = typeof raw === 'object' && raw !== null ? raw.value : raw
+    const s = typeof v === 'string' ? v.trim() : ''
+    return s.length ? s : null
+  }
+
   try {
     await recordCallTranscript({
       phone,
@@ -101,6 +115,9 @@ export async function POST(request: NextRequest) {
       durationSecs: d.metadata?.call_duration_secs ?? null,
       status: d.status ?? null,
       summary: d.analysis?.transcript_summary ?? null,
+      callerName: pick('caller_name'),
+      businessType: pick('business_type'),
+      interest: pick('interest'),
     })
   } catch (err) {
     // Answer 500 so ElevenLabs retries — a lost transcript is not recoverable

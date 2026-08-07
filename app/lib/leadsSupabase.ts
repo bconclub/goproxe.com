@@ -330,6 +330,9 @@ export async function recordCallTranscript(input: {
   durationSecs?: number | null
   status?: string | null
   summary?: string | null
+  callerName?: string | null
+  businessType?: string | null
+  interest?: string | null
 }): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return
@@ -338,12 +341,12 @@ export async function recordCallTranscript(input: {
   if (!normalized && !input.conversationId) return
 
   try {
-    let row: { id: string; unified_context: any } | null = null
+    let row: { id: string; unified_context: any; customer_name?: string | null } | null = null
 
     if (normalized) {
       const { data } = await supabase
         .from('all_leads')
-        .select('id, unified_context')
+        .select('id, unified_context, customer_name')
         .eq('customer_phone_normalized', normalized)
         .eq('brand', BRAND)
         .order('last_interaction_at', { ascending: false })
@@ -356,7 +359,7 @@ export async function recordCallTranscript(input: {
     if (!row && input.conversationId) {
       const { data } = await supabase
         .from('all_leads')
-        .select('id, unified_context')
+        .select('id, unified_context, customer_name')
         .eq('brand', BRAND)
         .contains('unified_context', { voice: { last_conversation_id: input.conversationId } })
         .limit(1)
@@ -373,6 +376,14 @@ export async function recordCallTranscript(input: {
     const prior = (ctx.voice || {}) as Record<string, any>
     const transcripts = Array.isArray(prior.transcripts) ? prior.transcripts : []
 
+    // Only fill a blank name — never overwrite one already on the record. A
+    // name typed into a form is more reliable than one transcribed off a phone
+    // line, and a later call must not downgrade it.
+    const existingName =
+      typeof row.customer_name === 'string' ? row.customer_name.trim() : ''
+    const nameUpdate =
+      !existingName && input.callerName ? { customer_name: input.callerName } : {}
+
     // Same conversation arriving twice (a retry) replaces rather than appends.
     const withoutThis = transcripts.filter(
       (t: any) => t?.conversation_id !== input.conversationId
@@ -381,6 +392,7 @@ export async function recordCallTranscript(input: {
     await supabase
       .from('all_leads')
       .update({
+        ...nameUpdate,
         last_touchpoint: 'voice',
         last_interaction_at: new Date().toISOString(),
         unified_context: {
@@ -389,6 +401,9 @@ export async function recordCallTranscript(input: {
             ...prior,
             last_transcript_at: new Date().toISOString(),
             last_call_summary: input.summary ?? prior.last_call_summary ?? null,
+            caller_name: input.callerName ?? prior.caller_name ?? null,
+            business_type: input.businessType ?? prior.business_type ?? null,
+            interest: input.interest ?? prior.interest ?? null,
             transcripts: [
               ...withoutThis.slice(-4),
               {
