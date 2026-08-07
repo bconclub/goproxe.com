@@ -51,6 +51,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* The hero video is the first thing anyone sees, and it was paying full
+            DNS + TCP + TLS to Vimeo before a single frame could move - several
+            hundred ms of nothing on a cold visit. Warming both the player origin
+            and the CDN that serves the segments means the connection is already
+            open by the time the iframe asks for it. */}
+        <link rel="preconnect" href="https://player.vimeo.com" crossOrigin="" />
+        <link rel="preconnect" href="https://f.vimeocdn.com" crossOrigin="" />
+        <link rel="preconnect" href="https://i.vimeocdn.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://player.vimeo.com" />
+        <link rel="dns-prefetch" href="https://f.vimeocdn.com" />
+      </head>
       <body>
         <AnalyticsScripts />
         {/* The real PROXe agent, live on its own site. */}

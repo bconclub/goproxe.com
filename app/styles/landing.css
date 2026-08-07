@@ -449,7 +449,8 @@ body:has(.proxe-root) {
      actually reads well in. */
   max-width: 580px;
   color: rgba(255, 255, 255, 0.92);
-  font-size: clamp(16px, 1.5vw, 23px);
+  font-family: var(--font-proxe-heading), "Instrument Serif", Georgia, serif;
+  font-size: clamp(18px, 1.65vw, 26px);
   line-height: 1.5;
   letter-spacing: 0.005em;
   text-shadow: 0 1px 4px rgba(10, 20, 60, 0.5);
@@ -9943,15 +9944,10 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
    the viewport it spills normally instead of being clipped. */
 .pr-section {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh; /* mobile: excludes the browser chrome that 100vh ignores */
-  display: flex;
-  align-items: center;
-  padding: 56px 0 60px;
+  padding: 80px 0 100px;
   background: transparent;
   overflow: hidden;
 }
-.pr-section > .proxe-container { width: 100%; }
 
 /* Reveal */
 .pr-label, .pr-h2, .pr-sub, .pr-header-vis, .pr-card, .pr-trust {
@@ -10889,9 +10885,12 @@ button.pr-cta { padding: 0 22px; }
   align-items: center;
   gap: 6px;
   width: 100%;
-  /* Just wide enough for a 12-digit international number + the call circle —
-     a full-width bar read as a form; this reads as one gesture. */
-  max-width: 320px;
+  /* 320px cut the placeholder off: "+91 98765 43210" plus the 144px "Talk to
+     PROXe" button left ~160px of field, about 11 visible characters, so the
+     example number lost its last digit and read as broken. 384px fits the full
+     placeholder and a 13-digit international number, and is still narrow enough
+     to read as one gesture rather than a full-width form bar. */
+  max-width: 384px;
   margin: 28px auto 0;
   padding: 6px;
   border-radius: 999px;
@@ -10918,6 +10917,11 @@ button.pr-cta { padding: 0 22px; }
   color: rgba(255, 255, 255, 0.55);
 }
 .proxe-root .proxe-hero-phone-btn {
+  /* Heading face, so the button belongs to the headline above it rather than
+     looking like default UI chrome dropped into the hero. */
+  font-family: var(--proxe-font-heading);
+  font-weight: 650;
+  letter-spacing: 0.01em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -11120,60 +11124,10 @@ button.pr-cta { padding: 0 22px; }
    only when the viewport is genuinely short, so large screens keep the
    generous spacing they were designed with.
    ========================================================================== */
-@media (max-height: 900px) and (min-width: 861px) {
-  .pr-section { padding: 22px 0 24px; }
-  .pr-header { margin-bottom: 12px; gap: 12px; }
-  .pr-label { margin-bottom: 8px; }
-  .pr-h2 { font-size: clamp(20px, 2.4vw, 30px); margin-bottom: 8px; }
-  .pr-sub { font-size: 12.5px; line-height: 1.45; }
-  .pr-header-vis { min-height: 150px; }
-  .pr-grid { margin-bottom: 12px; gap: 16px; }
 
-  .pr-card { padding: 16px 18px 15px; gap: 7px; border-radius: 16px; }
-  .pr-card-headline { padding: 8px 10px; font-size: 13px; gap: 7px; }
-  .pr-list { gap: 4px; }
-  .pr-list li { font-size: 12px; gap: 8px; }
-  .pr-card-addon { padding: 6px 9px; font-size: 11.5px; }
-  .pr-card-num { font-size: 42px; }
-  .pr-card-sub { font-size: 12.5px; }
-  .pr-trust { font-size: 12px; }
-
-  /* The marquee says "All channels, one memory / WhatsApp - Web - Instagram -
-     Voice - Dashboard" and the channel list directly beneath it names the same
-     six channels with icons. On a short screen that duplication costs ~82px of
-     the height that pushes the Deploy button below the fold. The list is the
-     more informative of the two, so the marquee goes. */
-  .pr-card-marquee { display: none; }
-
-  /* Decorative channel-orbit diagram. Purely ornamental, and it alone sets the
-     header's height on short screens. Hidden, and the header collapses to one
-     column so the copy uses the full width instead of leaving a gap. */
-  .pr-header-vis { display: none; }
-  .pr-header { grid-template-columns: 1fr; }
-  .pr-sub { max-width: 640px; }
-
-  /* Six channels across three columns instead of two: same information, two
-     rows instead of three. */
-  .pr-list--channels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
 
 /* Very short (a 720p laptop with browser chrome) — trim once more. */
-@media (max-height: 760px) and (min-width: 861px) {
-  .pr-section { padding: 14px 0 16px; }
-  .pr-header { margin-bottom: 10px; }
-  .pr-h2 { font-size: clamp(19px, 2.2vw, 26px); margin-bottom: 6px; }
-  .pr-sub { font-size: 12px; }
-  .pr-card { padding: 13px 15px 12px; gap: 5px; }
-  .pr-card-head { gap: 4px; }
-  .pr-list { gap: 3px; }
-  .pr-list li { font-size: 11.5px; gap: 7px; }
-  .pr-card-features-label { font-size: 10.5px; }
-  .pr-card-addon { padding: 5px 8px; font-size: 11px; }
-  .pr-card-num { font-size: 32px; }
-  .pr-card-sub { font-size: 11.5px; }
-  .pr-grid { gap: 12px; margin-bottom: 8px; }
-  .pr-cta { padding-top: 9px; padding-bottom: 9px; }
-}
+
 
 /* Post-call next step. Replaces the "calling you" line once the call is
    underway: a live-looking status that never changes starts reading as stuck,
@@ -11187,3 +11141,132 @@ button.pr-cta { padding: 0 22px; }
   transition: border-color 0.2s ease, opacity 0.2s ease;
 }
 .proxe-hero-phone-next:hover { border-bottom-color: #fff; opacity: 0.9; }
+
+/* ==========================================================================
+   Hero phone capture — the pill responds, not just the button
+   A field with a button beside it reads as a form. This reads as one control
+   that is reacting to you: a ring wakes as the first digit lands, brightens
+   when the number is complete, then a fill sweeps across on submit like an
+   unlock gesture, and settles into a connected state.
+   ========================================================================== */
+
+.proxe-hero-phone { position: relative; isolation: isolate; }
+
+/* Rotating gradient ring. Sits BEHIND the pill via a mask so only the 1px edge
+   shows — a border, not a glow. Brand purples, deliberately not neon: it should
+   read as considered, not as a gaming keyboard. */
+.proxe-hero-phone::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 999px;
+  padding: 1.5px;
+  background: conic-gradient(from var(--pill-angle, 0deg),
+    #a78bfa, #c084fc, #7c3aed, #6366f1, #a78bfa);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+@property --pill-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes proxePillSpin { to { --pill-angle: 360deg; } }
+
+/* Typing: ring appears, turning slowly. */
+.proxe-hero-phone--active::before {
+  opacity: 0.55;
+  animation: proxePillSpin 4s linear infinite;
+}
+/* Complete number: brighter and quicker — this is the moment to press. */
+.proxe-hero-phone--ready::before {
+  opacity: 1;
+  animation-duration: 1.8s;
+}
+.proxe-hero-phone--ready {
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);
+}
+
+/* Submit: a fill sweeps left to right across the pill, the unlock gesture. */
+.proxe-hero-phone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(167,139,250,0.35), rgba(124,58,237,0.55));
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.proxe-hero-phone--dialing::after {
+  opacity: 1;
+  animation: proxePillFill 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes proxePillFill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+/* Keep the field and button above both layers. */
+.proxe-hero-phone-input,
+.proxe-hero-phone-btn { position: relative; z-index: 1; }
+
+/* Connected panel arrives as the fill lands. */
+.proxe-hero-phone-done { animation: proxeConnected 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes proxeConnected {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hero-phone--active::before,
+  .proxe-hero-phone--ready::before { animation: none; }
+  .proxe-hero-phone--dialing::after { animation: none; transform: scaleX(1); }
+  .proxe-hero-phone-done { animation: none; }
+}
+
+/* ==========================================================================
+   Hero entrance
+   Every other section reveals on scroll (.hiw-in, .ind-in, .cap-in, .pr-in…)
+   but the hero is already on screen at load, so it never had one — the first
+   thing anyone sees was the only static thing on the page.
+   Staggered so it reads top-down: label, headline lines, sub, then the control.
+   ========================================================================== */
+@keyframes proxeHeroRise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+.proxe-hero-eyebrow,
+.proxe-hero-title .proxe-hero-line,
+.proxe-hero-subtitle,
+.proxe-hero-phone {
+  animation: proxeHeroRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.proxe-hero-eyebrow                      { animation-delay: 0.05s; }
+.proxe-hero-title .proxe-hero-line:nth-child(1) { animation-delay: 0.14s; }
+.proxe-hero-title .proxe-hero-line:nth-child(2) { animation-delay: 0.24s; }
+.proxe-hero-subtitle                     { animation-delay: 0.36s; }
+.proxe-hero-phone                        { animation-delay: 0.48s; }
+
+/* The control keeps a life of its own once it has arrived: a slow breath so it
+   reads as waiting for you rather than sitting there. Stops the moment you
+   engage — competing motion during typing is noise. */
+@keyframes proxeHeroPillBreathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0); }
+  50%      { box-shadow: 0 0 0 8px rgba(167, 139, 250, 0.10); }
+}
+.proxe-hero-phone:not(.proxe-hero-phone--active) {
+  animation: proxeHeroRise 0.7s cubic-bezier(0.22,1,0.36,1) both,
+             proxeHeroPillBreathe 3.6s ease-in-out 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hero-eyebrow,
+  .proxe-hero-title .proxe-hero-line,
+  .proxe-hero-subtitle,
+  .proxe-hero-phone,
+  .proxe-hero-phone:not(.proxe-hero-phone--active) { animation: none; opacity: 1; transform: none; }
+}

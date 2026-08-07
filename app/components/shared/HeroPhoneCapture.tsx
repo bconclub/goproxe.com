@@ -134,7 +134,20 @@ export default function HeroPhoneCapture() {
 
   return (
     <>
-      <form className="proxe-hero-phone" onSubmit={handleSubmit} noValidate>
+      {/* State drives the whole pill, not just the button: the ring wakes up as
+          soon as a digit lands, brightens when the number is complete, and the
+          fill sweeps across on submit. One control that responds, rather than a
+          field sitting next to a button. */}
+      <form
+        className={
+          'proxe-hero-phone' +
+          (typing ? ' proxe-hero-phone--active' : '') +
+          (ready ? ' proxe-hero-phone--ready' : '') +
+          (status === 'submitting' ? ' proxe-hero-phone--dialing' : '')
+        }
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <input
           type="tel"
           inputMode="tel"
