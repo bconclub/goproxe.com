@@ -882,9 +882,10 @@ export default function ChannelDemo() {
                 <VapiOrb onActiveChange={setVoiceActive} />
               </div>
             )}
-            {/* Hidden outright during a live call: nothing is counting down
-                then, so a countdown would be a lie. */}
-            {active === 'voice' && !voiceActive && (
+            {/* Every channel, not just voice — each one auto-advances, so each
+                one should show how long is left. Hidden outright during a live
+                call: nothing is counting down then, so a countdown would lie. */}
+            {!voiceActive && (
               <StageTimeline key={`tl-${active}`} durationMs={SLIDE_MS} paused={paused} />
             )}
             {active === 'whatsapp' && (

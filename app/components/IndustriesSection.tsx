@@ -344,10 +344,14 @@ export default function IndustriesSection() {
             Built for every industry.<br />
             Trained for <span className="ind-h2-grad">every outcome.</span>
           </h2>
+          {/* No <br />. Hard breaks only look tidy at the width they were
+              chosen for: on a phone each fragment wrapped a second time and the
+              paragraph came out as five ragged lines. Let it wrap to the
+              measure instead. */}
           <p className="ind-sub">
-            PROXe adapts to the way your industry works.<br />
-            From lead capture to follow-ups and conversions,<br />
-            we handle the conversations that drive real results.
+            PROXe adapts to the way your industry works. From lead capture to
+            follow-ups and conversions, we handle the conversations that drive
+            real results.
           </p>
         </div>
 

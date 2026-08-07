@@ -1561,8 +1561,8 @@ export default function ProxeLanding() {
               <span className="proxe-cc-title-grad">Start closing them.</span>
             </h2>
             <p className="proxe-cc-sub">
-              PROXe finds, remembers, and converts across every channel.<br />
-              Your always-on revenue engine.
+              PROXe finds, remembers, and converts across every channel. Your
+              always-on revenue engine.
             </p>
 
             <button type="button" onClick={() => openModal('closing_cta')} className="proxe-hero-big-cta proxe-cc-cta">

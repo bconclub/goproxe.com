@@ -61,6 +61,14 @@ export default function HeroPhoneCapture() {
       setError('That number looks incomplete. Check and try again.');
       return;
     }
+    // Measure how far the call button has to travel to reach the far end of the
+    // pill, and hand it to CSS. It cannot be expressed in the stylesheet: the
+    // distance is the pill's width minus the button's, and `translateX(-100%)`
+    // resolves against the BUTTON, which is only 46px wide.
+    const form = e.currentTarget as HTMLFormElement;
+    const btn = form.querySelector<HTMLElement>('.proxe-hero-phone-btn');
+    if (btn) form.style.setProperty('--pill-slide', `${-(btn.offsetLeft - 4)}px`);
+
     setStatus('submitting');
 
     // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.

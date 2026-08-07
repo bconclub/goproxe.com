@@ -335,6 +335,24 @@ export default function PricingSection() {
               <span><strong>Quoted on a short call.</strong> Custom contracts &amp; invoicing.</span>
             </div>
 
+            {/* Fills the dead space this card carried above its CTA, and puts a
+                person in front of "Talk to team" — a face is what makes a sales
+                call feel like a conversation rather than a form.
+                The avatar is the PROXe mark until a real team photo exists:
+                swap the <span> for an <img src="/proxe/team/<file>" /> and it is
+                done. A stock portrait is deliberately NOT used here — this card
+                books a real call with a real person, and a stranger's face
+                presented as your team is a claim the page cannot back. */}
+            <div className="pr-talk-team">
+              <span className="pr-talk-team-av" aria-hidden="true">
+                <img src="/proxe/brand/proxe-icon-white.webp" alt="" />
+              </span>
+              <span className="pr-talk-team-txt">
+                <strong>Talk to team</strong>
+                <span>Real person, usually same day</span>
+              </span>
+            </div>
+
             <button type="button" onClick={() => openModal('pricing_scale')} className="pr-cta pr-cta--ghost">
               Talk to sales <FiArrowRight size={14} />
             </button>

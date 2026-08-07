@@ -525,8 +525,8 @@ export default function CapabilitiesSection() {
             <span className="cap-h2-grad">autonomous</span> customer acquisition.
           </h2>
           <p className="cap-sub">
-            Every channel connected. Every interaction remembered.<br />
-            Every lead continuously moving toward conversion.
+            Every channel connected. Every interaction remembered. Every lead
+            continuously moving toward conversion.
           </p>
         </div>
 
@@ -545,8 +545,7 @@ export default function CapabilitiesSection() {
               </div>
               <h3 className="cap-hero-title">Unified Memory</h3>
               <p className="cap-hero-sub">
-                One memory across every channel.<br />
-                Context follows the customer,<br />
+                One memory across every channel. Context follows the customer,
                 not the conversation.
               </p>
               <UnifiedMemoryVis />

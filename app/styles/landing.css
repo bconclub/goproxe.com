@@ -4628,9 +4628,9 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: rgba(34, 197, 94, 0.18);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.45);
   border-radius: 5px;
   padding: 3px 8px;
   flex-shrink: 0;
@@ -4794,9 +4794,9 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-score-badge {
   font-size: 9.5px;
   font-weight: 700;
-  background: rgba(124,58,237,0.35);
-  color: #C4B5FD;
-  border: 1px solid rgba(167,139,250,0.4);
+  background: rgba(124,58,237,0.12);
+  color: #6d28d9;
+  border: 1px solid rgba(124,58,237,0.4);
   border-radius: 99px;
   padding: 2px 7px;
   white-space: nowrap;
@@ -4825,9 +4825,9 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.hiw-score-tag--amber  { background: rgba(245,158,11,0.2); color: #FCD34D; border: 1px solid rgba(245,158,11,0.35); }
-.hiw-score-tag--purple { background: rgba(124,58,237,0.2); color: #C4B5FD; border: 1px solid rgba(167,139,250,0.35); }
-.hiw-score-tag--teal   { background: rgba(20,184,166,0.2); color: #5EEAD4; border: 1px solid rgba(20,184,166,0.35); }
+.hiw-score-tag--amber  { background: rgba(245,158,11,0.16); color: #92400e; border: 1px solid rgba(245,158,11,0.45); }
+.hiw-score-tag--purple { background: rgba(124,58,237,0.12); color: #6d28d9; border: 1px solid rgba(124,58,237,0.4); }
+.hiw-score-tag--teal   { background: rgba(20,184,166,0.14); color: #0f766e; border: 1px solid rgba(20,184,166,0.45); }
 
 /* ── Card 3: follow-up timeline ── */
 /* ── Card 3: Lead reactivation animation ── */
@@ -4853,8 +4853,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   align-items: center;
   gap: 9px;
   width: 100%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(23, 12, 60, 0.045);
+  border: 1px solid rgba(23, 12, 60, 0.1);
   border-radius: 10px;
   padding: 8px 12px;
   flex-shrink: 0;
@@ -4919,7 +4919,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   align-items: center;
   gap: 4px;
   padding: 8px 12px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(23, 12, 60, 0.07);
   border-radius: 12px 12px 12px 2px;
   width: fit-content;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -4929,7 +4929,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.55);
+  background: rgba(23, 12, 60, 0.45);
   animation: hiwTyping 1s ease-in-out infinite;
 }
 .hiw-react-typing span:nth-child(2) { animation-delay: 0.15s; }
@@ -5007,16 +5007,16 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   border-radius: 4px;
   padding: 2px 7px;
   transition: background 0.6s ease, color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
-  background: rgba(156,163,175,0.15);
-  color: #9CA3AF;
-  border: 1px solid rgba(156,163,175,0.3);
+  background: rgba(100,116,139,0.12);
+  color: #475569;
+  border: 1px solid rgba(100,116,139,0.35);
 }
 
 .hiw-react-score-badge--hot {
-  background: rgba(124,58,237,0.25);
-  color: #C4B5FD;
-  border-color: rgba(167,139,250,0.4);
-  box-shadow: 0 0 8px rgba(124,58,237,0.3);
+  background: rgba(124,58,237,0.14);
+  color: #6d28d9;
+  border-color: rgba(124,58,237,0.45);
+  box-shadow: 0 0 8px rgba(124,58,237,0.18);
 }
 
 @media (max-width: 900px) {
@@ -6371,7 +6371,9 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 34px;
+  /* Below the frame, not across it: the phone mocks fill the full 640px of the
+     preview, so a bar at bottom:34px landed on top of the chat. */
+  bottom: -22px;
   margin: 0 auto;
   width: min(300px, 76%);
   display: flex;
@@ -6515,7 +6517,24 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
     padding: 8px 0 0;
   }
   .cd-stage { gap: 10px; }
+
+  /* The frame is a fixed 340x640. On a 375px phone that is wider than the
+     container once padding is counted, so the mock was being clipped at both
+     edges. Scale the whole thing down as one piece rather than restyling the
+     inside: transform keeps every proportion, and the negative margin reclaims
+     the space the un-scaled box still reserves in layout. */
+  .cd-phone-wrap {
+    transform: scale(0.82);
+    transform-origin: top center;
+    margin-bottom: -115px;
+  }
+
+  /* Sits under the scaled frame rather than over its bezel. */
+  .cd-timeline { bottom: 4px; }
 }
+
+/* Room for the countdown, which hangs below the preview box on desktop. */
+.cd-stage { padding-bottom: 30px; }
 
 /* ── WhatsApp sub-tabs ── */
 .cd-sub-tabs {
@@ -9599,11 +9618,15 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   color: transparent;
   font-style: italic;
 }
+/* max-width is what a hard <br /> was standing in for: a measure. Now the line
+   length is controlled at every width instead of only at the one it was
+   eyeballed on. */
 .ind-sub {
   font-size: 14.5px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.62);
   margin: 0;
+  max-width: 62ch;
 }
 
 /* ── Horizontal carousel (was a 4×2 grid). Shows ~3.5 cards at a time;
@@ -10216,11 +10239,67 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 }
 
 /* ── Pricing grid ── */
+/* 32px, not 18. The two cards each carry a badge that sits ON the top edge
+   ("FOUNDING MEMBER | 4/50" and "FOR LARGER TEAMS"); at 18px those badges
+   nearly touched across the gutter and the pair read as one congested block. */
 .pr-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 32px;
   margin-bottom: 22px;
+}
+
+/* ── "Talk to team" — fills the Custom card's dead space above its CTA ── */
+.pr-talk-team {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  position: relative;
+  z-index: 1;
+}
+.pr-talk-team-av {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  border: 2px solid rgba(196, 181, 253, 0.45);
+  box-shadow: 0 3px 12px rgba(124, 58, 237, 0.4);
+  overflow: hidden;
+}
+.pr-talk-team-av img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+/* A real photo fills the circle instead of sitting in it as a glyph. */
+.pr-talk-team-av img[src*="/team/"] {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pr-talk-team-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+.pr-talk-team-txt strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.pr-talk-team-txt span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
 }
 .pr-grid--3 {
   grid-template-columns: repeat(3, 1fr);
@@ -11086,16 +11165,23 @@ button.pr-cta { padding: 0 22px; }
   height: 46px;
   padding: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  /* Violet even before the number is complete, so the circle belongs to the
+     gradient ring around it instead of reading as a grey placeholder. */
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.55) 0%, rgba(124, 58, 237, 0.65) 100%);
   color: #ffffff;
   transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
               background 0.18s ease, box-shadow 0.18s ease;
 }
-/* Ready to dial: reads as the thing to press, without a word of explanation. */
+/* Ready to dial: reads as the thing to press, without a word of explanation.
+   This used to set `background: #fff; color: #2e1065`, and because it is the
+   more specific selector it beat the brand gradient declared below - the button
+   came out as a white disc with a near-black phone glyph, which is the one
+   element on the pill that should look most like PROXe. Same gradient as the
+   ring, white glyph, violet glow. */
 .proxe-root .proxe-hero-phone-btn--call.proxe-hero-phone-btn--ready {
-  background: #ffffff;
-  color: #2e1065;
-  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 /* Pressing it should feel like something happened. Nothing acknowledged the tap
    before, so a slow API call read as a dead button. */
@@ -11124,12 +11210,39 @@ button.pr-cta { padding: 0 22px; }
 .proxe-root .proxe-hero-phone-btn--dialing .proxe-hero-phone-btn-ringtrack {
   animation: proxeHeroDialSpin 1s linear infinite;
 }
+/* Swipe-to-unlock: on submit the button travels the length of the pill while
+   the fill sweeps behind it, so pressing it reads as the call being sent rather
+   than as a button that went quiet. --pill-slide is measured in JS on submit;
+   the fallback only matters if that measurement somehow never lands. */
+.proxe-root .proxe-hero-phone--dialing .proxe-hero-phone-btn--call {
+  animation: proxeCallSlide 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes proxeCallSlide {
+  to { transform: translateX(var(--pill-slide, -240px)); }
+}
+/* The whole pill lights while it happens. */
+.proxe-hero-phone--dialing::before {
+  opacity: 1;
+  animation-duration: 0.9s;
+}
 @keyframes proxeHeroDialSpin {
   to { transform: rotate(360deg); }
 }
+/* An animated box-shadow REPLACES the static one rather than adding to it
+   (animations outrank normal declarations), so the resting violet glow has to
+   be restated in every keyframe or the button loses it the moment it starts
+   breathing. First layer = the glow, second = the expanding pulse ring. */
 @keyframes proxeCallBreathe {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.55); }
-  50%      { box-shadow: 0 0 0 9px rgba(139, 92, 246, 0); }
+  0%, 100% {
+    box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 0 0 rgba(167, 139, 250, 0.6);
+  }
+  50% {
+    box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 0 10px rgba(167, 139, 250, 0);
+  }
 }
 /* Ringing… — two soft expanding rings, like a call wave leaving the page. */
 .proxe-hero-phone-done-ring {
