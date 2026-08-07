@@ -285,6 +285,11 @@ export async function recordCallbackDial(input: {
             last_call_at: new Date().toISOString(),
             last_call_status: input.status,
             last_call_reason: input.reason ?? null,
+            // Flat copy of the id, not just the one nested in calls[]. The
+            // post-call webhook matches on this when the caller's number is
+            // withheld and there is nothing else to join on — `contains` cannot
+            // reach inside an array element.
+            last_conversation_id: input.conversationId ?? null,
             provider: 'elevenlabs',
             source: 'hero_phone',
             // Keep the last 10 attempts so a repeat caller reads as a history
@@ -304,6 +309,105 @@ export async function recordCallbackDial(input: {
       .eq('id', existing.id)
   } catch (err) {
     console.error('[leadsSupabase] recordCallbackDial failed', err)
+  }
+}
+
+/**
+ * Writes a finished call's transcript onto the lead.
+ *
+ * Called by the ElevenLabs post-call webhook. Two ways in, because the webhook
+ * does not always carry both: the caller's number, or the conversation_id that
+ * recordCallbackDial already stored on the lead when it placed the call. The
+ * id path is what makes this work for calls where the number is withheld.
+ *
+ * Idempotent by conversation_id — ElevenLabs retries on any non-2xx, and a
+ * retry must not append the same transcript twice.
+ */
+export async function recordCallTranscript(input: {
+  phone?: string | null
+  conversationId?: string | null
+  transcript: Array<{ role: string; text: string; at: number | null }>
+  durationSecs?: number | null
+  status?: string | null
+  summary?: string | null
+}): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+
+  const normalized = normalizePhone(input.phone ?? '')
+  if (!normalized && !input.conversationId) return
+
+  try {
+    let row: { id: string; unified_context: any } | null = null
+
+    if (normalized) {
+      const { data } = await supabase
+        .from('all_leads')
+        .select('id, unified_context')
+        .eq('customer_phone_normalized', normalized)
+        .eq('brand', BRAND)
+        .order('last_interaction_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      row = data as any
+    }
+
+    // Fall back to the conversation_id stamped on the lead at dial time.
+    if (!row && input.conversationId) {
+      const { data } = await supabase
+        .from('all_leads')
+        .select('id, unified_context')
+        .eq('brand', BRAND)
+        .contains('unified_context', { voice: { last_conversation_id: input.conversationId } })
+        .limit(1)
+        .maybeSingle()
+      row = data as any
+    }
+
+    if (!row) {
+      console.warn('[leadsSupabase] recordCallTranscript: no lead matched', input.conversationId)
+      return
+    }
+
+    const ctx = (row.unified_context as Record<string, any>) || {}
+    const prior = (ctx.voice || {}) as Record<string, any>
+    const transcripts = Array.isArray(prior.transcripts) ? prior.transcripts : []
+
+    // Same conversation arriving twice (a retry) replaces rather than appends.
+    const withoutThis = transcripts.filter(
+      (t: any) => t?.conversation_id !== input.conversationId
+    )
+
+    await supabase
+      .from('all_leads')
+      .update({
+        last_touchpoint: 'voice',
+        last_interaction_at: new Date().toISOString(),
+        unified_context: {
+          ...ctx,
+          voice: {
+            ...prior,
+            last_transcript_at: new Date().toISOString(),
+            last_call_summary: input.summary ?? prior.last_call_summary ?? null,
+            transcripts: [
+              ...withoutThis.slice(-4),
+              {
+                conversation_id: input.conversationId ?? null,
+                at: new Date().toISOString(),
+                duration_secs: input.durationSecs ?? null,
+                status: input.status ?? null,
+                summary: input.summary ?? null,
+                turns: input.transcript,
+              },
+            ],
+          },
+        },
+      })
+      .eq('id', row.id)
+  } catch (err) {
+    // Rethrown: the webhook route turns this into a 500 so ElevenLabs retries.
+    console.error('[leadsSupabase] recordCallTranscript failed', err)
+    throw err
   }
 }
 

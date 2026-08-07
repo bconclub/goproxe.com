@@ -90,12 +90,16 @@ type Session = Awaited<ReturnType<typeof Conversation.startSession>>;
  * stores the value on a field that playAudio re-applies to the gain node on
  * every chunk — so setting it there survives the stream.
  *
- * 5.5x puts the measured peak at ~0.64, which restores normal loudness and
- * still tolerates an utterance ~1.8x hotter than the sample before it would
- * clip against the destination. Do not raise this without re-measuring: there
- * is no limiter in the chain to catch an overshoot.
+ * That voice has since been replaced by Aryaveer (648Ei7uQJOUMPaz1Tdpc), which
+ * measures -21.9 dBFS / peak 0.770 — a normal master. The 5.5x correction it
+ * needed is therefore GONE: applying it here would drive peak 0.770 to 4.2 and
+ * clip hard against the destination.
+ *
+ * 1.2x is a small lift for laptop speakers, landing peak at ~0.92 with headroom
+ * intact. Re-measure before changing this or the voice: the safe gain is
+ * whatever puts the loudest peak just under 1.0.
  */
-const OUTPUT_GAIN = 5.5;
+const OUTPUT_GAIN = 1.2;
 
 /** Reaches past the public API into the output controller; feature-detected so
     an SDK rename degrades to normal volume rather than throwing mid-call. */
