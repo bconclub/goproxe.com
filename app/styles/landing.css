@@ -11230,11 +11230,39 @@ button.pr-cta { padding: 0 22px; }
   70%  { opacity: 1; }
   100% { transform: translateX(var(--pill-slide, -240px)); opacity: 0; }
 }
-/* The number dims as the button sweeps over it, so the two are never fighting
-   for the same pixels at full strength. */
+/* Once the button has swept away, the number is the only thing left in the
+   pill — so it moves to the middle and stays readable rather than sitting hard
+   left against the space the button used to occupy. It only dips while the
+   button is actually passing over it (the first ~70% of the 0.7s slide), then
+   comes back up centred. */
+/* The button leaves the flex flow for the duration of the slide. Faded out it
+   still RESERVES its 46px on the right, which would push the "centred" number
+   ~23px left of the pill's actual centre. Absolute keeps it visually where it
+   started (so the slide reads identically) while letting the input span the
+   full pill. Padding is equalised for the same reason: 18px left against 8px
+   right would bias the centring. */
+.proxe-hero-phone--dialing .proxe-hero-phone-btn--call {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  margin-top: -23px;
+}
 .proxe-hero-phone--dialing .proxe-hero-phone-input {
-  transition: opacity 0.4s ease;
-  opacity: 0.25;
+  text-align: center;
+  padding-left: 18px;
+  padding-right: 18px;
+  animation: proxeDialNumberSettle 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes proxeDialNumberSettle {
+  0%   { opacity: 1; }
+  45%  { opacity: 0.28; }
+  100% { opacity: 0.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hero-phone--dialing .proxe-hero-phone-input {
+    animation: none;
+    opacity: 0.85;
+  }
 }
 .proxe-hero-phone-connecting {
   margin: 12px auto 0;
