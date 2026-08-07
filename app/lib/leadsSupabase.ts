@@ -404,6 +404,39 @@ export async function recordCallTranscript(input: {
         },
       })
       .eq('id', row.id)
+
+    // ALSO write the turns as `conversations` rows. unified_context is what the
+    // lead record reads, but the Chats inbox reads `conversations` - so a
+    // transcript stored only in unified_context is invisible exactly where
+    // someone goes looking for it. 'voice' is already an accepted channel
+    // there alongside whatsapp and web.
+    if (input.conversationId && input.transcript.length) {
+      // Idempotent: clear this conversation's rows before re-inserting, so a
+      // webhook retry replaces rather than duplicates the thread.
+      await supabase
+        .from('conversations')
+        .delete()
+        .eq('lead_id', row.id)
+        .eq('channel', 'voice')
+        .eq('metadata->>conversation_id', input.conversationId)
+
+      const base = Date.now() - (input.durationSecs ?? 0) * 1000
+      await supabase.from('conversations').insert(
+        input.transcript.map((t) => ({
+          lead_id: row.id,
+          brand: BRAND,
+          channel: 'voice',
+          // The table's vocabulary is customer/agent, not caller/agent.
+          sender: t.role === 'agent' ? 'agent' : 'customer',
+          content: t.text,
+          message_type: 'text',
+          metadata: { conversation_id: input.conversationId, at_secs: t.at },
+          // Spread across the call's real duration so the thread reads in order
+          // instead of collapsing onto one timestamp.
+          created_at: new Date(base + (t.at ?? 0) * 1000).toISOString(),
+        }))
+      )
+    }
   } catch (err) {
     // Rethrown: the webhook route turns this into a 500 so ElevenLabs retries.
     console.error('[leadsSupabase] recordCallTranscript failed', err)

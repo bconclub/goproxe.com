@@ -137,6 +137,30 @@ const normalize = (v) => {
       skipped++
       continue
     }
+
+    // Also as conversations rows — unified_context feeds the lead record, but
+    // the Chats inbox reads `conversations`, which is where someone actually
+    // goes looking for a transcript.
+    await sb(
+      `/conversations?lead_id=eq.${row.id}&channel=eq.voice&metadata->>conversation_id=eq.${c.conversation_id}`,
+      { method: 'DELETE' }
+    )
+    const base = new Date((c.start_time_unix_secs || 0) * 1000).getTime()
+    const rowsToInsert = turns.map((t) => ({
+      lead_id: row.id,
+      brand: BRAND,
+      channel: 'voice',
+      sender: t.role === 'agent' ? 'agent' : 'customer',
+      content: t.text,
+      message_type: 'text',
+      metadata: { conversation_id: c.conversation_id, at_secs: t.at },
+      created_at: new Date(base + (t.at || 0) * 1000).toISOString(),
+    }))
+    const cres = await sb('/conversations', { method: 'POST', body: JSON.stringify(rowsToInsert) })
+    if (!cres.ok) {
+      console.error(`  conversations insert FAILED: ${cres.status} ${await cres.text()}`)
+    }
+
     console.log(`  wrote ${turns.length} turns -> lead ${row.id}`)
     written++
   }
