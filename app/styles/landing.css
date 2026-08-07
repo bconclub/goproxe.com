@@ -319,8 +319,11 @@ body:has(.proxe-root) {
 }
 
 @media (max-width: 768px) {
+  /* 172px, not 140. The headline is three lines on a phone now and its first
+     line was running underneath the fixed header - "Never Miss" sat behind the
+     Deploy pill. This clears the header at its mobile height. */
   .proxe-hero {
-    padding: 140px 0 100px;
+    padding: 172px 0 100px;
   }
 }
 
@@ -11213,12 +11216,41 @@ button.pr-cta { padding: 0 22px; }
 /* Swipe-to-unlock: on submit the button travels the length of the pill while
    the fill sweeps behind it, so pressing it reads as the call being sent rather
    than as a button that went quiet. --pill-slide is measured in JS on submit;
-   the fallback only matters if that measurement somehow never lands. */
+   the fallback only matters if that measurement somehow never lands.
+
+   It fades out as it arrives. Travelling alone, it finished its journey sitting
+   ON TOP of the number the person had just typed and stayed there - the gesture
+   completed and then obscured the field it belonged to. Reaching the far end
+   and disappearing is what "unlocked" should look like. */
 .proxe-root .proxe-hero-phone--dialing .proxe-hero-phone-btn--call {
   animation: proxeCallSlide 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes proxeCallSlide {
-  to { transform: translateX(var(--pill-slide, -240px)); }
+  0%   { transform: translateX(0); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translateX(var(--pill-slide, -240px)); opacity: 0; }
+}
+/* The number dims as the button sweeps over it, so the two are never fighting
+   for the same pixels at full strength. */
+.proxe-hero-phone--dialing .proxe-hero-phone-input {
+  transition: opacity 0.4s ease;
+  opacity: 0.25;
+}
+.proxe-hero-phone-connecting {
+  margin: 12px auto 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(10, 20, 60, 0.5);
+  animation: proxeConnectingPulse 1.4s ease-in-out infinite;
+}
+@keyframes proxeConnectingPulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proxe-hero-phone-connecting { animation: none; opacity: 0.85; }
 }
 /* The whole pill lights while it happens. */
 .proxe-hero-phone--dialing::before {

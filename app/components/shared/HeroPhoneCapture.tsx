@@ -86,16 +86,29 @@ export default function HeroPhoneCapture() {
     // several outcomes that are not "a phone is ringing" - most importantly the
     // cooldown guard - so trusting r.ok alone showed "Ringing… pick up" when
     // nothing had been dialled.
+    // Hard 20s ceiling on the dial. Without it a request that never settles
+    // leaves the control stuck mid-gesture forever: the button parked at the
+    // end of its travel, the field disabled, and nothing to tell the person
+    // whether their phone is about to ring. An abort is recoverable; a hang is
+    // not.
+    const ac = new AbortController();
+    const timeout = window.setTimeout(() => ac.abort(), 20000);
+
     const [, dial] = await Promise.all([
       submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone' }),
       fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: trimmed, market: detectMarket() }),
+        signal: ac.signal,
       })
         .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
-        .catch(() => ({ ok: false, reason: 'network_error' })),
+        .catch((err) => ({
+          ok: false,
+          reason: err?.name === 'AbortError' ? 'timeout' : 'network_error',
+        })),
     ]);
+    window.clearTimeout(timeout);
 
     if (!dial?.ok) {
       setError(
@@ -103,6 +116,8 @@ export default function HeroPhoneCapture() {
           ? 'We just called you. Check your phone, or try again in a minute.'
           : 'Number saved. PROXe will call you shortly.'
       );
+      // Back to idle also resets the slide: the --dialing class goes, so the
+      // button returns to its place rather than staying where it stopped.
       setStatus('idle');
       return;
     }
@@ -205,6 +220,11 @@ export default function HeroPhoneCapture() {
           )}
         </button>
       </form>
+      {status === 'submitting' && (
+        // The slide finishes in 0.7s but the dial can take several seconds.
+        // Without this the pill just sits there, emptied, saying nothing.
+        <p className="proxe-hero-phone-connecting" role="status">Connecting your call…</p>
+      )}
       {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
     </>
   );
