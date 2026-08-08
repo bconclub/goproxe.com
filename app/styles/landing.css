@@ -4502,7 +4502,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   border-radius: inherit;
 }
 
-/* ── Top: text content ── */
+/* ── Bottom: text content (column-reverse puts this under the panel) ──
+       Deep violet, not white. Only the animation panel above is light — the
+       copy sits on the same ink the section's own background uses, so the card
+       reads as one dark object with a lit window in it rather than two pale
+       halves floating on the violet. */
 .hiw-card-content {
   padding: 30px 30px 20px;
   display: flex;
@@ -4511,6 +4515,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   gap: 14px;
   position: relative;
   z-index: 1;
+  background: linear-gradient(180deg, #1b1040 0%, #150c30 100%);
   /* Grow to absorb any extra card height. The grid stretches all 3
      cards to equal outer height, and the wrap is a fixed 360px —
      without flex-grow on the text section, cards with shorter copy
@@ -4532,11 +4537,11 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .hiw-card-title {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
-  /* Card is white now; ink has to follow. */
   /* Mobile 24px, desktop max 28px (was 36px — felt too big) */
   font-size: clamp(24px, 2.0vw, 28px);
   font-weight: 700;
-  color: #150c30;
+  /* Sits on the dark half now, so the ink inverts with it. */
+  color: #ffffff;
   margin: 0;
   line-height: 1.15;
   /* Loosened — was -0.02em which felt cramped on long titles like
@@ -4546,7 +4551,7 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 
 .hiw-card-desc {
   font-size: 15px;
-  color: rgba(23, 12, 60, 0.62);
+  color: rgba(255, 255, 255, 0.62);
   margin: 0;
   line-height: 1.7;
   max-width: 400px;

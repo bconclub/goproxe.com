@@ -14,10 +14,12 @@ function CaptureVis({ on }: { on: boolean }) {
     const ts: ReturnType<typeof setTimeout>[] = [];
     function loop() {
       setStep(0);
-      [400, 1200, 2000].forEach((t, i) =>
+      // Every beat halved — the capture rows were landing slower than the eye
+      // wants to read them, so the card spent most of its time waiting.
+      [200, 600, 1000].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 4800));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 2400));
     }
     loop();
     return () => { dead = true; ts.forEach(clearTimeout); };
@@ -61,7 +63,7 @@ function MemoryVis({ on }: { on: boolean }) {
     function runScore() {
       setScoreVal(0);
       const start = performance.now();
-      const dur = 1000;
+      const dur = 500;
       const target = 74;
       if (scoreRef.current) clearInterval(scoreRef.current);
       scoreRef.current = setInterval(() => {
@@ -75,11 +77,11 @@ function MemoryVis({ on }: { on: boolean }) {
     function loop() {
       setStep(0);
       setScoreVal(0);
-      [300, 1100, 1900, 2700].forEach((t, i) =>
+      [150, 550, 950, 1350].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) runScore(); }, 3000));
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 6400));
+      ts.push(setTimeout(() => { if (!dead) runScore(); }, 1500));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 3200));
     }
     loop();
     return () => {
@@ -177,15 +179,15 @@ function ReactivateVis({ on }: { on: boolean }) {
       setStep(0);
       setLoopKey(k => k + 1);
       // Fast buildup so card mostly shows the polished final state (no empty looks)
-      // step 1 @ 250ms  → typing indicator
-      // step 2 @ 700ms  → PROXe bubble
-      // step 3 @ 1200ms → lead bubble + RESPONDED badge
-      // step 4 @ 1500ms → system label + score badge
-      // loop  @ 6500ms  (5s hold on full final state)
-      [250, 700, 1200, 1500].forEach((t, i) =>
+      // step 1 @ 125ms → typing indicator
+      // step 2 @ 350ms → PROXe bubble
+      // step 3 @ 600ms → lead bubble + RESPONDED badge
+      // step 4 @ 750ms → system label + score badge
+      // loop  @ 3250ms (2.5s hold on full final state)
+      [125, 350, 600, 750].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) loop(); }, 6500));
+      ts.push(setTimeout(() => { if (!dead) loop(); }, 3250));
     }
     loop();
     return () => { dead = true; ts.forEach(clearTimeout); };

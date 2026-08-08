@@ -1,5 +1,18 @@
 ﻿# Changelog
 
+## 2026-08-08 15:20 IST · style(hiw): dark card halves, animations at 2x
+
+- User-facing: the three "How It Works" cards now read as dark objects with a
+  lit window in them, instead of two pale halves floating on the violet. Only
+  the animation panel stays light — the copy half is the page's own deep violet
+  (`#1b1040` → `#150c30`), with the title and body inverted to white.
+- Every animation beat halved, so all three cards move at 2x. Card 1 capture
+  rows 400/1200/2000 → 200/600/1000 (loop 4800 → 2400); card 2 memory rows
+  300/1100/1900/2700 → 150/550/950/1350, score count-up 1000ms → 500ms
+  (loop 6400 → 3200); card 3 reply build-up 250/700/1200/1500 →
+  125/350/600/750 (loop 6500 → 3250). Ratios preserved, so the choreography is
+  unchanged — it just no longer spends most of its time waiting.
+
 ## 2026-08-06 17:10 IST · feat(hero): v0.1.11 — the ring-fill call circle, wired to a real dialler
 
 - User-facing: hero capture is now one gesture — "Talk to PROXe" pill collapses
