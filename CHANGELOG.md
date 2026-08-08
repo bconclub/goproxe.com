@@ -1,5 +1,24 @@
 ﻿# Changelog
 
+## 2026-08-08 16:05 IST · fix(pricing): the pricing buttons had no styling at all
+
+- User-facing: "Deploy PROXe" and the Scale button now actually render their
+  gradients, borders and glow. They never have. A reset near the top of
+  `landing.css` — `.proxe-root button { border: none; background: none; color:
+  inherit }` — is specificity (0,1,1) and beat every `.pr-cta--*` rule at
+  (0,1,0), so both pricing CTAs painted as bare text. That is why the paid
+  action did not look clickable and the "Not ready? Book a call" link below it
+  was collecting clicks meant for checkout.
+- The hero CTA already carries a `.proxe-root` prefix with a comment explaining
+  this exact trap; the pricing CTAs never got it. Prefixed now.
+- Confirmed against production before changing anything: `.pr-cta--primary`
+  computed to `background-image: none`, `border-color: rgb(255,255,255)` on
+  live goproxe.com. Not a colour-choice problem.
+- Primary also lifted off near-navy (`#4c1d95` → `#312e81`) onto the brand stop
+  (`#6d28d9` → `#7c3aed` → `#6366f1`) so it reads as the lit thing in the card.
+- Removed a duplicate `.pr-cta--ghost:hover` block, keeping the later one's
+  values since those were the ones actually winning.
+
 ## 2026-08-08 15:20 IST · style(hiw): dark card halves, animations at 2x
 
 - User-facing: the three "How It Works" cards now read as dark objects with a

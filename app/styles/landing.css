@@ -10563,7 +10563,14 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 button.pr-cta { padding: 0 22px; }
-.pr-cta--ghost {
+/* Every rule below is prefixed with .proxe-root to beat the
+   `.proxe-root button { border: none; background: none; color: inherit }`
+   reset at the top of this file (0,1,1 beats a bare .pr-cta-- class at 0,1,0).
+   Without the prefix the reset wins and BOTH pricing buttons render with no
+   background and no border at all - which is why "Deploy PROXe" did not read
+   as the paid action. The hero CTA already carries this prefix and says why;
+   the pricing CTAs never got it. */
+.proxe-root .pr-cta--ghost {
   color: #fff;
   background:
     linear-gradient(180deg, rgba(124, 58, 237, 0.16), rgba(15, 10, 38, 0.70));
@@ -10572,34 +10579,37 @@ button.pr-cta { padding: 0 22px; }
     0 10px 28px rgba(0, 0, 0, 0.30),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-.pr-cta--ghost:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(167, 139, 250, 0.5);
-  transform: translateY(-1px);
-}
-.pr-cta--primary {
-  color: #fff;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%),
-    linear-gradient(135deg, #4c1d95 0%, #6d28d9 52%, #312e81 100%);
-  border: 1.5px solid rgba(196, 181, 253, 0.42);
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(167, 139, 250, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  font-weight: 700;
-}
-.pr-cta--primary:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 14px 34px rgba(0, 0, 0, 0.38),
-    0 0 24px rgba(196, 181, 253, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
-}
-.pr-cta--ghost:hover {
+/* There were two .pr-cta--ghost:hover blocks in this file with different
+   values; the later one won, so these are ITS values kept as the single
+   definition. The duplicate is gone rather than the behaviour. */
+.proxe-root .pr-cta--ghost:hover {
   background: rgba(167, 139, 250, 0.14);
   border-color: rgba(196, 181, 253, 0.9);
   transform: translateY(-2px);
+}
+/* The one button on this page that takes money.
+   It was #4c1d95 -> #312e81: dark violet into near-navy, sitting on a dark
+   card. That reads as another panel, not as the action, and the "Not ready?
+   Book a call" link underneath was winning clicks meant for checkout. Lifted
+   onto the brand stop (#7c3aed) so it is plainly the lit thing in the card. */
+.proxe-root .pr-cta--primary {
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 42%),
+    linear-gradient(135deg, #6d28d9 0%, #7c3aed 55%, #6366f1 100%);
+  border: 1.5px solid rgba(196, 181, 253, 0.65);
+  box-shadow:
+    0 14px 34px rgba(76, 29, 149, 0.45),
+    0 0 26px rgba(124, 58, 237, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  font-weight: 700;
+}
+.proxe-root .pr-cta--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 40px rgba(76, 29, 149, 0.52),
+    0 0 34px rgba(124, 58, 237, 0.60),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36);
 }
 
 /* ── Trust strip ── */
@@ -11034,7 +11044,7 @@ button.pr-cta { padding: 0 22px; }
 
 /* Quiet secondary CTA under a card's primary button — the "talk to a human
    first" door, deliberately lower contrast so it never competes with Deploy. */
-.pr-cta-secondary {
+.proxe-root .pr-cta-secondary {
   appearance: none;
   -webkit-appearance: none;
   background: none;
@@ -11050,7 +11060,7 @@ button.pr-cta { padding: 0 22px; }
   text-align: center;
   transition: color 0.2s ease;
 }
-.pr-cta-secondary:hover {
+.proxe-root .pr-cta-secondary:hover {
   color: rgba(255, 255, 255, 0.9);
   text-decoration: underline;
   text-underline-offset: 3px;
