@@ -33,8 +33,15 @@ export default function IndustryCtas({
     track('industry_page_view', { industry: slug });
   }, [fireView, slug]);
 
+  // The demo CTA is OFF until demo.goproxe.com serves the real dashboard.
+  // The first demo was a purpose-built replica; decision 2026-08-09: we do not
+  // show anything that is not pixel-identical to the product. Flip this back
+  // once the real-core demo deployment is live.
+  const DEMO_READY = false;
+
   return (
     <div className="indp-cta-row">
+      {DEMO_READY && (
       <Link
         href={`/demo/${slug}`}
         className="indp-cta indp-cta--demo"
@@ -43,6 +50,7 @@ export default function IndustryCtas({
         <span className="indp-live-dot" />
         See it live
       </Link>
+      )}
       <button
         type="button"
         className="indp-cta indp-cta--deploy"
