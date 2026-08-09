@@ -32,6 +32,28 @@ import { markCheckoutStarted } from '../../lib/leadsSupabase'
 
 export const runtime = 'nodejs'
 
+/**
+ * Dodo requires E.164 ('+' then digits). The landing form accepts anything,
+ * and a bare local number ("9876543210") made Dodo reject the whole session —
+ * the buyer then got silently bounced to the sales calendar instead of
+ * payment. Coerce the obvious shapes; return null when unsure so the phone is
+ * simply omitted and Dodo collects it on the hosted page.
+ */
+function normalizeE164(raw: string | undefined, market: Market): string | null {
+  if (!raw) return null
+  const cleaned = raw.trim().replace(/[^\d+]/g, '')
+  const digits = cleaned.replace(/\D/g, '')
+  if (cleaned.startsWith('+')) {
+    return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : null
+  }
+  // Bare national number: assume the market's home country.
+  if (digits.length === 10) return market === 'inr' ? `+91${digits}` : `+1${digits}`
+  // Country code typed without the '+'.
+  if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`
+  return null
+}
+
 interface CheckoutPayload {
   market?: Market
   seats?: number
@@ -86,10 +108,10 @@ export async function POST(request: Request) {
 
   const email = body.email?.trim()
   const name = body.name?.trim()
-  const phone = body.phone?.trim()
+  const phone = normalizeE164(body.phone, market)
 
   try {
-    const session = await client.checkoutSessions.create({
+    const sessionParams = {
       product_cart: productCart,
       ...(billingCurrency ? { billing_currency: billingCurrency } : {}),
       // Only send a customer object when we actually have an email — Dodo
@@ -107,7 +129,7 @@ export async function POST(request: Request) {
       // A lean checkout: pay and get out. Everything below defaults to ON in
       // Dodo, so each line is a field or panel deliberately removed.
       customization: {
-        theme: 'dark',
+        theme: 'dark' as const,
         // The order summary defaults to expanded, which pushes the card fields
         // below the fold and re-opens the "is this the right price?" question
         // at the worst moment. Collapsed — still one tap away, not in the way.
@@ -149,7 +171,21 @@ export async function POST(request: Request) {
         source: 'goproxe_pricing',
         ...(body.brandName?.trim() ? { brand_name: body.brandName.trim() } : {}),
       },
-    })
+    }
+
+    let session
+    try {
+      session = await client.checkoutSessions.create(sessionParams)
+    } catch (err) {
+      // A phone Dodo dislikes must never cost the sale: retry once without it
+      // and let the hosted page collect it instead.
+      if (!(email && phone)) throw err
+      console.error('[api/checkout] session failed with phone attached, retrying without', err)
+      session = await client.checkoutSessions.create({
+        ...sessionParams,
+        customer: { email, name: name || '' },
+      })
+    }
 
     if (!session.checkout_url) {
       console.error('[api/checkout] session created without a checkout_url', session.session_id)
