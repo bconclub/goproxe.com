@@ -1,6 +1,7 @@
 'use client'
 
 import Script from 'next/script'
+import { usePathname } from 'next/navigation'
 
 /**
  * Live PROXe chat widget — the product running on its own website.
@@ -20,5 +21,10 @@ const WIDGET_SRC =
   process.env.NEXT_PUBLIC_PROXE_WIDGET_SRC || 'https://proxe.goproxe.com/api/widget/embed.js'
 
 export default function ProxeWidget() {
+  // Never on the demo dashboard: the real bubble floating over a simulated
+  // dashboard is confusing, and every message typed into it writes a REAL
+  // conversation into the platform.
+  const pathname = usePathname()
+  if (pathname?.startsWith('/demo')) return null
   return <Script id="proxe-widget" src={WIDGET_SRC} strategy="afterInteractive" />
 }

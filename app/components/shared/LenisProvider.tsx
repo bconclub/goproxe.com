@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
@@ -16,7 +17,14 @@ import 'lenis/dist/lenis.css';
  * Disables itself when the user prefers reduced motion.
  */
 export default function LenisProvider() {
+  const pathname = usePathname();
+  // The demo dashboard is a fixed-viewport app scrolling its own panes —
+  // window-level smooth scrolling has nothing to drive there and only adds
+  // rubber-band feel to a shell that shouldn't move.
+  const isDemo = pathname?.startsWith('/demo');
+
   useEffect(() => {
+    if (isDemo) return;
     // Respect prefers-reduced-motion
     if (typeof window !== 'undefined' &&
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
@@ -52,7 +60,7 @@ export default function LenisProvider() {
       lenis.destroy();
       delete (window as unknown as { __lenis?: Lenis }).__lenis;
     };
-  }, []);
+  }, [isDemo]);
 
   return null;
 }
