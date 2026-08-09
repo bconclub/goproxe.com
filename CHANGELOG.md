@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 2026-08-08 16:25 IST · style(hiw): drop the white card outline
+
+- User-facing: the "How It Works" cards lose their 1px white border and the
+  inset white top-highlight. Both made sense on all-pale cards; against the
+  dark copy half they drew a hard bright line around every card that read
+  louder than the content. The drop shadow still separates card from violet.
+
 ## 2026-08-08 16:05 IST · fix(pricing): the pricing buttons had no styling at all
 
 - User-facing: "Deploy PROXe" and the Scale button now actually render their
