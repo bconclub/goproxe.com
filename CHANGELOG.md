@@ -15,6 +15,23 @@
   once without it, so a phone can never cost the sale.
 - `(pending push)`
 
+## 2026-08-09 · feat: industry pages + demo.goproxe.com
+
+- User-facing: all 8 industry cards now open full internal pages at
+  /industries/[slug] — pain → fix rows, day-to-day steps, FAQ, per-industry
+  OG cards. Clinics, Real Estate and Coaching carry hand-written deep copy.
+- User-facing: "See it live" opens a simulated PROXe dashboard themed per
+  industry (demo.goproxe.com/[slug] once DNS lands; /demo/[slug] everywhere) —
+  seeded live simulation, interactive chats, a website-widget pane that turns
+  your message into a lead before your eyes, and a 6-step guided tour ending
+  on the Deploy CTA.
+- lib/industries.ts is the single registry driving cards, pages, sitemap, OG
+  images and the demo. Demo is noindexed three ways and structurally cannot
+  write real data.
+- 7 new analytics events wire the funnel (industry_page_view → demo_start →
+  demo_deploy_click).
+- (`98bf5a7`)
+
 ## 2026-08-08 16:25 IST · style(hiw): drop the white card outline
 
 - User-facing: the "How It Works" cards lose their 1px white border and the
