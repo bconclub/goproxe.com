@@ -40,6 +40,8 @@ import {
 import { FiHome } from 'react-icons/fi';
 import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/lu';
 import clinicsPage from './industry-content/clinics';
+import realestatePage from './industry-content/realestate';
+import coachingPage from './industry-content/coaching';
 
 export type Activity = { Icon: React.ElementType; top: string; sub: string };
 export type Step = { Icon: React.ElementType; label: string };
@@ -175,6 +177,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: '3×',
     statLabel: 'more site visits booked',
+    page: realestatePage,
     demo: {
       business: { name: 'Skyline Properties', initials: 'SP', tagline: 'Residential & commercial · Whitefield' },
       stages: ['New', 'Qualified', 'Site Visit', 'Negotiation', 'Closed'],
@@ -277,6 +280,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: '4.2×',
     statLabel: 'more enrollments',
+    page: coachingPage,
     demo: {
       business: { name: 'Ascent Academy', initials: 'AA', tagline: 'CAT / GMAT / UPSC coaching · Koramangala' },
       stages: ['Inquiry', 'Qualified', 'Consultation', 'Enrolled'],
