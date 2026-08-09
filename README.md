@@ -1,4 +1,4 @@
-﻿# goproxe
+# goproxe
 
 Standalone Next.js app for **goproxe.com** â€” the PROXe AI Lead Conversion System landing page.
 
