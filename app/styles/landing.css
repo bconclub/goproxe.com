@@ -6541,8 +6541,10 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
     margin-bottom: -115px;
   }
 
-  /* Sits under the scaled frame rather than over its bezel. */
-  .cd-timeline { bottom: 4px; }
+  /* The countdown belongs to the channel strip, not the mock: anchor it to
+     the TOP of the preview box so it reads as an underline beneath the
+     highlighted tab, instead of hanging under the phone frame. */
+  .cd-timeline { top: -4px; bottom: auto; }
 }
 
 /* Room for the countdown, which hangs below the preview box on desktop. */
