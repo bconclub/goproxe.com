@@ -6,9 +6,9 @@ import AnalyticsScripts from './components/shared/AnalyticsScripts';
 import ProxeWidget from './components/shared/ProxeWidget';
 import { DeployModalProvider } from './contexts/DeployModalContext';
 
-const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Customer Acquisition System';
+const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Lead Conversion System';
 const DESCRIPTION =
-  'The AI Customer Acquisition System. PROXe captures every lead across Website, WhatsApp, social, and calls — keeps the conversation alive and delivers ready-to-buy prospects to your team.';
+  'Every lead owned and answered in seconds across Website chat, WhatsApp, Instagram, Messenger, email and voice, all running on one memory so customers never repeat themselves. PROXe qualifies each lead, follows up until they respond, and hands your team the ones ready to buy. Up to 500 leads/month. 2 seats. Live dashboard.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://goproxe.com'),

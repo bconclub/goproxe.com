@@ -1,6 +1,6 @@
-# goproxe
+﻿# goproxe
 
-Standalone Next.js app for **goproxe.com** — the PROXe AI Customer Acquisition System landing page.
+Standalone Next.js app for **goproxe.com** â€” the PROXe AI Lead Conversion System landing page.
 
 Extracted from the bconclub monorepo's `app/proxe/` route.
 
@@ -23,14 +23,14 @@ npm run start
 
 ```
 app/
-├── page.tsx              # / → renders <ProxeLanding />
-├── layout.tsx            # root <html>/<body> + metadata
-├── globals.css           # minimal reset
-├── components/           # ProxeLanding, Grainient, VapiOrb, shared/, ui/
-├── contexts/             # DeployModalContext
-├── lib/                  # supabase, chat sessions, local storage
-├── styles/               # landing.css + theme files
-└── configs.ts
+â”œâ”€â”€ page.tsx              # / â†’ renders <ProxeLanding />
+â”œâ”€â”€ layout.tsx            # root <html>/<body> + metadata
+â”œâ”€â”€ globals.css           # minimal reset
+â”œâ”€â”€ components/           # ProxeLanding, Grainient, VapiOrb, shared/, ui/
+â”œâ”€â”€ contexts/             # DeployModalContext
+â”œâ”€â”€ lib/                  # supabase, chat sessions, local storage
+â”œâ”€â”€ styles/               # landing.css + theme files
+â””â”€â”€ configs.ts
 public/proxe/             # brand assets, favicons, images
 ```
 

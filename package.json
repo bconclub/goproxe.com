@@ -1,8 +1,8 @@
-{
+﻿{
   "name": "goproxe",
   "version": "0.3.10",
   "private": true,
-  "description": "PROXe \u2014 The AI Customer Acquisition System (goproxe.com)",
+  "description": "PROXe \u2014 The AI Lead Conversion System (goproxe.com)",
   "scripts": {
     "dev": "next dev -p 3002",
     "check:copy": "node scripts/check-copy-consistency.cjs",

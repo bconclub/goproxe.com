@@ -1,5 +1,18 @@
 ﻿# Changelog
 
+## 2026-08-09 16:20 IST · v0.3.11 — positioning: "AI Lead Conversion System"
+
+- User-facing: product line renamed everywhere it appears — hero eyebrow now
+  "AI Lead Conversion", page title + meta/OG/Twitter description, capabilities
+  heading ("autonomous lead conversion"), footer tagline, callback agent's
+  spoken self-intro. Was "AI Customer Acquisition System".
+- Meta description replaced with the new positioning copy (every lead owned
+  and answered in seconds… 500 leads/month, 2 seats, live dashboard).
+- Live ElevenLabs callback agent config synced from the VPS to match the
+  reviewed script in route.ts (prompt phrase + first message + voice
+  0muxiGNHAVvmM1qWRtyV) — no override on the dial, per the v0.2.x breakages.
+- Internal: package.json + README descriptions aligned.
+
 ## 2026-08-09 14:30 IST · v0.3.10 — dashboard strip, channel countdown, phone-safe checkout
 
 - User-facing: the Dashboard section no longer renders as a clipped ~146px

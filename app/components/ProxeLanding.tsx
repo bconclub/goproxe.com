@@ -1396,7 +1396,7 @@ export default function ProxeLanding() {
       {/* ===== 2. Hero ===== */}
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
-          <div className="proxe-hero-eyebrow">AI Customer System</div>
+          <div className="proxe-hero-eyebrow">AI Lead Conversion</div>
           {/* Two lines, and only two. The <br> alone did not hold: on a phone
               "Never Miss a Lead" was wide enough to wrap again, so the headline
               read as three ragged lines with "Lead" stranded on its own. Each
@@ -1610,7 +1610,7 @@ export default function ProxeLanding() {
                 (no small wordmark; the giant outline above is the brand mark) */}
             <div className="pf-brand">
               <p className="pf-tagline">
-                The AI customer acquisition system.<br />
+                The AI lead conversion system.<br />
                 Every channel. One memory. Always on.
               </p>
               <form

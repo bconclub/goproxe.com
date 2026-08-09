@@ -522,7 +522,7 @@ export default function CapabilitiesSection() {
         <div className="cap-section-header">
           <h2 className="cap-h2">
             The infrastructure behind<br />
-            <span className="cap-h2-grad">autonomous</span> customer acquisition.
+            <span className="cap-h2-grad">autonomous</span> lead conversion.
           </h2>
           <p className="cap-sub">
             Every channel connected. Every interaction remembered. Every lead
