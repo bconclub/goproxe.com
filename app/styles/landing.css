@@ -9903,6 +9903,29 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* Card link into /industries/[slug]. Lives here (not industry.css) because it
+   renders on the LANDING page inside the carousel cards. Prefixed with
+   .proxe-root because `.proxe-root a { color: inherit }` (0,1,1) outguns a
+   bare class — the anchor cousin of the button-reset trap. */
+.proxe-root .ind-see-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--acc);
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+.proxe-root .ind-see-link:hover {
+  gap: 11px;
+  color: #fff;
+}
+/* While drag-scrolling, links must not swallow the pointer. */
+.ind-grid--dragging .ind-see-link { pointer-events: none; }
+
 /* ── Trust row ── */
 .ind-trust {
   margin-top: 18px;

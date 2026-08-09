@@ -1,8 +1,10 @@
 import type { MetadataRoute } from 'next'
+import { INDUSTRY_SLUGS } from './lib/industries'
 
-// Serves /sitemap.xml. The landing page is the product; legal pages are listed
-// so crawlers can verify them. /thank-you is deliberately absent (conversion
-// page, disallowed in robots.ts).
+// Serves /sitemap.xml. The landing page is the product; industry pages are the
+// ad landing pages; legal pages are listed so crawlers can verify them.
+// /thank-you is deliberately absent (conversion page, disallowed in robots.ts)
+// and the demo lives on a noindexed host, never here.
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
@@ -11,6 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1,
     },
+    // From the registry, never hand-listed — a new industry ships with its URL.
+    ...INDUSTRY_SLUGS.map((slug) => ({
+      url: `https://goproxe.com/industries/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
     {
       url: 'https://goproxe.com/privacy-policy',
       lastModified: new Date(),

@@ -1,227 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import {
-  FiMessageCircle,
-  FiUser,
-  FiCalendar,
-  FiCheckCircle,
-  FiBell,
-  FiHeart,
-  FiStar,
-  FiTrendingUp,
-  FiShoppingCart,
-  FiSend,
-  FiMail,
-  FiPackage,
-  FiTool,
-  FiTruck,
-  FiActivity,
-  FiZap,
-  FiShield,
-  FiClock,
-  FiBarChart2,
-  FiCpu,
-  FiUsers,
-  FiBriefcase,
-  FiHome,
-  FiAward,
-  FiPhoneCall,
-  FiDollarSign,
-  FiPlus,
-  FiArrowRight,
-} from 'react-icons/fi';
-import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/lu';
-import { SiWhatsapp } from 'react-icons/si';
+import Link from 'next/link';
+import { FiPlus, FiArrowRight } from 'react-icons/fi';
+import { track } from '../lib/analytics';
 import { useDeployModal } from '../contexts/DeployModalContext';
-
-type Activity = { Icon: React.ElementType; top: string; sub: string };
-type Step = { Icon: React.ElementType; label: string };
-type Industry = {
-  id: string;
-  color: string;        // primary accent (hex)
-  gradient: string;     // top header gradient (fallback when no image)
-  image?: string;       // optional background photo in public/industries/
-  Icon: React.ElementType;
-  title: string;
-  desc: string;
-  activities: Activity[];
-  flow: Step[];
-  stat: string;
-  statLabel: string;
-};
-
-const INDUSTRIES: Industry[] = [
-  {
-    id: 'clinics',
-    color: '#60a5fa',
-    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 60%, #06b6d4 110%)',
-    image: '/industries/Healthcare.webp',
-    Icon: LuStethoscope,
-    title: 'Clinics & Healthcare',
-    desc: 'Handle appointment requests across WhatsApp and calls. Never miss a patient.',
-    activities: [
-      { Icon: FiCalendar,    top: 'Appointment Request', sub: 'via WhatsApp' },
-      { Icon: FiClock,       top: 'Tomorrow · 10:30 AM',  sub: '' },
-      { Icon: FiCheckCircle, top: 'Confirmed',            sub: '' },
-    ],
-    flow: [
-      { Icon: FiCalendar,    label: 'Request'  },
-      { Icon: FiCheckCircle, label: 'Confirm'  },
-      { Icon: FiBell,        label: 'Remind'   },
-      { Icon: FiHeart,       label: 'Follow-up'},
-    ],
-    stat: '68%',
-    statLabel: 'fewer no-shows',
-  },
-  {
-    id: 'realestate',
-    color: '#34d399',
-    gradient: 'linear-gradient(135deg, #064e3b 0%, #10b981 60%, #34d399 110%)',
-    image: '/industries/Real%20Estate.webp',
-    Icon: FiHome,
-    title: 'Real Estate',
-    desc: 'Qualify buyers, book site visits, and follow up until the deal closes.',
-    activities: [
-      { Icon: FiCalendar,   top: 'Site Visit Scheduled', sub: 'via Website' },
-      { Icon: FiTrendingUp, top: 'Lead Score',            sub: '92' },
-    ],
-    flow: [
-      { Icon: FiUser,        label: 'Lead'   },
-      { Icon: FiStar,        label: 'Score'  },
-      { Icon: FiCalendar,    label: 'Visit'  },
-      { Icon: FiCheckCircle, label: 'Close'  },
-    ],
-    stat: '3×',
-    statLabel: 'more site visits booked',
-  },
-  {
-    id: 'd2c',
-    color: '#f97316',
-    gradient: 'linear-gradient(135deg, #7c2d12 0%, #ea580c 60%, #fbbf24 110%)',
-    image: '/industries/D2C.webp',
-    Icon: FiShoppingCart,
-    title: 'D2C & E-commerce',
-    desc: 'Recover abandoned carts, answer product questions, and nudge hesitant buyers.',
-    activities: [
-      { Icon: FiShoppingCart, top: 'Abandoned Cart', sub: 'via Website' },
-      { Icon: FiSend,         top: 'AI Nudge Sent',  sub: '15% Off Offer' },
-    ],
-    flow: [
-      { Icon: FiShoppingCart, label: 'Abandon' },
-      { Icon: FiSend,         label: 'Nudge'   },
-      { Icon: FiMail,         label: 'Engage'  },
-      { Icon: FiPackage,      label: 'Recover' },
-    ],
-    stat: '32%',
-    statLabel: 'cart recovery rate',
-  },
-  {
-    id: 'coaching',
-    color: '#a78bfa',
-    gradient: 'linear-gradient(135deg, #6d28d9 0%, #a78bfa 60%, #ec4899 110%)',
-    image: '/industries/Coaching.webp',
-    Icon: LuGraduationCap,
-    title: 'Coaching Academies',
-    desc: 'Capture student inquiries, qualify intent, book consultations automatically.',
-    activities: [
-      { Icon: FiMessageCircle, top: 'New inquiry',  sub: 'MBA Program · via WhatsApp' },
-      { Icon: FiUser,          top: 'AI Qualified', sub: 'High intent' },
-    ],
-    flow: [
-      { Icon: FiMessageCircle, label: 'Inquiry'  },
-      { Icon: FiUser,          label: 'Qualify'  },
-      { Icon: FiCalendar,      label: 'Book'     },
-      { Icon: FiCheckCircle,   label: 'Enroll'   },
-    ],
-    stat: '4.2×',
-    statLabel: 'more enrollments',
-  },
-  {
-    id: 'fitness',
-    color: '#f472b6',
-    gradient: 'linear-gradient(135deg, #831843 0%, #db2777 60%, #f472b6 110%)',
-    image: '/industries/Wellness.webp',
-    Icon: LuDumbbell,
-    title: 'Fitness & Wellness',
-    desc: 'Convert trial signups, reduce no-shows, and re-engage lapsed members.',
-    activities: [
-      { Icon: FiUser,        top: 'Free Trial Inquiry', sub: 'via Instagram' },
-      { Icon: FiCheckCircle, top: 'Trial Booked',       sub: 'Session #1' },
-    ],
-    flow: [
-      { Icon: FiMessageCircle, label: 'Inquiry'   },
-      { Icon: FiCalendar,      label: 'Trial'     },
-      { Icon: FiBell,          label: 'Follow-up' },
-      { Icon: FiHeart,         label: 'Retain'    },
-    ],
-    stat: '55%',
-    statLabel: 'reduction in no-shows',
-  },
-  {
-    id: 'pro',
-    color: '#38bdf8',
-    gradient: 'linear-gradient(135deg, #075985 0%, #0284c7 60%, #38bdf8 110%)',
-    image: '/industries/Proffesional-services.webp',
-    Icon: FiBriefcase,
-    title: 'Professional Services',
-    desc: 'Qualify leads, book discovery calls, and route hot prospects to partners.',
-    activities: [
-      { Icon: FiPhoneCall,   top: 'Discovery Call', sub: 'via LinkedIn' },
-      { Icon: FiCalendar,    top: 'Call Booked',    sub: 'Tue, 4:00 PM' },
-    ],
-    flow: [
-      { Icon: FiUser,        label: 'Lead'    },
-      { Icon: FiCheckCircle, label: 'Qualify' },
-      { Icon: FiCalendar,    label: 'Book'    },
-      { Icon: FiActivity,    label: 'Route'   },
-    ],
-    stat: '2.8×',
-    statLabel: 'more discovery calls',
-  },
-  {
-    id: 'auto',
-    color: '#94a3b8',
-    gradient: 'linear-gradient(135deg, #1e293b 0%, #475569 60%, #94a3b8 110%)',
-    image: '/industries/Car%20Dealerships.webp',
-    Icon: LuCar,
-    title: 'Auto Dealerships',
-    desc: 'Answer inventory questions, book test drives, and reactivate cold leads.',
-    activities: [
-      { Icon: FiTruck,    top: 'Inventory Inquiry', sub: 'via Website' },
-      { Icon: FiCalendar, top: 'Test Drive Booked', sub: 'Sat, 11:00 AM' },
-    ],
-    flow: [
-      { Icon: FiMessageCircle, label: 'Inquiry' },
-      { Icon: FiZap,           label: 'Respond' },
-      { Icon: FiCalendar,      label: 'Book'    },
-      { Icon: LuCar,           label: 'Drive'   },
-    ],
-    stat: '47%',
-    statLabel: 'more test drives booked',
-  },
-  {
-    id: 'home',
-    color: '#fbbf24',
-    gradient: 'linear-gradient(135deg, #78350f 0%, #d97706 60%, #fbbf24 110%)',
-    image: '/industries/House%20Service.webp',
-    Icon: FiTool,
-    title: 'Home Services',
-    desc: 'Dispatch jobs fast. Capture, qualify, and schedule every service request.',
-    activities: [
-      { Icon: FiTool,        top: 'Service Request', sub: 'via WhatsApp' },
-      { Icon: FiCalendar,    top: 'Job Scheduled',    sub: 'Wed, 2:00 PM' },
-    ],
-    flow: [
-      { Icon: FiMessageCircle, label: 'Request'  },
-      { Icon: FiCheckCircle,   label: 'Qualify'  },
-      { Icon: FiCalendar,      label: 'Schedule' },
-      { Icon: FiAward,         label: 'Complete' },
-    ],
-    stat: '5×',
-    statLabel: 'faster lead response',
-  },
-];
+// Cards, internal pages, sitemap and the demo all read this one registry —
+// content changed there shows up here with zero duplication.
+import { INDUSTRIES } from '../lib/industries';
 
 export default function IndustriesSection() {
   const ref = useRef<HTMLElement>(null);
@@ -240,6 +26,10 @@ export default function IndustriesSection() {
   // Click-drag horizontal scrolling for desktop mouse users. Listeners on
   // window with `contains()` so child elements (images, activity pills,
   // SVGs) can't eat events. Touch / pen use native overflow-x scroll.
+  // Mirrors the effect-local `dragged` flag so card links can tell a real
+  // click from the click that fires at the end of a drag-scroll.
+  const draggedRef = useRef(false);
+
   useEffect(() => {
     const car = trackRef.current;
     if (!car) return;
@@ -257,12 +47,13 @@ export default function IndustriesSection() {
       startScroll = car.scrollLeft;
       dragging = true;
       dragged = false;
+      draggedRef.current = false;
     };
     const onMove = (e: PointerEvent) => {
       if (!dragging) return;
       const dx = e.clientX - startX;
       if (!dragged && Math.abs(dx) < 3) return;
-      if (!dragged) { dragged = true; car.classList.add('ind-grid--dragging'); }
+      if (!dragged) { dragged = true; draggedRef.current = true; car.classList.add('ind-grid--dragging'); }
       car.scrollLeft = startScroll - dx;
       e.preventDefault();
     };
@@ -409,6 +200,22 @@ export default function IndustriesSection() {
                   <span className="ind-stat-num">{u.stat}</span>
                   <span className="ind-stat-label">{u.statLabel}</span>
                 </div>
+
+                {/* Into the industry's own page. draggable=false so a
+                    drag-scroll that starts on the link doesn't ghost-drag it,
+                    and the draggedRef gate swallows the click that fires at
+                    the end of a drag. */}
+                <Link
+                  href={`/industries/${u.slug}`}
+                  className="ind-see-link"
+                  draggable={false}
+                  onClick={(e) => {
+                    if (draggedRef.current) { e.preventDefault(); return; }
+                    track('cta_click', { location: 'industry_card', industry: u.slug });
+                  }}
+                >
+                  See how <FiArrowRight size={14} />
+                </Link>
               </div>
             </article>
           ))}

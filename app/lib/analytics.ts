@@ -44,6 +44,14 @@ export type ProxeEvent =
   | 'faq_open'             // expanded a FAQ item — param: question
   | 'scroll_depth'         // crossed a 25/50/75/90% scroll milestone — param: percent
   | 'pricing_view'         // the pricing section scrolled into view (buying intent)
+  // ── Industry pages + demo funnel ────────────────────────────
+  | 'industry_page_view'   // an /industries/[slug] page mounted — param: industry
+  | 'industry_cta_click'   // industry-page CTA — params: industry, target: demo|deploy
+  | 'demo_start'           // the demo dashboard mounted — param: industry
+  | 'demo_tour_step'       // tour advanced — params: industry, step
+  | 'demo_tour_complete'   // tour reached its final step — param: industry
+  | 'demo_interact'        // first lead_open / chat_send / widget_send — params: industry, what
+  | 'demo_deploy_click'    // demo Deploy CTA — params: industry, placement
 
 type EventParams = Record<string, string | number | boolean | undefined>
 
@@ -81,6 +89,15 @@ const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   video_unmute: 'VideoUnmute',
   faq_open: 'FAQOpen',
   scroll_depth: 'ScrollDepth',
+  // The demo's deploy click stays custom — the real conversion still fires on
+  // the landing domain via deploy_modal_open → form_completed.
+  industry_page_view: 'IndustryPageView',
+  industry_cta_click: 'IndustryCTAClick',
+  demo_start: 'DemoStart',
+  demo_tour_step: 'DemoTourStep',
+  demo_tour_complete: 'DemoTourComplete',
+  demo_interact: 'DemoInteract',
+  demo_deploy_click: 'DemoDeployClick',
 }
 
 /** True on localhost / loopback — we never want dev hits in the live property. */
