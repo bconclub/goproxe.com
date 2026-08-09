@@ -26,6 +26,10 @@ export default function DashboardSection() {
           s.style.removeProperty('transform');
           s.style.removeProperty('margin-right');
         });
+        // The mobile branch pins the row height to the scaled thumbnail; a
+        // desktop pass must undo it or a window that was EVER < 900px wide
+        // keeps a ~146px carousel forever (the "clipped strip" bug).
+        carRef.current?.style.removeProperty('height');
         return;
       }
       const target = w - 32;
