@@ -17,7 +17,15 @@ import type { NextRequest } from 'next/server'
  */
 export function middleware(req: NextRequest) {
   const host = (req.headers.get('host') ?? '').split(':')[0] // strip :3003
-  if (!host.startsWith('demo.')) return NextResponse.next()
+
+  // The unshipped replica also stays unreachable by direct path on the main
+  // host — /demo/* goes home too.
+  if (!host.startsWith('demo.')) {
+    if (req.nextUrl.pathname.startsWith('/demo')) {
+      return NextResponse.redirect(new URL('/', req.url), 302)
+    }
+    return NextResponse.next()
+  }
 
   const { pathname } = req.nextUrl
 
@@ -28,12 +36,12 @@ export function middleware(req: NextRequest) {
     })
   }
 
-  // Already-internal paths (assets excluded by the matcher) pass through.
-  const url = req.nextUrl.clone()
-  url.pathname = pathname.startsWith('/demo') ? pathname : `/demo${pathname === '/' ? '' : pathname}`
-  const res = NextResponse.rewrite(url)
-  res.headers.set('X-Robots-Tag', 'noindex, nofollow')
-  return res
+  // INTERIM (2026-08-09): the replica demo is unshipped — the demo must be the
+  // REAL PROXe dashboard, pixel-identical, and until that deployment exists
+  // this host sends visitors to the landing page instead of a lookalike. When
+  // the real demo goes live, demo.goproxe.com's DNS moves off this app and
+  // this branch never fires again.
+  return NextResponse.redirect('https://goproxe.com/', 302)
 }
 
 export const config = {
