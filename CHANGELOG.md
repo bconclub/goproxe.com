@@ -1,5 +1,20 @@
 ﻿# Changelog
 
+## 2026-08-09 14:30 IST · v0.3.10 — dashboard strip, channel countdown, phone-safe checkout
+
+- User-facing: the Dashboard section no longer renders as a clipped ~146px
+  strip after the window has ever been narrower than 900px; the desktop
+  resize pass now clears the mobile row height it used to leave behind.
+- User-facing: on mobile, the auto-advance countdown line sits directly under
+  the channel tab strip (beneath the highlighted channel) instead of hanging
+  below the phone mockup.
+- User-facing: typing a bare local phone number ("9876543210") in the Deploy
+  form no longer silently dumps the buyer on the booking calendar. Dodo
+  requires E.164; the checkout route now normalises the number by market,
+  and if Dodo still rejects the session with a phone attached it retries
+  once without it, so a phone can never cost the sale.
+- `(pending push)`
+
 ## 2026-08-08 16:25 IST · style(hiw): drop the white card outline
 
 - User-facing: the "How It Works" cards lose their 1px white border and the
