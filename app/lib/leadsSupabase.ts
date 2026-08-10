@@ -242,6 +242,50 @@ export async function markCheckoutStarted(input: {
  * email, and written under `unified_context.voice` alongside the existing
  * `web` and `billing` namespaces.
  */
+/**
+ * When did we last dial this number? Null if never, or if we cannot tell.
+ *
+ * The 24-hour "one call per number" limit lived in a module-level Map, so every
+ * deploy and every pm2 restart wiped it — on a site that redeploys on each
+ * push, the limit was closer to "one call per number per deploy". The durable
+ * record already existed (recordCallbackDial writes
+ * unified_context.voice.last_call_at); nothing was reading it back.
+ *
+ * Returns the timestamp of the last DIAL ATTEMPT, successful or failed.
+ * A failed attempt still consumed a dial, so it still counts against the limit.
+ *
+ * On any error this returns null, i.e. "allow the call". A database blip must
+ * not silently stop the product doing the one thing the hero promises; the
+ * in-memory guard in the route still catches rapid double-taps regardless.
+ */
+export async function lastCallbackAt(phone: string | null | undefined): Promise<Date | null> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return null
+
+  const normalized = normalizePhone(phone ?? '')
+  if (!normalized) return null
+
+  try {
+    const { data } = await supabase
+      .from('all_leads')
+      .select('unified_context')
+      .eq('customer_phone_normalized', normalized)
+      .eq('brand', BRAND)
+      .order('last_interaction_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    const at = (data?.unified_context as Record<string, any> | null)?.voice?.last_call_at
+    if (!at) return null
+
+    const when = new Date(at)
+    return Number.isNaN(when.getTime()) ? null : when
+  } catch (err) {
+    console.error('[leadsSupabase] lastCallbackAt failed', err)
+    return null
+  }
+}
+
 export async function recordCallbackDial(input: {
   phone?: string | null
   status: 'dialing' | 'failed'

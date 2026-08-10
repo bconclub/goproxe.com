@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { recordCallbackDial } from '../../lib/leadsSupabase'
+import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
 
 /**
  * Hero phone capture → instant outbound call from the PROXe voice agent.
@@ -125,6 +125,20 @@ export async function POST(request: Request) {
 
   const now = Date.now()
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+
+  // The 24h phone limit is answered from the DATABASE, not the Map below.
+  // The Map is per-process: every deploy and every pm2 restart emptied it, so
+  // on a site that redeploys on each push the limit was really "one call per
+  // number per deploy". recordCallbackDial has been writing the timestamp all
+  // along; this reads it back. The Map stays as a cheap first line against
+  // double-taps within a single process, and as the IP guard.
+  const lastDial = await lastCallbackAt(phone)
+  if (lastDial && now - lastDial.getTime() < PHONE_COOLDOWN_MS) {
+    const hoursLeft = Math.ceil((PHONE_COOLDOWN_MS - (now - lastDial.getTime())) / 3_600_000)
+    console.log('[api/callback] suppressed, called within 24h', { hoursLeft })
+    return NextResponse.json({ ok: false, reason: 'recently_called', hoursLeft })
+  }
+
   if (now - (lastByPhone.get(phone) ?? 0) < PHONE_COOLDOWN_MS || now - (lastByIp.get(ip) ?? 0) < IP_COOLDOWN_MS) {
     // Suppressed by the guard: NO call was placed. This used to answer
     // { ok: true } to "keep the UX calm", which meant the page showed
