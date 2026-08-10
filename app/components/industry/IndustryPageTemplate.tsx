@@ -6,7 +6,7 @@ import IndustryCtas from './IndustryCtas';
 import IndustryFaq from './IndustryFaq';
 
 /**
- * The one template all 8 industry pages render through. Server component —
+ * The one template all 8 industry pages render through. Server component, 
  * only the CTAs and the FAQ accordion are client islands.
  *
  * Narrative order is deliberate and fixed:
@@ -107,14 +107,14 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
               <span className="indp-label">Live demo</span>
               <h2 className="indp-h2">Watch PROXe run a business like yours.</h2>
               <p>
-                A live dashboard for &ldquo;{demo.business.name}&rdquo; — leads
+                A live dashboard for &ldquo;{demo.business.name}&rdquo;, leads
                 arriving, chats being answered, {demo.bookingNoun.toLowerCase()}s
                 landing. Click around, open conversations, talk to the agent.
                 No sign-up, nothing to install.
               </p>
               <IndustryCtas slug={industry.slug} />
             </div>
-            {/* CSS-only teaser of the demo — real persona names from the same
+            {/* CSS-only teaser of the demo, real persona names from the same
                 registry the demo itself uses, so it never goes stale. */}
             <div className="indp-mini" aria-hidden>
               <div className="indp-mini-top">
@@ -193,7 +193,7 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
         <div className="proxe-container">
           <h2 className="indp-h2">Never miss a lead again.</h2>
           <p className="indp-section-sub">
-            See it working for a business like yours first — then deploy it on your own.
+            See it working for a business like yours first, then deploy it on your own.
           </p>
           <IndustryCtas slug={industry.slug} />
         </div>

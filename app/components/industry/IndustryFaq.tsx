@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { track } from '../../lib/analytics';
 
-/** Accordion. One open at a time — these are objections, read one by one. */
+/** Accordion. One open at a time, these are objections, read one by one. */
 export default function IndustryFaq({
   slug,
   items,

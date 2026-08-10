@@ -2,18 +2,18 @@ import { FiUser, FiStar, FiCalendar, FiCheckCircle } from 'react-icons/fi';
 import type { IndustryPageContent } from '../industries';
 
 /**
- * Real Estate — hand-written page content.
+ * Real Estate, hand-written page content.
  *
  * Written to the broker/builder sales head. Outcome numbers are deliberately
- * absent — capability claims only, until per-client results can be sourced.
+ * absent, capability claims only, until per-client results can be sourced.
  */
 const realestate: IndustryPageContent = {
-  seoTitle: 'PROXe for Real Estate — every portal lead answered in seconds',
+  seoTitle: 'PROXe for Real Estate, every portal lead answered in seconds',
   seoDesc:
     'Real estate leads go cold in minutes. PROXe answers every inquiry instantly, qualifies budget and intent, books site visits, and follows up until the deal closes.',
   heroHeadline: 'The buyer messaged 5 builders. The first reply wins.',
   heroSub:
-    'PROXe answers every property inquiry in seconds — WhatsApp, website, Instagram, calls — qualifies budget and timeline, books the site visit, and keeps following up until the deal moves. Your team talks only to buyers worth their time.',
+    'PROXe answers every property inquiry in seconds. WhatsApp, website, Instagram, calls, qualifies budget and timeline, books the site visit, and keeps following up until the deal moves. Your team talks only to buyers worth their time.',
   painIntro: 'Ask your sales team about last month. These four happened weekly:',
   painFixes: [
     {
@@ -23,7 +23,7 @@ const realestate: IndustryPageContent = {
       },
       fix: {
         title: 'First reply in seconds, every time',
-        body: 'PROXe engages the moment the inquiry lands — shares the floor plan, answers price and possession questions, and proposes a site visit before your competitor’s telecaller has picked up the phone.',
+        body: 'PROXe engages the moment the inquiry lands, shares the floor plan, answers price and possession questions, and proposes a site visit before your competitor’s telecaller has picked up the phone.',
       },
     },
     {
@@ -33,7 +33,7 @@ const realestate: IndustryPageContent = {
       },
       fix: {
         title: 'Budget and intent qualified before a human touches it',
-        body: 'PROXe asks the qualifying questions naturally in conversation — budget, location, timeline, loan status — and scores every lead. Your team opens the day with the hottest buyers on top, context attached.',
+        body: 'PROXe asks the qualifying questions naturally in conversation, budget, location, timeline, loan status, and scores every lead. Your team opens the day with the hottest buyers on top, context attached.',
       },
     },
     {
@@ -43,7 +43,7 @@ const realestate: IndustryPageContent = {
       },
       fix: {
         title: 'Visits proposed, booked and reminded automatically',
-        body: 'PROXe offers concrete slots in the conversation, books the visit, sends directions, and reminds the buyer on the morning — so the visit that closes deals actually happens.',
+        body: 'PROXe offers concrete slots in the conversation, books the visit, sends directions, and reminds the buyer on the morning, so the visit that closes deals actually happens.',
       },
     },
     {
@@ -53,7 +53,7 @@ const realestate: IndustryPageContent = {
       },
       fix: {
         title: 'Persistent, polite follow-up until the deal moves',
-        body: 'PROXe schedules and sends every follow-up on time — new inventory, price revisions, gentle nudges — across WhatsApp and email, and alerts your closer the moment the buyer re-engages.',
+        body: 'PROXe schedules and sends every follow-up on time, new inventory, price revisions, gentle nudges, across WhatsApp and email, and alerts your closer the moment the buyer re-engages.',
       },
     },
   ],
@@ -62,7 +62,7 @@ const realestate: IndustryPageContent = {
       Icon: FiUser,
       label: 'Lead',
       title: '1. An inquiry lands',
-      body: 'Portal, website, Instagram ad or a call — PROXe responds instantly with the right project details and starts a real conversation.',
+      body: 'Portal, website, Instagram ad or a call. PROXe responds instantly with the right project details and starts a real conversation.',
     },
     {
       Icon: FiStar,
@@ -74,13 +74,13 @@ const realestate: IndustryPageContent = {
       Icon: FiCalendar,
       label: 'Visit',
       title: '3. The site visit is booked',
-      body: 'PROXe proposes slots, books the visit, sends directions and reminders — and reschedules without your team touching it.',
+      body: 'PROXe proposes slots, books the visit, sends directions and reminders, and reschedules without your team touching it.',
     },
     {
       Icon: FiCheckCircle,
       label: 'Close',
       title: '4. Follow-up until it closes',
-      body: 'After the visit, PROXe keeps the thread alive — answers, documents, nudges — and hands your closer a buyer who is ready to talk numbers.',
+      body: 'After the visit, PROXe keeps the thread alive, answers, documents, nudges, and hands your closer a buyer who is ready to talk numbers.',
     },
   ],
   faq: [
@@ -90,19 +90,19 @@ const realestate: IndustryPageContent = {
     },
     {
       q: 'Can it handle multiple projects with different pricing?',
-      a: 'Yes — PROXe is trained on each project’s inventory, pricing, floor plans and possession dates, and answers with the right project’s details based on what the buyer asks.',
+      a: 'Yes. PROXe is trained on each project’s inventory, pricing, floor plans and possession dates, and answers with the right project’s details based on what the buyer asks.',
     },
     {
       q: 'What about RERA compliance in what it says?',
-      a: 'PROXe only quotes the approved project information you give it — RERA numbers, carpet areas, prices. It never invents specifications or promises.',
+      a: 'PROXe only quotes the approved project information you give it. RERA numbers, carpet areas, prices. It never invents specifications or promises.',
     },
     {
       q: 'My team uses its own CRM. Does this replace it?',
-      a: 'PROXe gives you a lead dashboard out of the box, and your team can keep closing the way they do today — you’ll simply stop losing leads before they reach the CRM.',
+      a: 'PROXe gives you a lead dashboard out of the box, and your team can keep closing the way they do today, you’ll simply stop losing leads before they reach the CRM.',
     },
     {
       q: 'How fast can it go live for my project?',
-      a: 'About a week: we train PROXe on your projects, connect WhatsApp and your lead sources, and your telecallers keep working exactly as before — just on hotter leads.',
+      a: 'About a week: we train PROXe on your projects, connect WhatsApp and your lead sources, and your telecallers keep working exactly as before, just on hotter leads.',
     },
   ],
 };

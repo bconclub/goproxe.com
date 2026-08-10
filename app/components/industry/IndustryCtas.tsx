@@ -14,7 +14,7 @@ import { track } from '../../lib/analytics';
  * so the template itself can stay a server component.
  *
  * The demo link is deliberately RELATIVE (/demo/slug): it works in dev, in
- * preview deploys, and on production before demo.goproxe.com DNS exists —
+ * preview deploys, and on production before demo.goproxe.com DNS exists, 
  * the subdomain is additive, not required.
  */
 export default function IndustryCtas({

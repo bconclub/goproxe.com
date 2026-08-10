@@ -1,11 +1,11 @@
 /**
- * The industry registry — single source of truth.
+ * The industry registry, single source of truth.
  *
  * One record per industry drives FOUR surfaces: the landing-page carousel
  * cards (IndustriesSection), the /industries/[slug] internal pages, the
  * sitemap/OG metadata, and the demo dashboard's theming + simulation at
  * demo.goproxe.com/[slug]. Content lives here precisely so those surfaces can
- * never drift apart — change a stat once, it changes everywhere.
+ * never drift apart, change a stat once, it changes everywhere.
  *
  * Deep hand-written page content (clinics, realestate, coaching) lives in
  * ./industry-content/*.ts and overrides the generated default. The other five
@@ -46,7 +46,7 @@ import coachingPage from './industry-content/coaching';
 export type Activity = { Icon: React.ElementType; top: string; sub: string };
 export type Step = { Icon: React.ElementType; label: string };
 
-/** A pain card and its 1:1 fix — the page renders them in the same order so
+/** A pain card and its 1:1 fix, the page renders them in the same order so
     the mapping is unmistakable. */
 export type PainFix = {
   pain: { title: string; body: string };
@@ -60,7 +60,7 @@ export type IndustryPageContent = {
   heroSub: string;
   painIntro: string;
   painFixes: PainFix[];
-  /** Day-to-day walkthrough — expands the card's 4-step flow. */
+  /** Day-to-day walkthrough, expands the card's 4-step flow. */
   steps: Array<{ Icon: React.ElementType; label: string; title: string; body: string }>;
   faq: Array<{ q: string; a: string }>;
 };
@@ -71,7 +71,7 @@ export type IndustryDemoConfig = {
   stages: string[];
   /** What a landed conversion is called in this industry. */
   bookingNoun: string;
-  /** Lead names fitting the market — the sim draws from these. */
+  /** Lead names fitting the market, the sim draws from these. */
   personas: string[];
   sources: Array<'WhatsApp' | 'Website' | 'Instagram' | 'Call'>;
   /** Opening customer messages. */
@@ -85,7 +85,7 @@ export type IndustryDemoConfig = {
 
 export type Industry = {
   id: string;
-  /** Same as id — explicit, because it is a public URL segment. */
+  /** Same as id, explicit, because it is a public URL segment. */
   slug: string;
   color: string;
   gradient: string;
@@ -100,7 +100,7 @@ export type Industry = {
    * ("Reminders / automated on WhatsApp and voice") rather than results
    * ("68% fewer no-shows"), because we cannot yet source per-client outcome
    * numbers and an unsourced statistic is the same credibility liability as a
-   * fabricated testimonial — eight times over.
+   * fabricated testimonial, eight times over.
    *
    * The single exception is Home Services' "5x faster lead response": that is
    * a property of the product (an agent replies in seconds where a human
@@ -156,10 +156,10 @@ export const INDUSTRIES: Industry[] = [
       ],
       aiReplies: [
         'We have 11:00 AM and 4:30 PM open tomorrow. Which works better for you?',
-        'So sorry to hear that — we keep emergency slots for exactly this. Can you come at 2:15 PM today?',
+        'So sorry to hear that, we keep emergency slots for exactly this. Can you come at 2:15 PM today?',
         'A root canal here is ₹6,500–₹9,000 depending on the tooth. The doctor confirms the exact cost after an X-ray, which is free with the consultation.',
         'Yes, we accept Star Health for all procedures above ₹5,000. Just carry your e-card.',
-        'Saturday 10:30 AM is open for a braces consultation — shall I book it?',
+        'Saturday 10:30 AM is open for a braces consultation, shall I book it?',
       ],
       userReplyPool: [
         '11 AM works, thank you!',
@@ -207,11 +207,11 @@ export const INDUSTRIES: Industry[] = [
         'Do you have anything near good schools in HSR Layout?',
       ],
       aiReplies: [
-        'Yes, two units are left — east-facing on the 8th and 11th floors. Would you like the floor plan and a site visit this week?',
+        'Yes, two units are left, east-facing on the 8th and 11th floors. Would you like the floor plan and a site visit this week?',
         'The Sarjapur project is ₹7,200/sqft base, with possession in March. I can send the full cost sheet on WhatsApp.',
         'Three options fit that: 2BHKs in Whitefield (₹82L), Marathahalli (₹78L) and HSR (₹89L), all ready to move. Want the comparison sheet?',
-        'Sunday works — 10:30 AM or 3:00 PM slot? Our site manager will walk you through personally.',
-        'Fully RERA registered — PRM/KA/RERA/1251. I can send the certificate along with the brochure.',
+        'Sunday works, 10:30 AM or 3:00 PM slot? Our site manager will walk you through personally.',
+        'Fully RERA registered. PRM/KA/RERA/1251. I can send the certificate along with the brochure.',
       ],
       userReplyPool: [
         'Send me the cost sheet please.',
@@ -258,10 +258,10 @@ export const INDUSTRIES: Industry[] = [
         'My previous order caused slight redness. What should I use instead?',
       ],
       aiReplies: [
-        'Yes — it is oil-free and non-comedogenic, our most repurchased serum by oily-skin customers. Want me to apply the first-order 10% off?',
+        'Yes, it is oil-free and non-comedogenic, our most repurchased serum by oily-skin customers. Want me to apply the first-order 10% off?',
         'The night cream is fragrance-free and dermat-tested for sensitive skin. If it does not suit you, returns are free within 15 days.',
         'Order #4821 is out for delivery and should reach you by 7 PM today. Tracking: bit.ly/aura4821',
-        'COD is available across Delhi NCR — no extra charge.',
+        'COD is available across Delhi NCR, no extra charge.',
         'The sunscreen combo is at 20% off till Sunday, and your cart qualifies for free shipping too.',
       ],
       userReplyPool: [
@@ -310,11 +310,11 @@ export const INDUSTRIES: Industry[] = [
         'Difference between your classroom and online program?',
       ],
       aiReplies: [
-        'The CAT 2027 comprehensive batch is ₹65,000 with EMI options. There is an early-bird ₹8,000 off till the 15th — shall I book you a free counselling call to walk through it?',
-        'For CLAT starting in 12th, our 1-year foundation batch fits best — classes after school hours. A quick call with our counsellor would map her prep plan; when is she free?',
-        'Yes — Saturday-Sunday batches, 9 AM to 1 PM, designed for working professionals. Same faculty as weekday batches.',
+        'The CAT 2027 comprehensive batch is ₹65,000 with EMI options. There is an early-bird ₹8,000 off till the 15th, shall I book you a free counselling call to walk through it?',
+        'For CLAT starting in 12th, our 1-year foundation batch fits best, classes after school hours. A quick call with our counsellor would map her prep plan; when is she free?',
+        'Yes. Saturday-Sunday batches, 9 AM to 1 PM, designed for working professionals. Same faculty as weekday batches.',
         '41 of our students crossed 99 percentile last year, 6 converted IIM A/B/C. Happy to share the full result sheet.',
-        'Absolutely — attend any one live class free before you decide. Which subject would you like to sit in on?',
+        'Absolutely, attend any one live class free before you decide. Which subject would you like to sit in on?',
       ],
       userReplyPool: [
         'Book the counselling call please.',
@@ -361,11 +361,11 @@ export const INDUSTRIES: Industry[] = [
         'I was a member last year. Any rejoining offer?',
       ],
       aiReplies: [
-        'Monthly is ₹2,500, quarterly ₹6,500, annual ₹19,000 with 2 months free. First trial session is on us — want me to book one?',
-        'Yes — ladies-only batches at 10 AM and 5 PM with our female trainers. Shall I book a trial in either slot?',
-        'Love it. Free trial CrossFit class — tomorrow 7 AM or 6:30 PM. Which one do I lock in?',
+        'Monthly is ₹2,500, quarterly ₹6,500, annual ₹19,000 with 2 months free. First trial session is on us, want me to book one?',
+        'Yes, ladies-only batches at 10 AM and 5 PM with our female trainers. Shall I book a trial in either slot?',
+        'Love it. Free trial CrossFit class, tomorrow 7 AM or 6:30 PM. Which one do I lock in?',
         'Our transformation program pairs you with a dedicated trainer + diet plan, 12 weeks. First assessment session is free.',
-        'The 6 AM batch usually fills by month-start. Two spots are open right now — should I reserve one?',
+        'The 6 AM batch usually fills by month-start. Two spots are open right now, should I reserve one?',
       ],
       userReplyPool: [
         'Book me for 7 AM tomorrow!',
@@ -412,11 +412,11 @@ export const INDUSTRIES: Industry[] = [
         'Need an audit done before our funding round.',
       ],
       aiReplies: [
-        'We handle end-to-end GST — registration, monthly filing, reconciliation. For a new business it starts at ₹2,000/month. A 20-minute discovery call would scope it exactly; tomorrow 4 PM work?',
+        'We handle end-to-end GST, registration, monthly filing, reconciliation. For a new business it starts at ₹2,000/month. A 20-minute discovery call would scope it exactly; tomorrow 4 PM work?',
         'Pvt Ltd registration is ₹12,999 all-inclusive (govt fees + DSC + DIN), done in 10–12 days. Want the checklist of documents?',
-        'Notices are time-sensitive — I am marking this urgent. Our senior partner has a slot today at 6 PM; shall I book it and you can share the notice copy meanwhile?',
-        'Yes — payroll, PF, ESI, PT compliance for teams up to 200. We would need one call to see your current setup.',
-        'Mid-year takeovers are routine for us — we reconcile from your last filed period. Discovery call this week to review the books?',
+        'Notices are time-sensitive. I am marking this urgent. Our senior partner has a slot today at 6 PM; shall I book it and you can share the notice copy meanwhile?',
+        'Yes, payroll, PF, ESI, PT compliance for teams up to 200. We would need one call to see your current setup.',
+        'Mid-year takeovers are routine for us, we reconcile from your last filed period. Discovery call this week to review the books?',
       ],
       userReplyPool: [
         'Tomorrow 4 PM works.',
@@ -463,7 +463,7 @@ export const INDUSTRIES: Industry[] = [
         'How long is the waiting period for the Scorpio-N?',
       ],
       aiReplies: [
-        'White SX(O) diesel is in stock — one unit, arriving Thursday. I can hold it 48 hours with a refundable ₹5,000. Test drive this week?',
+        'White SX(O) diesel is in stock, one unit, arriving Thursday. I can hold it 48 hours with a refundable ₹5,000. Test drive this week?',
         'Nexon EV Prime on-road Bangalore is ₹16.8L. With the current corporate discount it comes to ₹16.3L. Want the detailed breakup?',
         'A 2021 Baleno in good condition fetches ₹5.2–5.8L in exchange right now, plus ₹20,000 exchange bonus this month. Bring it in for a 15-minute evaluation?',
         'Saturday test drives: 11 AM and 4 PM open. Which one, and which variant would you like to drive?',
@@ -515,9 +515,9 @@ export const INDUSTRIES: Industry[] = [
       ],
       aiReplies: [
         'Our AC technician can reach you between 3 and 5 PM today. Visit charge ₹249, waived if you go ahead with the repair. Shall I book it?',
-        'Tap leak — our plumber has a 6 PM slot today or 10 AM tomorrow. Which one should I lock?',
+        'Tap leak, our plumber has a 6 PM slot today or 10 AM tomorrow. Which one should I lock?',
         '2BHK deep cleaning is ₹3,499 (kitchen + 2 bathrooms included), 4–5 hours, eco-friendly chemicals. Weekday slots have 10% off.',
-        'Frequent tripping usually means an overloaded circuit or a faulty MCB — our electrician can diagnose today evening. Booking the 5 PM visit?',
+        'Frequent tripping usually means an overloaded circuit or a faulty MCB, our electrician can diagnose today evening. Booking the 5 PM visit?',
         'For a 3BHK interior our estimator visits free, measures, and gives a fixed quote in 24 hours. Tomorrow morning work?',
       ],
       userReplyPool: [
@@ -538,7 +538,7 @@ export function getIndustry(slug: string): Industry | undefined {
 }
 
 /**
- * Serviceable page content generated from the card seed — used for industries
+ * Serviceable page content generated from the card seed, used for industries
  * that have not yet earned hand-written copy. Deliberately concrete: pains are
  * scenes, not abstractions, and each fix mirrors its pain 1:1.
  */
@@ -546,22 +546,22 @@ export function defaultPageContent(ind: Industry): IndustryPageContent {
   const first = ind.flow[0]?.label ?? 'Inquiry';
   return {
     seoTitle: `PROXe for ${ind.title}`,
-    seoDesc: `${ind.desc} See how PROXe runs ${ind.title.toLowerCase()} on autopilot — ${ind.stat} ${ind.statLabel}.`,
+    seoDesc: `${ind.desc} See how PROXe runs ${ind.title.toLowerCase()} on autopilot, ${ind.stat} ${ind.statLabel}.`,
     heroHeadline: `${ind.title} lose leads every day. PROXe doesn't.`,
-    heroSub: ind.desc + ' PROXe answers on WhatsApp, your website, Instagram and calls — instantly, 24/7 — and follows up until the job is done.',
+    heroSub: ind.desc + ' PROXe answers on WhatsApp, your website, Instagram and calls, instantly, 24/7, and follows up until the job is done.',
     painIntro: 'Every one of these is happening in your business this week:',
     painFixes: [
       {
         pain: { title: 'Leads arrive after hours', body: 'Messages land at 9 PM, calls come on Sunday. By the time someone replies on Monday, they have already gone with whoever answered first.' },
-        fix: { title: 'PROXe answers in seconds, 24/7', body: 'Every WhatsApp message, website chat and missed call gets an instant, useful reply — at 9 PM, on Sunday, always. You are permanently the first to respond.' },
+        fix: { title: 'PROXe answers in seconds, 24/7', body: 'Every WhatsApp message, website chat and missed call gets an instant, useful reply, at 9 PM, on Sunday, always. You are permanently the first to respond.' },
       },
       {
         pain: { title: 'Follow-ups depend on memory', body: 'Interested people go quiet, and nobody has time to chase every one of them. The quiet ones are where the revenue leaks.' },
-        fix: { title: 'Automatic, persistent follow-up', body: 'PROXe nudges every unanswered lead across WhatsApp, email and SMS until they respond — politely, on schedule, without anyone remembering to.' },
+        fix: { title: 'Automatic, persistent follow-up', body: 'PROXe nudges every unanswered lead across WhatsApp, email and SMS until they respond, politely, on schedule, without anyone remembering to.' },
       },
       {
         pain: { title: 'No one knows which lead is hot', body: 'Every inquiry looks the same in a full inbox. The serious buyer waits in the same queue as the tyre-kicker.' },
-        fix: { title: 'Every lead scored and sorted', body: 'PROXe scores intent from the conversation itself, so your team opens the day looking at the hottest leads first — with full context attached.' },
+        fix: { title: 'Every lead scored and sorted', body: 'PROXe scores intent from the conversation itself, so your team opens the day looking at the hottest leads first, with full context attached.' },
       },
     ],
     steps: ind.flow.map((s, i) => ({
@@ -570,21 +570,21 @@ export function defaultPageContent(ind: Industry): IndustryPageContent {
       title: `${i + 1}. ${s.label}`,
       body:
         i === 0
-          ? `A new ${first.toLowerCase()} lands from any channel — PROXe captures it, replies instantly, and starts the conversation.`
+          ? `A new ${first.toLowerCase()} lands from any channel. PROXe captures it, replies instantly, and starts the conversation.`
           : i === ind.flow.length - 1
-            ? `PROXe keeps the thread warm until "${s.label.toLowerCase()}" actually happens — and logs everything on the lead.`
-            : `PROXe handles "${s.label.toLowerCase()}" automatically — no staff time, no dropped threads.`,
+            ? `PROXe keeps the thread warm until "${s.label.toLowerCase()}" actually happens, and logs everything on the lead.`
+            : `PROXe handles "${s.label.toLowerCase()}" automatically, no staff time, no dropped threads.`,
     })),
     faq: [
       { q: 'How fast can PROXe go live for my business?', a: 'Deployment takes about a week: we train PROXe on your services, prices, tone and FAQs, connect your WhatsApp and website, and hand you the dashboard.' },
-      { q: 'Does it speak my customers’ language?', a: 'Yes — PROXe converses naturally in English, Hindi and regional languages, and switches automatically to whatever the customer uses.' },
-      { q: 'What happens when it can’t answer something?', a: 'It says so honestly, captures the question, and routes the conversation to you instantly — you get an alert with full context.' },
+      { q: 'Does it speak my customers’ language?', a: 'Yes. PROXe converses naturally in English, Hindi and regional languages, and switches automatically to whatever the customer uses.' },
+      { q: 'What happens when it can’t answer something?', a: 'It says so honestly, captures the question, and routes the conversation to you instantly, you get an alert with full context.' },
       { q: 'Do I need new software or a new number?', a: 'No. PROXe connects to your existing WhatsApp number and website. Your team just gets one dashboard where everything lands.' },
     ],
   };
 }
 
-/** The page content for an industry — hand-written when present, generated otherwise. */
+/** The page content for an industry, hand-written when present, generated otherwise. */
 export function getPageContent(ind: Industry): IndustryPageContent {
   return ind.page ?? defaultPageContent(ind);
 }
