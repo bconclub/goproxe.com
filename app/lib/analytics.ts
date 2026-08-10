@@ -153,7 +153,19 @@ function isLocalHost(): boolean {
 }
 
 /** Fire a custom event to every analytics tag present. Safe to call anywhere. */
-export function track(event: ProxeEvent, params: EventParams = {}): void {
+/**
+ * Generate a conversion id shared between the pixel and the Conversions API.
+ * Meta merges a browser event and a server event into ONE conversion only when
+ * event_name and event_id both match — so the same id must reach both.
+ */
+export function newEventId(): string {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return (crypto as Crypto & { randomUUID: () => string }).randomUUID()
+  }
+  return `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+}
+
+export function track(event: ProxeEvent, params: EventParams = {}, eventId?: string): void {
   if (typeof window === 'undefined') return
   if (isLocalHost()) return
 
@@ -168,12 +180,15 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
   // Meta Pixel — every event reaches the pixel, standard names via 'track' so
   // ad delivery can optimise toward them, everything else via 'trackCustom'.
   try {
+    // The 4th argument carries eventID. It is what lets the server's CAPI
+    // copy of this same conversion be deduplicated rather than double-counted.
+    const opts = eventId ? { eventID: eventId } : undefined
     const standard = META_STANDARD[event]
     if (standard) {
-      window.fbq?.('track', standard, params)
+      window.fbq?.('track', standard, params, opts)
     } else {
       const custom = META_CUSTOM[event]
-      if (custom) window.fbq?.('trackCustom', custom, params)
+      if (custom) window.fbq?.('trackCustom', custom, params, opts)
     }
   } catch {
     /* no-op */
@@ -185,19 +200,24 @@ export function track(event: ProxeEvent, params: EventParams = {}): void {
  * the GA4 `form_completed` + Meta `Lead`, carrying non-PII context only (we send
  * the source + whether a brand/site was provided, never the raw email/phone).
  */
-export function trackLead(meta: { source?: string; hasBrand?: boolean; hasWebsite?: boolean } = {}): void {
+export function trackLead(meta: { source?: string; hasBrand?: boolean; hasWebsite?: boolean } = {}): string {
   // Value is the Core plan price in the visitor's own market, not a flat 1 USD.
   // Meta's value-optimised bidding ranks leads by this number, so quoting every
   // lead at $1 told it an Indian signup and an international one were worth the
   // same; they differ by ~20x at the real subscription prices.
   const { value, currency } = planValue()
+  // Returned so the caller can pass the SAME id to submitLead(), which sends it
+  // to /api/lead, which fires the server-side twin. Without that hand-off the
+  // pixel and CAPI events are two separate conversions for one lead.
+  const eventId = newEventId()
   track('form_completed', {
     source: meta.source ?? 'deploy_form',
     has_brand: meta.hasBrand ?? false,
     has_website: meta.hasWebsite ?? false,
     currency,
     value,
-  })
+  }, eventId)
+  return eventId
 }
 
 /**

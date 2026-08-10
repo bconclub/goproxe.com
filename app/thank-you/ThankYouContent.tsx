@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { FiCalendar, FiClock, FiVideo, FiMail, FiArrowLeft } from 'react-icons/fi'
 import { getStoredUser, getStoredBooking, storeBooking, type LocalBooking } from '../lib/chatLocalStorage'
-import { track, trackPurchase } from '../lib/analytics'
+import { track, trackPurchase, newEventId } from '../lib/analytics'
 import { submitLead } from '../lib/leads'
 import BookingCalendar, { type BookingSlot } from '../components/shared/BookingCalendar'
 import styles from './thankyou.module.css'
@@ -50,13 +50,14 @@ export default function ThankYouContent() {
   const handleBookingConfirm = (slot: BookingSlot) => {
     storeBooking({ label: slot.label, time: slot.time }, 'proxe')
     setBooking({ label: slot.label, time: slot.time })
+    const bookingEventId = newEventId()
     track('booking_confirm', {
       source: 'post_checkout',
       day_of_week: new Date(slot.iso).toLocaleDateString('en-US', { weekday: 'long' }),
       time: slot.time,
-    })
+    }, bookingEventId)
     if (email) {
-      submitLead({ type: 'booking', email, bookingLabel: slot.label, bookingTime: slot.time })
+      submitLead({ type: 'booking', eventId: bookingEventId, email, bookingLabel: slot.label, bookingTime: slot.time })
     }
   }
 

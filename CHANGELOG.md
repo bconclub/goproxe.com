@@ -52,6 +52,27 @@
   dark copy half they drew a hard bright line around every card that read
   louder than the content. The drop shadow still separates card from violet.
 
+## 2026-08-09 · feat: Meta Conversions API (server-side conversions)
+
+- Leads, bookings and purchases now reach Meta from our SERVER as well as the
+  browser pixel. Ad blockers, iOS tracking prevention and private browsers drop
+  10-30% of pixel events today; every dropped one is a conversion Meta never
+  learns from, so campaigns optimise on a partial picture and report a worse
+  cost-per-result than reality.
+- Deduplication is the part that had to be right: Meta merges a pixel event and
+  a server event into ONE only when event_name AND event_id match. trackLead()
+  now returns the id it used, every capture point hands that same id to
+  submitLead(), and the pixel carries it as eventID. Without that the same lead
+  would have counted twice - worse than not sending it at all.
+- Purchase fires from the Dodo webhook, not the browser: a buyer who closes the
+  tab before /thank-you still counts, and the id derives from the payment id so
+  Dodo's retries dedupe instead of counting twice.
+- PII is SHA-256 hashed (lowercased, trimmed; phones digits-only) before it
+  leaves the server. _fbp/_fbc cookies are forwarded from the browser because
+  the server cannot read them and they carry the ad click id.
+- Inert until META_CAPI_ACCESS_TOKEN is set; the pixel keeps working alone.
+- `(pending)`
+
 ## 2026-08-09 · fix: credibility blockers + callback funnel tracking
 
 - User-facing: the three invented testimonials are gone. Zero testimonials

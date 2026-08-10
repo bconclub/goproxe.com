@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { sendCapiEvent, deriveEventId } from '../../lib/metaCapi'
 import { upsertProxeLead, updateProxeBooking } from '../../lib/leadsSupabase'
 
 /**
@@ -26,6 +27,13 @@ import { upsertProxeLead, updateProxeBooking } from '../../lib/leadsSupabase'
 const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL
 
 interface LeadPayload {
+  /** Shared with the browser's pixel call so Meta deduplicates the pair. */
+  eventId?: string
+  /** Meta's own browser cookies — they materially improve match quality. */
+  fbp?: string
+  fbc?: string
+  /** Page the conversion happened on. */
+  sourceUrl?: string
   type?: 'lead' | 'booking'
   name?: string
   email?: string
@@ -122,5 +130,38 @@ export async function POST(request: Request) {
   ])
 
   const captured = supabase === 'ok' || sheet === 'ok'
+
+  // Server-side twin of the browser's Lead/Schedule pixel event. The browser
+  // fires the pixel; this fires the same conversion from our server so the
+  // slice that ad blockers and iOS drop still reaches Meta.
+  //
+  // Deduplication: the client sends `eventId` and uses the SAME id for its
+  // pixel call, so Meta merges the pair into one conversion. When it is absent
+  // (older clients, server-to-server callers) the id is derived from the
+  // contact details, which is stable for the same person and still dedupes a
+  // retry — but a browser that fired an unmatched pixel id would double-count,
+  // which is why the client passes one.
+  if (captured) {
+    const isBooking = body.type === 'booking'
+    const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
+    void sendCapiEvent({
+      eventName: isBooking ? 'Schedule' : 'Lead',
+      eventId: body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed),
+      eventSourceUrl: body.sourceUrl,
+      user: {
+        email: body.email,
+        phone: body.phone,
+        firstName: body.name?.split(' ')[0],
+        clientIp:
+          request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+          request.headers.get('x-real-ip'),
+        userAgent: request.headers.get('user-agent'),
+        fbp: body.fbp,
+        fbc: body.fbc,
+      },
+      custom: { source: body.source, lead_type: body.type },
+    })
+  }
+
   return NextResponse.json({ ok: captured, supabase, sheet })
 }

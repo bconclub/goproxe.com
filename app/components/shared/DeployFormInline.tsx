@@ -145,7 +145,8 @@ export function DeployFormInline({
     storeUserProfile(userProfileData, 'proxe');
 
     // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
-    trackLead({
+    // Same id to pixel and server so Meta merges them into ONE Lead.
+    const leadEventId = trackLead({
       source: 'chat_widget',
       hasWebsite: Boolean(userProfileData.websiteUrl),
     });
@@ -158,6 +159,7 @@ export function DeployFormInline({
       phone: userProfileData.phone,
       websiteUrl: userProfileData.websiteUrl,
       source: 'chat_widget',
+      eventId: leadEventId,
     });
 
     // Notify parent of contact submission

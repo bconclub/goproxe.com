@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient } from '../../../lib/dodo'
 import { recordBillingEvent } from '../../../lib/leadsSupabase'
+import { sendCapiEvent, deriveEventId } from '../../../lib/metaCapi'
 
 /**
  * Dodo Payments webhook receiver.
@@ -131,6 +132,33 @@ export async function POST(request: Request) {
     // The payment is real regardless of whether our DB write landed.
     console.error('[webhooks/dodo] handled event but failed to record it', { type, webhookId, err })
     return NextResponse.json({ ok: true, recorded: false, reason: 'exception', type })
+  }
+
+  // Purchase to Meta, server-side. This is the ONLY place a payment is
+  // confirmed by the payment provider rather than inferred from a browser
+  // landing on /thank-you — a buyer who closes the tab before redirect still
+  // counts here, and a bot hitting /thank-you never does.
+  //
+  // The event id is derived from the payment/subscription id, so Dodo's
+  // retries produce the SAME id and Meta deduplicates instead of counting the
+  // purchase twice. It also matches nothing the browser sends, deliberately:
+  // the browser's checkout_complete is a page view, this is the money.
+  if (type === 'subscription.active' || type === 'subscription.renewed') {
+    const amountMinor =
+      typeof data.total_amount === 'number'
+        ? data.total_amount
+        : typeof data.recurring_pre_tax_amount === 'number'
+          ? data.recurring_pre_tax_amount
+          : null
+    void sendCapiEvent({
+      eventName: 'Purchase',
+      eventId: deriveEventId('purchase', String(data.payment_id ?? data.subscription_id ?? webhookId)),
+      user: { email: customer.email ?? null, firstName: (customer.name ?? '').split(' ')[0] || null },
+      // Dodo reports minor units (paise/cents); Meta wants major.
+      value: amountMinor !== null ? amountMinor / 100 : undefined,
+      currency: data.currency ?? undefined,
+      custom: { event_type: type, market: metadata.market ?? undefined },
+    })
   }
 
   return NextResponse.json({ ok: true, recorded: true, type })

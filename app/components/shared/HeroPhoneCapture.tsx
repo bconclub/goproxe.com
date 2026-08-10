@@ -74,7 +74,8 @@ export default function HeroPhoneCapture() {
     setStatus('submitting');
 
     // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
-    trackLead({ source: 'hero_phone' });
+    // Same id to both paths so Meta merges pixel + CAPI into one Lead.
+    const leadEventId = trackLead({ source: 'hero_phone' });
     track('callback_submit', { market: detectMarket() });
 
     // Prefill the chat widget / deploy form if they engage again later.
@@ -98,7 +99,7 @@ export default function HeroPhoneCapture() {
     const timeout = window.setTimeout(() => ac.abort(), 20000);
 
     const [, dial] = await Promise.all([
-      submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone' }),
+      submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone', eventId: leadEventId }),
       fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

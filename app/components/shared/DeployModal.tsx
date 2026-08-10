@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
-import { track, trackLead, trackCheckoutStart } from '../../lib/analytics';
+import { track, trackLead, trackCheckoutStart, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { detectMarket } from '../../lib/market';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
@@ -135,7 +135,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     // 🎯 The conversion fires HERE, once, the moment the form is captured —
     // GA4 `form_completed` + Meta `Lead` (no PII in params). It does NOT fire
     // again on the booking step or the thank-you page.
-    trackLead({
+    // Same id to pixel and server so Meta merges them into ONE Lead.
+    const leadEventId = trackLead({
       source: 'deploy_modal',
       hasBrand: Boolean(userProfile.brandName),
       hasWebsite: Boolean(userProfile.websiteUrl),
@@ -153,6 +154,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       brandName: userProfile.brandName,
       websiteUrl: userProfile.websiteUrl,
       source: isSales ? `${source}_sales` : 'deploy_modal',
+      eventId: leadEventId,
     });
 
     onFormSubmit?.();
@@ -204,14 +206,16 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   // event) and hand off to the thank-you page.
   const handleBookingConfirm = (slot: BookingSlot) => {
     storeBooking({ label: slot.label, time: slot.time }, 'proxe');
+    const bookingEventId = newEventId();
     track('booking_confirm', {
       source: 'deploy_modal',
       day_of_week: new Date(slot.iso).toLocaleDateString('en-US', { weekday: 'long' }),
       time: slot.time,
-    });
+    }, bookingEventId);
     // Update the same lead row (matched by email) with the chosen slot.
     submitLead({
       type: 'booking',
+      eventId: bookingEventId,
       email: formData.email.trim(),
       bookingLabel: slot.label,
       bookingTime: slot.time,
