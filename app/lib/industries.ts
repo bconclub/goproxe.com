@@ -123,6 +123,12 @@ export type Industry = {
    * Absent → 'dashboard' + 'columns' (the clinic reference, the default).
    */
   variant?: { hero?: 'dashboard' | 'cards'; leak?: 'columns' | 'arrows' | 'orb' };
+  /**
+   * Section photography (Unsplash, committed to /public/unsplash/, credits in
+   * _credits.json): `live` sits beside the live-in-action panels, `closing`
+   * backs the closing band. Absent → the section renders without a photo.
+   */
+  images?: { live?: string; closing?: string };
   demo: IndustryDemoConfig;
 };
 
@@ -150,6 +156,7 @@ export const INDUSTRIES: Industry[] = [
     stat: 'Reminders',
     statLabel: 'automated on WhatsApp and voice',
     page: clinicsPage,
+    images: { live: '/unsplash/clinics-live-eiqmc6c4.webp', closing: '/unsplash/clinics-closing-tl447mek.webp' },
     demo: {
       business: { name: 'Sunrise Dental Care', initials: 'SD', tagline: 'Multi-chair dental clinic · Indiranagar' },
       stages: ['New', 'Contacted', 'Booked', 'Visited'],
@@ -203,6 +210,7 @@ export const INDUSTRIES: Industry[] = [
     statLabel: 'buyers qualified and booked automatically',
     page: realestatePage,
     variant: { hero: 'cards', leak: 'orb' },
+    images: { live: '/unsplash/realestate-live-4453diqw.webp', closing: '/unsplash/realestate-closing-xfdfdmvy.webp' },
     demo: {
       business: { name: 'Skyline Properties', initials: 'SP', tagline: 'Residential & commercial · Whitefield' },
       stages: ['New', 'Qualified', 'Site Visit', 'Negotiation', 'Closed'],
@@ -255,6 +263,7 @@ export const INDUSTRIES: Industry[] = [
     stat: 'Carts',
     statLabel: 'abandoned carts followed up automatically',
     variant: { hero: 'cards', leak: 'arrows' },
+    images: { live: '/unsplash/d2c-live-g6q3lfae.webp', closing: '/unsplash/d2c-closing-k63or81f.webp' },
     demo: {
       business: { name: 'Aura Skincare', initials: 'AS', tagline: 'Clean beauty D2C · pan-India shipping' },
       stages: ['New', 'Engaged', 'Cart', 'Purchased'],
@@ -307,6 +316,7 @@ export const INDUSTRIES: Industry[] = [
     stat: 'Counselling',
     statLabel: 'inquiries qualified and calls booked',
     page: coachingPage,
+    images: { live: '/unsplash/coaching-live-i4llt9g8.webp', closing: '/unsplash/coaching-closing-klbapl9m.webp' },
     demo: {
       business: { name: 'Ascent Academy', initials: 'AA', tagline: 'CAT / GMAT / UPSC coaching · Koramangala' },
       stages: ['Inquiry', 'Qualified', 'Consultation', 'Enrolled'],
@@ -358,6 +368,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Trials',
     statLabel: 'booked, reminded and followed up',
+    images: { live: '/unsplash/fitness-live-cqfnt66t.webp', closing: '/unsplash/fitness-closing-pktk6guc.webp' },
     demo: {
       business: { name: 'Pulse Fitness Studio', initials: 'PF', tagline: 'Strength · CrossFit · Yoga · HSR Layout' },
       stages: ['Inquiry', 'Trial Booked', 'Trial Done', 'Member'],
@@ -409,6 +420,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Discovery',
     statLabel: 'leads qualified and calls scheduled',
+    images: { live: '/unsplash/pro-live-hpdjdl8m.webp', closing: '/unsplash/pro-closing-rayjmmma.webp' },
     demo: {
       business: { name: 'Meridian Advisors', initials: 'MA', tagline: 'CA firm · tax, audit & compliance' },
       stages: ['Lead', 'Qualified', 'Discovery Call', 'Proposal'],
@@ -460,6 +472,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Test drives',
     statLabel: 'enquiries answered and drives booked',
+    images: { live: '/unsplash/auto-live-rvedgpd.webp', closing: '/unsplash/auto-closing-ebpfjy7t.webp' },
     demo: {
       business: { name: 'Velocity Motors', initials: 'VM', tagline: 'Multi-brand dealership · Old Madras Road' },
       stages: ['Inquiry', 'Qualified', 'Test Drive', 'Purchased'],
@@ -511,6 +524,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: '5×',
     statLabel: 'faster lead response',
+    images: { live: '/unsplash/home-live-is5gdeld.webp', closing: '/unsplash/home-closing-wrzbarqn.webp' },
     demo: {
       business: { name: 'HomeFix Services', initials: 'HF', tagline: 'AC · plumbing · electrical · painting' },
       stages: ['Request', 'Qualified', 'Scheduled', 'Completed'],

@@ -1,5 +1,33 @@
 ﻿# Changelog
 
+## 2026-08-11 · feat(industries): homepage header, real photography, per-industry color
+
+- Industry pages now use THE homepage header: same floating boxed bar, same
+  logo assets with the wordmark-to-icon swap on scroll, same glass Deploy
+  pill with the label collapse. The page-private nav is gone.
+- Real photography on every page: 16 Unsplash photos (2 per industry,
+  optimized WebP, committed to /public/unsplash/, credits in _credits.json).
+  The live-in-action band gets a photo pane (banner on mobile), the closing
+  band gets a tinted photo backdrop.
+- De-purpled: sections now theme from each industry's own accent (leak/fix
+  panels, orb, steps, channel icons, bands, plus a faint accent tint in the
+  page base) so no two industries feel the same. Purple stays only on the
+  Deploy CTA, the brand button.
+- User-facing: every /industries/* page looks distinct and matches the
+  homepage chrome.
+
+## 2026-08-11 · fix(deploy): Clarity replays no longer break on every deploy
+
+- Session replays played back completely unstyled (raw text, no layout).
+  Cause: replays request the hashed CSS/JS chunk filenames that existed when
+  the session was recorded; the deploy's `rm -rf .next` deleted them, so
+  every replay recorded before a deploy 404'd its stylesheets.
+- deploy.yml now archives `.next/static` to /var/www/goproxe-static-archive
+  before the wipe and merges it back no-clobber after the build (new files
+  always win), pruned after 30 days. Open tabs across a deploy get the same
+  protection. Replays recorded from now on survive future deploys; replays
+  from before today reference chunks that are already gone and stay broken.
+
 ## 2026-08-10 · feat(industries): all 8 pages rebuilt to the reference designs
 
 - One shared template, one-to-one with the approved reference mocks: nav,

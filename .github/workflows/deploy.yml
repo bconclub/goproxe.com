@@ -33,6 +33,13 @@ jobs:
             git fetch origin
             git reset --hard origin/main
             npm ci --production=false
+            # Archive the outgoing build's hashed static chunks BEFORE deleting
+            # .next. Clarity session replays (and any browser tab open across a
+            # deploy) request the chunk filenames that existed at record time;
+            # rm -rf .next was 404ing them, which is why every replay recorded
+            # before a deploy played back completely unstyled.
+            mkdir -p /var/www/goproxe-static-archive
+            if [ -d .next/static ]; then cp -r .next/static/. /var/www/goproxe-static-archive/ || true; fi
             rm -rf .next
             # 4GB, not 2GB. Runs 266 and 268 hung for 745s and 904s and then
             # failed, on a box showing 4-10% CPU and 2.7GB of 8GB RAM used at
@@ -44,5 +51,11 @@ jobs:
             # Show what actually happened; without this a remote failure is
             # invisible from GitHub's side.
             npm run build || { echo "[deploy] BUILD FAILED"; tail -40 ~/.npm/_logs/*.log 2>/dev/null; exit 1; }
+            # Merge archived chunks back in WITHOUT overwriting the new build
+            # (-n = no-clobber, the fresh files always win). Next serves
+            # /_next/static straight from this directory, so restored old
+            # filenames resolve again. Prune the archive after 30 days.
+            cp -rn /var/www/goproxe-static-archive/. .next/static/ 2>/dev/null || true
+            find /var/www/goproxe-static-archive -type f -mtime +30 -delete 2>/dev/null || true
             pm2 restart goproxe || pm2 start npm --name goproxe -- start
             pm2 save

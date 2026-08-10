@@ -28,6 +28,7 @@ import type { Industry } from '../../lib/industries';
 import { getPageContent, defaultFeatures } from '../../lib/industries';
 import IndustryCtas from './IndustryCtas';
 import IndustryFaq from './IndustryFaq';
+import IndustryHeader from './IndustryHeader';
 
 /**
  * The one template all 8 industry pages render through. Server component,
@@ -172,17 +173,8 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
 
   return (
     <main className="indp-root" style={{ ['--acc' as string]: industry.color }}>
-      {/* ── Nav ── */}
-      <header className="indp-nav">
-        <div className="proxe-container indp-nav-inner">
-          <Link href="/" className="indp-nav-brand">PROXe</Link>
-          <nav className="indp-nav-links">
-            <Link href="/#industries">Industries</Link>
-            <Link href="/#pricing">Pricing</Link>
-          </nav>
-          <IndustryCtas slug={industry.slug} compact />
-        </div>
-      </header>
+      {/* ── Header, identical to the homepage's floating header ── */}
+      <IndustryHeader slug={industry.slug} />
 
       {/* ── Split hero ── */}
       <section className="indp-hero" data-hero={heroVariant}>
@@ -374,7 +366,14 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
       {/* ── Live in action ── */}
       <section className="indp-section indp-section--tight">
         <div className="proxe-container">
-          <div className="indp-demo-band">
+          <div className="indp-demo-band" data-photo={industry.images?.live ? 'true' : 'false'}>
+            {industry.images?.live && (
+              <div
+                className="indp-demo-photo"
+                style={{ backgroundImage: `url(${industry.images.live})` }}
+                aria-hidden
+              />
+            )}
             <div className="indp-demo-copy">
               <span className="indp-label">Live in action</span>
               <h2 className="indp-h2">Watch PROXe run a business like yours.</h2>
@@ -510,6 +509,13 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
       <section className="indp-close">
         <div className="proxe-container">
           <div className="indp-close-band">
+            {industry.images?.closing && (
+              <div
+                className="indp-close-photo"
+                style={{ backgroundImage: `url(${industry.images.closing})` }}
+                aria-hidden
+              />
+            )}
             <h2 className="indp-h2">Never miss a lead again.</h2>
             <p className="indp-close-sub">
               PROXe works 24/7 to capture, book and follow up, deployed and
