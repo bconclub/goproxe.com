@@ -86,8 +86,25 @@ const AnalyticsScripts = () => {
         </>
       )}
 
+      {/*
+        The id MUST NOT be "clarity". Any element with id="x" becomes window.x
+        (DOM named access), so <Script id="clarity"> made `window.clarity` the
+        <script> ELEMENT. The snippet below opens with
+        `c[a] = c[a] || function(){...}`, saw that truthy element, and kept it —
+        so the queue stub was never installed. When the real library then called
+        window.clarity(...) it threw "a[c] is not a function" and Clarity never
+        started: no _clck/_clsk cookies, nothing posted to l.clarity.ms/collect.
+        The tag was on the page and downloading fine the whole time, which is
+        why this read as "installed but not receiving data".
+
+        Verified on production: renaming the id makes typeof window.clarity
+        "function", the cookies appear and /collect starts posting.
+
+        The other ids here are safe because none of them shadow a global their
+        snippet depends on (gtag, dataLayer, fbq are all distinct from the ids).
+      */}
       {clarityProjectId && (
-        <Script id="clarity" strategy="afterInteractive">
+        <Script id="ms-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};

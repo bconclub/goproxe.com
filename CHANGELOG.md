@@ -1,5 +1,27 @@
 ﻿# Changelog
 
+## 2026-08-10 · fix(analytics): Clarity was installed and had never recorded a session
+
+- The Microsoft Clarity tag has been on the page for a while and was
+  downloading fine, which is exactly why this looked like a Clarity-side
+  problem. It had never started a session.
+- Cause: `<Script id="clarity">`. Any element with `id="x"` becomes `window.x`
+  through DOM named access, so `window.clarity` was the `<script>` ELEMENT.
+  Clarity's snippet opens with `c[a] = c[a] || function(){...}` — it saw that
+  truthy element and kept it, so the queue stub was never installed. When the
+  real library loaded it called `window.clarity(...)` and threw
+  `a[c] is not a function`.
+- Fix is the id: `clarity` → `ms-clarity`. Verified on production before and
+  after — before: `typeof window.clarity === 'object'` (an HTMLScriptElement),
+  no `_clck`/`_clsk` cookies, zero requests to `l.clarity.ms/collect`. After
+  renaming: `typeof window.clarity === 'function'`, both cookies set,
+  `scripts.clarity.ms/0.8.69/clarity.js` loaded, three POSTs to `/collect`.
+- The other tag ids (`ga-config`, `gtm-loader`, `meta-pixel`) are hyphenated,
+  so they cannot shadow the globals their snippets use. Clarity's was the only
+  single-word id on the page.
+- User-facing: none directly, but session recordings and heatmaps start
+  arriving, which is the whole point of having it.
+
 ## 2026-08-09 16:20 IST · v0.3.11 — positioning: "AI Lead Conversion System"
 
 - User-facing: product line renamed everywhere it appears — hero eyebrow now
@@ -26,7 +48,7 @@
   requires E.164; the checkout route now normalises the number by market,
   and if Dodo still rejects the session with a phone attached it retries
   once without it, so a phone can never cost the sale.
-- `(pending push)`
+- `9f5a523`, `60bcf1a`, `2c27773`
 
 ## 2026-08-09 · feat: industry pages + demo.goproxe.com
 
@@ -71,7 +93,7 @@
   leaves the server. _fbp/_fbc cookies are forwarded from the browser because
   the server cannot read them and they carry the ad click id.
 - Inert until META_CAPI_ACCESS_TOKEN is set; the pixel keeps working alone.
-- `(pending)`
+- `2d2c750`
 
 ## 2026-08-09 · fix: credibility blockers + callback funnel tracking
 
@@ -98,7 +120,7 @@
 - 14 new analytics events, GA4 + Meta. The callback funnel is the point:
   callback_start / submit / dialed / failed / blocked make the ~33% of dials
   that never connect visible for the first time.
-- `(pending)`
+- `4837ffa`
 
 ## 2026-08-08 16:05 IST · fix(pricing): the pricing buttons had no styling at all
 
@@ -187,7 +209,7 @@
   getting the full 88Ã—40 desktop pill.
 - User-facing: hero gains a phoneâ†’callback field; demo video plays with sound
   where the browser allows; all headlines render in a bold sans.
-- (pending push)
+- `6ab8044`
 
 ## 2026-08-03 22:10 IST Â· feat(checkout): v0.1.4 â€” lean Dodo checkout, full prefill, INR mandate ceiling
 
