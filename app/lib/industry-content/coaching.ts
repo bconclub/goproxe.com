@@ -5,12 +5,12 @@ import type { IndustryPageContent } from '../industries';
  * Coaching Academies — hand-written page content.
  *
  * Written to the academy founder/counselling head. The card's own stat
- * (4.2× more enrollments) is the only claimed result.
+ * Outcome numbers are deliberately absent — capability claims only.
  */
 const coaching: IndustryPageContent = {
   seoTitle: 'PROXe for Coaching Academies — every inquiry becomes a counselling call',
   seoDesc:
-    'Academies lose admissions in the gap between inquiry and counselling. PROXe answers every student and parent instantly, qualifies intent, books counselling calls, and follows up through the decision — 4.2× more enrollments.',
+    'Academies lose admissions in the gap between inquiry and counselling. PROXe answers every student and parent instantly, qualifies intent, books counselling calls, and follows up through the whole decision.',
   heroHeadline: 'Admission season is won in the first five minutes.',
   heroSub:
     'A student asks about your batch, and four other academies too. PROXe answers instantly — fees, batches, results, demo classes — qualifies seriousness, books the counselling call, and follows up with the parent until the seat is taken.',
@@ -43,7 +43,7 @@ const coaching: IndustryPageContent = {
       },
       fix: {
         title: 'Calls booked and reminded automatically',
-        body: 'PROXe proposes concrete slots, books the counselling call or campus visit, reminds the family, and reschedules no-shows — the calendar fills itself. That flow is where 4.2× more enrollments comes from.',
+        body: 'PROXe proposes concrete slots, books the counselling call or campus visit, reminds the family, and reschedules no-shows — the counselling calendar fills itself.',
       },
     },
     {

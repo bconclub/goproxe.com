@@ -48,6 +48,7 @@ export default function HeroPhoneCapture() {
     if (!startedRef.current) {
       startedRef.current = true;
       track('lead_form_start', { source: 'hero_phone' });
+      track('callback_start', { market: detectMarket() });
     }
     setPhone(e.target.value);
     if (error) setError('');
@@ -59,6 +60,7 @@ export default function HeroPhoneCapture() {
     const digits = trimmed.replace(/\D/g, '');
     if (digits.length < 8 || digits.length > 15) {
       setError('That number looks incomplete. Check and try again.');
+      track('form_error', { form: 'hero_phone', field: 'phone', reason: 'length' });
       return;
     }
     // Measure how far the call button has to travel to reach the far end of the
@@ -73,6 +75,7 @@ export default function HeroPhoneCapture() {
 
     // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
     trackLead({ source: 'hero_phone' });
+    track('callback_submit', { market: detectMarket() });
 
     // Prefill the chat widget / deploy form if they engage again later.
     // storeUserProfile REPLACES the stored blob, so merge — a phone-only
@@ -111,6 +114,15 @@ export default function HeroPhoneCapture() {
     window.clearTimeout(timeout);
 
     if (!dial?.ok) {
+      // The outcome, measured. `recently_called` is the cooldown guard doing
+      // its job, not a failure — it gets its own event so the two never blur
+      // together in a funnel.
+      const reason = dial?.reason ?? 'unknown';
+      if (reason === 'recently_called') {
+        track('callback_blocked', { reason });
+      } else {
+        track('callback_failed', { reason, market: detectMarket() });
+      }
       setError(
         dial?.reason === 'recently_called'
           ? 'We just called you. Check your phone, or try again in a minute.'
@@ -121,6 +133,7 @@ export default function HeroPhoneCapture() {
       setStatus('idle');
       return;
     }
+    track('callback_dialed', { market: detectMarket() });
     setStatus('done');
     window.setTimeout(() => setCallSettled(true), 20000);
   };

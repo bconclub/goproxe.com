@@ -9894,7 +9894,10 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
 .ind-stat-num {
   font-family: var(--proxe-font-heading);
   letter-spacing: 0.015em;
-  font-size: 28px;
+  /* Sized for "68%". The stats are capability words now ("Test drives"), so
+     the figure size has to give: clamp keeps "5×" bold without letting a
+     two-word label wrap out of the card. */
+  font-size: clamp(17px, 1.6vw, 22px);
   font-weight: 700;
   color: var(--acc);
   line-height: 1;

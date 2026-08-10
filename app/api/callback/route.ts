@@ -14,7 +14,7 @@ import { recordCallbackDial } from '../../lib/leadsSupabase'
  * swapping agents without a deploy.
  *
  * Abuse guard: this endpoint makes real, billable phone calls, so it carries a
- * small in-memory cooldown — one call per phone number per 5 minutes, one per
+ * small in-memory cooldown — one call per phone number per 24 hours, one per
  * IP per minute. Process-local (resets on restart, single-instance pm2 app),
  * which is fine for a v1 guard.
  */
@@ -66,7 +66,11 @@ HOW TO TALK
 // second press, short enough that someone deliberately testing the demo is not
 // locked out. Five minutes made the product look broken to the one person most
 // likely to be trying it repeatedly: us.
-const PHONE_COOLDOWN_MS = 90 * 1000
+// One call per number per 24 hours. 90 seconds only stopped an accidental
+// double-tap; it let the same person re-trigger the dialler all day and burn
+// voice minutes. The IP window stays short because several people can
+// legitimately share one office/mobile IP.
+const PHONE_COOLDOWN_MS = 24 * 60 * 60 * 1000
 const IP_COOLDOWN_MS = 60 * 1000
 const lastByPhone = new Map<string, number>()
 const lastByIp = new Map<string, number>()

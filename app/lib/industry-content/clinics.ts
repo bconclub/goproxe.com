@@ -5,13 +5,13 @@ import type { IndustryPageContent } from '../industries';
  * Clinics & Healthcare — hand-written page content.
  *
  * Written to the clinic OWNER, in scenes from their actual week. Every pain
- * has its fix in the same row; the stat quoted is the card's own (68% fewer
- * no-shows), never a new invented number.
+ * has its fix in the same row. Outcome numbers are deliberately absent: we
+ * cannot source per-client results yet, so the copy claims capability only.
  */
 const clinics: IndustryPageContent = {
   seoTitle: 'PROXe for Clinics & Healthcare — never miss a patient again',
   seoDesc:
-    'Clinics miss 4 in 10 appointment calls. PROXe answers every WhatsApp message and call instantly, books and confirms appointments, sends reminders, and cuts no-shows by 68%.',
+    'Clinics miss 4 in 10 appointment calls. PROXe answers every WhatsApp message and call instantly, books and confirms appointments, and sends the reminders that stop no-shows.',
   heroHeadline: 'Your front desk misses 4 in 10 calls. PROXe answers all of them.',
   heroSub:
     'PROXe is an AI receptionist for your clinic — it answers every WhatsApp message and phone call in seconds, books appointments into your calendar, reminds patients so they actually show up, and follows up after the visit. Your staff treats patients; PROXe handles the queue.',
@@ -34,7 +34,7 @@ const clinics: IndustryPageContent = {
       },
       fix: {
         title: 'Confirm + remind, automatically',
-        body: 'Every booking gets a confirmation, a day-before reminder and a morning-of nudge on WhatsApp — with one-tap reschedule instead of silent absence. That flow is where the 68% fewer no-shows number comes from.',
+        body: 'Every booking gets a confirmation, a day-before reminder and a morning-of nudge on WhatsApp — with one-tap reschedule instead of silent absence. A patient who cannot make it says so, instead of simply not arriving.',
       },
     },
     {

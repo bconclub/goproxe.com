@@ -52,6 +52,33 @@
   dark copy half they drew a hard bright line around every card that read
   louder than the content. The drop shadow still separates card from violet.
 
+## 2026-08-09 · fix: credibility blockers + callback funnel tracking
+
+- User-facing: the three invented testimonials are gone. Zero testimonials
+  beats fake ones — one detected fake makes every true claim suspect. The
+  carousel component stays unrendered so real customers are a data swap.
+- User-facing: seven industry "results" (68% fewer no-shows, 3x site visits,
+  4.2x enrollments...) reframed as capabilities. Unsourced outcome numbers are
+  the same liability as a fake testimonial, eight times over. Only Home
+  Services' 5x faster response survives — that is a property of the product,
+  not a client result. Deep copy for clinics/realestate/coaching stripped of
+  the same numbers so cards and pages agree.
+- User-facing: final-CTA microcopy replaced. "No credit card" was false (Deploy
+  goes to a paid checkout), "Setup in minutes" contradicted the 48-hour FAQ,
+  "ROI from day one" was unverifiable. Now: Live in 48 hours / No technical
+  work from your side / Cancel anytime.
+- User-facing: pricing headline "Your entire marketing department" ->
+  "Every channel. One memory. One price." The old line reclaimed the
+  acquisition framing the new category line had just dropped.
+- User-facing: the How It Works lead score no longer renders 0. The gauge faded
+  in 150ms before the count-up started and reset to 0 every loop. Target 82.
+- Callback rate limit is now one call per number per 24 hours (was 90 seconds,
+  which only stopped a double-tap and let one person burn voice minutes).
+- 14 new analytics events, GA4 + Meta. The callback funnel is the point:
+  callback_start / submit / dialed / failed / blocked make the ~33% of dials
+  that never connect visible for the first time.
+- `(pending)`
+
 ## 2026-08-08 16:05 IST · fix(pricing): the pricing buttons had no styling at all
 
 - User-facing: "Deploy PROXe" and the Scale button now actually render their

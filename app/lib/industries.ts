@@ -95,6 +95,20 @@ export type Industry = {
   desc: string;
   activities: Activity[];
   flow: Step[];
+  /**
+   * DELIBERATELY not an outcome claim. These read as capability statements
+   * ("Reminders / automated on WhatsApp and voice") rather than results
+   * ("68% fewer no-shows"), because we cannot yet source per-client outcome
+   * numbers and an unsourced statistic is the same credibility liability as a
+   * fabricated testimonial — eight times over.
+   *
+   * The single exception is Home Services' "5x faster lead response": that is
+   * a property of the product (an agent replies in seconds where a human
+   * replies in hours), not a result that needs a client study behind it.
+   *
+   * When real deployment data exists, restore outcome numbers AND add a
+   * source line ("Based on N deployments, <period>").
+   */
   stat: string;
   statLabel: string;
   /** Hand-written page content; absent → defaultPageContent() is used. */
@@ -123,8 +137,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiBell,        label: 'Remind'   },
       { Icon: FiHeart,       label: 'Follow-up'},
     ],
-    stat: '68%',
-    statLabel: 'fewer no-shows',
+    stat: 'Reminders',
+    statLabel: 'automated on WhatsApp and voice',
     page: clinicsPage,
     demo: {
       business: { name: 'Sunrise Dental Care', initials: 'SD', tagline: 'Multi-chair dental clinic · Indiranagar' },
@@ -175,8 +189,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiCalendar,    label: 'Visit'  },
       { Icon: FiCheckCircle, label: 'Close'  },
     ],
-    stat: '3×',
-    statLabel: 'more site visits booked',
+    stat: 'Site visits',
+    statLabel: 'buyers qualified and booked automatically',
     page: realestatePage,
     demo: {
       business: { name: 'Skyline Properties', initials: 'SP', tagline: 'Residential & commercial · Whitefield' },
@@ -227,8 +241,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiMail,         label: 'Engage'  },
       { Icon: FiPackage,      label: 'Recover' },
     ],
-    stat: '32%',
-    statLabel: 'cart recovery rate',
+    stat: 'Carts',
+    statLabel: 'abandoned carts followed up automatically',
     demo: {
       business: { name: 'Aura Skincare', initials: 'AS', tagline: 'Clean beauty D2C · pan-India shipping' },
       stages: ['New', 'Engaged', 'Cart', 'Purchased'],
@@ -278,8 +292,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiCalendar,      label: 'Book'     },
       { Icon: FiCheckCircle,   label: 'Enroll'   },
     ],
-    stat: '4.2×',
-    statLabel: 'more enrollments',
+    stat: 'Counselling',
+    statLabel: 'inquiries qualified and calls booked',
     page: coachingPage,
     demo: {
       business: { name: 'Ascent Academy', initials: 'AA', tagline: 'CAT / GMAT / UPSC coaching · Koramangala' },
@@ -330,8 +344,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiBell,          label: 'Follow-up' },
       { Icon: FiHeart,         label: 'Retain'    },
     ],
-    stat: '55%',
-    statLabel: 'reduction in no-shows',
+    stat: 'Trials',
+    statLabel: 'booked, reminded and followed up',
     demo: {
       business: { name: 'Pulse Fitness Studio', initials: 'PF', tagline: 'Strength · CrossFit · Yoga · HSR Layout' },
       stages: ['Inquiry', 'Trial Booked', 'Trial Done', 'Member'],
@@ -381,8 +395,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiCalendar,    label: 'Book'    },
       { Icon: FiActivity,    label: 'Route'   },
     ],
-    stat: '2.8×',
-    statLabel: 'more discovery calls',
+    stat: 'Discovery',
+    statLabel: 'leads qualified and calls scheduled',
     demo: {
       business: { name: 'Meridian Advisors', initials: 'MA', tagline: 'CA firm · tax, audit & compliance' },
       stages: ['Lead', 'Qualified', 'Discovery Call', 'Proposal'],
@@ -432,8 +446,8 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiCalendar,      label: 'Book'    },
       { Icon: LuCar,           label: 'Drive'   },
     ],
-    stat: '47%',
-    statLabel: 'more test drives booked',
+    stat: 'Test drives',
+    statLabel: 'enquiries answered and drives booked',
     demo: {
       business: { name: 'Velocity Motors', initials: 'VM', tagline: 'Multi-brand dealership · Old Madras Road' },
       stages: ['Inquiry', 'Qualified', 'Test Drive', 'Purchased'],

@@ -1483,13 +1483,21 @@ export default function ProxeLanding() {
       {/* ===== 9. Capabilities — depth for those still reading ===== */}
       <CapabilitiesSection />
 
-      {/* ===== 13. Testimonials — centered single-card carousel with dot nav ===== */}
-      <section className="proxe-section">
-        <div className="proxe-container">
-          <div className="proxe-section-label" style={{ textAlign: 'center' }}>What Founders Say</div>
-          <TestimonialCarousel />
-        </div>
-      </section>
+      {/* ===== 13. Testimonials — REMOVED 2026-08-09 =====
+          Ankush Verma / Priya Sharma / Rohan Kapoor were invented, with
+          stock-style headshots. The buyer is an Indian SMB founder who sees
+          fabricated testimonials every day; one detected fake makes every
+          other claim on the page suspect, including the true ones. Zero
+          testimonials beats fake testimonials.
+
+          To restore, use ONE of:
+            1. three real customers — real name, company, photo, ideally a
+               WhatsApp screenshot of them saying it
+            2. product receipts instead of people — a timestamped screenshot
+               of a real PROXe conversation ("2:14am. Lead answered. Demo
+               booked."), which is proof without needing a face
+          TestimonialCarousel + TESTIMONIALS are kept below, unrendered, so
+          option 1 is a data swap rather than a rebuild. */}
 
       {/* ===== 14. FAQ ===== */}
       <section className="proxe-section" id="faq">
@@ -1576,9 +1584,14 @@ export default function ProxeLanding() {
             </button>
 
             <ul className="proxe-hero-trust proxe-cc-trust">
-              <li><span className="proxe-hero-trust-ico"><FiShield size={14} /></span> No credit card</li>
-              <li><span className="proxe-hero-trust-ico"><FiZap size={14} /></span> Setup in minutes</li>
-              <li><span className="proxe-hero-trust-ico"><FiTrendingUp size={14} /></span> ROI from day one</li>
+              {/* Every line here has to survive contact with the rest of the
+                  page. The old three did not: "No credit card" while Deploy
+                  goes straight to a paid checkout, "Setup in minutes" against
+                  an FAQ that says 48 hours, and "ROI from day one" which
+                  cannot be shown. These three are all verifiable. */}
+              <li><span className="proxe-hero-trust-ico"><FiZap size={14} /></span> Live in 48 hours</li>
+              <li><span className="proxe-hero-trust-ico"><FiShield size={14} /></span> No technical work from your side</li>
+              <li><span className="proxe-hero-trust-ico"><FiTrendingUp size={14} /></span> Cancel anytime</li>
             </ul>
           </div>
         </div>

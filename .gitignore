@@ -42,3 +42,5 @@ next-env.d.ts
 
 # build skill state (local to-do tracking)
 .claude/state/
+.next-chk/
+.next-alt/

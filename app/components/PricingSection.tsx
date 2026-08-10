@@ -118,7 +118,11 @@ export default function PricingSection() {
           <div className="pr-header-left">
             <div className="pr-label">FOUNDING MEMBER PRICING</div>
             <h2 className="pr-h2">
-              Your entire marketing department. <span className="pr-h2-grad">One price.</span>
+              {/* Was "Your entire marketing department." — an acquisition
+                  claim, which is exactly what the new category line stopped
+                  saying 200px higher. PROXe converts leads that already
+                  exist; the headline now says that. */}
+              Every channel. One memory. <span className="pr-h2-grad">One price.</span>
             </h2>
             <p className="pr-sub">
               Every channel, one unified memory, your whole team on board.

@@ -4,13 +4,13 @@ import type { IndustryPageContent } from '../industries';
 /**
  * Real Estate — hand-written page content.
  *
- * Written to the broker/builder sales head. The card's own stat (3× more
- * site visits booked) is the only number quoted as PROXe's result.
+ * Written to the broker/builder sales head. Outcome numbers are deliberately
+ * absent — capability claims only, until per-client results can be sourced.
  */
 const realestate: IndustryPageContent = {
   seoTitle: 'PROXe for Real Estate — every portal lead answered in seconds',
   seoDesc:
-    'Real estate leads go cold in minutes. PROXe answers every inquiry instantly, qualifies budget and intent, books site visits, and follows up until the deal closes — 3× more site visits booked.',
+    'Real estate leads go cold in minutes. PROXe answers every inquiry instantly, qualifies budget and intent, books site visits, and follows up until the deal closes.',
   heroHeadline: 'The buyer messaged 5 builders. The first reply wins.',
   heroSub:
     'PROXe answers every property inquiry in seconds — WhatsApp, website, Instagram, calls — qualifies budget and timeline, books the site visit, and keeps following up until the deal moves. Your team talks only to buyers worth their time.',
@@ -43,7 +43,7 @@ const realestate: IndustryPageContent = {
       },
       fix: {
         title: 'Visits proposed, booked and reminded automatically',
-        body: 'PROXe offers concrete slots in the conversation, books the visit, sends directions, and reminds the buyer on the morning. That flow is where the 3× more site visits number comes from.',
+        body: 'PROXe offers concrete slots in the conversation, books the visit, sends directions, and reminds the buyer on the morning — so the visit that closes deals actually happens.',
       },
     },
     {

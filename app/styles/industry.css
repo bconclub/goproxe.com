@@ -369,6 +369,12 @@
   color: var(--acc);
   text-shadow: 0 0 40px color-mix(in srgb, var(--acc) 45%, transparent);
 }
+.indp-proof-num--word {
+  /* A word, not a figure — display scale would run off the column. */
+  font-size: clamp(30px, 4vw, 50px);
+  line-height: 1.1;
+  max-width: 6em;
+}
 .indp-proof-label {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.8);

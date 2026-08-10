@@ -52,6 +52,26 @@ export type ProxeEvent =
   | 'demo_tour_complete'   // tour reached its final step — param: industry
   | 'demo_interact'        // first lead_open / chat_send / widget_send — params: industry, what
   | 'demo_deploy_click'    // demo Deploy CTA — params: industry, placement
+  // ── Callback / voice funnel ─────────────────────────────────────
+  // The hero promises "PROXe will call you right now". Everything below
+  // measures whether that promise is kept: roughly a third of dials never
+  // connect, and before these events that was invisible.
+  | 'callback_start'       // first digit typed into the hero phone field
+  | 'callback_submit'      // a valid number was submitted, dial requested
+  | 'callback_dialed'      // the dial was ACCEPTED by the telephony side
+  | 'callback_failed'      // the dial did not happen — param: reason
+  | 'callback_blocked'     // cooldown guard refused (they just called)
+  // ── Click / interaction detail ──────────────────────────────────
+  | 'button_click'         // any tracked button — params: label, location
+  | 'link_click'           // outbound or in-page link — params: label, href
+  | 'section_view'         // a major section scrolled into view — param: section
+  | 'form_field_complete'  // a required field was filled — params: form, field
+  | 'form_abandon'         // form opened, fields touched, closed unsubmitted
+  | 'form_error'           // validation blocked submit — params: form, fields
+  // ── Checkout journey ────────────────────────────────────────────
+  | 'checkout_redirect'    // actually navigating to the hosted Dodo page
+  | 'checkout_cancelled'   // came back to /#pricing from Dodo without paying
+  | 'plan_select'          // a pricing plan CTA was chosen — params: plan, market
 
 type EventParams = Record<string, string | number | boolean | undefined>
 
@@ -98,6 +118,23 @@ const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   demo_tour_complete: 'DemoTourComplete',
   demo_interact: 'DemoInteract',
   demo_deploy_click: 'DemoDeployClick',
+  // Callback funnel. callback_dialed is the one that matters for ad
+  // optimisation, but it stays CUSTOM: a connected call is not yet a sale,
+  // and mapping it to a standard event would pollute Lead/Purchase.
+  callback_start: 'CallbackStart',
+  callback_submit: 'CallbackSubmit',
+  callback_dialed: 'CallbackDialed',
+  callback_failed: 'CallbackFailed',
+  callback_blocked: 'CallbackBlocked',
+  button_click: 'ButtonClick',
+  link_click: 'LinkClick',
+  section_view: 'SectionView',
+  form_field_complete: 'FormFieldComplete',
+  form_abandon: 'FormAbandon',
+  form_error: 'FormError',
+  checkout_redirect: 'CheckoutRedirect',
+  checkout_cancelled: 'CheckoutCancelled',
+  plan_select: 'PlanSelect',
 }
 
 /** True on localhost / loopback — we never want dev hits in the live property. */

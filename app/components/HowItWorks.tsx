@@ -64,7 +64,7 @@ function MemoryVis({ on }: { on: boolean }) {
       setScoreVal(0);
       const start = performance.now();
       const dur = 500;
-      const target = 74;
+      const target = 82;
       if (scoreRef.current) clearInterval(scoreRef.current);
       scoreRef.current = setInterval(() => {
         const elapsed = performance.now() - start;
@@ -80,7 +80,7 @@ function MemoryVis({ on }: { on: boolean }) {
       [150, 550, 950, 1350].forEach((t, i) =>
         ts.push(setTimeout(() => { if (!dead) setStep(i + 1); }, t))
       );
-      ts.push(setTimeout(() => { if (!dead) runScore(); }, 1500));
+      ts.push(setTimeout(() => { if (!dead) runScore(); }, 1350));
       ts.push(setTimeout(() => { if (!dead) loop(); }, 3200));
     }
     loop();
@@ -91,15 +91,20 @@ function MemoryVis({ on }: { on: boolean }) {
     };
   }, [on]);
 
-  const scorePct = (scoreVal / 74) * 100;
-  // Red → Amber → Green as the score climbs.
-  // 0–37  : red (#EF4444) → amber (#F59E0B)
-  // 37–74 : amber (#F59E0B) → green (#10B981)
-  const barColor = scoreVal < 37
-    ? `color-mix(in srgb, #EF4444 ${100 - (scoreVal / 37) * 100}%, #F59E0B ${(scoreVal / 37) * 100}%)`
-    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - 37) / 37) * 100}%, #10B981 ${((scoreVal - 37) / 37) * 100}%)`;
+  // The bar is a percentage of 100, not of the target. Dividing by the old
+  // hardcoded 74 meant the fill hit 100% before the number did, and would
+  // overflow the track now the target is 82.
+  const scorePct = Math.min(scoreVal, 100);
+  // Red → Amber → Green as the score climbs, hinged at the midpoint.
+  const MID = 50;
+  const barColor = scoreVal < MID
+    ? `color-mix(in srgb, #EF4444 ${100 - (scoreVal / MID) * 100}%, #F59E0B ${(scoreVal / MID) * 100}%)`
+    : `color-mix(in srgb, #F59E0B ${100 - ((scoreVal - MID) / MID) * 100}%, #10B981 ${((scoreVal - MID) / MID) * 100}%)`;
 
-  const scoreVisible = step >= 4;
+  // scoreVal > 0 matters as much as the step: the gauge used to fade in while
+  // the counter still read 0, and reset to 0 on each loop, so the number people
+  // actually saw was zero rather than the climb.
+  const scoreVisible = step >= 4 && scoreVal > 0;
 
   return (
     <div className="hiw-vis">

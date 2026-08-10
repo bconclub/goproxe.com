@@ -154,7 +154,12 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
         <div className="proxe-container">
           <div className="indp-proof">
             <div>
-              <div className="indp-proof-num">{industry.stat}</div>
+              {/* Numeric stats ("5×") keep the display scale; word stats
+                  ("Counselling") would overflow the column at 120px, so they
+                  get their own size via the --word modifier. */}
+              <div className={`indp-proof-num${/^[\d.]/.test(industry.stat) ? '' : ' indp-proof-num--word'}`}>
+                {industry.stat}
+              </div>
               <p className="indp-proof-label">{industry.statLabel}</p>
             </div>
             <div className="indp-proof-copy">
