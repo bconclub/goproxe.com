@@ -1,5 +1,27 @@
 ﻿# Changelog
 
+## 2026-08-10 · fix(callback): the 24h call limit now survives a deploy
+
+- The "one call per number per 24 hours" rule lived in a module-level Map, so
+  every deploy and every pm2 restart emptied it. On a site that redeploys on
+  each push the real behaviour was closer to one call per number PER DEPLOY -
+  precisely the repeat dialling and burnt voice minutes the limit was added to
+  stop.
+- The durable record already existed and nothing read it: recordCallbackDial
+  has been writing unified_context.voice.last_call_at onto the lead since the
+  dialler shipped. New lastCallbackAt() reads it back, and /api/callback now
+  answers the 24h question from the database.
+- Failed dials still count. The attempt consumed a call either way, so a
+  failure does not hand out a free retry.
+- Fails OPEN on a database error: a blip must not silently stop the product
+  doing the one thing the hero promises. The in-memory guard stays for rapid
+  double-taps inside a single process, as does the 60s per-IP window (several
+  people can legitimately share one office or mobile IP).
+- The blocked response now carries hoursLeft, so the UI can say when rather
+  than just no.
+- Verified against production data: 5 of the 10 most recent PROXe leads carry
+  voice.last_call_at, ages 50-79h, all correctly evaluated as allow.
+
 ## 2026-08-10 · fix(analytics): Clarity was installed and had never recorded a session
 
 - The Microsoft Clarity tag has been on the page for a while and was
