@@ -26,7 +26,11 @@ const SALES_SOURCES = new Set([
   'pricing_scale',
   'industries',
   'ig_demo',
-  'closing_cta',
+  // 'closing_cta' deliberately NOT here any more. That button now reads
+  // "Deploy PROXe" and goes to checkout; leaving it in this set would have
+  // sent the page's largest, most committed CTA to a booking calendar — the
+  // exact mismatch that made a buyer land on the calendar when they meant to
+  // pay. It only reaches this modal as a checkout fallback now.
   'pricing_core_call', // "Not ready? Book a call" under the Core CTA
   'header_call',
 ]);

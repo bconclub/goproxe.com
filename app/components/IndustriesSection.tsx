@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FiPlus, FiArrowRight } from 'react-icons/fi';
 import { track } from '../lib/analytics';
 import { useDeployModal } from '../contexts/DeployModalContext';
+import CallMeNowButton from './shared/CallMeNowButton';
 // Cards, internal pages, sitemap and the demo all read this one registry —
 // content changed there shows up here with zero duplication.
 import { INDUSTRIES } from '../lib/industries';
@@ -229,9 +230,9 @@ export default function IndustriesSection() {
                 We train PROXe on your playbook: your offers, objections, and tone.
                 If your customers chat, call, or click, we handle it.
               </p>
-              <button type="button" onClick={() => openModal('industries')} className="ind-cta-btn">
-                Talk to us <FiArrowRight size={16} />
-              </button>
+              {/* Says "Call me now", so it dials. The modal stays as the fallback for a
+                  number inside its 24h cooldown. */}
+              <CallMeNowButton source="industries" onBookInstead={() => openModal('industries')} className="ind-cta-btn-wrap" />
             </div>
           </article>
         </div>

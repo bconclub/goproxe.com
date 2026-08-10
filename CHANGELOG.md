@@ -1,5 +1,39 @@
 ﻿# Changelog
 
+## 2026-08-10 · fix(cta): two labels across the whole page, and each one keeps its promise
+
+- The page carried FIVE CTA labels across seven buttons: Deploy, Deploy PROXe,
+  Get a call back, Not ready? Book a call, Talk to sales, Talk to us, Book a
+  Demo. Now there are two: **Deploy PROXe** and **Call me now**.
+- This is also the fix for "it did not go to payment at all... I went to the
+  call booking". A sales-path CTA looked identical to the payment one, so the
+  wrong door got clicked.
+- Destinations were changed too, not only wording. A label that names an
+  action has to perform it:
+  - The closing CTA said Book a Demo and opened a calendar. It now says Deploy
+    PROXe and goes to checkout - closing_cta was removed from SALES_SOURCES,
+    which is what had been sending the page's largest, most committed button
+    to a booking form.
+  - Secondaries said "Book a call" and opened a calendar. They now say "Call
+    me now" and actually dial, through the same /api/callback the hero uses.
+- The hero keeps a call-framed label rather than becoming Deploy PROXe. It is
+  the one button that rings your phone within seconds; calling it Deploy would
+  promise deployment and deliver a phone call, turning the page's strongest
+  proof into its most misleading moment.
+- New CallMeNowButton: one button closed, expands in place into a phone field
+  so nothing shifts for people who never touch it. The 24h one-call-per-number
+  limit is server-side and anyone who already tried the hero will hit it here,
+  so that answer offers the booking calendar instead of reading as an error.
+  Failed dials do the same.
+- Every new CSS rule is prefixed with .proxe-root. The reset
+  ".proxe-root button { background: none; border: none }" is specificity
+  (0,1,1) and beats a bare class at (0,1,0) - the trap that left the pricing
+  CTAs unstyled for weeks. Verified in the browser: the call button computes
+  rgba(124, 58, 237, 0.22) with a 1px border, so the prefix held.
+- Verified on the dev server: seven CTAs, two distinct labels, the control
+  expands, auto-focuses, and shows a market-aware placeholder (+91 in India).
+  Build clean, 40/40 pages.
+
 ## 2026-08-10 · fix(callback): the 24h call limit now survives a deploy
 
 - The "one call per number per 24 hours" rule lived in a module-level Map, so

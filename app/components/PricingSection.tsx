@@ -16,6 +16,7 @@ import { SiWhatsapp, SiMessenger } from 'react-icons/si';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { detectMarket, type Market } from '../lib/market';
 import { track } from '../lib/analytics';
+import CallMeNowButton from './shared/CallMeNowButton';
 
 const CHANNELS_HEADER = [
   { Icon: FiGlobe,       label: 'Web',          color: '#a78bfa' },
@@ -289,15 +290,15 @@ export default function PricingSection() {
               {isStartingCheckout ? 'Opening checkout…' : <>Deploy PROXe <FiArrowRight size={14} /></>}
             </button>
 
-            {/* Deploy now leads to payment, so the "talk first" path needs its
-                own door — not everyone buys before speaking to someone. */}
-            <button
-              type="button"
-              onClick={() => openModal('pricing_core_call')}
-              className="pr-cta-secondary"
-            >
-              Not ready? Book a call
-            </button>
+            {/* Deploy leads to payment, so the "talk first" path needs its own
+                door — not everyone buys before speaking to someone. It now
+                DIALS rather than opening a calendar, because it says "Call me
+                now"; the calendar remains the fallback when the 24h limit
+                blocks the number or the dial fails. */}
+            <CallMeNowButton
+              source="pricing_core_call"
+              onBookInstead={() => openModal('pricing_core_call')}
+            />
           </article>
 
           {/* ─── SCALE — CUSTOM ─── */}
@@ -357,9 +358,14 @@ export default function PricingSection() {
               </span>
             </div>
 
-            <button type="button" onClick={() => openModal('pricing_scale')} className="pr-cta pr-cta--ghost">
-              Talk to sales <FiArrowRight size={14} />
-            </button>
+            {/* Scale is quoted, not self-serve, so its primary stays the
+                conversation — but it uses the same two words as everywhere
+                else rather than inventing a third label ("Talk to sales"). */}
+            <CallMeNowButton
+              source="pricing_scale"
+              onBookInstead={() => openModal('pricing_scale')}
+              className="pr-cta-secondary--onghost"
+            />
           </article>
 
         </div>

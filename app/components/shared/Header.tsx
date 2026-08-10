@@ -23,7 +23,7 @@ export default function Header() {
         <nav className={styles.nav}>
           <a href="#" className={styles.navLink} onClick={() => track('nav_click', { label: 'features', location: 'header' })}>Features</a>
           <a href="#" className={styles.navLink} onClick={() => track('nav_click', { label: 'pricing', location: 'header' })}>Pricing</a>
-          <button className={styles.deployButton} onClick={() => handleDeployClick('header_deploy')}>Deploy</button>
+          <button className={styles.deployButton} onClick={() => handleDeployClick('header_deploy')}>Deploy PROXe</button>
         </nav>
         <div className={styles.mobileNav}>
           <button 
@@ -34,7 +34,7 @@ export default function Header() {
           >
             <span className={styles.plusIcon}>+</span>
           </button>
-          <button className={styles.mobileDeployButton} onClick={() => handleDeployClick('header_mobile_deploy')}>Deploy</button>
+          <button className={styles.mobileDeployButton} onClick={() => handleDeployClick('header_mobile_deploy')}>Deploy PROXe</button>
         </div>
       </div>
       {menuOpen && (

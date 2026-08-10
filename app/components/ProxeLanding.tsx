@@ -820,7 +820,7 @@ function InstagramChat({ channel, isActive }: { channel: typeof CHANNELS[number]
         ))}
         {lastMsg?.type === 'bookdemo' && (
           <div className="ig-row ig-row--ai conv-msg-in">
-            <button type="button" className="ig-book-btn" onClick={() => openModal('ig_demo')}>Book a Demo</button>
+            <button type="button" className="ig-book-btn" onClick={() => openModal('ig_demo')}>Deploy PROXe</button>
           </div>
         )}
         {isTyping && (
@@ -1573,8 +1573,8 @@ export default function ProxeLanding() {
               always-on revenue engine.
             </p>
 
-            <button type="button" onClick={() => openModal('closing_cta')} className="proxe-hero-big-cta proxe-cc-cta">
-              Book a Demo
+            <button type="button" onClick={() => void startDeploy('closing_cta')} className="proxe-hero-big-cta proxe-cc-cta">
+              Deploy PROXe
               <span className="proxe-hero-big-cta-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />

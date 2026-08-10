@@ -11668,3 +11668,95 @@ button.pr-cta { padding: 0 22px; }
   .proxe-hero-phone,
   .proxe-hero-phone:not(.proxe-hero-phone--active) { animation: none; opacity: 1; transform: none; }
 }
+
+/* ── "Call me now" — the secondary half of the CTA pair ──────────────────────
+   Every rule is prefixed with .proxe-root. The reset near the top of this file
+   (`.proxe-root button { background: none; border: none }`) is specificity
+   (0,1,1) and beats a bare class at (0,1,0) — that is what left the pricing
+   CTAs unstyled for weeks, and it is the same trap three times over now. */
+
+.proxe-root .pr-cta-callform {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.proxe-root .pr-cta-callinput {
+  flex: 1 1 140px;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.proxe-root .pr-cta-callinput::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+.proxe-root .pr-cta-callinput:focus {
+  outline: none;
+  border-color: rgba(124, 58, 237, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.proxe-root .pr-cta-callinput:disabled { opacity: 0.6; }
+
+.proxe-root .pr-cta-callgo {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border-radius: 9px;
+  border: 1px solid rgba(124, 58, 237, 0.55);
+  background: rgba(124, 58, 237, 0.22);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.proxe-root .pr-cta-callgo:hover:not(:disabled) {
+  background: rgba(124, 58, 237, 0.34);
+  border-color: rgba(124, 58, 237, 0.8);
+}
+
+.proxe-root .pr-cta-callgo:disabled { opacity: 0.65; cursor: default; }
+
+.proxe-root .pr-cta-callerr {
+  flex: 1 0 100%;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+/* Outcome line — replaces the field once we know what happened. */
+.proxe-root .pr-cta-note {
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 4px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.proxe-root .pr-cta-inline-link {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #c4b5fd;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.proxe-root .pr-cta-inline-link:hover { color: #ddd6fe; }
