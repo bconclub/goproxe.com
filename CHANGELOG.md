@@ -1,5 +1,17 @@
 ﻿# Changelog
 
+## 2026-08-11 · fix(clarity): CORS on static assets so replays render fonts and images
+
+- Second half of the replay fix. Clarity replays run on clarity.microsoft.com
+  and re-fetch our assets cross-origin; browsers CORS-enforce font (and
+  canvas image) loads, and we sent no Access-Control-Allow-Origin, so even
+  replays with CSS intact rendered in serif system fonts.
+- next.config.js now sends `Access-Control-Allow-Origin: *` on
+  /_next/static/* and on /unsplash/, /industries/, /proxe/ public assets.
+  Static files only, nothing credentialed.
+- Together with the chunk archive: sessions recorded from today replay with
+  correct layout, fonts and images across future deploys.
+
 ## 2026-08-11 · feat(industries): homepage header, real photography, per-industry color
 
 - Industry pages now use THE homepage header: same floating boxed bar, same
