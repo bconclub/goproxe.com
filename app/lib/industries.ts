@@ -62,6 +62,10 @@ export type IndustryPageContent = {
   painFixes: PainFix[];
   /** Day-to-day walkthrough, expands the card's 4-step flow. */
   steps: Array<{ Icon: React.ElementType; label: string; title: string; body: string }>;
+  /** The six capability cards ("everything your front desk needs"). Absent →
+      generic defaults from defaultFeatures(). Always capability claims, never
+      outcome numbers, same sourcing rule as `stat` above. */
+  features?: Array<{ Icon: React.ElementType; title: string; body: string }>;
   faq: Array<{ q: string; a: string }>;
 };
 
@@ -113,6 +117,12 @@ export type Industry = {
   statLabel: string;
   /** Hand-written page content; absent → defaultPageContent() is used. */
   page?: IndustryPageContent;
+  /**
+   * Per-page layout variants, only where the approved reference designs
+   * differ from each other: hero product visual and leak/fix treatment.
+   * Absent → 'dashboard' + 'columns' (the clinic reference, the default).
+   */
+  variant?: { hero?: 'dashboard' | 'cards'; leak?: 'columns' | 'arrows' | 'orb' };
   demo: IndustryDemoConfig;
 };
 
@@ -192,6 +202,7 @@ export const INDUSTRIES: Industry[] = [
     stat: 'Site visits',
     statLabel: 'buyers qualified and booked automatically',
     page: realestatePage,
+    variant: { hero: 'cards', leak: 'orb' },
     demo: {
       business: { name: 'Skyline Properties', initials: 'SP', tagline: 'Residential & commercial · Whitefield' },
       stages: ['New', 'Qualified', 'Site Visit', 'Negotiation', 'Closed'],
@@ -243,6 +254,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Carts',
     statLabel: 'abandoned carts followed up automatically',
+    variant: { hero: 'cards', leak: 'arrows' },
     demo: {
       business: { name: 'Aura Skincare', initials: 'AS', tagline: 'Clean beauty D2C · pan-India shipping' },
       stages: ['New', 'Engaged', 'Cart', 'Purchased'],
@@ -571,9 +583,11 @@ export function defaultPageContent(ind: Industry): IndustryPageContent {
       body:
         i === 0
           ? `A new ${first.toLowerCase()} lands from any channel. PROXe captures it, replies instantly, and starts the conversation.`
-          : i === ind.flow.length - 1
-            ? `PROXe keeps the thread warm until "${s.label.toLowerCase()}" actually happens, and logs everything on the lead.`
-            : `PROXe handles "${s.label.toLowerCase()}" automatically, no staff time, no dropped threads.`,
+          : i === 1
+            ? 'PROXe asks the right questions, answers theirs, and moves the conversation forward on its own, no staff time spent.'
+            : i === ind.flow.length - 1
+              ? 'PROXe keeps the thread warm until it actually converts, and logs every touch on the lead so nothing is lost.'
+              : 'Scheduling, confirmations and reminders happen inside the conversation, on time, without anyone chasing.',
     })),
     faq: [
       { q: 'How fast can PROXe go live for my business?', a: 'Deployment takes about a week: we train PROXe on your services, prices, tone and FAQs, connect your WhatsApp and website, and hand you the dashboard.' },
@@ -582,6 +596,23 @@ export function defaultPageContent(ind: Industry): IndustryPageContent {
       { q: 'Do I need new software or a new number?', a: 'No. PROXe connects to your existing WhatsApp number and website. Your team just gets one dashboard where everything lands.' },
     ],
   };
+}
+
+/**
+ * Generic capability cards for industries without hand-written ones.
+ * Phrased as product properties (what PROXe does), never as client outcomes,
+ * same sourcing rule as `stat`.
+ */
+export function defaultFeatures(ind: Industry): NonNullable<IndustryPageContent['features']> {
+  const noun = ind.demo.bookingNoun.toLowerCase();
+  return [
+    { Icon: FiPhoneCall, title: 'Missed-call recovery', body: `A missed call gets an instant WhatsApp reply, so the lead is in a conversation before they dial a competitor.` },
+    { Icon: FiZap, title: 'Instant answers, 24/7', body: 'Prices, availability, directions, common questions, answered in seconds on every channel, at any hour.' },
+    { Icon: FiCalendar, title: `${ind.demo.bookingNoun} booking`, body: `PROXe offers real open slots and books the ${noun} in the conversation, no back-and-forth, no forms.` },
+    { Icon: FiBell, title: 'Reminders and follow-ups', body: 'Confirmations, day-before reminders and polite nudges go out on schedule, without anyone remembering to send them.' },
+    { Icon: FiTrendingUp, title: 'Every lead scored', body: 'Intent is read from the conversation itself, so your team opens the day on the hottest leads with full context attached.' },
+    { Icon: FiMessageCircle, title: 'One dashboard', body: 'Every conversation from every channel writes back to one system, nothing lives in a personal phone.' },
+  ];
 }
 
 /** The page content for an industry, hand-written when present, generated otherwise. */

@@ -1,4 +1,14 @@
-import { FiCalendar, FiCheckCircle, FiBell, FiHeart } from 'react-icons/fi';
+import {
+  FiCalendar,
+  FiCheckCircle,
+  FiBell,
+  FiHeart,
+  FiPhoneCall,
+  FiMessageCircle,
+  FiRepeat,
+  FiClipboard,
+  FiHeadphones,
+} from 'react-icons/fi';
 import type { IndustryPageContent } from '../industries';
 
 /**
@@ -12,9 +22,9 @@ const clinics: IndustryPageContent = {
   seoTitle: 'PROXe for Clinics & Healthcare, never miss a patient again',
   seoDesc:
     'Clinics miss 4 in 10 appointment calls. PROXe answers every WhatsApp message and call instantly, books and confirms appointments, and sends the reminders that stop no-shows.',
-  heroHeadline: 'Your front desk misses 4 in 10 calls. PROXe answers all of them.',
+  heroHeadline: 'Your clinic loses patients after hours. PROXe answers, books, reminds, and follows up.',
   heroSub:
-    'PROXe is an AI receptionist for your clinic, it answers every WhatsApp message and phone call in seconds, books appointments into your calendar, reminds patients so they actually show up, and follows up after the visit. Your staff treats patients; PROXe handles the queue.',
+    'An AI receptionist for clinics that handles calls, WhatsApp, booking, reminders, and post-visit follow-ups, so your staff can focus on care, not the phone.',
   painIntro: 'Walk through your last week. All four of these happened:',
   painFixes: [
     {
@@ -82,6 +92,38 @@ const clinics: IndustryPageContent = {
       label: 'Follow-up',
       title: '4. After the visit',
       body: 'Post-visit check-in, aftercare answers, and automatic recall when the next cleaning or review is due. The relationship doesn’t end at the door.',
+    },
+  ],
+  features: [
+    {
+      Icon: FiPhoneCall,
+      title: 'Missed-call recovery',
+      body: 'A call your desk cannot take gets an instant WhatsApp reply, and PROXe converts the missed call into a booked appointment.',
+    },
+    {
+      Icon: FiMessageCircle,
+      title: 'WhatsApp reminders',
+      body: 'Automated confirmations, day-before reminders and morning-of nudges, with one-tap confirm or reschedule built in.',
+    },
+    {
+      Icon: FiHeart,
+      title: 'Follow-up automation',
+      body: 'Post-visit check-ins, aftercare answers, review requests and recall messages when the next visit is due, on autopilot.',
+    },
+    {
+      Icon: FiHeadphones,
+      title: 'Front-desk overflow',
+      body: 'At peak hours PROXe absorbs the phone and WhatsApp queue, so your receptionist handles the humans standing at the counter.',
+    },
+    {
+      Icon: FiRepeat,
+      title: 'Rebooking made easy',
+      body: 'Patients reschedule or book again in the chat, without ever calling. A cancelled slot goes back into the pool immediately.',
+    },
+    {
+      Icon: FiClipboard,
+      title: 'Patient intake',
+      body: 'Names, contact details, insurance and visit reason are collected in the conversation and land structured in your dashboard.',
     },
   ],
   faq: [

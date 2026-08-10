@@ -1,5 +1,29 @@
 ﻿# Changelog
 
+## 2026-08-10 · feat(industries): all 8 pages rebuilt to the reference designs
+
+- One shared template, one-to-one with the approved reference mocks: nav,
+  split hero with a product visual, trust strip, leak/fix, numbered steps,
+  live-in-action panels, six feature cards, capability band, channel row,
+  two-column FAQ, closing band.
+- Where the three references differ, the registry's new `variant` field picks
+  the treatment per industry: clinics gets the dashboard hero + leak/fix
+  columns, D2C gets floating cards + arrow rows, real estate gets floating
+  cards + the two panels around the PROXe orb. The other five inherit the
+  clinic defaults.
+- Clinics hero copy updated to the reference. Six hand-written clinic feature
+  cards; the other industries get capability-true generated ones.
+- The reference mocks' compliance and outcome claims (HIPAA, SOC 2 Type II,
+  ISO 27001, GDPR, "99.5% Uptime", "4.9/5 from 500+ brands", "Recovered
+  4.2 Cr+", "28% / 2.3x / 35%") are deliberately NOT shipped: unverified
+  certifications and unsourced numbers. The trust strip and capability band
+  carry claims true of the product today; certifications drop into one place
+  when confirmed.
+- Fixed on generated pages: steps 2 and 3 were identical and one rendered a
+  quoted variable ('PROXe handles "trial" automatically').
+- Fixed: hero container lost its horizontal padding on mobile (a bare `0` in
+  a padding shorthand stripped the container inset).
+
 ## 2026-08-10 · fix(cta): two labels across the whole page, and each one keeps its promise
 
 - The page carried FIVE CTA labels across seven buttons: Deploy, Deploy PROXe,

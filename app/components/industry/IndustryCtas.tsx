@@ -20,9 +20,12 @@ import { track } from '../../lib/analytics';
 export default function IndustryCtas({
   slug,
   fireView = false,
+  compact = false,
 }: {
   slug: string;
   fireView?: boolean;
+  /** Nav variant: just the Deploy button, smaller, no row wrapper. */
+  compact?: boolean;
 }) {
   const { startDeploy } = useDeployModal();
   const viewFired = useRef(false);
@@ -38,6 +41,21 @@ export default function IndustryCtas({
   // show anything that is not pixel-identical to the product. Flip this back
   // once the real-core demo deployment is live.
   const DEMO_READY = false;
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        className="indp-cta indp-cta--deploy indp-cta--nav"
+        onClick={() => {
+          track('industry_cta_click', { industry: slug, target: 'deploy_nav' });
+          void startDeploy(`industry_${slug}`);
+        }}
+      >
+        Deploy PROXe <FiArrowRight size={14} />
+      </button>
+    );
+  }
 
   return (
     <div className="indp-cta-row">

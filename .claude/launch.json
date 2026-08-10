@@ -19,6 +19,16 @@
       "autoPort": false
     },
     {
+      "name": "goproxe-dev-b",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set NEXT_DIST_DIR=.next-b&&npx next dev -p 3006"
+      ],
+      "port": 3006,
+      "autoPort": false
+    },
+    {
       "name": "proxe-platform",
       "runtimeExecutable": "cmd",
       "runtimeArgs": [
