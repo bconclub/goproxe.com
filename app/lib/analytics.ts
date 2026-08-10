@@ -91,7 +91,10 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
   form_completed: 'Lead',
   checkout_start: 'InitiateCheckout',
   checkout_complete: 'Purchase',
-  demo_booked: 'Schedule',
+  // ONE Schedule per real booking. booking_confirm is the moment a slot is
+  // actually chosen, and it is the only event that fires on BOTH booking
+  // paths (sales calendar in the modal, and the onboarding call after
+  // checkout) — so it carries Schedule.
   booking_confirm: 'Schedule',
   newsletter_subscribe: 'CompleteRegistration',
   pricing_view: 'ViewContent',
@@ -100,6 +103,11 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
 /** Custom (non-standard) Meta names, PascalCase per Meta's convention. */
 const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   lead_form_start: 'LeadFormStart',
+  // WAS mapped to Schedule, which double-counted: the visitor books in the
+  // modal (booking_confirm -> Schedule) and is then redirected here, firing a
+  // second Schedule for the same booking. Meta saw two bookings per person and
+  // cost-per-booking read about half of reality. It is a thank-you page view.
+  demo_booked: 'ThankYouView',
   checkout_unavailable: 'CheckoutUnavailable',
   cta_click: 'CTAClick',
   deploy_modal_open: 'DeployModalOpen',
