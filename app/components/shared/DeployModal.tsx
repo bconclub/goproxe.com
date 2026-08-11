@@ -108,10 +108,12 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    // Same order as the fields render in, so the first error a visitor is
+    // sent to is the first blank field they can see, not one further down.
     if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email';
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
     if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
     if (!formData.websiteUrl.trim()) newErrors.websiteUrl = 'Brand website is required';
     setErrors(newErrors);
@@ -272,20 +274,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.name && <span className={styles.errorText}>{errors.name}</span>}
               </div>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="email" className={styles.label}>
-                  Work email <span className={styles.required}>*</span>
-                </label>
-                <input
-                  type="email" id="email" name="email"
-                  value={formData.email} onChange={handleChange}
-                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-                  placeholder="you@company.com"
-                  autoComplete="email"
-                />
-                {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-              </div>
-
+              {/* Phone sits directly under Name, ahead of email. The two
+                  fields that let a human actually reach this person come
+                  first, so the most valuable half of the form is filled
+                  before anyone stalls on a work email address. */}
               <div className={styles.formGroup}>
                 <label htmlFor="phoneNumber" className={styles.label}>
                   Phone <span className={styles.required}>*</span>
@@ -298,6 +290,20 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                   autoComplete="tel"
                 />
                 {errors.phoneNumber && <span className={styles.errorText}>{errors.phoneNumber}</span>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="email" className={styles.label}>
+                  Work email <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="email" id="email" name="email"
+                  value={formData.email} onChange={handleChange}
+                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                  placeholder="you@company.com"
+                  autoComplete="email"
+                />
+                {errors.email && <span className={styles.errorText}>{errors.email}</span>}
               </div>
 
               <div className={styles.formGroup}>
