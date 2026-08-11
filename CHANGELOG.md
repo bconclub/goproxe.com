@@ -7,6 +7,16 @@
 - `(pending-sha)`
 # Changelog
 
+## 2026-08-11 · fix(whatsapp): move the WhatsApp button into the header, beside Deploy
+
+- The float above the chat bubble stacked three circles in one corner and
+  dominated the page. It is now a small 34px WhatsApp button sitting directly
+  beside the Deploy pill in the floating header, on the homepage and all 8
+  industry pages. Same number, same prefilled message.
+- The widget dead-zone click fix stays (it blocks clicks on page content
+  regardless of the button) and moved to ProxeWidget, where that geometry
+  belongs.
+
 ## 2026-08-11 · feat(whatsapp): WhatsApp float above the chat bubble
 
 - New WhatsApp button sits directly above the live chat bubble on every page

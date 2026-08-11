@@ -12,6 +12,7 @@ import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
 import HeroPhoneCapture from './shared/HeroPhoneCapture';
+import WhatsAppHeaderButton from './shared/WhatsAppHeaderButton';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { track, initScrollDepthTracking } from '../lib/analytics';
 import { captureAttribution } from '../lib/attribution';
@@ -1386,11 +1387,14 @@ export default function ProxeLanding() {
             className="proxe-nav-logo-icon"
           />
         </a>
-        <button type="button" onClick={() => void startDeploy('floating_header')} className="proxe-float-cta">
-          {/* Two labels — full on top, short when [data-scrolled='true']. */}
-          <span className="proxe-float-cta-full">Deploy PROXe</span>
-          <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
-        </button>
+        <div className="proxe-float-actions">
+          <WhatsAppHeaderButton location="home_header" />
+          <button type="button" onClick={() => void startDeploy('floating_header')} className="proxe-float-cta">
+            {/* Two labels — full on top, short when [data-scrolled='true']. */}
+            <span className="proxe-float-cta-full">Deploy PROXe</span>
+            <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
+          </button>
+        </div>
       </div>
 
       {/* ===== 2. Hero ===== */}

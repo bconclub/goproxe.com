@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useDeployModal } from '../../contexts/DeployModalContext';
 import { track } from '../../lib/analytics';
+import WhatsAppHeaderButton from '../shared/WhatsAppHeaderButton';
 
 /**
  * The industry pages' header, the SAME floating boxed header the homepage
@@ -38,17 +39,20 @@ export default function IndustryHeader({ slug }: { slug: string }) {
           className="proxe-nav-logo-icon"
         />
       </Link>
-      <button
-        type="button"
-        className="proxe-float-cta"
-        onClick={() => {
-          track('industry_cta_click', { industry: slug, target: 'deploy_header' });
-          void startDeploy(`industry_${slug}`);
-        }}
-      >
-        <span className="proxe-float-cta-full">Deploy PROXe</span>
-        <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
-      </button>
+      <div className="proxe-float-actions">
+        <WhatsAppHeaderButton location={`industry_${slug}`} />
+        <button
+          type="button"
+          className="proxe-float-cta"
+          onClick={() => {
+            track('industry_cta_click', { industry: slug, target: 'deploy_header' });
+            void startDeploy(`industry_${slug}`);
+          }}
+        >
+          <span className="proxe-float-cta-full">Deploy PROXe</span>
+          <span className="proxe-float-cta-short" aria-hidden="true">Deploy</span>
+        </button>
+      </div>
     </div>
   );
 }

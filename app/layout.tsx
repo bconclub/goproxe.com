@@ -4,7 +4,6 @@ import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
 import ProxeWidget from './components/shared/ProxeWidget';
-import WhatsAppButton from './components/shared/WhatsAppButton';
 import { DeployModalProvider } from './contexts/DeployModalContext';
 
 const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Lead Conversion System';
@@ -68,9 +67,6 @@ export default function RootLayout({
         <AnalyticsScripts />
         {/* The real PROXe agent, live on its own site. */}
         <ProxeWidget />
-        {/* Sits directly above the agent's bubble, for visitors who would
-            rather message a human on a channel they already use. */}
-        <WhatsAppButton />
         <LenisProvider />
         <DeployModalProvider>
           {children}

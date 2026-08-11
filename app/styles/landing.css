@@ -162,6 +162,41 @@ body:has(.proxe-root) {
   color: var(--proxe-fg);
 }
 
+/* Right-hand group in the floating header: WhatsApp + Deploy, side by side.
+   Wrapping them keeps the header's space-between (logo left, actions right). */
+.proxe-float-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Small circular WhatsApp button beside the Deploy pill. Sized to the pill's
+   34px min-height so the pair reads as one control group. Explicit background
+   and border because `.proxe-root a` inherits colour and strips nothing else. */
+.proxe-root .proxe-float-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: #ffffff;
+  background: rgba(37, 211, 102, 0.9);
+  border: 1px solid rgba(37, 211, 102, 0.55);
+  box-shadow: 0 4px 18px -8px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.proxe-root .proxe-float-wa:hover {
+  background: #25d366;
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 /* Deploy pill — glass-blur in both states. Top: full label "Deploy PROXe".
    Scrolled: short label "Deploy" (collapse mirrors the logo→icon swap). */
 .proxe-float-header .proxe-float-cta {
