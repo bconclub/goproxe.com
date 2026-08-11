@@ -1,4 +1,25 @@
-﻿# Changelog
+﻿## 2026-08-11 01:20 IST · fix(widget): embedded bubble chat was see-through on host pages
+
+- The chat panel opened from the bubble embed rendered almost fully transparent, host-page content showed straight through it. The panel's glass look was 55%-alpha black plus backdrop-filter blur, but the bubble runs inside a TRANSPARENT cross-origin iframe: backdrop-filter cannot sample the embedding page from inside an iframe, so the blur silently did nothing and only the half-tint painted.
+- Fix: in bubble mode (`.chatboxBubble.chatboxContainer`) the panel now paints a near-opaque gradient floor and drops the useless backdrop-filter. Dashboard-side widgets (searchbar mode on an opaque page) keep the original glass.
+- Applied to core and the proxe / bcon / lokazen brand-pack widget copies. POP untouched.
+- User-facing: the web agent chat on goproxe.com (and every site embedding the bubble) is readable again.
+- `(pending-sha)`
+# Changelog
+
+## 2026-08-11 · fix(industries): channel icons rebuilt, hero card icons legible
+
+- The channel row mixed three icon families as thin outline glyphs dropped
+  into saturated solid circles, which read as clip art. Now one family (Font
+  Awesome solid) at consistent weight, in a tinted glass chip, with each
+  channel carrying its own real colour: WhatsApp green, Instagram in its
+  actual brand gradient (a real SVG `<defs>`, since fills cannot take a CSS
+  gradient), Web Chat blue, Email amber, Phone the industry accent.
+- Fixed alongside: the icon is a `<span>`, so the `.indp-channel span` label
+  rule outranked the single-class icon rule and washed every glyph to 52%
+  white. The icon rule now carries two classes.
+- Hero floating-card icons were invisible against photography: thicker
+  stroke, brighter tint, a border, and higher-contrast subtext.
 
 ## 2026-08-11 · fix(clarity): CORS on static assets so replays render fonts and images
 

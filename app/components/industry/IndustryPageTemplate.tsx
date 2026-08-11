@@ -23,7 +23,13 @@ import {
   FiUsers,
   FiZap,
 } from 'react-icons/fi';
-import { FaWhatsapp } from 'react-icons/fa';
+import {
+  FaWhatsapp,
+  FaPhoneAlt,
+  FaCommentDots,
+  FaInstagram,
+  FaEnvelope,
+} from 'react-icons/fa';
 import type { Industry } from '../../lib/industries';
 import { getPageContent, defaultFeatures } from '../../lib/industries';
 import IndustryCtas from './IndustryCtas';
@@ -479,12 +485,42 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
               <span className="indp-label">One platform. Every channel.</span>
               <h2 className="indp-h2 indp-h2--sm">Meet your customers where they are.</h2>
             </div>
+            {/* Instagram's mark is a gradient in its brand guide; SVG fills
+                cannot take a CSS gradient, so it needs a real <defs> in the
+                document for `fill: url(#...)` to resolve. */}
+            <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
+              <defs>
+                <linearGradient id="indp-ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#f9ce34" />
+                  <stop offset="45%" stopColor="#ee2a7b" />
+                  <stop offset="100%" stopColor="#6228d7" />
+                </linearGradient>
+              </defs>
+            </svg>
+            {/* One icon family (Font Awesome solid) so the weights match, and
+                each channel carries its own real colour rather than a row of
+                identical accent circles. */}
             <div className="indp-channel-row">
-              <div className="indp-channel"><span className="indp-channel-ico"><FiPhone size={19} /></span><b>Phone Calls</b><span>Inbound &amp; outbound</span></div>
-              <div className="indp-channel"><span className="indp-channel-ico indp-channel-ico--wa"><FaWhatsapp size={19} /></span><b>WhatsApp</b><span>Business API</span></div>
-              <div className="indp-channel"><span className="indp-channel-ico"><FiMessageCircle size={19} /></span><b>Web Chat</b><span>Live on your website</span></div>
-              <div className="indp-channel"><span className="indp-channel-ico indp-channel-ico--ig"><FiInstagram size={19} /></span><b>Instagram</b><span>DMs &amp; lead ads</span></div>
-              <div className="indp-channel"><span className="indp-channel-ico"><FiMail size={19} /></span><b>Email</b><span>Smart follow-ups</span></div>
+              <div className="indp-channel" style={{ ['--ch' as string]: industry.color }}>
+                <span className="indp-channel-ico"><FaPhoneAlt size={20} /></span>
+                <b>Phone Calls</b><span>Inbound &amp; outbound</span>
+              </div>
+              <div className="indp-channel" style={{ ['--ch' as string]: '#25d366' }}>
+                <span className="indp-channel-ico"><FaWhatsapp size={23} /></span>
+                <b>WhatsApp</b><span>Business API</span>
+              </div>
+              <div className="indp-channel" style={{ ['--ch' as string]: '#38bdf8' }}>
+                <span className="indp-channel-ico"><FaCommentDots size={22} /></span>
+                <b>Web Chat</b><span>Live on your website</span>
+              </div>
+              <div className="indp-channel" style={{ ['--ch' as string]: '#e1306c' }}>
+                <span className="indp-channel-ico indp-channel-ico--ig"><FaInstagram size={22} /></span>
+                <b>Instagram</b><span>DMs &amp; lead ads</span>
+              </div>
+              <div className="indp-channel" style={{ ['--ch' as string]: '#f59e0b' }}>
+                <span className="indp-channel-ico"><FaEnvelope size={20} /></span>
+                <b>Email</b><span>Smart follow-ups</span>
+              </div>
             </div>
             <p className="indp-channels-note">
               Every conversation writes back to one system, so your team stays

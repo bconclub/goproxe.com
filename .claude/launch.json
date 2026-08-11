@@ -37,6 +37,16 @@
       ],
       "port": 4010,
       "autoPort": false
+    },
+    {
+      "name": "proxe-scope",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd /d C:\\PROXe-wt\\scope\\core&&set BRAND_ID=proxe&&set NEXT_DIST_DIR=.next-wa&&node scripts/stage-brand.js&&npx next dev -p 4012"
+      ],
+      "port": 4012,
+      "autoPort": false
     }
   ]
 }
