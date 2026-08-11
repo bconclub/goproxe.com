@@ -46,6 +46,19 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /**
+   * Two steps on purpose. Step 1 asks only for name + phone and SAVES that
+   * immediately; step 2 collects email, brand and website and goes to payment.
+   *
+   * The whole point is the save between them: a five-field wall meant someone
+   * who bailed at "Brand website" left nothing behind at all. Now the two
+   * fields that make a person reachable are banked before anything else is
+   * asked. `upsertProxeLead` keys on the normalised phone, so step 2 updates
+   * that same lead rather than creating a second one.
+   */
+  const [step, setStep] = useState<1 | 2>(1);
+  /** Set once step 1 has been persisted, so a back-and-forth cannot re-save. */
+  const savedStep1 = useRef(false);
   /** Flipped state — once the form is submitted, flip to the booking calendar. */
   const [flipped, setFlipped] = useState(false);
   /** Fire `lead_form_start` only on the first field interaction per open. */
@@ -60,6 +73,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   useEffect(() => {
     if (isOpen) {
       startedRef.current = false;
+      savedStep1.current = false;
+      setStep(1);
+      setErrors({});
       setFlipped(false);
       const existingUser = getStoredUser('proxe');
       if (existingUser) {
@@ -106,12 +122,18 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  const validateForm = () => {
+  const validateStep1 = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateStep2 = () => {
     const newErrors: Record<string, string> = {};
     // Same order as the fields render in, so the first error a visitor is
     // sent to is the first blank field they can see, not one further down.
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email';
     if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
@@ -120,9 +142,53 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Step 1 → bank the lead, then advance.
+   *
+   * The Meta/GA conversion fires HERE and only here: this is the moment we
+   * have a contactable human. Firing it again on step 2 would report two
+   * leads for one person and halve the apparent cost per lead.
+   */
+  const handleStep1 = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateStep1()) return;
+
+    setIsSubmitting(true);
+
+    const partial = {
+      name: formData.name.trim(),
+      phone: formData.phoneNumber.trim(),
+      promptedName: true,
+      promptedPhone: true,
+    };
+    storeUserProfile(partial, 'proxe');
+
+    if (!savedStep1.current) {
+      savedStep1.current = true;
+      const leadEventId = trackLead({
+        source: 'deploy_modal',
+        hasBrand: false,
+        hasWebsite: false,
+      });
+      // Never blocks the step change: submitLead resolves false on failure,
+      // and a lead we could not persist must not trap someone on step 1.
+      await submitLead({
+        type: 'lead',
+        name: partial.name,
+        phone: partial.phone,
+        source: isSales ? `${source}_sales` : 'deploy_modal',
+        eventId: leadEventId,
+      });
+    }
+
+    setIsSubmitting(false);
+    setErrors({});
+    setStep(2);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateStep2()) return;
 
     setIsSubmitting(true);
 
@@ -138,20 +204,15 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     };
     storeUserProfile(userProfile, 'proxe');
 
-    // 🎯 The conversion fires HERE, once, the moment the form is captured —
-    // GA4 `form_completed` + Meta `Lead` (no PII in params). It does NOT fire
-    // again on the booking step or the thank-you page.
-    // Same id to pixel and server so Meta merges them into ONE Lead.
-    const leadEventId = trackLead({
-      source: 'deploy_modal',
-      hasBrand: Boolean(userProfile.brandName),
-      hasWebsite: Boolean(userProfile.websiteUrl),
-    });
-
-    // Persist the actual contact details (Supabase + sheet, via /api/lead).
-    // Captured HERE — before any payment — so we keep the lead even if they
-    // abandon the Dodo checkout page. Awaited so the button state is honest,
-    // but it never blocks: submitLead resolves false on any failure.
+    // NOTE: the GA4 `form_completed` / Meta `Lead` conversion already fired on
+    // step 1, the moment this person became contactable. It deliberately does
+    // NOT fire again here, or on the booking step, or on the thank-you page —
+    // one human, one Lead.
+    //
+    // This second submit fills in email, brand and website. upsertProxeLead
+    // matches on the normalised phone captured in step 1, so it UPDATES that
+    // lead rather than creating a duplicate. eventId is a fresh id purely for
+    // request tracing; it is not a second conversion.
     await submitLead({
       type: 'lead',
       name: userProfile.name,
@@ -160,7 +221,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       brandName: userProfile.brandName,
       websiteUrl: userProfile.websiteUrl,
       source: isSales ? `${source}_sales` : 'deploy_modal',
-      eventId: leadEventId,
+      eventId: newEventId(),
     });
 
     onFormSubmit?.();
@@ -253,14 +314,21 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
               <p className={styles.modalSubtitle}>
-                {isSales
-                  ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
-                  : 'Tell us where PROXe is going. Next: secure checkout, then you pick your onboarding call.'}
+                {step === 1
+                  ? 'Start with your name and number. We save it right away, so we can reach you even if you stop here.'
+                  : isSales
+                    ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
+                    : 'Almost there. Next: secure checkout, then you pick your onboarding call.'}
               </p>
+              <div className={styles.stepRow} aria-hidden>
+                <span className={`${styles.stepDot} ${styles.stepDotActive}`} />
+                <span className={`${styles.stepDot}${step === 2 ? ' ' + styles.stepDotActive : ''}`} />
+                <span className={styles.stepLabel}>Step {step} of 2</span>
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
-              <div className={styles.formGroup}>
+            <form onSubmit={step === 1 ? handleStep1 : handleSubmit} className={styles.form}>
+              <div className={styles.formGroup} hidden={step !== 1}>
                 <label htmlFor="name" className={styles.label}>
                   Name <span className={styles.required}>*</span>
                 </label>
@@ -274,11 +342,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.name && <span className={styles.errorText}>{errors.name}</span>}
               </div>
 
-              {/* Phone sits directly under Name, ahead of email. The two
-                  fields that let a human actually reach this person come
-                  first, so the most valuable half of the form is filled
-                  before anyone stalls on a work email address. */}
-              <div className={styles.formGroup}>
+              {/* Step 1: name + phone. `hidden` rather than unmounting, so
+                  typed values survive a step change and browser autofill
+                  still sees the whole form as one unit. */}
+              <div className={styles.formGroup} hidden={step !== 1}>
                 <label htmlFor="phoneNumber" className={styles.label}>
                   Phone <span className={styles.required}>*</span>
                 </label>
@@ -292,7 +359,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.phoneNumber && <span className={styles.errorText}>{errors.phoneNumber}</span>}
               </div>
 
-              <div className={styles.formGroup}>
+              <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="email" className={styles.label}>
                   Work email <span className={styles.required}>*</span>
                 </label>
@@ -306,7 +373,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.email && <span className={styles.errorText}>{errors.email}</span>}
               </div>
 
-              <div className={styles.formGroup}>
+              <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="brandName" className={styles.label}>
                   Brand name <span className={styles.required}>*</span>
                 </label>
@@ -320,7 +387,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.brandName && <span className={styles.errorText}>{errors.brandName}</span>}
               </div>
 
-              <div className={styles.formGroup}>
+              <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="websiteUrl" className={styles.label}>
                   Brand website <span className={styles.required}>*</span>
                 </label>
@@ -339,10 +406,22 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
-                {isSubmitting
-                  ? (isSales ? 'Sending…' : 'Opening secure checkout…')
-                  : (isSales ? 'Continue →' : 'Continue to payment →')}
+                {step === 1
+                  ? (isSubmitting ? 'Saving…' : 'Continue →')
+                  : isSubmitting
+                    ? (isSales ? 'Sending…' : 'Opening secure checkout…')
+                    : (isSales ? 'Continue →' : 'Continue to payment →')}
               </button>
+
+              {step === 2 && !isSubmitting && (
+                <button
+                  type="button"
+                  className={styles.stepBack}
+                  onClick={() => { setErrors({}); setStep(1); }}
+                >
+                  ← Back
+                </button>
+              )}
             </form>
           </div>
 

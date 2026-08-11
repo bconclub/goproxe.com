@@ -1,5 +1,24 @@
 ﻿# Changelog
 
+## 2026-08-11 · feat(deploy): two-step form, name and phone are saved before anything else is asked
+
+- Step 1 asks for name and phone only, and SAVES the lead immediately. Step 2
+  collects email, brand name and website, then goes to checkout. Previously a
+  five-field wall meant anyone who gave up at "Brand website" left nothing
+  behind at all, on a site currently getting about one lead a week.
+- `upsertProxeLead` matches on the normalised phone from step 1, so step 2
+  updates that same row instead of creating a duplicate.
+- The GA4 `form_completed` / Meta `Lead` conversion moved to step 1, the
+  moment the person becomes contactable, and fires exactly once. Firing it
+  again on step 2 would have reported two leads per person and halved the
+  apparent cost per lead.
+- Fields are hidden with the `hidden` attribute rather than unmounted, so
+  typed values survive stepping back and forth. Needed an explicit
+  `.formGroup[hidden] { display: none }`: the group's own `display: flex`
+  outranks the browser default for `[hidden]`, so every field stayed on
+  screen until that was added.
+- Step indicator and a Back link on step 2.
+
 ## 2026-08-11 · fix(deploy): phone before email in the Deploy modal
 
 - Field order is now Name, Phone, Work email, Brand name, Brand website, then
