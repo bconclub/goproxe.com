@@ -275,11 +275,39 @@ export async function lastCallbackAt(phone: string | null | undefined): Promise<
       .limit(1)
       .maybeSingle()
 
-    const at = (data?.unified_context as Record<string, any> | null)?.voice?.last_call_at
+    const voice = (data?.unified_context as Record<string, any> | null)?.voice
+    const at = voice?.last_call_at
     if (!at) return null
 
     const when = new Date(at)
-    return Number.isNaN(when.getTime()) ? null : when
+    if (Number.isNaN(when.getTime())) return null
+
+    // The 24h window exists to stop someone re-triggering a REAL, billable
+    // call. It must not punish a caller for a call that never happened.
+    //
+    // Two ways a dial dies without ringing anyone:
+    //   1. The HTTP request fails (401/404/...) → recorded status 'failed'.
+    //   2. ElevenLabs returns 200 and the conversation then fails to
+    //      initialise → recorded 'dialing', but 0 messages and 0 seconds.
+    // Case 2 is the one that bit us: an expired subscription made every dial
+    // look accepted, so each attempt locked that number out for a day and the
+    // retry answered "recently_called" — the product appearing to refuse to
+    // call, on top of an outage that already stopped it calling.
+    if (voice?.last_call_status === 'failed') return null
+
+    // A connected call always leaves a transcript from the post-call webhook.
+    // Give the webhook a grace window to arrive; inside it, treat the dial as
+    // real so a double-tap still cannot fire two calls.
+    const GRACE_MS = 10 * 60 * 1000
+    const conversationId = voice?.last_conversation_id
+    const transcripts = Array.isArray(voice?.transcripts) ? voice.transcripts : []
+    const connected = conversationId
+      ? transcripts.some((t: any) => t?.conversation_id === conversationId)
+      : false
+
+    if (!connected && Date.now() - when.getTime() > GRACE_MS) return null
+
+    return when
   } catch (err) {
     console.error('[leadsSupabase] lastCallbackAt failed', err)
     return null

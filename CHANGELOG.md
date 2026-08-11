@@ -7,6 +7,25 @@
 - `(pending-sha)`
 # Changelog
 
+## 2026-08-11 · fix(callback): a call that never connected no longer locks the number out for 24h
+
+- Found while checking why callbacks stopped: the ElevenLabs subscription had
+  gone `past_due`, so every dial died. Both attempts today failed at 0
+  seconds; on 7 and 8 August the same agent held real 18 to 138 second
+  conversations. Billing is now `active` again.
+- The outage exposed a worse bug. ElevenLabs returns HTTP 200 even when the
+  conversation then fails to initialise, so each dead dial was recorded as
+  `dialing` and consumed the caller's 24h cooldown. The retry answered
+  `recently_called` and no call was placed. Production logs show exactly that:
+  `suppressed, called within 24h { hoursLeft: 19 }`. On top of an outage that
+  already stopped it calling, the product then appeared to refuse to call.
+- `lastCallbackAt` now only enforces the window for a call that actually
+  connected, proven by a transcript from the post-call webhook, with a 10
+  minute grace so a double-tap still cannot fire two real calls. An explicit
+  `failed` status never counts.
+- User-facing: a number whose call silently failed can retry after 10 minutes
+  instead of being locked out for a day.
+
 ## 2026-08-11 · fix(whatsapp): move the WhatsApp button into the header, beside Deploy
 
 - The float above the chat bubble stacked three circles in one corner and
