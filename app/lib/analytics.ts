@@ -37,6 +37,7 @@ export type ProxeEvent =
   | 'deploy_modal_open'    // the deploy modal was opened — param: source
   | 'nav_click'            // header / footer nav link — param: label
   | 'newsletter_subscribe' // footer newsletter submit
+  | 'whatsapp_click'       // the WhatsApp float was tapped — param: location
   // ── Engagement ──────────────────────────────────────────────
   | 'channel_demo_select'  // switched channel in a demo — param: channel
   | 'voice_demo_start'     // tapped the live voice orb
@@ -98,6 +99,11 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
   booking_confirm: 'Schedule',
   newsletter_subscribe: 'CompleteRegistration',
   pricing_view: 'ViewContent',
+  // Meta's standard 'Contact' is defined as a customer starting contact by
+  // phone, SMS, email or chat, which is exactly this. Standard (not custom)
+  // so paid traffic can actually be optimised toward WhatsApp conversations,
+  // which is the whole point of putting the button there.
+  whatsapp_click: 'Contact',
 }
 
 /** Custom (non-standard) Meta names, PascalCase per Meta's convention. */

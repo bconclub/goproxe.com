@@ -7,6 +7,24 @@
 - `(pending-sha)`
 # Changelog
 
+## 2026-08-11 · feat(whatsapp): WhatsApp float above the chat bubble
+
+- New WhatsApp button sits directly above the live chat bubble on every page
+  (not on /demo), opening a chat to +91 93532 53817 prefilled with "Hi, I
+  want to know more about PROXe." A visitor who will not talk to an AI on a
+  website still gets a one-tap door into a channel they already use.
+- It hides itself while the chat is open (the widget posts wc-chat-open /
+  wc-chat-close), so it never floats over a live conversation.
+- **Fixed a click-blocking bug found while placing it:** the widget's
+  collapsed iframe is 165px tall but the bubble only fills the bottom 80px.
+  The remaining ~85px is transparent iframe that still swallowed every click
+  over it, so anything in that corner, including the new button, was
+  unclickable. The host now trims the collapsed box to 92px and re-applies it
+  after the widget's own close handler resets it.
+- Analytics: new `whatsapp_click` event, mapped to Meta's STANDARD `Contact`
+  (not a custom name) so paid traffic can actually be optimised toward
+  WhatsApp conversations.
+
 ## 2026-08-11 · fix(industries): channel icons rebuilt, hero card icons legible
 
 - The channel row mixed three icon families as thin outline glyphs dropped
