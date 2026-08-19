@@ -508,8 +508,17 @@ export async function recordCallTranscript(input: {
         .eq('metadata->>conversation_id', input.conversationId)
 
       const base = Date.now() - (input.durationSecs ?? 0) * 1000
+      // ElevenLabs emits a turn of "..." whenever a side said nothing (silence,
+      // or the agent's thinking filler). Written verbatim those became a
+      // customer "..." answered by an agent "..." in the Chats inbox, which
+      // reads as the bot talking to itself (seen live 19 Aug). Silence is not
+      // a message - drop those turns at ingest.
+      const spoken = input.transcript.filter(
+        (t) => String(t.text || '').replace(/[.…\s]/g, '').length > 0,
+      )
+      if (!spoken.length) return
       await supabase.from('conversations').insert(
-        input.transcript.map((t) => ({
+        spoken.map((t) => ({
           lead_id: row.id,
           brand: BRAND,
           channel: 'voice',
