@@ -11,10 +11,12 @@ import { track } from '../../lib/analytics'
  * option rather than a competing CTA, and it is present in the same place on
  * every page without covering content.
  *
- * The number is the founder's direct line for now, so this is deliberately a
- * plain wa.me link, no widget, no script.
+ * The number is PROXe's own WhatsApp line, so a click lands in a chat the
+ * agent answers in seconds and the visitor becomes a captured lead - the
+ * product demonstrating itself. It used to be the founder's direct line,
+ * which meant every click bypassed the agent entirely (Z, 19 Aug).
  */
-const PHONE = '919353253817' // +91 93532 53817, E.164 without the +
+const PHONE = '918123808817' // +91 81238 08817, E.164 without the + (PROXe WABA)
 const PREFILL = 'Hi, I want to know more about PROXe.'
 
 export default function WhatsAppHeaderButton({ location = 'header' }: { location?: string }) {
