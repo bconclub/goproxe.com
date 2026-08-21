@@ -4,6 +4,7 @@ import './globals.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
 import ProxeWidget from './components/shared/ProxeWidget';
+import JsonLd from './components/shared/JsonLd';
 import { DeployModalProvider } from './contexts/DeployModalContext';
 
 const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Lead Conversion System';
@@ -62,6 +63,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://i.vimeocdn.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://player.vimeo.com" />
         <link rel="dns-prefetch" href="https://f.vimeocdn.com" />
+        <JsonLd />
       </head>
       <body>
         <AnalyticsScripts />
