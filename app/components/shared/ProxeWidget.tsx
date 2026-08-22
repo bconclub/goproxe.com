@@ -15,8 +15,7 @@ import { usePathname } from 'next/navigation'
  * the page: the demo shows what PROXe does, this one actually does it and
  * writes conversations into the dashboard.
  *
- * `afterInteractive` keeps it off the critical path — the hero, video and voice
- * orb all get the main thread first.
+ * `lazyOnload` defers it until after full page load to not compete with LCP.
  */
 const WIDGET_SRC =
   process.env.NEXT_PUBLIC_PROXE_WIDGET_SRC || 'https://proxe.goproxe.com/api/widget/embed.js'
