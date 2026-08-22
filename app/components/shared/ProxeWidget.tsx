@@ -68,5 +68,6 @@ export default function ProxeWidget() {
   const enabled = !pathname?.startsWith('/demo')
   useTrimWidgetDeadZone(enabled)
   if (!enabled) return null
-  return <Script id="proxe-widget" src={WIDGET_SRC} strategy="afterInteractive" />
+  // Defer widget load until the browser is idle to avoid blocking LCP
+  return <Script id="proxe-widget" src={WIDGET_SRC} strategy="lazyOnload" />
 }
