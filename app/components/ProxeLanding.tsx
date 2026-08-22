@@ -1395,11 +1395,14 @@ export default function ProxeLanding() {
                 the browser. Inline on desktop (renders as one line, exactly as
                 before); block on mobile, which gives "Never Miss / a Lead /
                 Ever Again." instead of letting natural wrapping strand "Lead"
-                alone on a line. */}
+                alone on a line. Spaces between segments ensure crawlers and
+                screen readers see "Never Miss a Lead Ever Again." */}
             <span className="proxe-hero-line">
-              <span className="proxe-hero-seg">Never Miss</span>{' '}
+              <span className="proxe-hero-seg">Never Miss</span>
+              {' '}
               <span className="proxe-hero-seg">a Lead</span>
             </span>
+            {' '}
             <span className="proxe-hero-line">Ever Again.</span>
           </h1>
           <p className="proxe-hero-subtitle">
@@ -1579,7 +1582,8 @@ export default function ProxeLanding() {
             </div>
 
             <h2 className="proxe-cc-title">
-              Stop losing leads.<br />
+              Stop losing leads.
+              <br />
               <span className="proxe-cc-title-grad">Start closing them.</span>
             </h2>
             <p className="proxe-cc-sub">

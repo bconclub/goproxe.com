@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   title: 'Data Deletion',
   description:
     'How to request deletion of personal data associated with PROXe-powered communication channels, including Instagram, WhatsApp, and website chat.',
+  alternates: {
+    canonical: 'https://goproxe.com/data-deletion',
+  },
 }
 
 export default function DataDeletionPage() {
