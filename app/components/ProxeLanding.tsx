@@ -1433,10 +1433,11 @@ export default function ProxeLanding() {
                 aria-label="Play demo video"
               >
                 <img
-                  src="/proxe/demo-poster.png"
+                  src="/proxe/demo-poster.webp"
                   alt="PROXe demo preview"
-                  width="1200"
-                  height="675"
+                  width="1536"
+                  height="1024"
+                  fetchPriority="high"
                 />
                 <div className="proxe-hero-video-play-btn">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
