@@ -4,20 +4,20 @@ import './styles/landing.css';
 
 const inter = Inter({
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
   variable: '--font-proxe-sans',
 });
 
 const heading = Instrument_Serif({
   weight: '400',
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
   variable: '--font-proxe-heading',
 });
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
   variable: '--font-proxe-mono',
 });
 
