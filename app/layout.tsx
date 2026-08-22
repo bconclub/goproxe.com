@@ -9,7 +9,7 @@ import { DeployModalProvider } from './contexts/DeployModalContext';
 
 const TITLE = 'PROXe · Never Miss a Lead Ever Again · The AI Lead Conversion System';
 const DESCRIPTION =
-  'Every lead owned and answered in seconds across Website chat, WhatsApp, Instagram, Messenger, email and voice, all running on one memory so customers never repeat themselves. PROXe qualifies each lead, follows up until they respond, and hands your team the ones ready to buy. Up to 500 leads/month. 2 seats. Live dashboard.';
+  'AI lead conversion for SMBs. Every lead answered in seconds across chat, WhatsApp, Instagram, email and voice. Auto-qualify, follow-up, and convert.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://goproxe.com'),
@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     template: '%s · PROXe',
   },
   description: DESCRIPTION,
+  alternates: {
+    canonical: 'https://goproxe.com',
+  },
   // Explicit list so every surface gets the right file: the .ico carries
   // 16/32/48 for browser tabs and Windows shortcuts, the PNGs cover retina
   // tabs, Android/PWA installs and the iOS home screen.

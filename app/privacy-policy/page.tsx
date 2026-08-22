@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
     'How PROXe collects, uses, and protects information across website chat, WhatsApp, and Instagram, on behalf of the businesses that use it.',
+  alternates: {
+    canonical: 'https://goproxe.com/privacy-policy',
+  },
 }
 
 export default function PrivacyPolicyPage() {
