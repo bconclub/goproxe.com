@@ -1433,9 +1433,8 @@ export default function ProxeLanding() {
                 aria-label="Play demo video"
               >
                 <img
-                  src="https://i.vimeocdn.com/video/1988395062-4bbf4e03c89b29e9d5fc70ef70d1b53d13fe1c7e766f0a11db1f9a40b3fc1406-d?mw=1200&q=85"
+                  src="/proxe/demo-poster.png"
                   alt="PROXe demo preview"
-                  loading="lazy"
                   width="1200"
                   height="675"
                 />
