@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase, FiShield, FiZap, FiTrendingUp } from 'react-icons/fi';
 import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
-import Grainient from './Grainient';
 import VapiOrb from './VapiOrb';
 import ChannelDemo from './ChannelDemo';
 import HowItWorks from './HowItWorks';
@@ -351,6 +351,12 @@ const INDUSTRIES = [
   },
 ];
 
+/* ===== Lazy Grainient loader (defers WebGL + OGL until visible) ===== */
+const LazyGrainient = dynamic(() => import('./Grainient'), {
+  ssr: false,
+  loading: () => <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 50%, #1E1B4B 100%)' }} />,
+});
+
 function IndustryScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -395,7 +401,7 @@ function IndustryScroll() {
                 className="proxe-ind-photo proxe-ind-photo--left"
                 style={{ opacity: i === activeIndex ? 1 : 0 }}
               >
-                <img src={ind.leftImg} alt={ind.name} />
+                <img src={ind.leftImg} alt={ind.name} loading="lazy" />
               </div>
             ))}
           </div>
@@ -460,7 +466,7 @@ function IndustryScroll() {
                 className="proxe-ind-photo proxe-ind-photo--right"
                 style={{ opacity: i === activeIndex ? 1 : 0 }}
               >
-                <img src={ind.rightImg} alt={ind.name} />
+                <img src={ind.rightImg} alt={ind.name} loading="lazy" />
               </div>
             ))}
           </div>
@@ -1136,6 +1142,7 @@ function TestimonialCarousel() {
                     alt={t.name}
                     width={48}
                     height={48}
+                    loading="lazy"
                   />
                 ) : (
                   <span
@@ -1321,7 +1328,7 @@ export default function ProxeLanding() {
     <main className="proxe-main">
       {/* ===== Site-wide animated gradient backdrop ===== */}
       <div className="proxe-page-grainient" aria-hidden="true">
-        <Grainient
+        <LazyGrainient
           color1="#7C3AED"
           color2="#4C1D95"
           color3="#1E1B4B"
