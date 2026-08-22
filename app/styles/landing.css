@@ -2114,6 +2114,61 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   background: transparent;
 }
 
+/* Click-to-play poster before video loads */
+.proxe-hero-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.proxe-hero-video-poster img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.proxe-hero-video-play-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.proxe-hero-video-poster:hover .proxe-hero-video-play-btn {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 640px) {
+  .proxe-hero-video-play-btn {
+    width: 64px;
+    height: 64px;
+  }
+  .proxe-hero-video-play-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 /* Unmute / mute toggle pinned bottom-right of the video frame.
    Specificity scoped with .proxe-root prefix to beat the
    `.proxe-root button { background: none; border: none; color: inherit }`
@@ -8201,6 +8256,26 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
     inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ph-pill,
+  .ph-dot,
+  .ph-halo {
+    animation: none !important;
+  }
+  
+  /* Disable scroll-based animations */
+  .proxe-landing-ready {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  
+  /* Reduce complex transforms on capacity-constrained devices */
+  .proxe-hero-video-frame {
+    will-change: auto !important;
+  }
+}
+
 /* ── dot pulse animation ── */
 @keyframes phPulse {
   0%, 100% { opacity: 0.55; transform: scale(1); }
@@ -8240,6 +8315,8 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   .ph-visual {
     width: 300px;
     height: 300px;
+    /* Prevent floating elements from escaping on very small screens */
+    overflow: hidden;
   }
   .ph-logo-card {
     width: 140px;
@@ -8257,11 +8334,33 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   .ph-pill {
     font-size: 11.5px;
     padding: 6px 12px;
+    /* Reduce float amplitude on tiny screens to prevent clipping */
+    --ph-amp-y: calc(var(--ph-amp-y, -8px) * 0.6) !important;
+    --ph-amp-x: calc(var(--ph-amp-x, 2px) * 0.6) !important;
   }
   .ph-ctas {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* Extra-narrow phones (~360-390px) - further reduce animation and ensure no overflow */
+@media (max-width: 400px) {
+  .ph-visual {
+    width: 280px;
+    height: 280px;
+  }
+  .ph-pill {
+    font-size: 10.5px;
+    padding: 5px 10px;
+    /* Further reduce animation on smallest screens */
+    --ph-amp-y: calc(var(--ph-amp-y, -8px) * 0.4) !important;
+    --ph-amp-x: calc(var(--ph-amp-x, 2px) * 0.4) !important;
+  }
+  .ph-halo--1 { width: 160px; height: 160px; }
+  .ph-halo--2 { width: 220px; height: 220px; }
+  .ph-halo--3 { width: 280px; height: 280px; }
+  .ph-glow-bg { width: 220px; height: 220px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

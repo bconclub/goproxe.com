@@ -18,11 +18,18 @@ import type { NextRequest } from 'next/server'
 export function middleware(req: NextRequest) {
   const host = (req.headers.get('host') ?? '').split(':')[0] // strip :3003
 
+  // Host preference: www.goproxe.com → https://goproxe.com (apex) for SEO
+  // canonicalization. Localhost and demo hosts are not redirected.
+  if (host === 'www.goproxe.com') {
+    const { pathname, search } = req.nextUrl
+    return NextResponse.redirect(`https://goproxe.com${pathname}${search}`, 301)
+  }
+
   // The unshipped replica also stays unreachable by direct path on the main
   // host — /demo/* goes home too.
   if (!host.startsWith('demo.')) {
     if (req.nextUrl.pathname.startsWith('/demo')) {
-      return NextResponse.redirect(new URL('/', req.url), 302)
+      return NextResponse.redirect('https://goproxe.com/', 301)
     }
     return NextResponse.next()
   }

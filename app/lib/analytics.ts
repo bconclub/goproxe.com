@@ -41,6 +41,7 @@ export type ProxeEvent =
   // ── Engagement ──────────────────────────────────────────────
   | 'channel_demo_select'  // switched channel in a demo — param: channel
   | 'voice_demo_start'     // tapped the live voice orb
+  | 'video_play_click'     // clicked to play the hero video — param: video
   | 'video_unmute'         // un-muted the hero video
   | 'faq_open'             // expanded a FAQ item — param: question
   | 'scroll_depth'         // crossed a 25/50/75/90% scroll milestone — param: percent
@@ -120,6 +121,7 @@ const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   nav_click: 'NavClick',
   channel_demo_select: 'ChannelDemoSelect',
   voice_demo_start: 'VoiceDemoStart',
+  video_play_click: 'VideoPlayClick',
   video_unmute: 'VideoUnmute',
   faq_open: 'FAQOpen',
   scroll_depth: 'ScrollDepth',
