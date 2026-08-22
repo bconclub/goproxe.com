@@ -1189,6 +1189,11 @@ export default function ProxeLanding() {
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  // Load MUTED. Sound-on-load looked bolder but fought the browser: Chrome and
+  // Safari refuse to autoplay unmuted video without a prior interaction, so the
+  // hero opened on a frozen frame and only recovered once the mute-and-retry
+  // fallback fired. Muted autoplay is always permitted, so the video just
+  // plays, and the Unmute pill turns sound on for anyone who wants it.
   const [videoMuted, setVideoMuted] = useState(true);
   const videoPlayingRef = useRef(false);
   const videoMutedRef = useRef(true);

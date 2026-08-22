@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import '@fontsource-variable/hubot-sans';
 import './globals.css';
+import 'lenis/dist/lenis.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
 import ProxeWidget from './components/shared/ProxeWidget';
@@ -59,6 +59,28 @@ export default function RootLayout({
         {/* Critical CSS inlined to unblock LCP (hero text "Ever Again.").
             Paints hero immediately without waiting for 40KB+ external stylesheet. */}
         <style dangerouslySetInnerHTML={{__html: `.proxe-root{--proxe-bg:#2e1e6b;--proxe-fg:#fff;--proxe-font-sans:var(--font-proxe-sans),'Inter',system-ui,-apple-system,sans-serif;--proxe-font-heading:'Hubot Sans Variable',var(--font-proxe-sans),'Inter',system-ui,sans-serif;color:var(--proxe-fg);background:var(--proxe-bg);font-family:var(--proxe-font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;color-scheme:light}html:has(.proxe-root),body:has(.proxe-root){background:#14102e!important}.proxe-main{width:100%;overflow-x:clip;position:relative;background:transparent}.proxe-page-grainient{position:fixed;inset:0;z-index:-1;width:100vw;height:100vh;pointer-events:none;background:linear-gradient(135deg,#7C3AED 0%,#4C1D95 50%,#1E1B4B 100%)}.proxe-container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}.proxe-float-header{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:calc(100% - 64px);max-width:1160px;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:16px;pointer-events:none}.proxe-float-header>*{pointer-events:auto}.proxe-hero{position:relative;padding:180px 0 140px;text-align:center;isolation:isolate}@media (max-width:768px){.proxe-hero{padding:172px 0 96px}}.proxe-hero-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}.proxe-hero-eyebrow{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:18px;text-shadow:0 1px 3px rgba(10,20,60,.55)}.proxe-hero-title{font-family:var(--proxe-font-heading);font-size:clamp(30px,9.2vw,140px);line-height:.98;letter-spacing:.015em;margin:0;max-width:1200px;color:#fff;text-shadow:0 2px 30px rgba(10,20,60,.45),0 1px 2px rgba(10,20,60,.35)}.proxe-hero-line{display:block;white-space:nowrap}@media (max-width:768px){.proxe-hero-seg{display:block}.proxe-hero-title{letter-spacing:-.01em}}.proxe-hero-subtitle{margin:26px auto 0;max-width:580px;color:rgba(255,255,255,.72);font-family:var(--proxe-font-sans);font-weight:400;font-size:clamp(17px,1.55vw,22px);line-height:1.6;letter-spacing:.005em;text-shadow:0 1px 4px rgba(10,20,60,.45)}`}} />
+        {/* Critical font preload — only the fonts used in the hero (LCP element).
+            Preloading Inter (hero text), Instrument Serif (hero heading), and
+            JetBrains Mono if visible above fold. Using font-display:optional in
+            the @font-face below ensures the hero text paints immediately with
+            system fonts if the web font hasn't landed yet. */}
+        <link
+          rel="preload"
+          href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="https://fonts.gstatic.com/s/instrumentserif/v27/jizBRF9PuHQEPpvg70V1n7mByBH-8yKr.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Preconnect for Google Fonts CSS (needed for loading the fonts) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/* The hero video is the first thing anyone sees, and it was paying full
             DNS + TCP + TLS to Vimeo before a single frame could move - several
             hundred ms of nothing on a cold visit. Warming both the player origin
