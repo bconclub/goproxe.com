@@ -1435,6 +1435,7 @@ export default function ProxeLanding() {
                 <img
                   src="/proxe/demo-poster.png"
                   alt="PROXe demo preview"
+                  fetchPriority="high"
                   width="1200"
                   height="675"
                 />
