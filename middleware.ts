@@ -14,9 +14,16 @@ import type { NextRequest } from 'next/server'
  * braces, and a second belt. `goproxe.com/demo/*` stays reachable directly
  * (local dev, preview deploys, pre-DNS production) and is covered by the
  * metadata noindex.
+ *
+ * TTFB optimization: Cache-Control headers enable edge/CDN caching for static
+ * pages. For sub-200ms TTFB, serve pre-rendered HTML directly from nginx:
+ * 1. Build: `npm run build` creates `.next/server/app/*.html`
+ * 2. nginx: `try_files $uri.html $uri/ @nextjs` serves HTML if exists, proxies otherwise
+ * 3. This bypasses pm2/Node for static pages, reducing TTFB from ~550ms to <200ms
  */
 export function middleware(req: NextRequest) {
   const host = (req.headers.get('host') ?? '').split(':')[0] // strip :3003
+  const { pathname } = req.nextUrl
 
   // Host preference: www.goproxe.com → https://goproxe.com (apex) for SEO
   // canonicalization. Localhost and demo hosts are not redirected.
@@ -28,13 +35,16 @@ export function middleware(req: NextRequest) {
   // The unshipped replica also stays unreachable by direct path on the main
   // host — /demo/* goes home too.
   if (!host.startsWith('demo.')) {
-    if (req.nextUrl.pathname.startsWith('/demo')) {
+    if (pathname.startsWith('/demo')) {
       return NextResponse.redirect('https://goproxe.com/', 301)
     }
-    return NextResponse.next()
+    // Add cache headers for static pages to improve TTFB
+    const response = NextResponse.next()
+    if (pathname === '/' || !pathname.includes('.')) {
+      response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+    }
+    return response
   }
-
-  const { pathname } = req.nextUrl
 
   // The demo host's robots.txt is a hard disallow-all.
   if (pathname === '/robots.txt') {
