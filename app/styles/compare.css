@@ -1,0 +1,342 @@
+/**
+ * Comparison page styles (/compare/proxe-vs-*).
+ * Extends industry.css patterns with comparison-specific elements.
+ */
+
+/* ── Positioning cards ── */
+.compare-positioning {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.compare-pos-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.compare-pos-card h3 {
+  font-family: var(--font-proxe-heading);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--acc, #60a5fa);
+}
+
+.compare-pos-card p {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ── Verdict table (crawlable HTML for SEO) ── */
+.compare-table-wrap {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.compare-table thead {
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.compare-table th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compare-table th:first-child {
+  width: 25%;
+}
+
+.compare-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.compare-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.compare-table td {
+  padding: 1.25rem 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.compare-table-dim {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+  .compare-table th,
+  .compare-table td {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .compare-table th:first-child {
+    width: 30%;
+  }
+}
+
+/* ── Strength cards ── */
+.compare-strengths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.compare-strength-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.compare-strength-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.compare-strength-card--proxe {
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.compare-strength-card--proxe:hover {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.compare-strength-card h3 {
+  font-family: var(--font-proxe-heading);
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.compare-strength-card--proxe h3 {
+  color: var(--acc, #60a5fa);
+}
+
+.compare-strength-card p {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* ── Coexistence note ── */
+.compare-coexist {
+  background: rgba(96, 165, 250, 0.05);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.compare-coexist h3 {
+  font-family: var(--font-proxe-heading);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--acc, #60a5fa);
+}
+
+.compare-coexist p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* ── ICP scenarios ── */
+.compare-scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.compare-scenario {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.compare-scenario-q,
+.compare-scenario-a {
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.compare-scenario-q {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compare-scenario-q svg {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.compare-scenario-a svg {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  color: var(--acc, #60a5fa);
+}
+
+.compare-scenario p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.compare-scenario-a p {
+  font-weight: 500;
+}
+
+/* ── Cross-links ── */
+.compare-crosslinks {
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4rem 0;
+}
+
+.compare-crosslinks-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.compare-crosslinks h3 {
+  font-family: var(--font-proxe-heading);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.compare-crosslinks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.compare-crosslink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.compare-crosslink:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: var(--acc, #60a5fa);
+}
+
+.compare-crosslink svg {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.compare-crosslink:hover svg {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.compare-crosslinks-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.compare-crosslinks-more a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.compare-crosslinks-more a:hover {
+  color: var(--acc, #60a5fa);
+}
+
+@media (max-width: 768px) {
+  .compare-crosslinks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .compare-crosslinks-more {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* ── Hero CTA buttons ── */
+.indp-hero-ctas {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.proxe-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.proxe-btn--primary {
+  background: var(--acc, #60a5fa);
+  color: #000;
+}
+
+.proxe-btn--primary:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.proxe-btn--secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.proxe-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
