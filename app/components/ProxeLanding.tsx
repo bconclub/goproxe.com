@@ -1435,8 +1435,8 @@ export default function ProxeLanding() {
                 <img
                   src="/proxe/demo-poster.webp"
                   alt="PROXe demo preview"
-                  width={1200}
-                  height={608}
+                  width={1155}
+                  height={585}
                   fetchPriority="high"
                 />
                 <div className="proxe-hero-video-play-btn">
