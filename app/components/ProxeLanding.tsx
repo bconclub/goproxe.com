@@ -1181,16 +1181,10 @@ export default function ProxeLanding() {
   const videoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  // Load MUTED. Sound-on-load looked bolder but fought the browser: Chrome and
-  // Safari refuse to autoplay unmuted video without a prior interaction, so the
-  // hero opened on a frozen frame and only recovered once the mute-and-retry
-  // fallback fired. Muted autoplay is always permitted, so the video just
-  // plays, and the Unmute pill turns sound on for anyone who wants it.
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoMuted, setVideoMuted] = useState(true);
   const videoPlayingRef = useRef(false);
   const videoMutedRef = useRef(true);
-  /** Set once the visitor touches Mute/Unmute. From then on the autoplay
-      fallback keeps its hands off: their choice outranks our heuristic. */
   const userSetVolumeRef = useRef(false);
   const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
@@ -1206,10 +1200,10 @@ export default function ProxeLanding() {
   // Capture first-touch traffic attribution (UTM / referrer) on landing.
   useEffect(() => { captureAttribution(); }, []);
 
-  // Play/pause the demo video based on viewport visibility.
-  // Waits until >=50% of the frame is in view (i.e. the 3D fold-in has landed),
-  // then sends Vimeo a `play`. Pauses again when the user scrolls away, for perf.
+  // Lazy-load the video iframe only after user clicks the poster.
+  // This prevents the 3.1 MiB Vimeo autoplay from blocking first paint.
   useEffect(() => {
+    if (!videoLoaded) return;
     const iframe = videoIframeRef.current;
     if (!iframe) return;
     const target = iframe.parentElement;
@@ -1222,8 +1216,6 @@ export default function ProxeLanding() {
       );
     };
 
-    // Track actual playback state from the player so the unmuted-autoplay
-    // fallback knows whether the browser let the video run with sound.
     const onMessage = (e: MessageEvent) => {
       if (e.origin !== 'https://player.vimeo.com') return;
       let data: { event?: string } | null = null;
@@ -1235,10 +1227,6 @@ export default function ProxeLanding() {
       if (data?.event === 'ready') {
         send('addEventListener', 'play');
         send('addEventListener', 'pause');
-        // timeupdate is the ground truth: it only ticks during real playback,
-        // and catches the case where playback began before our 'play'
-        // subscription landed (fast autoplay) — without it the fallback
-        // would wrongly mute a video already running with sound.
         send('addEventListener', 'timeupdate');
       } else if (data?.event === 'play' || data?.event === 'timeupdate') {
         videoPlayingRef.current = true;
@@ -1248,20 +1236,11 @@ export default function ProxeLanding() {
     };
     window.addEventListener('message', onMessage);
 
-    // Ask for playback, then verify it actually started. If the browser
-    // blocked unmuted autoplay, mute and retry — a silent playing video
-    // beats a frozen frame. The visible Unmute pill restores sound.
     let fallbackTimer: number | undefined;
     const playWithFallback = () => {
       send('play');
-      // Never fight a deliberate unmute. This guard exists for ONE case: the
-      // browser refusing unmuted autoplay on load. Since the video now loads
-      // muted, the only way videoMutedRef goes false is a user pressing Unmute
-      // - so without this check the observer re-muted them ~1.5s later, every
-      // time the hero re-entered view. The control appeared broken because
-      // something was undoing it.
       if (userSetVolumeRef.current) return;
-      if (videoMutedRef.current) return; // already muted — play always allowed
+      if (videoMutedRef.current) return;
       window.clearTimeout(fallbackTimer);
       fallbackTimer = window.setTimeout(() => {
         if (!videoPlayingRef.current && !videoMutedRef.current && !userSetVolumeRef.current) {
@@ -1279,8 +1258,6 @@ export default function ProxeLanding() {
           if (entry.isIntersecting) {
             playWithFallback();
           } else {
-            // Scrolled away — cancel any pending fallback so it can't mute a
-            // video the visitor deliberately left with sound on.
             window.clearTimeout(fallbackTimer);
             send('pause');
           }
@@ -1295,7 +1272,7 @@ export default function ProxeLanding() {
       window.removeEventListener('message', onMessage);
       window.clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [videoLoaded]);
 
   // 3D landing animation: tilt the video frame until it scrolls into view.
   // Skip on large screens where the frame is already visible at page load.
@@ -1426,41 +1403,67 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== Hero video (scroll-reveal scale-up + mute toggle) ===== */}
+      {/* ===== Hero video (click-to-play lazy load) ===== */}
       <section className="proxe-hero-video" aria-label="PROXe product demo">
         <div className="proxe-hero-video-frame" ref={videoFrameRef}>
           <div className="proxe-hero-video-inner">
-            <iframe
-              ref={videoIframeRef}
-              src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
-              title="PROXe demo"
-              allow="autoplay; fullscreen; picture-in-picture"
-              frameBorder={0}
-              loading="lazy"
-              allowFullScreen
-            />
-            <button
-              type="button"
-              className="proxe-hero-video-mute"
-              onClick={toggleVideoMute}
-              aria-label={videoMuted ? 'Unmute demo video' : 'Mute demo video'}
-              aria-pressed={!videoMuted}
-            >
-              {videoMuted ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <line x1="23" y1="9" x2="17" y2="15" />
-                  <line x1="17" y1="9" x2="23" y2="15" />
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                </svg>
-              )}
-              <span>{videoMuted ? 'Unmute' : 'Mute'}</span>
-            </button>
+            {!videoLoaded ? (
+              <button
+                type="button"
+                className="proxe-hero-video-poster"
+                onClick={() => {
+                  setVideoLoaded(true);
+                  track('video_play_click', { video: 'hero_demo' });
+                }}
+                aria-label="Play demo video"
+              >
+                <img
+                  src="https://i.vimeocdn.com/video/1988395062-4bbf4e03c89b29e9d5fc70ef70d1b53d13fe1c7e766f0a11db1f9a40b3fc1406-d?mw=1200&q=85"
+                  alt="PROXe demo preview"
+                  loading="lazy"
+                  width="1200"
+                  height="675"
+                />
+                <div className="proxe-hero-video-play-btn">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </button>
+            ) : (
+              <>
+                <iframe
+                  ref={videoIframeRef}
+                  src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
+                  title="PROXe demo"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  frameBorder={0}
+                  allowFullScreen
+                />
+                <button
+                  type="button"
+                  className="proxe-hero-video-mute"
+                  onClick={toggleVideoMute}
+                  aria-label={videoMuted ? 'Unmute demo video' : 'Mute demo video'}
+                  aria-pressed={!videoMuted}
+                >
+                  {videoMuted ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" />
+                      <line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  )}
+                  <span>{videoMuted ? 'Unmute' : 'Mute'}</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </section>
