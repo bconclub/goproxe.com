@@ -1671,6 +1671,16 @@ export default function ProxeLanding() {
               </ul>
             </div>
 
+            {/* Compare */}
+            <div className="pf-col">
+              <div className="pf-col-title">Compare</div>
+              <ul className="pf-links">
+                <li><a href="/compare/proxe-vs-wati">PROXe vs Wati</a></li>
+                <li><a href="/compare/proxe-vs-interakt">PROXe vs Interakt</a></li>
+                <li><a href="/compare/proxe-vs-aisensy">PROXe vs AiSensy</a></li>
+              </ul>
+            </div>
+
             {/* Company — /about was a 404, so it's gone until the page exists */}
             <div className="pf-col">
               <div className="pf-col-title">Company</div>
