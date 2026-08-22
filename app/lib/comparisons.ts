@@ -32,7 +32,7 @@ export const COMPARISONS: ComparisonData[] = [
     slug: "proxe-vs-wati",
     seoTitle: "PROXe vs Wati — AI Lead OS vs WhatsApp Inbox",
     seoDesc:
-      "Compare PROXe and Wati. Wati excels as a WhatsApp Business platform & inbox. PROXe converts leads across WhatsApp, web, IG, email & voice with unified memory.",
+      "Compare PROXe and Wati. Wati excels as a WhatsApp Business inbox. PROXe converts leads across WhatsApp, web, IG, email & voice with unified memory.",
     h1: "PROXe vs Wati: Multi-Channel AI Lead OS vs WhatsApp BSP Inbox",
     competitor: {
       name: "Wati",
@@ -146,7 +146,7 @@ export const COMPARISONS: ComparisonData[] = [
     slug: "proxe-vs-interakt",
     seoTitle: "PROXe vs Interakt — Lead OS vs WhatsApp Marketing",
     seoDesc:
-      "Interakt is built around WhatsApp marketing & engagement for growing brands. PROXe is a multi-channel AI lead OS — WhatsApp, web, IG, email, voice — with unified memory.",
+      "Interakt is WhatsApp marketing for growing brands. PROXe is a multi-channel AI lead OS — WhatsApp, web, IG, email, voice — with unified memory.",
     h1: "PROXe vs Interakt: AI Lead Conversion Across Channels vs WhatsApp Marketing",
     competitor: {
       name: "Interakt",
@@ -260,7 +260,7 @@ export const COMPARISONS: ComparisonData[] = [
     slug: "proxe-vs-aisensy",
     seoTitle: "PROXe vs AiSensy — Conversion OS vs WhatsApp API",
     seoDesc:
-      "AiSensy focuses on WhatsApp API platform capabilities & automation. PROXe unifies WhatsApp with web, Instagram, email, and voice into one AI lead conversion system.",
+      "AiSensy focuses on WhatsApp API & automation. PROXe unifies WhatsApp with web, Instagram, email, and voice into one AI lead conversion system.",
     h1: "PROXe vs AiSensy: Lead Conversion AI vs WhatsApp API Platform",
     competitor: {
       name: "AiSensy",
