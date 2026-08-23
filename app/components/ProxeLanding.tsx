@@ -1286,7 +1286,9 @@ export default function ProxeLanding() {
           }
         });
       },
-      { threshold: 0.5 }
+      // 0.2, not 0.5: waiting for half the frame meant the video visibly sat
+      // frozen while scrolling in. Play as soon as it meaningfully appears.
+      { threshold: 0.2 }
     );
 
     io.observe(target);
@@ -1436,7 +1438,10 @@ export default function ProxeLanding() {
               title="PROXe demo"
               allow="autoplay; fullscreen; picture-in-picture"
               frameBorder={0}
-              loading="lazy"
+              // Eager on purpose: lazy-loading this iframe meant the player
+              // only began downloading when scrolled near, so the first play
+              // request landed on a cold player and the frame sat frozen.
+              // The layout preconnects already warm the Vimeo origins.
               allowFullScreen
             />
             <button

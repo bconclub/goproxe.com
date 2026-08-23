@@ -1,5 +1,14 @@
 ﻿# Changelog
 
+## 2026-08-23 12:33 IST · hero: honest CTA label + video plays without the wait
+
+- Hero phone-capture button now reads 'Get a call back', it triggers a callback,
+  it never dialed the visitor's ear on the spot. User-facing.
+- Hero demo video starts as soon as it meaningfully enters view: iframe loads
+  eagerly (was lazy, so the first play hit a cold player) and the play trigger
+  fires at 20% visible instead of 50%. User-facing.
+- (pending sha)
+
 ## 2026-08-11 · feat(deploy): two-step form, name and phone are saved before anything else is asked
 
 - Step 1 asks for name and phone only, and SAVES the lead immediately. Step 2

@@ -203,7 +203,7 @@ export default function HeroPhoneCapture() {
           type="submit"
           className={btnClass}
           disabled={status === 'submitting'}
-          aria-label={typing ? 'Call me now' : 'Call me now'}
+          aria-label="Get a call back"
         >
           {typing ? (
             <>
@@ -230,7 +230,7 @@ export default function HeroPhoneCapture() {
               </svg>
             </>
           ) : (
-            'Call me now'
+            'Get a call back'
           )}
         </button>
       </form>
