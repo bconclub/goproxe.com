@@ -1202,6 +1202,8 @@ export default function ProxeLanding() {
   const videoPlayingRef = useRef(false);
   const videoMutedRef = useRef(true);
   const userSetVolumeRef = useRef(false);
+  // Play pressed before the player was ready; unmute when 'ready' arrives.
+  const unmuteOnRevealRef = useRef(false);
   const { openModal, startDeploy } = useDeployModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -1264,6 +1266,15 @@ export default function ProxeLanding() {
         send('addEventListener', 'play');
         send('addEventListener', 'pause');
         send('addEventListener', 'timeupdate');
+        // Play was pressed before the player finished booting (cold click):
+        // deliver the sound the click promised as soon as the player can hear.
+        if (unmuteOnRevealRef.current) {
+          unmuteOnRevealRef.current = false;
+          send('setMuted', false);
+          send('setVolume', 1);
+          videoMutedRef.current = false;
+          setVideoMuted(false);
+        }
       } else if (data?.event === 'play' || data?.event === 'timeupdate') {
         videoPlayingRef.current = true;
       } else if (data?.event === 'pause') {
@@ -1467,6 +1478,14 @@ export default function ProxeLanding() {
                   setVideoLoaded(true);
                   setVideoRevealed(true);
                   track('video_play_click', { video: 'hero_demo' });
+                  // An explicit Play press means sound on. Preloaded player
+                  // unmutes right now; a cold click defers to the ready event.
+                  if (videoIframeRef.current?.contentWindow) {
+                    toggleVideoMute();
+                  } else {
+                    unmuteOnRevealRef.current = true;
+                    userSetVolumeRef.current = true;
+                  }
                 }}
                 aria-label="Play demo video"
               >

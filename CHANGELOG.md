@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+## 2026-08-23 18:25 IST · hero: Play brings sound with it
+
+- Pressing Play on the demo now unmutes automatically, an explicit play press
+  is a clear ask for sound. Preloaded player unmutes instantly; a cold click
+  unmutes the moment the player reports ready. The Mute pill still works and
+  still wins permanently once touched. User-facing.
+- (`286120c`)
+
 ## 2026-08-23 12:33 IST · hero: honest CTA label + video plays without the wait
 
 - Hero phone-capture button now reads 'Get a call back', it triggers a callback,
