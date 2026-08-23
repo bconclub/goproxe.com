@@ -315,7 +315,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
               <p className={styles.modalSubtitle}>
                 {step === 1
-                  ? 'Start with your name and number. We save it right away, so we can reach you even if you stop here.'
+                  ? 'Two quick steps and PROXe is yours.'
                   : isSales
                     ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
                     : 'Almost there. Next: secure checkout, then you pick your onboarding call.'}

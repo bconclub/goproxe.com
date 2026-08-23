@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 2026-08-23 19:05 IST · deploy modal: drop the data-capture subtitle
+
+- Step 1 subtitle no longer announces 'we save it right away, so we can reach
+  you even if you stop here', which read as surveillance, not reassurance.
+  Now: 'Two quick steps and PROXe is yours.' User-facing.
+
 ## 2026-08-23 18:25 IST · hero: Play brings sound with it
 
 - Pressing Play on the demo now unmutes automatically, an explicit play press
