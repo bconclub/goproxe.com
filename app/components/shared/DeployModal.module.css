@@ -536,3 +536,34 @@
   }
 }
 
+
+/* Step-2 fields are optional; the tag says so without the noise of asterisks. */
+.optionalHint {
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.02em;
+}
+
+/* "Chat on WhatsApp" — the quiet alternative under the payment CTA. Step 1
+   already banked the lead, so talking is a valid exit, not a funnel leak. */
+.waButton {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.waButton:hover {
+  background: rgba(37, 211, 102, 0.16);
+  border-color: rgba(37, 211, 102, 0.55);
+}

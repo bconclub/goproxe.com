@@ -132,12 +132,12 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const validateStep2 = () => {
     const newErrors: Record<string, string> = {};
-    // Same order as the fields render in, so the first error a visitor is
-    // sent to is the first blank field they can see, not one further down.
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email';
-    if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
-    if (!formData.websiteUrl.trim()) newErrors.websiteUrl = 'Brand website is required';
+    // Everything on step 2 is optional: step 1 already banked a reachable
+    // human, and a required field here is just one more reason to bail.
+    // The only check left is the shape of an email somebody chose to type.
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -291,6 +291,28 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     router.push('/thank-you');
   };
 
+  // PROXe's own WABA. Whatever step 2 holds is banked first, then the
+  // conversation moves to WhatsApp — they're already a saved lead, so
+  // talking is a valid exit from the funnel, not a leak out of it.
+  const handleWhatsApp = () => {
+    track('whatsapp_click', { source: 'deploy_modal_step2' });
+    submitLead({
+      type: 'lead',
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phoneNumber.trim(),
+      brandName: formData.brandName.trim(),
+      websiteUrl: formData.websiteUrl.trim(),
+      source: 'deploy_modal_whatsapp',
+      eventId: newEventId(),
+    });
+    const text = encodeURIComponent(
+      `Hi, I'd like to set up PROXe${formData.brandName.trim() ? ` for ${formData.brandName.trim()}` : ''}.`
+    );
+    window.open(`https://wa.me/918123808817?text=${text}`, '_blank', 'noopener');
+    onClose();
+  };
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -361,7 +383,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
               <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="email" className={styles.label}>
-                  Work email <span className={styles.required}>*</span>
+                  Email <span className={styles.optionalHint}>optional</span>
                 </label>
                 <input
                   type="email" id="email" name="email"
@@ -375,7 +397,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
               <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="brandName" className={styles.label}>
-                  Brand name <span className={styles.required}>*</span>
+                  Brand name <span className={styles.optionalHint}>optional</span>
                 </label>
                 <input
                   type="text" id="brandName" name="brandName"
@@ -389,7 +411,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
               <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="websiteUrl" className={styles.label}>
-                  Brand website <span className={styles.required}>*</span>
+                  Brand website <span className={styles.optionalHint}>optional</span>
                 </label>
                 <input
                   type="text" id="websiteUrl" name="websiteUrl"
@@ -414,13 +436,18 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               </button>
 
               {step === 2 && !isSubmitting && (
-                <button
-                  type="button"
-                  className={styles.stepBack}
-                  onClick={() => { setErrors({}); setStep(1); }}
-                >
-                  ← Back
-                </button>
+                <>
+                  <button type="button" className={styles.waButton} onClick={handleWhatsApp}>
+                    Chat on WhatsApp
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.stepBack}
+                    onClick={() => { setErrors({}); setStep(1); }}
+                  >
+                    ← Back
+                  </button>
+                </>
               )}
             </form>
           </div>

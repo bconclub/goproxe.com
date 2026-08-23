@@ -1,5 +1,14 @@
 ﻿# Changelog
 
+## 2026-08-23 19:30 IST · deploy modal step 2: all optional + WhatsApp exit
+
+- Email, brand name and brand website are optional now. Step 1 already banked
+  a reachable lead; required fields here only manufactured bail-outs. Email
+  keeps a format check when typed. Any email is fine, work or Gmail.
+- New quiet 'Chat on WhatsApp' button under the payment CTA: banks whatever
+  step 2 holds, opens wa.me on the PROXe number with a prefilled line.
+  Payment stays the loud path. User-facing.
+
 ## 2026-08-23 19:05 IST · deploy modal: drop the data-capture subtitle
 
 - Step 1 subtitle no longer announces 'we save it right away, so we can reach
