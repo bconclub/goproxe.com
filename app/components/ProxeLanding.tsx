@@ -1189,6 +1189,10 @@ export default function ProxeLanding() {
   const videoFrameRef = useRef<HTMLDivElement | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  // Poster lifted off the (already playing) video. Split from videoLoaded so
+  // the player can boot BEHIND the poster: loaded = iframe mounted,
+  // revealed = visitor pressed play. Click-then-wait came from conflating them.
+  const [videoRevealed, setVideoRevealed] = useState(false);
   // Load MUTED. Sound-on-load looked bolder but fought the browser: Chrome and
   // Safari refuse to autoplay unmuted video without a prior interaction, so the
   // hero opened on a frozen frame and only recovered once the mute-and-retry
@@ -1212,8 +1216,28 @@ export default function ProxeLanding() {
   // Capture first-touch traffic attribution (UTM / referrer) on landing.
   useEffect(() => { captureAttribution(); }, []);
 
-  // Lazy-load the video iframe only after user clicks the poster.
-  // This prevents the 3.1 MiB Vimeo autoplay from blocking first paint.
+  // Mount the video iframe when the frame gets NEAR the viewport, not at page
+  // load (keeps the 3.1 MiB Vimeo payload off first paint) and not on click
+  // (a cold player boot after pressing Play read as "nothing happened"). By
+  // the time the poster is clicked the video is already looping muted behind
+  // it, so play is instant.
+  useEffect(() => {
+    if (videoLoaded) return;
+    const frame = videoFrameRef.current;
+    if (!frame) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVideoLoaded(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+    io.observe(frame);
+    return () => io.disconnect();
+  }, [videoLoaded]);
+
   useEffect(() => {
     if (!videoLoaded) return;
     const iframe = videoIframeRef.current;
@@ -1422,12 +1446,26 @@ export default function ProxeLanding() {
       <section className="proxe-hero-video" aria-label="PROXe product demo">
         <div className="proxe-hero-video-frame" ref={videoFrameRef}>
           <div className="proxe-hero-video-inner">
-            {!videoLoaded ? (
+            {videoLoaded && (
+              <iframe
+                ref={videoIframeRef}
+                src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
+                title="PROXe demo"
+                allow="autoplay; fullscreen; picture-in-picture"
+                frameBorder={0}
+                allowFullScreen
+              />
+            )}
+            {/* Poster sits ABOVE the mounted iframe (absolute inset-0, later in
+                DOM) until Play is pressed — the video is already running muted
+                underneath, so the click just lifts the cover. */}
+            {!videoRevealed ? (
               <button
                 type="button"
                 className="proxe-hero-video-poster"
                 onClick={() => {
                   setVideoLoaded(true);
+                  setVideoRevealed(true);
                   track('video_play_click', { video: 'hero_demo' });
                 }}
                 aria-label="Play demo video"
@@ -1447,14 +1485,6 @@ export default function ProxeLanding() {
               </button>
             ) : (
               <>
-                <iframe
-                  ref={videoIframeRef}
-                  src="https://player.vimeo.com/video/1182869056?autoplay=1&muted=1&loop=1&controls=0&byline=0&title=0&portrait=0&dnt=1&api=1&transparent=1&background=0&playsinline=1"
-                  title="PROXe demo"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  frameBorder={0}
-                  allowFullScreen
-                />
                 <button
                   type="button"
                   className="proxe-hero-video-mute"

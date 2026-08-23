@@ -1,5 +1,16 @@
 ﻿# Changelog
 
+## 2026-08-23 12:33 IST · hero: honest CTA label + video plays without the wait
+
+- Hero phone-capture button now reads 'Get a call back', it triggers a callback,
+  it never dialed the visitor's ear on the spot. User-facing.
+- Pressing Play on the demo poster starts the video instantly: the Vimeo player
+  now mounts muted BEHIND the poster once the frame nears the viewport, so the
+  click just lifts the cover off an already-playing video (was: cold player
+  boot after the click, which read as nothing happening). First paint still
+  ships zero Vimeo bytes. User-facing.
+- (pending sha)
+
 ## 2026-08-11 · feat(deploy): two-step form, name and phone are saved before anything else is asked
 
 - Step 1 asks for name and phone only, and SAVES the lead immediately. Step 2
