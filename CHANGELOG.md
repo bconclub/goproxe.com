@@ -9,7 +9,7 @@
   click just lifts the cover off an already-playing video (was: cold player
   boot after the click, which read as nothing happening). First paint still
   ships zero Vimeo bytes. User-facing.
-- (pending sha)
+- (`5c7f186`)
 
 ## 2026-08-11 · feat(deploy): two-step form, name and phone are saved before anything else is asked
 
