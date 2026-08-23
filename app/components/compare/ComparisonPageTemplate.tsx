@@ -31,12 +31,16 @@ export default function ComparisonPageTemplate({ comparison }: { comparison: Com
       <IndustryHeader slug="compare" />
 
       {/* ── Hero ── */}
+      {/* Single-column on purpose: the industry hero's two-column grid assumes
+          a visual in the second column, which comparison pages don't have, so
+          half the viewport rendered empty. */}
       <section className="indp-hero" data-hero="dashboard">
         <div className="indp-hero-tint" aria-hidden />
-        <div className="proxe-container indp-hero-inner">
+        <div className="proxe-container indp-hero-inner indp-hero-inner--single">
           <div className="indp-hero-copy">
             <span className="indp-eyebrow">Product Comparison</span>
             <h1 className="indp-h1">{comparison.h1}</h1>
+            {comparison.deck && <p className="indp-hero-deck">{comparison.deck}</p>}
             <p className="indp-hero-sub">{comparison.intro}</p>
             <div className="indp-hero-ctas">
               <Link href="/#pricing" className="proxe-btn proxe-btn--primary">

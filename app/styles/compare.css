@@ -340,3 +340,31 @@
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
 }
+
+/* ── Hero, comparison variant ─────────────────────────────────────────
+   One centered column. The industry grid keeps a second column for a
+   visual; compare pages have none, so inheriting it left half the fold
+   empty and pushed a long H1 into a 5-line tower. */
+.indp-hero-inner--single {
+  grid-template-columns: 1fr;
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+}
+.indp-hero-inner--single .indp-hero-sub {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.indp-hero-inner--single .indp-hero-ctas {
+  justify-content: center;
+}
+
+/* The one-line descriptor under the short H1; carries what used to bloat
+   the H1 itself. */
+.indp-hero-deck {
+  font-size: clamp(16px, 1.6vw, 20px);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 14px;
+}

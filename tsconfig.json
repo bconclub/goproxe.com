@@ -34,9 +34,10 @@
     ".next-alt/types/**/*.ts",
     ".next-build/types/**/*.ts",
     ".next-buildcheck/types/**/*.ts",
+    ".next-chk/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-chk/types/**/*.ts"
+    ".next-loop /types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

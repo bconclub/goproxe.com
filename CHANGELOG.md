@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+## 2026-08-23 20:15 IST · compare + industry pages: full audit pass
+
+- Compare heroes rebuilt: short H1 (PROXe vs X) + one-line deck; the old
+  60-char H1s rendered as 5-line towers next to an empty half-viewport
+  (the industry grid expects a visual the compare pages never had). Hero is
+  now one centered column. User-facing.
+- Compare intros cut to two sentences. '(Bangalore ICP)' internal jargon
+  removed from a public table; audience wording widened to India.
+- Interakt facts refreshed: they cover Instagram DMs now, table said
+  WhatsApp only.
+- Industry dashboard mock no longer overflows a 375px screen (grid track
+  floored at content width on /industries/pro). Industry H1 cap 58px -> 50px.
+- Em dashes swept out of all comparison copy per house style.
+- Verified: 15 routes x mobile+desktop, zero horizontal overflow, zero
+  element overlap, H1s <= 3 lines desktop.
+
 ## 2026-08-23 19:30 IST · deploy modal step 2: all optional + WhatsApp exit
 
 - Email, brand name and brand website are optional now. Step 1 already banked

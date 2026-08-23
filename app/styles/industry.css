@@ -88,7 +88,7 @@
 }
 .indp-h1 {
   font-family: var(--proxe-font-heading);
-  font-size: clamp(34px, 4.4vw, 58px);
+  font-size: clamp(32px, 3.8vw, 50px);
   font-weight: 700;
   line-height: 1.07;
   letter-spacing: 0.01em;
@@ -1143,7 +1143,11 @@
   .indp-channel-row { grid-template-columns: repeat(2, 1fr); }
   .indp-trust { grid-template-columns: 1fr; padding: 16px 18px; }
   .indp-cta { width: 100%; }
-  .indp-dash-body { grid-template-columns: 1fr; }
+  /* minmax(0,1fr), not 1fr: with 1fr the track floors at the content's
+     min-content width, and the dashboard mock's widest row (365px) pushed
+     the whole card past a 375px viewport. */
+  .indp-dash-body { grid-template-columns: minmax(0, 1fr); }
+  .indp-dash-main { min-width: 0; overflow-x: hidden; }
   .indp-dash-nav { display: none; }
   .indp-dash-tiles { grid-template-columns: repeat(2, 1fr); }
 }

@@ -22,7 +22,7 @@ const clinics: IndustryPageContent = {
   seoTitle: 'PROXe for Clinics & Healthcare, never miss a patient again',
   seoDesc:
     'Clinics miss 4 in 10 appointment calls. PROXe answers every WhatsApp message and call instantly, books and confirms appointments, and sends the reminders that stop no-shows.',
-  heroHeadline: 'Your clinic loses patients after hours. PROXe answers, books, reminds, and follows up.',
+  heroHeadline: "Your clinic loses patients after hours. PROXe doesn't.",
   heroSub:
     'An AI receptionist for clinics that handles calls, WhatsApp, booking, reminders, and post-visit follow-ups, so your staff can focus on care, not the phone.',
   painIntro: 'Walk through your last week. All four of these happened:',
