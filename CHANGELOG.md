@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 2026-08-25 · calls actually appear on the Calls page
+
+- recordCallTranscript now also writes a voice_sessions row (keyed on the
+  ElevenLabs conversation id, retry-safe). The dashboard's Calls page reads
+  only that table, so every call to date showed 'No calls yet' while the
+  transcripts sat in the chat thread.
+
 ## 2026-08-25 · dropped calls get a WhatsApp continuation, automatically
 
 - Every website-callback call now fires a WhatsApp nudge when it ends: the

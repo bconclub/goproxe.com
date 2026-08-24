@@ -492,6 +492,39 @@ export async function recordCallTranscript(input: {
       })
       .eq('id', row.id)
 
+    // ALSO write a `voice_sessions` row: the dashboard's Calls page reads
+    // ONLY that table, so calls recorded just into unified_context and
+    // conversations left it saying "No calls yet" while real calls sat in the
+    // thread. Keyed on call_sid = conversation_id, so a webhook retry updates
+    // rather than duplicates.
+    if (input.conversationId) {
+      const transcription = input.transcript
+        .map((t) => `${t.role === 'agent' ? 'agent' : 'caller'}: ${t.text}`)
+        .join('\n')
+      const { data: existing } = await supabase
+        .from('voice_sessions')
+        .select('id')
+        .eq('call_sid', input.conversationId)
+        .maybeSingle()
+      const sessionRow = {
+        lead_id: row.id,
+        brand: BRAND,
+        customer_name: input.callerName ?? row.customer_name ?? null,
+        customer_phone: input.phone ?? null,
+        customer_phone_normalized: normalized || null,
+        call_sid: input.conversationId,
+        call_duration_seconds: input.durationSecs ?? null,
+        call_status: input.status ?? 'completed',
+        call_direction: 'outbound',
+        transcription,
+        call_summary: input.summary ?? null,
+      }
+      const vs = existing?.id
+        ? await supabase.from('voice_sessions').update(sessionRow).eq('id', existing.id)
+        : await supabase.from('voice_sessions').insert(sessionRow)
+      if (vs.error) console.error('[leadsSupabase] voice_sessions write failed', vs.error.message)
+    }
+
     // ALSO write the turns as `conversations` rows. unified_context is what the
     // lead record reads, but the Chats inbox reads `conversations` - so a
     // transcript stored only in unified_context is invisible exactly where
