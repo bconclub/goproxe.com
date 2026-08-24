@@ -75,8 +75,11 @@ export async function POST(request: Request) {
 
   // The batch lock. While the allowlist is set, everything else is refused,
   // loudly, so a bot cannot start a batch nobody approved.
-  const allow = (process.env.DIAL_ALLOWLIST || '').split(',').map((s) => s.replace(/\D/g, '')).filter(Boolean)
-  if (allow.length && !allow.includes(phone.replace(/\D/g, ''))) {
+  // Compare on the last 10 digits: entries are typed bare (9731660933)
+  // while phone is E164 (+919731660933), and a mismatch here blocked the
+  // one number the lock exists to allow.
+  const allow = (process.env.DIAL_ALLOWLIST || '').split(',').map((s) => s.replace(/\D/g, '').slice(-10)).filter(Boolean)
+  if (allow.length && !allow.includes(phone.replace(/\D/g, '').slice(-10))) {
     return NextResponse.json({ ok: false, reason: 'not_in_allowlist' }, { status: 403 })
   }
 
