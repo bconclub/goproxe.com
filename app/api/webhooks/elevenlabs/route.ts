@@ -172,5 +172,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, reason: 'record_failed' }, { status: 500 })
   }
 
+  // THE DROPPED-CALL WORKER. Every website-callback call gets a WhatsApp
+  // continuation the moment it ends: calls drop, people get pulled away, and
+  // the thread must not die with the line. PROXe's intent endpoint decides the
+  // legal mode itself (in-window: the personal line below; out-of-window: the
+  // approved proxe_postcall_v1 template with buttons), so this fire needs no
+  // window logic here. Best-effort by design: a failed nudge must never make
+  // ElevenLabs retry the webhook and double-write the transcript above.
+  const intentBase = process.env.PROXE_INTENT_BASE
+  const intentKey = process.env.PROXE_INBOUND_API_KEY
+  if (phone && intentBase && intentKey) {
+    const biz = pick('business_type')
+    try {
+      const nudge = await fetch(`${intentBase}/api/agent/outreach/intent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': intentKey },
+        body: JSON.stringify({
+          phone,
+          text: `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`,
+          template: 'proxe_postcall_v1',
+          params: [pick('caller_name') || 'there'],
+          source: 'postcall_wa',
+        }),
+      })
+      const nres = await nudge.json().catch(() => ({}))
+      console.log(`[webhooks/elevenlabs] postcall nudge ${phone}: ${nudge.status} mode=${nres.mode ?? '-'}`)
+    } catch (err) {
+      console.error('[webhooks/elevenlabs] postcall nudge failed', err)
+    }
+  }
+
   return NextResponse.json({ ok: true, turns: transcript.length })
 }

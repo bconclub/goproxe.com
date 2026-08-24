@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+## 2026-08-25 · dropped calls get a WhatsApp continuation, automatically
+
+- Every website-callback call now fires a WhatsApp nudge when it ends: the
+  personal 'we just spoke about your {business}' line inside the 24h window,
+  the approved proxe_postcall_v1 template (with reply buttons) outside it.
+  PROXe's intent endpoint picks the legal mode; the webhook only fires.
+  Best-effort: a failed nudge never re-triggers the transcript write.
+
 ## 2026-08-24 23:40 IST · outreach dialing: endpoint, agent routing, batch lock
 
 - POST /api/outreach-dial (Bearer DIAL_API_KEY): places a call from one of
