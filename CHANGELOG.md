@@ -1,5 +1,17 @@
 ﻿# Changelog
 
+## 2026-08-24 23:40 IST · outreach dialing: endpoint, agent routing, batch lock
+
+- POST /api/outreach-dial (Bearer DIAL_API_KEY): places a call from one of
+  the three PROXe outreach agents with the prospect's story as dynamic
+  variables (never config overrides, those killed calls twice). One call
+  per number per 24h from the DB, and a DIAL_ALLOWLIST batch lock that
+  ships holding only the BDR test number.
+- ElevenLabs post-call webhook now routes OUTREACH agents' transcripts to
+  ARC (record + summary + stage on the prospect), never into PROXe. The
+  website-callback flow is untouched. Prospects reach PROXe only when
+  interest earns a deliberate promotion.
+
 ## 2026-08-24 21:10 IST · compare pages: brand violet + breathing room
 
 - Accent color was a hardcoded generic blue (#60a5fa) on a purple-brand

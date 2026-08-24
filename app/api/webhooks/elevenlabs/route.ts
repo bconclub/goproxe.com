@@ -107,6 +107,52 @@ export async function POST(request: NextRequest) {
     return s.length ? s : null
   }
 
+  // OUTREACH DIALS GO TO ARC, NOT PROXE. Cold-dial transcripts are prospect
+  // noise: the rule is that ARC owns prospects and PROXe owns conversations,
+  // and only prospects who show interest get promoted (deliberately, via the
+  // WhatsApp bridge). Routing is by agent_id, so the website-callback flow
+  // below is untouched.
+  const OUTREACH_AGENTS = new Set(
+    (process.env.OUTREACH_AGENT_IDS ||
+      'agent_8901m0sn6y14eegsqh7mmgdswm92,agent_9901m0sn70f1ejn84enhccrns2kt,agent_1201m0sn71mvf3arwzfwv4h9s2v1'
+    ).split(',').map((s) => s.trim()).filter(Boolean),
+  )
+  const agentId: string | null = d.agent_id ?? d.metadata?.agent_id ?? null
+  if (agentId && OUTREACH_AGENTS.has(agentId)) {
+    const ingestBase = process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com'
+    const ingestSecret = process.env.ARC_INGEST_SECRET || ''
+    if (!ingestSecret) {
+      // 500 so ElevenLabs retries once the secret is configured; silently
+      // acknowledging would drop the transcript forever.
+      console.error('[webhooks/elevenlabs] outreach call but ARC_INGEST_SECRET unset')
+      return NextResponse.json({ ok: false, reason: 'arc_not_configured' }, { status: 500 })
+    }
+    const lines = transcript.map((t) => `${t.role}: ${t.text}`).join('\n')
+    const summary = d.analysis?.transcript_summary ?? ''
+    try {
+      const fwd = await fetch(`${ingestBase}/api/agent/outreach-call`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ingestSecret}` },
+        body: JSON.stringify({
+          phone,
+          transcript: (summary ? `SUMMARY: ${summary}\n\n` : '') + lines,
+          disposition: pick('interest') === 'yes' ? 'interested' : undefined,
+        }),
+      })
+      if (!fwd.ok) {
+        const detail = await fwd.text().catch(() => '')
+        // 404 = no ARC target with this phone. Real, but not retryable - log
+        // loudly and acknowledge so ElevenLabs stops resending.
+        console.error('[webhooks/elevenlabs] ARC ingest failed', fwd.status, detail.slice(0, 200))
+        if (fwd.status !== 404) return NextResponse.json({ ok: false, reason: 'arc_ingest_failed' }, { status: 500 })
+      }
+    } catch (err) {
+      console.error('[webhooks/elevenlabs] ARC ingest unreachable', err)
+      return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 500 })
+    }
+    return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length })
+  }
+
   try {
     await recordCallTranscript({
       phone,
