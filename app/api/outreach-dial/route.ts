@@ -121,7 +121,7 @@ export async function POST(request: Request) {
   }
 
   const out = await res.json().catch(() => ({}))
-  await recordCallbackDial({ phone, status: 'dialed', reason: `outreach_${agentKey}` }).catch(() => {})
+  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}` }).catch(() => {})
   console.log(`[outreach-dial] dialed ${phone} agent=${agentKey}`)
   return NextResponse.json({ ok: true, dialed: phone, agent: agentKey, conversation_id: out.conversation_id ?? null })
 }
