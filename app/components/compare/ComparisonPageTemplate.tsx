@@ -26,7 +26,7 @@ import IndustryHeader from '../industry/IndustryHeader';
 
 export default function ComparisonPageTemplate({ comparison }: { comparison: ComparisonData }) {
   return (
-    <main className="indp-root" style={{ ['--acc' as string]: '#60a5fa' }}>
+    <main className="indp-root" style={{ ['--acc' as string]: '#a78bfa' }}>
       {/* ── Header ── */}
       <IndustryHeader slug="compare" />
 
@@ -234,7 +234,7 @@ export default function ComparisonPageTemplate({ comparison }: { comparison: Com
               </defs>
             </svg>
             <div className="indp-channel-row">
-              <div className="indp-channel" style={{ ['--ch' as string]: '#60a5fa' }}>
+              <div className="indp-channel" style={{ ['--ch' as string]: '#a78bfa' }}>
                 <span className="indp-channel-ico">
                   <FaPhoneAlt size={20} />
                 </span>

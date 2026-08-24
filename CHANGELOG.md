@@ -1,5 +1,14 @@
 ﻿# Changelog
 
+## 2026-08-24 21:10 IST · compare pages: brand violet + breathing room
+
+- Accent color was a hardcoded generic blue (#60a5fa) on a purple-brand
+  site. Now the brand violet (#a78bfa), the same token the homepage's own
+  CTA card uses, so eyebrow, glow, table highlights and cards all read as
+  PROXe. User-facing.
+- Hero gets real air: 200px top inset on desktop (was the shared 138px,
+  cramped under the floating header), 150px on mobile. User-facing.
+
 ## 2026-08-23 20:15 IST · compare + industry pages: full audit pass
 
 - Compare heroes rebuilt: short H1 (PROXe vs X) + one-line deck; the old
