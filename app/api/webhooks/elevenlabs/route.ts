@@ -190,8 +190,11 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           phone,
           text: `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`,
-          template: 'proxe_postcall_v1',
-          params: [pick('caller_name') || 'there'],
+          // UTILITY continuation, not the marketing postcall: Meta's per-user
+          // marketing cap silently swallowed the first real send (131049,
+          // "healthy ecosystem engagement"). A dropped call continuing is
+          // genuinely transactional, and utility is exempt from that cap.
+          template: 'proxe_call_continuation_v1',
           source: 'postcall_wa',
         }),
       })

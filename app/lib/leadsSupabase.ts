@@ -513,6 +513,7 @@ export async function recordCallTranscript(input: {
         customer_phone: input.phone ?? null,
         customer_phone_normalized: normalized || null,
         call_sid: input.conversationId,
+        external_session_id: input.conversationId,
         call_duration_seconds: input.durationSecs ?? null,
         call_status: input.status ?? 'completed',
         call_direction: 'outbound',
@@ -559,7 +560,7 @@ export async function recordCallTranscript(input: {
           sender: t.role === 'agent' ? 'agent' : 'customer',
           content: t.text,
           message_type: 'text',
-          metadata: { conversation_id: input.conversationId, at_secs: t.at },
+          metadata: { conversation_id: input.conversationId, call_id: input.conversationId, at_secs: t.at },
           // Spread across the call's real duration so the thread reads in order
           // instead of collapsing onto one timestamp.
           created_at: new Date(base + (t.at ?? 0) * 1000).toISOString(),

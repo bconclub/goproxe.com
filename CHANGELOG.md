@@ -1,5 +1,16 @@
 ﻿# Changelog
 
+## 2026-08-25 · calls: transcript + audio resolve; discovery-first agent; utility continuation
+
+- voice_sessions rows now carry external_session_id and transcript turns
+  carry metadata.call_id, the two keys the Calls detail and audio routes
+  actually resolve by. Transcript shows, audio streams from ElevenLabs.
+- Callback agent brief rewritten discovery-first: where do leads come from,
+  how many a month, could you handle double, what happens after hours. The
+  'many businesses find...' philosophy is banned outright.
+- Dropped-call worker sends the UTILITY continuation template: Meta's
+  per-user marketing cap swallowed the first real send silently.
+
 ## 2026-08-25 · calls actually appear on the Calls page
 
 - recordCallTranscript now also writes a voice_sessions row (keyed on the
