@@ -115,6 +115,27 @@ export type Industry = {
    */
   stat: string;
   statLabel: string;
+  /**
+   * What one inbound thing is CALLED in this industry, as a countable noun
+   * ("a new enquiry", "a new abandoned cart"). Absent → 'enquiry'.
+   *
+   * Exists because defaultPageContent used to borrow `flow[0].label` for this.
+   * Flow labels are step names and several are verbs, so D2C rendered the line
+   * "A new abandon lands from any channel" on the live page. A step name and a
+   * countable noun are different things; conflating them only reads correctly
+   * by luck.
+   */
+  leadNoun?: string;
+  /**
+   * Whether this industry's conversion occupies a time slot. Absent → true,
+   * which is right for appointments, site visits, test drives and the rest.
+   *
+   * D2C is the exception: an order is placed, not slotted into a calendar, so
+   * the generic feature card was promising "real open slots" for buying a
+   * serum. Copy that describes a different business than the reader's is worse
+   * than no copy on that card.
+   */
+  booksTimeSlots?: boolean;
   /** Hand-written page content; absent → defaultPageContent() is used. */
   page?: IndustryPageContent;
   /**
@@ -262,6 +283,8 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Carts',
     statLabel: 'abandoned carts followed up automatically',
+    leadNoun: 'abandoned cart',
+    booksTimeSlots: false,
     variant: { hero: 'cards', leak: 'arrows' },
     images: { live: '/unsplash/d2c-live-g6q3lfae.webp', closing: '/unsplash/d2c-closing-k63or81f.webp' },
     demo: {
@@ -420,6 +443,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Discovery',
     statLabel: 'leads qualified and calls scheduled',
+    leadNoun: 'lead',
     images: { live: '/unsplash/pro-live-hpdjdl8m.webp', closing: '/unsplash/pro-closing-rayjmmma.webp' },
     demo: {
       business: { name: 'Meridian Advisors', initials: 'MA', tagline: 'CA firm · tax, audit & compliance' },
@@ -524,6 +548,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: '5×',
     statLabel: 'faster lead response',
+    leadNoun: 'job request',
     images: { live: '/unsplash/home-live-is5gdeld.webp', closing: '/unsplash/home-closing-wrzbarqn.webp' },
     demo: {
       business: { name: 'HomeFix Services', initials: 'HF', tagline: 'AC · plumbing · electrical · painting' },
@@ -569,7 +594,9 @@ export function getIndustry(slug: string): Industry | undefined {
  * scenes, not abstractions, and each fix mirrors its pain 1:1.
  */
 export function defaultPageContent(ind: Industry): IndustryPageContent {
-  const first = ind.flow[0]?.label ?? 'Inquiry';
+  // NOT flow[0].label — those are step names, and several are verbs. See the
+  // leadNoun docs on the Industry type.
+  const first = ind.leadNoun ?? 'enquiry';
   return {
     seoTitle: `PROXe for ${ind.title}`,
     seoDesc: `${ind.desc} See how PROXe runs ${ind.title.toLowerCase()} on autopilot, ${ind.stat} ${ind.statLabel}.`,
@@ -622,7 +649,9 @@ export function defaultFeatures(ind: Industry): NonNullable<IndustryPageContent[
   return [
     { Icon: FiPhoneCall, title: 'Missed-call recovery', body: `A missed call gets an instant WhatsApp reply, so the lead is in a conversation before they dial a competitor.` },
     { Icon: FiZap, title: 'Instant answers, 24/7', body: 'Prices, availability, directions, common questions, answered in seconds on every channel, at any hour.' },
-    { Icon: FiCalendar, title: `${ind.demo.bookingNoun} booking`, body: `PROXe offers real open slots and books the ${noun} in the conversation, no back-and-forth, no forms.` },
+    ind.booksTimeSlots === false
+      ? { Icon: FiCalendar, title: `${ind.demo.bookingNoun} completion`, body: `PROXe answers the last question, applies the offer and closes the ${noun} inside the conversation, no back-and-forth, no forms.` }
+      : { Icon: FiCalendar, title: `${ind.demo.bookingNoun} booking`, body: `PROXe offers real open slots and books the ${noun} in the conversation, no back-and-forth, no forms.` },
     { Icon: FiBell, title: 'Reminders and follow-ups', body: 'Confirmations, day-before reminders and polite nudges go out on schedule, without anyone remembering to send them.' },
     { Icon: FiTrendingUp, title: 'Every lead scored', body: 'Intent is read from the conversation itself, so your team opens the day on the hottest leads with full context attached.' },
     { Icon: FiMessageCircle, title: 'One dashboard', body: 'Every conversation from every channel writes back to one system, nothing lives in a personal phone.' },

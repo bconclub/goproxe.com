@@ -5,7 +5,7 @@ import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
  * Hero phone capture → instant outbound call from the PROXe voice agent.
  *
  * POST { phone, market? } — normalises the number to E.164 and asks ElevenLabs
- * to dial it from our SIP number (+91 80467 33388) as the "PROXe Website
+ * to dial it from our SIP number (+91 80653 55717) as the "PROXe Website
  * Callback" agent. The whole point of the hero capture is that PROXe calls
  * within seconds of the tap — this route IS the product demo.
  *
@@ -21,7 +21,18 @@ import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
 const AGENT_ID = process.env.ELEVENLABS_CALLBACK_AGENT_ID || 'agent_6201kzbayp7zenc8d3v86sa4zwra'
-const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_6501kwq4tr8kfats4mezvr37krw9'
+// Rewired 2026-08-25. The VoBiz SIP trunk had been deleted, taking the DID
+// (+918046733388) and the SIP domain (5f2cb31c.sip.vobiz.ai) with it, so every
+// dial authenticated against a host that no longer existed and presented a
+// caller ID we no longer owned - ElevenLabs returned SIP 403 Forbidden on all
+// of them. Recreating the trunk issues a NEW domain (6f2e835a.sip.vobiz.ai),
+// which is why swapping the number alone was not enough: the phone-number
+// entry had to be recreated against it.
+//
+// If dials start failing again, check the trunk still exists in VoBiz before
+// anything else. The SIP domain is regenerated on every recreate and nothing
+// in this repo will tell you it moved.
+const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_3701m0wakhjte0zr5fyk25yjpe01'
 
 /** Calling voice. Identifier, not a secret; env overrides without a deploy. */
 const VOICE_ID = process.env.ELEVENLABS_CALLBACK_VOICE_ID || '0muxiGNHAVvmM1qWRtyV'
