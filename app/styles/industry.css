@@ -64,7 +64,14 @@
     linear-gradient(0deg, var(--ink) 4%, transparent 30%),
     linear-gradient(160deg, color-mix(in srgb, var(--acc) 22%, transparent), transparent 60%);
 }
-.indp-hero-inner {
+/* Scoped to .indp-hero deliberately. This element is `proxe-container
+   indp-hero-inner`, and .proxe-container is ALSO re-declared (padding: 0 24px)
+   in the inline critical-CSS block, which the browser applies AFTER the linked
+   stylesheets. At equal specificity - one class each - that block won, wiping
+   the top padding to 0 and dropping the hero underneath the fixed header on
+   every industry page. The extra class raises specificity so header clearance
+   can never be decided by stylesheet load order again. */
+.indp-hero .indp-hero-inner {
   width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
@@ -1102,7 +1109,7 @@
 
 /* ── Responsive ── */
 @media (max-width: 1080px) {
-  .indp-hero-inner { grid-template-columns: 1fr; gap: 64px; padding-top: 120px; }
+  .indp-hero .indp-hero-inner { grid-template-columns: 1fr; gap: 64px; padding-top: 120px; }
   .indp-hero-visual { max-width: 560px; }
   .indp-hero-visual--cards { justify-content: flex-start; min-height: 0; }
   .indp-wa { right: 0; bottom: -26px; }
