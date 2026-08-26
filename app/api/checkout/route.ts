@@ -61,8 +61,26 @@ interface CheckoutPayload {
   email?: string
   phone?: string
   brandName?: string
+  /**
+   * Buyer's GSTIN, collected on /deploy. Its presence is what turns an Indian
+   * sale into a reverse-charge sale: 18% is not levied, the buyer self-assesses
+   * and claims input credit. Until this existed, every Indian business was
+   * silently billed as B2C and found out afterwards.
+   */
+  gstin?: string
   /** Where the click came from, carried into Dodo metadata + the lead row. */
   source?: string
+}
+
+/**
+ * Shape check only: state code, PAN, entity digit, 'Z', checksum. NOT a claim
+ * that the number is registered, which needs a GSTN lookup. Mirrors
+ * `app/lib/billing/pricing.ts` so the page and this route cannot disagree about
+ * which tax case a buyer is in.
+ */
+function isPlausibleGstin(gstin: string | undefined): boolean {
+  const g = String(gstin ?? '').trim().toUpperCase()
+  return /^[0-3][0-9][A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g)
 }
 
 export async function POST(request: Request) {
@@ -110,6 +128,23 @@ export async function POST(request: Request) {
   const name = body.name?.trim()
   const phone = normalizeE164(body.phone, market)
 
+  // Reverse charge only exists for an Indian supply. A USD buyer typing an
+  // Indian GSTIN does not create one, so the market gate comes first.
+  const gstin = market === 'inr' && isPlausibleGstin(body.gstin) ? body.gstin!.trim().toUpperCase() : null
+  const taxMode: 'b2c' | 'rcm' | 'international' =
+    market !== 'inr' ? 'international' : gstin ? 'rcm' : 'b2c'
+  const businessName = body.brandName?.trim()
+
+  /**
+   * Dodo pairs these two: it rejects `customer_business_name` without a
+   * `tax_id`. Sent together or not at all, and only when we hold a well-formed
+   * GSTIN. Typed loosely because the pair is not in the SDK's params type; the
+   * retry below is what makes sending it safe regardless.
+   */
+  const taxFields: Record<string, unknown> = gstin
+    ? { customer_business_name: businessName || name || 'Business' }
+    : {}
+
   try {
     const sessionParams = {
       product_cart: productCart,
@@ -118,8 +153,18 @@ export async function POST(request: Request) {
       // collects it on the hosted page otherwise. Phone rides along so nothing
       // the buyer already typed on our form has to be typed again.
       ...(email
-        ? { customer: { email, name: name || '', ...(phone ? { phone_number: phone } : {}) } }
+        ? {
+            customer: {
+              email,
+              name: name || '',
+              ...(phone ? { phone_number: phone } : {}),
+              // Prefilled so a buyer who typed their GSTIN on /deploy does not
+              // type it again on the payment page.
+              ...(gstin ? { tax_id: gstin } : {}),
+            },
+          }
         : {}),
+      ...taxFields,
       // NOTE: customer_business_name is deliberately NOT sent. Dodo rejects it
       // with 400 "customer_business_name cannot be provided without tax_id",
       // and we don't collect a GST/VAT number on the landing form. The brand
@@ -145,9 +190,10 @@ export async function POST(request: Request) {
         // No public discount codes on founding pricing. An empty "promo code?"
         // box only invites people to leave and hunt for one.
         allow_discount_code: false,
-        // We do not collect GST/VAT (see the customer_business_name note above),
-        // so the tax-id field is dead weight on the form.
-        allow_tax_id: false,
+        // On for a buyer who declared a GSTIN on /deploy, so Dodo validates it
+        // and applies reverse charge. Off otherwise: a B2C buyer has nothing to
+        // put in it and an empty tax field only costs completions.
+        allow_tax_id: Boolean(gstin),
         // Skip Dodo's own success interstitial and land straight on /thank-you,
         // which is where the onboarding call gets booked.
         redirect_immediately: true,
@@ -168,7 +214,12 @@ export async function POST(request: Request) {
       metadata: {
         market,
         seats: String(requestedSeats),
-        source: 'goproxe_pricing',
+        source: body.source?.trim() || 'goproxe_pricing',
+        // Carried so the webhook can write the right tax case onto the
+        // subscription without re-deriving it. The mode is frozen at purchase:
+        // adding a GSTIN later changes future invoices, never past ones.
+        tax_mode: taxMode,
+        ...(gstin ? { gstin } : {}),
         ...(body.brandName?.trim() ? { brand_name: body.brandName.trim() } : {}),
       },
     }
@@ -177,13 +228,19 @@ export async function POST(request: Request) {
     try {
       session = await client.checkoutSessions.create(sessionParams)
     } catch (err) {
-      // A phone Dodo dislikes must never cost the sale: retry once without it
-      // and let the hosted page collect it instead.
-      if (!(email && phone)) throw err
-      console.error('[api/checkout] session failed with phone attached, retrying without', err)
+      // Anything Dodo dislikes in the prefill must never cost the sale. Retry
+      // once with only the fields we know it accepts and let the hosted page
+      // collect the rest. The GSTIN still reaches us through metadata, so the
+      // tax case is recorded correctly even when the prefill is rejected.
+      if (!email) throw err
+      console.error('[api/checkout] session failed with prefill attached, retrying bare', err)
+      const bare = { ...sessionParams } as Record<string, unknown>
+      delete bare.customer_business_name
       session = await client.checkoutSessions.create({
-        ...sessionParams,
+        ...(bare as typeof sessionParams),
         customer: { email, name: name || '' },
+        customization: { ...sessionParams.customization },
+        feature_flags: { ...sessionParams.feature_flags, allow_tax_id: Boolean(gstin) },
       })
     }
 

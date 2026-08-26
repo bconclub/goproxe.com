@@ -1,0 +1,373 @@
+/* Configure-then-pay page. Dark surface, same palette as the landing page. */
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 120px 24px 80px;
+  color: var(--text-primary);
+}
+
+.head {
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.sub {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 56ch;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1.35fr 1fr;
+    gap: 32px;
+  }
+}
+
+.config {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.per {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  margin-left: 4px;
+}
+
+.includes {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.includes li {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  padding-left: 22px;
+  position: relative;
+}
+
+.includes li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-vibrant);
+}
+
+.hint {
+  color: var(--text-tertiary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 8px 0 0;
+}
+
+/* Seat stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.stepBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border-medium);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.stepBtn:hover:not(:disabled) {
+  border-color: var(--primary-vibrant);
+  background: rgba(160, 59, 168, 0.12);
+}
+
+.stepBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepValue {
+  min-width: 2.5ch;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepNote {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+}
+
+/* GST block */
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-vibrant);
+  cursor: pointer;
+}
+
+.input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-medium);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-vibrant);
+}
+
+.inputError {
+  border-color: #ef4444;
+}
+
+.errorText {
+  color: #f87171;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 10px 0 0;
+}
+
+.goodText {
+  color: #4ade80;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 10px 0 0;
+}
+
+/* Market toggle */
+.marketRow {
+  display: flex;
+  gap: 8px;
+}
+
+.marketOn,
+.marketOff {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.marketOn {
+  border: 1px solid var(--primary-vibrant);
+  background: rgba(160, 59, 168, 0.15);
+  color: var(--text-primary);
+}
+
+.marketOff {
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-tertiary);
+}
+
+/* Summary */
+.summary {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  position: sticky;
+  top: 96px;
+}
+
+.lines {
+  margin: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0;
+}
+
+.line dt {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.line dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.lineNote {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.subtotal {
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.subtotal dt,
+.subtotal dd {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-medium);
+  font-size: 1rem;
+}
+
+.total strong {
+  font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.totalNote {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 10px 0 0;
+}
+
+.cta {
+  width: 100%;
+  margin-top: 18px;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-1), var(--accent-3));
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.cta:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.cta:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.secondary {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.secondary:hover {
+  color: var(--text-secondary);
+  border-color: var(--border-medium);
+}
+
+@media (max-width: 899px) {
+  .summary {
+    position: static;
+  }
+  .wrap {
+    padding-top: 96px;
+  }
+}

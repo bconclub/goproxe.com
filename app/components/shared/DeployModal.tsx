@@ -6,7 +6,6 @@ import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
 import { track, trackLead, trackCheckoutStart, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
-import { detectMarket } from '../../lib/market';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
 interface DeployModalProps {
@@ -236,37 +235,17 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     // Buy intent: hand off to Dodo, prefilled with what they just typed, so
     // nobody types their name and email twice. The onboarding call is booked
     // AFTER payment, on /thank-you?checkout=success.
+    // Buy intent now goes to /deploy, NOT straight to Dodo.
+    //
+    // Sending someone from here to a card form charged them a number they had
+    // never been shown: seats were not really selectable, and an Indian
+    // business with a GSTIN was billed 18% on top with no way to declare
+    // reverse charge, discovering it only on the invoice. /deploy is where they
+    // pick seats, enter a GSTIN, and see the exact total. Everything typed here
+    // is already in local storage, so the configurator prefills and nothing is
+    // asked twice.
     trackCheckoutStart(source);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          market: detectMarket(),
-          source,
-          name: userProfile.name,
-          email: userProfile.email,
-          // Sent so Dodo prefills it too. Without this the buyer retypes on the
-          // hosted page a phone number they just gave us one screen earlier.
-          phone: userProfile.phone,
-          brandName: userProfile.brandName,
-        }),
-      });
-      const data = await res.json().catch(() => null);
-      if (data?.ok && data.checkoutUrl) {
-        // Full navigation — checkout is hosted by Dodo. Keep the busy state.
-        window.location.href = data.checkoutUrl as string;
-        return;
-      }
-      // Checkout unavailable (products unset, Dodo down): don't strand them —
-      // fall through to the calendar so the lead still converts to a call.
-      track('checkout_unavailable', { source, reason: data?.reason ?? 'unknown' });
-    } catch {
-      track('checkout_unavailable', { source, reason: 'network_error' });
-    }
-
-    setIsSubmitting(false);
-    setFlipped(true);
+    router.push('/deploy');
   };
 
   // Visitor picked a slot on the flip-side calendar → record it (no second lead
