@@ -107,23 +107,27 @@ export async function POST(request: NextRequest) {
     return s.length ? s : null
   }
 
-  // OUTREACH DIALS GO TO ARC, NOT PROXE. Cold-dial transcripts are prospect
-  // noise: the rule is that ARC owns prospects and PROXe owns conversations,
-  // and only prospects who show interest get promoted (deliberately, via the
-  // WhatsApp bridge). Routing is by agent_id, so the website-callback flow
-  // below is untouched.
+  // OUTREACH DIALS: send to Arc for tracking, but ALSO write to PROXe for
+  // intro/test agents. Cold-dial transcripts are prospect noise (Arc only),
+  // but intro/test dials are real conversations that must show in chat SoT.
+  // Intro agent added 2026-08-26 DEV fix: agent_0301m0na3jjdfkta2sza4h317m4d.
   const OUTREACH_AGENTS = new Set(
     (process.env.OUTREACH_AGENT_IDS ||
       'agent_8901m0sn6y14eegsqh7mmgdswm92,agent_9901m0sn70f1ejn84enhccrns2kt,agent_1201m0sn71mvf3arwzfwv4h9s2v1'
     ).split(',').map((s) => s.trim()).filter(Boolean),
   )
+  const INTRO_TEST_AGENTS = new Set(
+    (process.env.INTRO_TEST_AGENT_IDS || 'agent_0301m0na3jjdfkta2sza4h317m4d')
+      .split(',').map((s) => s.trim()).filter(Boolean),
+  )
   const agentId: string | null = d.agent_id ?? d.metadata?.agent_id ?? null
-  if (agentId && OUTREACH_AGENTS.has(agentId)) {
+  const isOutreach = agentId && OUTREACH_AGENTS.has(agentId)
+  const isIntroTest = agentId && INTRO_TEST_AGENTS.has(agentId)
+
+  if (isOutreach || isIntroTest) {
     const ingestBase = process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com'
     const ingestSecret = process.env.ARC_INGEST_SECRET || ''
     if (!ingestSecret) {
-      // 500 so ElevenLabs retries once the secret is configured; silently
-      // acknowledging would drop the transcript forever.
       console.error('[webhooks/elevenlabs] outreach call but ARC_INGEST_SECRET unset')
       return NextResponse.json({ ok: false, reason: 'arc_not_configured' }, { status: 500 })
     }
@@ -141,8 +145,6 @@ export async function POST(request: NextRequest) {
       })
       if (!fwd.ok) {
         const detail = await fwd.text().catch(() => '')
-        // 404 = no ARC target with this phone. Real, but not retryable - log
-        // loudly and acknowledge so ElevenLabs stops resending.
         console.error('[webhooks/elevenlabs] ARC ingest failed', fwd.status, detail.slice(0, 200))
         if (fwd.status !== 404) return NextResponse.json({ ok: false, reason: 'arc_ingest_failed' }, { status: 500 })
       }
@@ -150,7 +152,12 @@ export async function POST(request: NextRequest) {
       console.error('[webhooks/elevenlabs] ARC ingest unreachable', err)
       return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 500 })
     }
-    return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length })
+
+    // Pure outreach agents stop here (Arc-only). Intro/test agents continue
+    // through to write the PROXe voice row below so the chat SoT shows it.
+    if (isOutreach && !isIntroTest) {
+      return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length })
+    }
   }
 
   try {
@@ -172,16 +179,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, reason: 'record_failed' }, { status: 500 })
   }
 
-  // THE DROPPED-CALL WORKER. Every website-callback call gets a WhatsApp
-  // continuation the moment it ends: calls drop, people get pulled away, and
-  // the thread must not die with the line. PROXe's intent endpoint decides the
-  // legal mode itself (in-window: the personal line below; out-of-window: the
-  // approved proxe_postcall_v1 template with buttons), so this fire needs no
-  // window logic here. Best-effort by design: a failed nudge must never make
-  // ElevenLabs retry the webhook and double-write the transcript above.
+  // THE DROPPED-CALL WORKER — but NOT for short hangups. A ~10s call where
+  // the user never spoke (client disconnect, wrong number, immediate hangup)
+  // is a drop, not a conversation to continue. Only real calls that actually
+  // talked get the WhatsApp continuation nudge.
+  // DEV 2026-08-26: do not chase on WhatsApp after a 10s hangup.
+  const durationSecs = d.metadata?.call_duration_secs ?? 0
+  const userTurns = transcript.filter((t) => t.role === 'caller')
+  const userSpoke = userTurns.some((t) => String(t.text || '').replace(/[.…\s]/g, '').length > 0)
+  const isShortHangup = durationSecs <= 10 && !userSpoke
+
   const intentBase = process.env.PROXE_INTENT_BASE
   const intentKey = process.env.PROXE_INBOUND_API_KEY
-  if (phone && intentBase && intentKey) {
+  if (phone && intentBase && intentKey && !isShortHangup) {
     const biz = pick('business_type')
     try {
       const nudge = await fetch(`${intentBase}/api/agent/outreach/intent`, {
@@ -190,10 +200,6 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           phone,
           text: `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`,
-          // UTILITY continuation, not the marketing postcall: Meta's per-user
-          // marketing cap silently swallowed the first real send (131049,
-          // "healthy ecosystem engagement"). A dropped call continuing is
-          // genuinely transactional, and utility is exempt from that cap.
           template: 'proxe_call_continuation_v1',
           source: 'postcall_wa',
         }),
@@ -203,6 +209,8 @@ export async function POST(request: NextRequest) {
     } catch (err) {
       console.error('[webhooks/elevenlabs] postcall nudge failed', err)
     }
+  } else if (isShortHangup) {
+    console.log(`[webhooks/elevenlabs] skipped postcall nudge for short hangup: ${durationSecs}s, user_spoke=${userSpoke}`)
   }
 
   return NextResponse.json({ ok: true, turns: transcript.length })
