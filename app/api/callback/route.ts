@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
+import { isQuiet, nextOpenLabel } from '../../lib/quietHours'
 
 /**
  * Hero phone capture → instant outbound call from the PROXe voice agent.
@@ -134,6 +135,20 @@ export async function POST(request: Request) {
 
   const now = Date.now()
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+
+  // QUIET HOURS. This route dials the instant a number arrives, and it never
+  // looked at the clock: PROXe rang a lead at 12:13 AM and talked for four
+  // minutes. Speed is the pitch, but not at midnight.
+  //
+  // Refused rather than queued, deliberately. A callback promised for 9 AM and
+  // silently never placed is worse than an honest "we will ring you in the
+  // morning", and there is no scheduler here to guarantee the former. The
+  // caller gets the resume time so the UI can say it plainly.
+  if (isQuiet(new Date(now))) {
+    const callAfter = nextOpenLabel(new Date(now))
+    console.log('[api/callback] suppressed, quiet hours', { callAfter })
+    return NextResponse.json({ ok: false, reason: 'quiet_hours', callAfter })
+  }
 
   // The 24h phone limit is answered from the DATABASE, not the Map below.
   // The Map is per-process: every deploy and every pm2 restart emptied it, so

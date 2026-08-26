@@ -119,15 +119,22 @@ export default function HeroPhoneCapture() {
       // its job, not a failure — it gets its own event so the two never blur
       // together in a funnel.
       const reason = dial?.reason ?? 'unknown';
-      if (reason === 'recently_called') {
+      // `recently_called` and `quiet_hours` are guards doing their job, not
+      // failures. They get their own event so the two never blur together with
+      // a real breakage in a funnel.
+      if (reason === 'recently_called' || reason === 'quiet_hours') {
         track('callback_blocked', { reason });
       } else {
         track('callback_failed', { reason, market: detectMarket() });
       }
       setError(
-        dial?.reason === 'recently_called'
+        reason === 'recently_called'
           ? 'We just called you. Check your phone, or try again in a minute.'
-          : 'Number saved. PROXe will call you shortly.'
+          // Say the actual hour. "We will call you later" reads as a brush-off;
+          // a time reads as a commitment, and it explains why nothing rang.
+          : reason === 'quiet_hours'
+            ? `Number saved. It is late here, so PROXe will call you at ${dial?.callAfter || '9:00 AM'}.`
+            : 'Number saved. PROXe will call you shortly.'
       );
       // Back to idle also resets the slide: the --dialing class goes, so the
       // button returns to its place rather than staying where it stopped.
