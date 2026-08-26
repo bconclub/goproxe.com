@@ -145,7 +145,7 @@ const clinics: IndustryPageContent = {
     },
     {
       q: 'How long does setup take?',
-      a: 'About a week. We train PROXe on your treatments, prices, doctors, timings and FAQs, connect WhatsApp and your calendar, and hand you the dashboard. Your staff needs zero new software.',
+      a: '48 hours. We train PROXe on your treatments, prices, doctors, timings and FAQs, connect WhatsApp and your calendar, and hand you the dashboard. Your staff needs zero new software.',
     },
   ],
 };

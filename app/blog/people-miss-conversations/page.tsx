@@ -119,6 +119,7 @@ export default function BlogPostPage() {
               <p>You are in consult. WhatsApp fills up. A new patient asked for a slot. You cannot type. They book the next clinic that answered.</p>
               <p>The search behind that: "patients WhatsApp during consult" and "never miss an appointment lead."</p>
               <p>The job is not a clever auto-reply. The job is: answer, qualify (new vs follow-up, which doctor, when), book, remind.</p>
+              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>.</p>
             </section>
 
             <section className={styles.section}>
@@ -126,6 +127,7 @@ export default function BlogPostPage() {
               <p>Parents message after class. After work. After 9pm. Your counsellor is off. By morning the parent has a demo booked at the place that asked which exam and which batch.</p>
               <p>The search: "coaching admission WhatsApp" and "parents message at night."</p>
               <p>The job: answer, qualify (exam, class, locality), book counselling, follow up till they decide.</p>
+              <p>How PROXe does this for <a href="/industries/coaching">coaching</a>.</p>
             </section>
 
             <section className={styles.section}>
@@ -133,6 +135,7 @@ export default function BlogPostPage() {
               <p>You paid for the Meta lead. The site-visit chat lands while you are on another visit. You reply at 7pm. They are already with another broker.</p>
               <p>The search: "site visit enquiry no reply" and "first reply wins."</p>
               <p>The job: answer every channel, hold the conversation, book the visit, remind them the day before.</p>
+              <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
             </section>
 
             <section className={styles.section}>
