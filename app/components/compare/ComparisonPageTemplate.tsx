@@ -80,7 +80,7 @@ export default function ComparisonPageTemplate({ comparison }: { comparison: Com
             <div className="indp-trust-item">
               <FiShield size={17} />
               <div>
-                <b>Live in about a week</b>
+                <b>Live in 48 hours</b>
                 <span>Trained on your business</span>
               </div>
             </div>
@@ -296,7 +296,7 @@ export default function ComparisonPageTemplate({ comparison }: { comparison: Com
             <h2 className="indp-h2">Never miss a lead ever again.</h2>
             <p className="indp-close-sub">
               PROXe captures and converts leads across WhatsApp, website, Instagram, email, and
-              voice with unified memory. Deployed and trained on your business in about a week.
+              voice with unified memory. Deployed and trained on your business in 48 hours.
             </p>
             <div className="indp-close-cta">
               <Link href="/#pricing" className="proxe-btn proxe-btn--primary">
@@ -308,7 +308,7 @@ export default function ComparisonPageTemplate({ comparison }: { comparison: Com
             </div>
             <div className="indp-close-checks">
               <span>
-                <FiCheck size={13} /> Setup in about a week
+                <FiCheck size={13} /> Setup in 48 hours
               </span>
               <span>
                 <FiCheck size={13} /> Every channel included

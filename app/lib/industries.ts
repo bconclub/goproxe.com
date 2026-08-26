@@ -604,7 +604,7 @@ export function defaultPageContent(ind: Industry): IndustryPageContent {
               : 'Scheduling, confirmations and reminders happen inside the conversation, on time, without anyone chasing.',
     })),
     faq: [
-      { q: 'How fast can PROXe go live for my business?', a: 'Deployment takes about a week: we train PROXe on your services, prices, tone and FAQs, connect your WhatsApp and website, and hand you the dashboard.' },
+      { q: 'How fast can PROXe go live for my business?', a: 'Deployment takes 48 hours: we train PROXe on your services, prices, tone and FAQs, connect your WhatsApp and website, and hand you the dashboard.' },
       { q: 'Does it speak my customers’ language?', a: 'Yes. PROXe converses naturally in English, Hindi and regional languages, and switches automatically to whatever the customer uses.' },
       { q: 'What happens when it can’t answer something?', a: 'It says so honestly, captures the question, and routes the conversation to you instantly, you get an alert with full context.' },
       { q: 'Do I need new software or a new number?', a: 'No. PROXe connects to your existing WhatsApp number and website. Your team just gets one dashboard where everything lands.' },
