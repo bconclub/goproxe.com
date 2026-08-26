@@ -78,6 +78,17 @@ export type ProxeEvent =
 type EventParams = Record<string, string | number | boolean | undefined>
 
 /**
+ * GA4 key events (conversions) for PROXe property 491294203 (G-GZ7HN8BM1M).
+ * These events already fire via track() and are visible in GA4; this list is
+ * the source of truth for which ones count as conversions.
+ */
+export const GA4_KEY_EVENTS: readonly ProxeEvent[] = [
+  'form_completed',
+  'callback_submit',
+  'whatsapp_click',
+] as const
+
+/**
  * How each event reaches the Meta Pixel.
  *
  * Meta splits events in two: a fixed list of STANDARD names (`fbq('track', …)`)
