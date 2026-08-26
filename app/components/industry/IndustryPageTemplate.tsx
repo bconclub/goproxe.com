@@ -221,7 +221,7 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
             </div>
             <div className="indp-trust-item">
               <FiShield size={17} />
-              <div><b>Live in about a week</b><span>Trained on your business</span></div>
+              <div><b>Live in 48 hours</b><span>Trained on your business</span></div>
             </div>
           </div>
         </div>
@@ -555,13 +555,13 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
             <h2 className="indp-h2">Never miss a lead again.</h2>
             <p className="indp-close-sub">
               PROXe works 24/7 to capture, book and follow up, deployed and
-              trained on your business in about a week.
+              trained on your business in 48 hours.
             </p>
             <div className="indp-close-cta">
               <IndustryCtas slug={industry.slug} />
             </div>
             <div className="indp-close-checks">
-              <span><FiCheck size={13} /> Setup in about a week</span>
+              <span><FiCheck size={13} /> Setup in 48 hours</span>
               <span><FiCheck size={13} /> Every channel included</span>
               <span><FiCheck size={13} /> No new software to learn</span>
             </div>

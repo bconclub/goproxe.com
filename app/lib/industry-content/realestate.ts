@@ -102,7 +102,7 @@ const realestate: IndustryPageContent = {
     },
     {
       q: 'How fast can it go live for my project?',
-      a: 'About a week: we train PROXe on your projects, connect WhatsApp and your lead sources, and your telecallers keep working exactly as before, just on hotter leads.',
+      a: '48 hours: we train PROXe on your projects, connect WhatsApp and your lead sources, and your telecallers keep working exactly as before, just on hotter leads.',
     },
   ],
 };

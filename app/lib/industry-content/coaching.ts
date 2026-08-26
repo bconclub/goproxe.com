@@ -102,7 +102,7 @@ const coaching: IndustryPageContent = {
     },
     {
       q: 'How long does it take to set up before peak season?',
-      a: 'About a week: we train PROXe on your programs, results and fees, connect WhatsApp and your ad forms, and your counsellors keep their exact workflow, with a fuller calendar.',
+      a: '48 hours: we train PROXe on your programs, results and fees, connect WhatsApp and your ad forms, and your counsellors keep their exact workflow, with a fuller calendar.',
     },
   ],
 };

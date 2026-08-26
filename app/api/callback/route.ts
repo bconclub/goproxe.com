@@ -6,9 +6,9 @@ import { isQuiet, nextOpenLabel } from '../../lib/quietHours'
  * Hero phone capture → instant outbound call from the PROXe voice agent.
  *
  * POST { phone, market? } — normalises the number to E.164 and asks ElevenLabs
- * to dial it from our SIP number (+91 80467 33388) as the "PROXe Website
- * Callback" agent. The whole point of the hero capture is that PROXe calls
- * within seconds of the tap — this route IS the product demo.
+ * to dial it from our SIP number (+91 80653 55717, PROXe Vobiz outbound) as
+ * the "PROXe Website Callback" agent. The whole point of the hero capture is
+ * that PROXe calls within seconds of the tap — this route IS the product demo.
  *
  * The agent/phone IDs are identifiers, not secrets — hardcoded defaults so the
  * VPS needs only ELEVENLABS_API_KEY in its .env.local. Env vars override for
@@ -22,7 +22,7 @@ import { isQuiet, nextOpenLabel } from '../../lib/quietHours'
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
 const AGENT_ID = process.env.ELEVENLABS_CALLBACK_AGENT_ID || 'agent_6201kzbayp7zenc8d3v86sa4zwra'
-const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_6501kwq4tr8kfats4mezvr37krw9'
+const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_3701m0wakhjte0zr5fyk25yjpe01'
 
 /** Calling voice. Identifier, not a secret; env overrides without a deploy. */
 const VOICE_ID = process.env.ELEVENLABS_CALLBACK_VOICE_ID || '0muxiGNHAVvmM1qWRtyV'

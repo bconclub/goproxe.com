@@ -8,7 +8,7 @@ const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: '
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 // One place to change the contact address used across the legal pages.
-const CONTACT_EMAIL = 'connect@bconclub.com'
+const CONTACT_EMAIL = 'brands@bconclub.com'
 const LAST_UPDATED = 'June 19, 2026'
 
 export const metadata: Metadata = {
