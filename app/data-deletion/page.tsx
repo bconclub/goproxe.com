@@ -8,7 +8,7 @@ const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: '
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 // Keep in sync with the same constant on /privacy-policy.
-const CONTACT_EMAIL = 'connect@bconclub.com'
+const CONTACT_EMAIL = 'brands@bconclub.com'
 const LAST_UPDATED = 'June 19, 2026'
 
 export const metadata: Metadata = {
