@@ -104,18 +104,26 @@ export async function POST(request: Request) {
   }
 
   // Seats: Core bundles INCLUDED_SEATS. Only bill the overflow.
+  //
+  // Seats ride as an ADD-ON on the Core cart line, never as a second product:
+  // Dodo rejects two subscription products in one checkout with 422 "Only one
+  // subscription product allowed per checkout" (hit live, 27 Aug). The env var
+  // therefore holds an adn_* add-on id, attached to the Core products in Dodo.
   const requestedSeats = Number.isFinite(body.seats) ? Math.floor(Number(body.seats)) : INCLUDED_SEATS
   const extraSeats = Math.max(0, requestedSeats - INCLUDED_SEATS)
-  const seatProductId = extraSeats > 0 ? getSeatProductId(market) : null
-  if (extraSeats > 0 && !seatProductId) {
+  const seatAddonId = extraSeats > 0 ? getSeatProductId(market) : null
+  if (extraSeats > 0 && !seatAddonId) {
     // Don't silently drop paid seats — better to fail loudly than under-charge.
-    console.error('[api/checkout] extra seats requested but no seat product configured', { market, extraSeats })
+    console.error('[api/checkout] extra seats requested but no seat add-on configured', { market, extraSeats })
     return NextResponse.json({ ok: false, reason: 'seat_product_not_configured' })
   }
 
   const productCart = [
-    { product_id: coreProductId, quantity: 1 },
-    ...(seatProductId ? [{ product_id: seatProductId, quantity: extraSeats }] : []),
+    {
+      product_id: coreProductId,
+      quantity: 1,
+      ...(seatAddonId ? { addons: [{ addon_id: seatAddonId, quantity: extraSeats }] } : {}),
+    },
   ]
 
   const origin = (() => {

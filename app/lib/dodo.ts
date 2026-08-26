@@ -72,7 +72,13 @@ export function getCoreProductId(market: Market): string | null {
   return perCurrency || env('DODO_PRODUCT_CORE') || null
 }
 
-/** The per-seat add-on product, used when a buyer wants more than the 2 included seats. */
+/**
+ * The per-seat ADD-ON id (adn_*), used when a buyer wants more than the 2
+ * included seats. An add-on, not a product: Dodo allows only one subscription
+ * product per checkout, so seats attach to the Core cart line as
+ * `addons: [{addon_id, quantity}]`. The add-on must also be attached to the
+ * Core product in Dodo (products PATCH `addons`), which it is.
+ */
 export function getSeatProductId(market: Market): string | null {
   const perCurrency =
     market === 'inr'
