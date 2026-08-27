@@ -137,6 +137,7 @@ export default function BlogPostPage() {
               <p>The job: answer every channel, hold the conversation, book the visit, remind them the day before.</p>
               <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
               <p>How PROXe does this for <a href="/industries/wellness">wellness</a>.</p>
+              <p>How PROXe does this for <a href="/industries/professional-services">professional services</a>.</p>
             </section>
 
             <section className={styles.section}>
