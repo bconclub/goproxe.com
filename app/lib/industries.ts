@@ -42,6 +42,7 @@ import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/l
 import clinicsPage from './industry-content/clinics';
 import realestatePage from './industry-content/realestate';
 import coachingPage from './industry-content/coaching';
+import wellnessPage from './industry-content/wellness';
 
 export type Activity = { Icon: React.ElementType; top: string; sub: string };
 export type Step = { Icon: React.ElementType; label: string };
@@ -67,6 +68,9 @@ export type IndustryPageContent = {
       outcome numbers, same sourcing rule as `stat` above. */
   features?: Array<{ Icon: React.ElementType; title: string; body: string }>;
   faq: Array<{ q: string; a: string }>;
+  /** Optional closing text rendered after FAQ, before the final closing band.
+      When present, the section displays this text followed by internal links. */
+  closing?: string;
 };
 
 export type IndustryDemoConfig = {
@@ -349,7 +353,7 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     id: 'fitness',
-    slug: 'fitness',
+    slug: 'wellness',
     color: '#f472b6',
     gradient: 'linear-gradient(135deg, #831843 0%, #db2777 60%, #f472b6 110%)',
     image: '/industries/Wellness.webp',
@@ -368,6 +372,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Trials',
     statLabel: 'booked, reminded and followed up',
+    page: wellnessPage,
     images: { live: '/unsplash/fitness-live-cqfnt66t.webp', closing: '/unsplash/fitness-closing-pktk6guc.webp' },
     demo: {
       business: { name: 'Pulse Fitness Studio', initials: 'PF', tagline: 'Strength · CrossFit · Yoga · HSR Layout' },
