@@ -2,51 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "goproxe-dev",
+      "name": "gp-billing",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3002,
-      "autoPort": false
-    },
-    {
-      "name": "goproxe-dev-alt",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": [
-        "/c",
-        "set NEXT_DIST_DIR=.next-alt&&npx next dev -p 3003"
-      ],
-      "port": 3003,
-      "autoPort": false
-    },
-    {
-      "name": "goproxe-dev-b",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": [
-        "/c",
-        "set NEXT_DIST_DIR=.next-b&&npx next dev -p 3006"
-      ],
-      "port": 3006,
-      "autoPort": false
-    },
-    {
-      "name": "proxe-platform",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": [
-        "/c",
-        "cd /d C:\\Users\\user\\Builds\\wt-proxe-bootstrap\\core&&set BRAND_ID=proxe&&set NEXT_DIST_DIR=.next-proxe&&node scripts/stage-brand.js&&npx next dev -p 4010"
-      ],
-      "port": 4010,
-      "autoPort": false
-    },
-    {
-      "name": "proxe-scope",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": [
-        "/c",
-        "cd /d C:\\PROXe-wt\\scope\\core&&set BRAND_ID=proxe&&set NEXT_DIST_DIR=.next-wa&&node scripts/stage-brand.js&&npx next dev -p 4012"
-      ],
-      "port": 4012,
-      "autoPort": false
+      "runtimeArgs": ["run", "dev", "--", "-p", "3009"],
+      "port": 3009
     }
   ]
 }
