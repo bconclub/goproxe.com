@@ -38,7 +38,7 @@ import {
   FiPhoneCall,
 } from 'react-icons/fi';
 import { FiHome } from 'react-icons/fi';
-import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar } from 'react-icons/lu';
+import { LuGraduationCap, LuStethoscope, LuDumbbell, LuCar, LuFlower2 } from 'react-icons/lu';
 import clinicsPage from './industry-content/clinics';
 import realestatePage from './industry-content/realestate';
 import coachingPage from './industry-content/coaching';
@@ -91,6 +91,12 @@ export type IndustryDemoConfig = {
   /** Replies the simulated customer sends when the visitor types in a thread. */
   userReplyPool: string[];
   metricLabels: { m1: string; m2: string; m3: string; m4: string };
+  /**
+   * Vimeo id of the recorded dashboard walkthrough for this industry. Null
+   * until Z records it - the demo gate renders a styled "walkthrough coming"
+   * card in its place, and everything else on the page still works.
+   */
+  videoId?: string | null;
 };
 
 export type Industry = {
@@ -400,6 +406,59 @@ export const INDUSTRIES: Industry[] = [
         'Reserve the spot, I will confirm by evening.',
       ],
       metricLabels: { m1: 'Trials booked', m2: 'No-shows prevented', m3: 'Members re-engaged', m4: 'Avg. response time' },
+    },
+  },
+  {
+    // The true spa/wellness vertical - distinct from 'fitness' (a gym). Added
+    // 2026-08-27 because the ads run for spas and salons and the closest
+    // record was a CrossFit studio; a spa owner should recognise their world.
+    id: 'spa',
+    slug: 'spa',
+    color: '#2ec4b6',
+    gradient: 'linear-gradient(135deg, #134e4a 0%, #0d9488 60%, #2ec4b6 110%)',
+    Icon: LuFlower2,
+    title: 'Wellness & Spa',
+    desc: 'Fill treatment slots, answer Instagram DMs instantly, and bring lapsed clients back.',
+    activities: [
+      { Icon: FiUser,        top: 'Treatment Enquiry', sub: 'via Instagram' },
+      { Icon: FiCheckCircle, top: 'Slot Booked',       sub: 'Saturday 4 PM' },
+    ],
+    flow: [
+      { Icon: FiMessageCircle, label: 'Enquiry'  },
+      { Icon: FiCalendar,      label: 'Booking'  },
+      { Icon: FiBell,          label: 'Reminder' },
+      { Icon: FiHeart,         label: 'Rebook'   },
+    ],
+    stat: 'Slots',
+    statLabel: 'booked, reminded and rebooked',
+    demo: {
+      business: { name: 'Serene Day Spa', initials: 'SD', tagline: 'Spa · Salon · Ayurveda · Indiranagar' },
+      stages: ['Enquiry', 'Consult Booked', 'Visited', 'Regular'],
+      bookingNoun: 'Appointment',
+      personas: ['Ritika Malhotra', 'Sana Qureshi', 'Prerna Joshi', 'Vandana Iyer', 'Mahima Reddy', 'Alisha D’Souza', 'Neha Bansal', 'Kavita Menon', 'Shreya Kulkarni', 'Farah Sheikh', 'Divya Prasad', 'Ankita Roy'],
+      sources: ['Instagram', 'WhatsApp', 'Website', 'Call'],
+      inquiries: [
+        'How much is a full-body massage?',
+        'Do you have couple spa packages?',
+        'Any bridal packages for December?',
+        'Is the deep-tissue therapist available this weekend?',
+        'What are your salon timings on Sunday?',
+        'I came last month for a facial. Any offers for repeat visits?',
+      ],
+      aiReplies: [
+        'Full-body Swedish is ₹2,499 for 60 minutes, deep tissue ₹2,999. Weekday mornings have 15% off - want me to book a slot?',
+        'Yes, our couple suite with aroma massage is ₹5,999 for 90 minutes. Saturday 4 PM is open, shall I hold it?',
+        'Bridal packages start at ₹12,999 - trial session included. Want me to book a consult with our lead stylist?',
+        'She is in this Saturday and Sunday. 11 AM or 4:30 PM are open - which works?',
+        'Sundays we run 10 AM to 8 PM. Walk-ins welcome, but a booking skips the wait - want one?',
+      ],
+      userReplyPool: [
+        'Book Saturday 4 PM please.',
+        'Hold the couple suite for us.',
+        'What should I do before the session?',
+        'Yes, and add a cleanup to the same visit.',
+      ],
+      metricLabels: { m1: 'Appointments booked', m2: 'No-shows prevented', m3: 'Clients rebooked', m4: 'Avg. response time' },
     },
   },
   {

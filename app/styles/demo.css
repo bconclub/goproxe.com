@@ -822,3 +822,25 @@
   .demo-live-badge { display: none; }
   .demo-threads { width: 160px; }
 }
+
+/* ── Demo gate (video → enter the real dashboard) ─────────────────────────
+   Lives on demo.goproxe.com/<industry>. Shares the .demo-choose shell (dark
+   page, Instrument Serif headline); everything below is gate-specific. */
+.demo-gate { max-width: 860px; margin: 0 auto; text-align: left; }
+.demo-gate-back { display: inline-block; margin-bottom: 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; }
+.demo-gate-back:hover { color: rgba(255,255,255,0.85); }
+.demo-gate-head { display: flex; align-items: center; gap: 12px; }
+.demo-gate-head h1 { margin: 0; }
+.demo-gate-sub { color: rgba(255,255,255,0.65); margin: 10px 0 22px; max-width: 60ch; }
+.demo-gate-video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent); background: #0b0817; }
+.demo-gate-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.demo-gate-video--placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 24px; }
+.demo-gate-video--placeholder p { color: rgba(255,255,255,0.55); max-width: 46ch; margin: 0; font-size: 14px; }
+.demo-gate-video-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acc); border: 1px solid color-mix(in srgb, var(--acc) 45%, transparent); border-radius: 999px; padding: 4px 12px; }
+.demo-gate-actions { margin-top: 22px; }
+.demo-gate-enter { display: inline-block; padding: 14px 26px; border-radius: 12px; font-weight: 700; font-size: 16px; color: #fff; text-decoration: none; background: linear-gradient(135deg, color-mix(in srgb, var(--acc) 70%, #000), var(--acc)); box-shadow: 0 8px 30px color-mix(in srgb, var(--acc) 35%, transparent); }
+.demo-gate-enter:hover { filter: brightness(1.1); }
+.demo-gate-note { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 10px; max-width: 56ch; }
+.demo-gate-voice { margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,0.08); }
+.demo-gate-voice h2 { font-size: 20px; margin: 0 0 6px; }
+.demo-gate-voice p { color: rgba(255,255,255,0.6); font-size: 14px; margin: 0 0 14px; max-width: 56ch; }

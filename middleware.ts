@@ -25,12 +25,19 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(`https://goproxe.com${pathname}${search}`, 301)
   }
 
-  // The unshipped replica also stays unreachable by direct path on the main
-  // host — /demo/* goes home too.
-  if (!host.startsWith('demo.')) {
+  // The demo stays unreachable by direct path on the MAIN host - distribution
+  // is warm-leads-only through demo.goproxe.com links. localhost is exempt so
+  // the gate can be developed and verified without spoofing the Host header.
+  const isLocal = host === 'localhost' || host.startsWith('127.') || host.endsWith('.localhost')
+  if (!host.startsWith('demo.') && !isLocal) {
     if (req.nextUrl.pathname.startsWith('/demo')) {
       return NextResponse.redirect('https://goproxe.com/', 301)
     }
+    return NextResponse.next()
+  }
+  if (isLocal && !req.nextUrl.pathname.startsWith('/demo') && req.nextUrl.pathname !== '/robots.txt') {
+    // Local dev serves the whole site normally; only demo.* hosts get the
+    // root-to-hub rewrite below.
     return NextResponse.next()
   }
 
@@ -43,12 +50,20 @@ export function middleware(req: NextRequest) {
     })
   }
 
-  // INTERIM (2026-08-09): the replica demo is unshipped — the demo must be the
-  // REAL PROXe dashboard, pixel-identical, and until that deployment exists
-  // this host sends visitors to the landing page instead of a lookalike. When
-  // the real demo goes live, demo.goproxe.com's DNS moves off this app and
-  // this branch never fires again.
-  return NextResponse.redirect('https://goproxe.com/', 302)
+  // LIVE (2026-08-27): the hub ships. The Aug-09 condition is met - the
+  // interactive part is the REAL dashboard (the try.goproxe.com deployment,
+  // BRAND_ID=demo, mock data); this host serves the chooser + video gate that
+  // leads into it. Distribution stays warm-leads-only: nothing on the main
+  // host links here and the noindex layers all hold.
+  const url = req.nextUrl.clone()
+  // Idempotent prefix: demo.goproxe.com/clinics → /demo/clinics, while a path
+  // already under /demo (localhost dev, or a pasted full path) passes as-is.
+  url.pathname = pathname === '/' ? '/demo'
+    : pathname.startsWith('/demo') ? pathname
+    : `/demo${pathname}`
+  const res = NextResponse.rewrite(url)
+  res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  return res
 }
 
 export const config = {
