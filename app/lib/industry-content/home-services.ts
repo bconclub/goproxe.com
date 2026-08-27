@@ -39,8 +39,8 @@ const homeServices: IndustryPageContent = {
         body: 'AC dies at 10pm. You see it at 8am. Gone.',
       },
       fix: {
-        title: 'Answer at night, book tomorrow's first slot',
-        body: 'Answer at night, book tomorrow's first slot.',
+        title: "Answer at night, book tomorrow's first slot",
+        body: "Answer at night, book tomorrow's first slot.",
       },
     },
     {
