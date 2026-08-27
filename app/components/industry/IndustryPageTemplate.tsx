@@ -93,6 +93,9 @@ function HeroDashboard({ industry }: { industry: Industry }) {
           <div className="indp-dash-main">
             <div className="indp-dash-glance">Today at a glance</div>
             <div className="indp-dash-tiles">
+              <div className="indp-dash-tile"><b>42</b><span>{demo.metricLabels.m1}</span></div>
+              <div className="indp-dash-tile"><b>12</b><span>{demo.metricLabels.m2}</span></div>
+              <div className="indp-dash-tile"><b>128</b><span>{demo.metricLabels.m3}</span></div>
               <div className="indp-dash-tile"><b>52s</b><span>{demo.metricLabels.m4}</span></div>
             </div>
             <div className="indp-dash-feed">
@@ -386,6 +389,9 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
                 chats answered, {noun.toLowerCase()}s landing.
               </p>
               <ul className="indp-demo-list">
+                <li><FiCheckCircle size={15} /> {demo.metricLabels.m1} today: 42</li>
+                <li><FiCheckCircle size={15} /> {demo.metricLabels.m2} today: 12</li>
+                <li><FiCheckCircle size={15} /> {demo.metricLabels.m3} today: 128</li>
                 <li><FiCheckCircle size={15} /> {demo.metricLabels.m4}: under a minute</li>
               </ul>
               <IndustryCtas slug={industry.slug} />
