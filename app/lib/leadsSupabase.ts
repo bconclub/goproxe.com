@@ -405,6 +405,7 @@ export async function recordCallTranscript(input: {
   callerName?: string | null
   businessType?: string | null
   interest?: string | null
+  city?: string | null
 }): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return
@@ -476,6 +477,7 @@ export async function recordCallTranscript(input: {
             caller_name: input.callerName ?? prior.caller_name ?? null,
             business_type: input.businessType ?? prior.business_type ?? null,
             interest: input.interest ?? prior.interest ?? null,
+            city: input.city ?? prior.city ?? null,
             transcripts: [
               ...withoutThis.slice(-4),
               {

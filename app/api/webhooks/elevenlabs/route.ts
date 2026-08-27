@@ -171,6 +171,7 @@ export async function POST(request: NextRequest) {
       callerName: pick('caller_name'),
       businessType: pick('business_type'),
       interest: pick('interest'),
+      city: pick('city'),
     })
   } catch (err) {
     // Answer 500 so ElevenLabs retries — a lost transcript is not recoverable
