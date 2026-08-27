@@ -541,6 +541,27 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
         </div>
       </section>
 
+      {/* ── Closing text with internal links (wellness only) ── */}
+      {page.closing && (
+        <section className="indp-section indp-section--tight">
+          <div className="proxe-container">
+            <div className="indp-center">
+              <p className="indp-section-sub indp-section-sub--center">
+                {page.closing}
+              </p>
+              <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link href="/" className="indp-close-pricing">
+                  Home <FiArrowRight size={13} />
+                </Link>
+                <Link href="/blog/people-miss-conversations" className="indp-close-pricing">
+                  Why people miss conversations <FiArrowRight size={13} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Closing band ── */}
       <section className="indp-close">
         <div className="proxe-container">

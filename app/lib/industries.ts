@@ -68,6 +68,9 @@ export type IndustryPageContent = {
       outcome numbers, same sourcing rule as `stat` above. */
   features?: Array<{ Icon: React.ElementType; title: string; body: string }>;
   faq: Array<{ q: string; a: string }>;
+  /** Optional closing text rendered after FAQ, before the final closing band.
+      When present, the section displays this text followed by internal links. */
+  closing?: string;
 };
 
 export type IndustryDemoConfig = {
