@@ -66,6 +66,16 @@ const nextConfig = {
       },
     ];
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/industries/fitness',
+        destination: '/industries/wellness',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
