@@ -70,6 +70,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/industries/ecommerce',
+        destination: '/industries/d2c',
+        permanent: true,
+      },
+      {
         source: '/industries/fitness',
         destination: '/industries/wellness',
         permanent: true,
