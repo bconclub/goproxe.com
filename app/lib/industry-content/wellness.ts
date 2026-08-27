@@ -144,6 +144,8 @@ const wellness: IndustryPageContent = {
       a: '48 hours.',
     },
   ],
+  closing:
+    'PROXe is the AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.',
 };
 
 export default wellness;
