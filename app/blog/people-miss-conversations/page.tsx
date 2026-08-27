@@ -138,6 +138,7 @@ export default function BlogPostPage() {
               <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
               <p>How PROXe does this for <a href="/industries/wellness">wellness</a>.</p>
               <p>How PROXe does this for <a href="/industries/professional-services">professional services</a>.</p>
+              <p>How PROXe does this for <a href="/industries/home-services">home services</a>.</p>
             </section>
 
             <section className={styles.section}>

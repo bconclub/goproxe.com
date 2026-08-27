@@ -44,6 +44,7 @@ import realestatePage from './industry-content/realestate';
 import coachingPage from './industry-content/coaching';
 import wellnessPage from './industry-content/wellness';
 import professionalServicesPage from './industry-content/professional-services';
+import homeServicesPage from './industry-content/home-services';
 
 export type Activity = { Icon: React.ElementType; top: string; sub: string };
 export type Step = { Icon: React.ElementType; label: string };
@@ -110,10 +111,6 @@ export type Industry = {
    * ("68% fewer no-shows"), because we cannot yet source per-client outcome
    * numbers and an unsourced statistic is the same credibility liability as a
    * fabricated testimonial, eight times over.
-   *
-   * The single exception is Home Services' "5x faster lead response": that is
-   * a property of the product (an agent replies in seconds where a human
-   * replies in hours), not a result that needs a client study behind it.
    *
    * When real deployment data exists, restore outcome numbers AND add a
    * source line ("Based on N deployments, <period>").
@@ -512,7 +509,7 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     id: 'home',
-    slug: 'home',
+    slug: 'home-services',
     color: '#fbbf24',
     gradient: 'linear-gradient(135deg, #78350f 0%, #d97706 60%, #fbbf24 110%)',
     image: '/industries/House%20Service.webp',
@@ -529,8 +526,9 @@ export const INDUSTRIES: Industry[] = [
       { Icon: FiCalendar,      label: 'Schedule' },
       { Icon: FiAward,         label: 'Complete' },
     ],
-    stat: '5×',
-    statLabel: 'faster lead response',
+    stat: 'Jobs',
+    statLabel: 'qualified and scheduled automatically',
+    page: homeServicesPage,
     images: { live: '/unsplash/home-live-is5gdeld.webp', closing: '/unsplash/home-closing-wrzbarqn.webp' },
     demo: {
       business: { name: 'HomeFix Services', initials: 'HF', tagline: 'AC · plumbing · electrical · painting' },

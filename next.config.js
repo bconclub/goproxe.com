@@ -85,6 +85,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/industries/home',
+        destination: '/industries/home-services',
+        permanent: true,
+      },
+      {
         source: '/proxe',
         destination: '/',
         permanent: true,
