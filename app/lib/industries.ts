@@ -43,6 +43,7 @@ import clinicsPage from './industry-content/clinics';
 import realestatePage from './industry-content/realestate';
 import coachingPage from './industry-content/coaching';
 import wellnessPage from './industry-content/wellness';
+import professionalServicesPage from './industry-content/professional-services';
 
 export type Activity = { Icon: React.ElementType; top: string; sub: string };
 export type Step = { Icon: React.ElementType; label: string };
@@ -406,7 +407,7 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     id: 'pro',
-    slug: 'pro',
+    slug: 'professional-services',
     color: '#38bdf8',
     gradient: 'linear-gradient(135deg, #075985 0%, #0284c7 60%, #38bdf8 110%)',
     image: '/industries/Proffesional-services.webp',
@@ -425,6 +426,7 @@ export const INDUSTRIES: Industry[] = [
     ],
     stat: 'Discovery',
     statLabel: 'leads qualified and calls scheduled',
+    page: professionalServicesPage,
     images: { live: '/unsplash/pro-live-hpdjdl8m.webp', closing: '/unsplash/pro-closing-rayjmmma.webp' },
     demo: {
       business: { name: 'Meridian Advisors', initials: 'MA', tagline: 'CA firm · tax, audit & compliance' },
