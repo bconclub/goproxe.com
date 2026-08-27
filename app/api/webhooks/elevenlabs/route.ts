@@ -204,17 +204,19 @@ export async function POST(request: NextRequest) {
   // actually talked -> the continuation nudge as before. Only genuine short
   // hangups get nothing. Both templates are variable-free, so the same intent
   // route sends either.
-  const interest = pick('interest')
-  const isInterested = interest === 'yes'
-
+  // ONE message for every real conversation, no cleverness. The interest=yes
+  // branch lasted a day: the extractor missed "Sure. Thank you very much" as
+  // interest, so a doctor who agreed on the call still got "our call just now
+  // got disconnected" - after a complete, polite conversation (Z, 27 Aug).
+  // The copy Z wants after ANY call we actually had: we just spoke, continue
+  // here. That is proxe_call_followup_util_v2, verbatim. The "disconnected"
+  // template is retired from this path entirely.
   const intentBase = process.env.PROXE_INTENT_BASE
   const intentKey = process.env.PROXE_INBOUND_API_KEY
   if (phone && intentBase && intentKey && !isShortHangup) {
     const biz = pick('business_type')
-    const template = isInterested ? 'proxe_postcall_noname_v1' : 'proxe_call_continuation_v1'
-    const text = isInterested
-      ? `Hi, PROXe here. We just spoke${biz ? ` about your ${biz}` : ''}. This chat is the demo - reply and see it work.`
-      : `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`
+    const template = 'proxe_call_followup_util_v2'
+    const text = `Hi, we just spoke over a call${biz ? ` about your ${biz}` : ''}. We can continue here.`
     try {
       const nudge = await fetch(`${intentBase}/api/agent/outreach/intent`, {
         method: 'POST',
@@ -222,7 +224,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({ phone, text, template, source: 'postcall_wa' }),
       })
       const nres = await nudge.json().catch(() => ({}))
-      console.log(`[webhooks/elevenlabs] postcall ${isInterested ? 'demo' : 'nudge'} ${phone}: ${nudge.status} mode=${nres.mode ?? '-'}`)
+      console.log(`[webhooks/elevenlabs] postcall followup ${phone}: ${nudge.status} mode=${nres.mode ?? '-'}`)
     } catch (err) {
       console.error('[webhooks/elevenlabs] postcall send failed', err)
     }
