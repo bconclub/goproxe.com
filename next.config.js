@@ -74,6 +74,11 @@ const nextConfig = {
         destination: '/industries/wellness',
         permanent: true,
       },
+      {
+        source: '/proxe',
+        destination: '/',
+        permanent: true,
+      },
     ];
   },
 };
