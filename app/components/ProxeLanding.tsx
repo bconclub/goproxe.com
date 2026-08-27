@@ -1753,7 +1753,7 @@ export default function ProxeLanding() {
             <div className="pf-col">
               <div className="pf-col-title">Company</div>
               <ul className="pf-links">
-                <li><a href="mailto:connect@bconclub.com">Contact</a></li>
+                <li><a href="mailto:brands@bconclub.com">Contact</a></li>
                 <li><a href="#faq">FAQ</a></li>
               </ul>
             </div>

@@ -70,8 +70,28 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/industries/ecommerce',
+        destination: '/industries/d2c',
+        permanent: true,
+      },
+      {
         source: '/industries/fitness',
         destination: '/industries/wellness',
+        permanent: true,
+      },
+      {
+        source: '/industries/pro',
+        destination: '/industries/professional-services',
+        permanent: true,
+      },
+      {
+        source: '/industries/home',
+        destination: '/industries/home-services',
+        permanent: true,
+      },
+      {
+        source: '/proxe',
+        destination: '/',
         permanent: true,
       },
     ];

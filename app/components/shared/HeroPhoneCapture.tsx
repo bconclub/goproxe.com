@@ -58,6 +58,17 @@ export default function HeroPhoneCapture() {
     e.preventDefault();
     const trimmed = phone.trim();
     const digits = trimmed.replace(/\D/g, '');
+    
+    // Empty submission is "start the form", not a failed validation.
+    // Focus the input; do not track form_error.
+    if (digits.length === 0) {
+      const form = e.currentTarget as HTMLFormElement;
+      const input = form.querySelector<HTMLInputElement>('.proxe-hero-phone-input');
+      input?.focus();
+      return;
+    }
+    
+    // Real incomplete numbers (1–7 or >15 digits) are actual failed attempts.
     if (digits.length < 8 || digits.length > 15) {
       setError('That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: 'length' });
