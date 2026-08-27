@@ -144,6 +144,7 @@ const wellness: IndustryPageContent = {
       a: '48 hours.',
     },
   ],
+  closing: 'true',
 };
 
 export default wellness;

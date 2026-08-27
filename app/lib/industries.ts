@@ -68,6 +68,8 @@ export type IndustryPageContent = {
       outcome numbers, same sourcing rule as `stat` above. */
   features?: Array<{ Icon: React.ElementType; title: string; body: string }>;
   faq: Array<{ q: string; a: string }>;
+  /** Optional closing statement with internal links, rendered after FAQ. */
+  closing?: string;
 };
 
 export type IndustryDemoConfig = {

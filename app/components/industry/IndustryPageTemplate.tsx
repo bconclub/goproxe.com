@@ -538,6 +538,15 @@ export default function IndustryPageTemplate({ industry }: { industry: Industry 
             <h2 className="indp-h2 indp-h2--sm">Everything you need to know.</h2>
           </div>
           <IndustryFaq slug={industry.slug} items={page.faq} />
+          {page.closing && (
+            <div style={{ marginTop: '2rem', textAlign: 'center', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.6', color: '#6b7280' }}>
+              <p>
+                PROXe is the AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.{' '}
+                <Link href="/" style={{ color: '#a78bfa', textDecoration: 'underline' }}>Learn more</Link> or read why{' '}
+                <Link href="/blog/people-miss-conversations" style={{ color: '#a78bfa', textDecoration: 'underline' }}>people miss conversations</Link>.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
