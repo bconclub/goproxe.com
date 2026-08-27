@@ -9,7 +9,7 @@ import { submitLead } from '../lib/leads'
 import BookingCalendar, { type BookingSlot } from '../components/shared/BookingCalendar'
 import styles from './thankyou.module.css'
 
-const FALLBACK_EMAIL = 'connect@bconclub.com'
+const FALLBACK_EMAIL = 'brands@bconclub.com'
 
 export default function ThankYouContent() {
   const params = useSearchParams()
