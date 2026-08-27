@@ -73,6 +73,15 @@ export default function CallMeNowButton({
     e.preventDefault()
     const trimmed = phone.trim()
     const digits = trimmed.replace(/\D/g, '')
+    
+    // Empty submission is "start the form", not a failed validation.
+    // Focus the input; do not track form_error.
+    if (digits.length === 0) {
+      inputRef.current?.focus()
+      return
+    }
+    
+    // Real incomplete numbers (1–7 or >15 digits) are actual failed attempts.
     if (digits.length < 8 || digits.length > 15) {
       setError('That number looks incomplete.')
       track('form_error', { form: source, field: 'phone', reason: 'length' })
