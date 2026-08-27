@@ -189,9 +189,16 @@ export async function POST(request: NextRequest) {
   const userSpoke = userTurns.some((t) => String(t.text || '').replace(/[.…\s]/g, '').length > 0)
   const isShortHangup = durationSecs <= 10 && !userSpoke
 
+  // QC-20260827-02: do NOT nudge after a successful booking/demo. A 263s call
+  // where the caller said yes and booked a demo is a win, not a drop. The
+  // interest field (from data_collection) signals they expressed clear intent.
+  // DEV 2026-08-27: skip continuation after interest=yes.
+  const interest = pick('interest')
+  const isSuccessfulBooking = interest === 'yes'
+
   const intentBase = process.env.PROXE_INTENT_BASE
   const intentKey = process.env.PROXE_INBOUND_API_KEY
-  if (phone && intentBase && intentKey && !isShortHangup) {
+  if (phone && intentBase && intentKey && !isShortHangup && !isSuccessfulBooking) {
     const biz = pick('business_type')
     try {
       const nudge = await fetch(`${intentBase}/api/agent/outreach/intent`, {
@@ -211,6 +218,8 @@ export async function POST(request: NextRequest) {
     }
   } else if (isShortHangup) {
     console.log(`[webhooks/elevenlabs] skipped postcall nudge for short hangup: ${durationSecs}s, user_spoke=${userSpoke}`)
+  } else if (isSuccessfulBooking) {
+    console.log(`[webhooks/elevenlabs] skipped postcall nudge for successful booking: interest=${interest}`)
   }
 
   return NextResponse.json({ ok: true, turns: transcript.length })
