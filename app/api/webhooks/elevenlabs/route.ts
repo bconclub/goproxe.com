@@ -189,37 +189,45 @@ export async function POST(request: NextRequest) {
   const userSpoke = userTurns.some((t) => String(t.text || '').replace(/[.…\s]/g, '').length > 0)
   const isShortHangup = durationSecs <= 10 && !userSpoke
 
-  // QC-20260827-02: do NOT nudge after a successful booking/demo. A 263s call
-  // where the caller said yes and booked a demo is a win, not a drop. The
-  // interest field (from data_collection) signals they expressed clear intent.
-  // DEV 2026-08-27: skip continuation after interest=yes.
+  // Interested callers get the message TOO - a different one, not none.
+  //
+  // The 27 Aug "skip after interest=yes" rule inverted the product: the agent
+  // promises interested callers a WhatsApp demo on the call, and interest=yes
+  // then excluded exactly those people from the send. Sam and Dr. Swapna said
+  // yes, were told "you should see the message now", stared at a silent phone,
+  // and one call burned three rounds of "have you received it?" / "No".
+  // Meanwhile Nitin got a message only because his call read as a drop - and
+  // it was the "our call got disconnected" copy after a completed call.
+  //
+  // So: interest=yes -> proxe_postcall_noname_v1 ("we just spoke... say
+  // anything and see it work"), the demo the agent promised. Everyone else who
+  // actually talked -> the continuation nudge as before. Only genuine short
+  // hangups get nothing. Both templates are variable-free, so the same intent
+  // route sends either.
   const interest = pick('interest')
-  const isSuccessfulBooking = interest === 'yes'
+  const isInterested = interest === 'yes'
 
   const intentBase = process.env.PROXE_INTENT_BASE
   const intentKey = process.env.PROXE_INBOUND_API_KEY
-  if (phone && intentBase && intentKey && !isShortHangup && !isSuccessfulBooking) {
+  if (phone && intentBase && intentKey && !isShortHangup) {
     const biz = pick('business_type')
+    const template = isInterested ? 'proxe_postcall_noname_v1' : 'proxe_call_continuation_v1'
+    const text = isInterested
+      ? `Hi, PROXe here. We just spoke${biz ? ` about your ${biz}` : ''}. This chat is the demo - reply and see it work.`
+      : `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`
     try {
       const nudge = await fetch(`${intentBase}/api/agent/outreach/intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': intentKey },
-        body: JSON.stringify({
-          phone,
-          text: `Hi, we just spoke on the call${biz ? ` about your ${biz}` : ''}. Let's continue here.`,
-          template: 'proxe_call_continuation_v1',
-          source: 'postcall_wa',
-        }),
+        body: JSON.stringify({ phone, text, template, source: 'postcall_wa' }),
       })
       const nres = await nudge.json().catch(() => ({}))
-      console.log(`[webhooks/elevenlabs] postcall nudge ${phone}: ${nudge.status} mode=${nres.mode ?? '-'}`)
+      console.log(`[webhooks/elevenlabs] postcall ${isInterested ? 'demo' : 'nudge'} ${phone}: ${nudge.status} mode=${nres.mode ?? '-'}`)
     } catch (err) {
-      console.error('[webhooks/elevenlabs] postcall nudge failed', err)
+      console.error('[webhooks/elevenlabs] postcall send failed', err)
     }
   } else if (isShortHangup) {
-    console.log(`[webhooks/elevenlabs] skipped postcall nudge for short hangup: ${durationSecs}s, user_spoke=${userSpoke}`)
-  } else if (isSuccessfulBooking) {
-    console.log(`[webhooks/elevenlabs] skipped postcall nudge for successful booking: interest=${interest}`)
+    console.log(`[webhooks/elevenlabs] skipped postcall send for short hangup: ${durationSecs}s, user_spoke=${userSpoke}`)
   }
 
   return NextResponse.json({ ok: true, turns: transcript.length })
