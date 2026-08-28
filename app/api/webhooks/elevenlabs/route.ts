@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { recordCallTranscript } from '../../../lib/leadsSupabase'
-import { oncallWhatsAppSent } from '../../agent/send-oncall-wa/route'
+import { oncallWhatsAppSent } from '../../../lib/oncallWhatsAppSent'
 
 /**
  * ElevenLabs post-call webhook.
