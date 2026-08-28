@@ -331,35 +331,50 @@ export async function scheduleCallback(input: {
   const normalized = normalizePhone(input.phone ?? '')
   if (!normalized) return
 
+  // The hero fires TWO requests at once: /api/lead (capture) and
+  // /api/callback (dial). Both read-modify-write unified_context, and the
+  // capture's write was landing AFTER this one, wiping the stamp - which is
+  // why the morning cron logged "found pending: 0" forever and no promised
+  // 9 AM callback was ever placed (Z's own 21:10 test, 28 Aug). Let the race
+  // settle, then write, then VERIFY the stamp survived; retry once.
   try {
-    const { data: existing } = await supabase
-      .from('all_leads')
-      .select('id, unified_context')
-      .eq('customer_phone_normalized', normalized)
-      .eq('brand', BRAND)
-      .order('last_interaction_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await new Promise((r) => setTimeout(r, attempt === 0 ? 1500 : 2500))
+      const { data: existing } = await supabase
+        .from('all_leads')
+        .select('id, unified_context')
+        .eq('customer_phone_normalized', normalized)
+        .eq('brand', BRAND)
+        .order('last_interaction_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
-    if (!existing) return
+      if (!existing) return
 
-    const ctx = (existing.unified_context as Record<string, any>) || {}
-    const prior = (ctx.voice || {}) as Record<string, any>
+      const ctx = (existing.unified_context as Record<string, any>) || {}
+      const prior = (ctx.voice || {}) as Record<string, any>
 
-    await supabase
-      .from('all_leads')
-      .update({
-        last_interaction_at: new Date().toISOString(),
-        unified_context: {
-          ...ctx,
-          voice: {
-            ...prior,
-            scheduled_callback_at: input.scheduledFor.toISOString(),
-            scheduled_callback_status: 'pending',
+      await supabase
+        .from('all_leads')
+        .update({
+          last_interaction_at: new Date().toISOString(),
+          unified_context: {
+            ...ctx,
+            voice: {
+              ...prior,
+              scheduled_callback_at: input.scheduledFor.toISOString(),
+              scheduled_callback_status: 'pending',
+            },
           },
-        },
-      })
-      .eq('id', existing.id)
+        })
+        .eq('id', existing.id)
+
+      const { data: check } = await supabase
+        .from('all_leads').select('unified_context').eq('id', existing.id).maybeSingle()
+      if ((check?.unified_context as any)?.voice?.scheduled_callback_at) return
+      console.warn('[leadsSupabase] scheduleCallback stamp lost to a concurrent write, retrying')
+    }
+    console.error('[leadsSupabase] scheduleCallback could not persist the stamp after retries')
   } catch (err) {
     console.error('[leadsSupabase] scheduleCallback failed', err)
   }
