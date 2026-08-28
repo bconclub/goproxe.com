@@ -314,6 +314,164 @@ export async function lastCallbackAt(phone: string | null | undefined): Promise<
   }
 }
 
+/**
+ * Schedule a callback for a later time when the lead was captured during quiet hours.
+ *
+ * Writes scheduled_callback_at into unified_context.voice so the cron job can
+ * find and dial these leads when the time comes. The timestamp is when we
+ * PROMISED to call, not when we actually did.
+ */
+export async function scheduleCallback(input: {
+  phone?: string | null
+  scheduledFor: Date
+}): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+
+  const normalized = normalizePhone(input.phone ?? '')
+  if (!normalized) return
+
+  try {
+    const { data: existing } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('customer_phone_normalized', normalized)
+      .eq('brand', BRAND)
+      .order('last_interaction_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!existing) return
+
+    const ctx = (existing.unified_context as Record<string, any>) || {}
+    const prior = (ctx.voice || {}) as Record<string, any>
+
+    await supabase
+      .from('all_leads')
+      .update({
+        last_interaction_at: new Date().toISOString(),
+        unified_context: {
+          ...ctx,
+          voice: {
+            ...prior,
+            scheduled_callback_at: input.scheduledFor.toISOString(),
+            scheduled_callback_status: 'pending',
+          },
+        },
+      })
+      .eq('id', existing.id)
+  } catch (err) {
+    console.error('[leadsSupabase] scheduleCallback failed', err)
+  }
+}
+
+/**
+ * Fetch leads with pending scheduled callbacks that are due now.
+ *
+ * Returns leads where:
+ * - scheduled_callback_at is in the past
+ * - scheduled_callback_status is 'pending'
+ * - NOT currently in quiet hours
+ * - Has a valid phone number
+ */
+export async function getPendingScheduledCallbacks(): Promise<Array<{
+  id: string
+  phone: string
+  scheduledFor: Date
+}>> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return []
+
+  try {
+    const now = new Date().toISOString()
+    
+    // Fetch leads with pending scheduled callbacks
+    const { data, error } = await supabase
+      .from('all_leads')
+      .select('id, phone, unified_context')
+      .eq('brand', BRAND)
+      .not('phone', 'is', null)
+      .not('unified_context->voice->scheduled_callback_at', 'is', null)
+
+    if (error) {
+      console.error('[leadsSupabase] getPendingScheduledCallbacks fetch failed', error)
+      return []
+    }
+
+    if (!data) return []
+
+    // Filter in-memory for due callbacks with pending status
+    const pending: Array<{ id: string; phone: string; scheduledFor: Date }> = []
+    
+    for (const lead of data) {
+      const voice = (lead.unified_context as Record<string, any> | null)?.voice
+      if (!voice) continue
+      
+      const scheduledAt = voice.scheduled_callback_at
+      const status = voice.scheduled_callback_status
+      
+      if (status !== 'pending') continue
+      if (!scheduledAt) continue
+      
+      const scheduledDate = new Date(scheduledAt)
+      if (Number.isNaN(scheduledDate.getTime())) continue
+      if (scheduledDate > new Date()) continue
+      
+      pending.push({
+        id: lead.id as string,
+        phone: lead.phone as string,
+        scheduledFor: scheduledDate,
+      })
+    }
+    
+    return pending
+  } catch (err) {
+    console.error('[leadsSupabase] getPendingScheduledCallbacks threw', err)
+    return []
+  }
+}
+
+/**
+ * Mark a scheduled callback as processed (dialed or failed).
+ */
+export async function markScheduledCallbackProcessed(input: {
+  leadId: string
+  status: 'dialed' | 'failed'
+}): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+
+  try {
+    const { data: existing } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('id', input.leadId)
+      .eq('brand', BRAND)
+      .maybeSingle()
+
+    if (!existing) return
+
+    const ctx = (existing.unified_context as Record<string, any>) || {}
+    const prior = (ctx.voice || {}) as Record<string, any>
+
+    await supabase
+      .from('all_leads')
+      .update({
+        unified_context: {
+          ...ctx,
+          voice: {
+            ...prior,
+            scheduled_callback_status: input.status,
+            scheduled_callback_processed_at: new Date().toISOString(),
+          },
+        },
+      })
+      .eq('id', existing.id)
+  } catch (err) {
+    console.error('[leadsSupabase] markScheduledCallbackProcessed failed', err)
+  }
+}
+
 export async function recordCallbackDial(input: {
   phone?: string | null
   status: 'dialing' | 'failed'
