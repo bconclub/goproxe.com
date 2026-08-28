@@ -449,18 +449,46 @@ export async function recordCallTranscript(input: {
     const prior = (ctx.voice || {}) as Record<string, any>
     const transcripts = Array.isArray(prior.transcripts) ? prior.transcripts : []
 
-    // Only fill a blank name — never overwrite one already on the record. A
-    // name typed into a form is more reliable than one transcribed off a phone
-    // line, and a later call must not downgrade it.
+    // The name said ON THE CALL wins over junk names, not over real ones.
+    // WhatsApp push names are routinely the COMPANY ("Dynamic English Training
+    // Institute", "Ex Director Vitavibe") or the bare phone number, and we then
+    // call a human by their brand name (Z, 28 Aug). So:
+    //   blank / phone-digits          -> take the caller's name
+    //   company-ish / matches their
+    //   stated business               -> take the caller's name, and MOVE the
+    //                                    old value into the brand-name slot
+    //   looks like a real person name -> keep it (a typed form name outranks
+    //                                    one transcribed off a phone line)
     const existingName =
       typeof row.customer_name === 'string' ? row.customer_name.trim() : ''
-    const nameUpdate =
-      !existingName && input.callerName ? { customer_name: input.callerName } : {}
+    const caller = (input.callerName || '').trim()
+    const phoneLike = (s: string) => /^[+\d][\d\s().-]{5,}$/.test(s)
+    const COMPANYISH = /\b(ltd|pvt|private|llp|inc|institute|academy|clinic|hospital|director|enterprises?|traders?|solutions?|technologies|tech|studio|salon|spa|realty|properties|homes?|constructions?|builders?|classes|coaching|training|centre|center|agency|services|foods?|cafe|restaurant|hotel|motors|travels?|tours?|exports?|imports?|industries|group|company|co\.)\b/i
+    let nameUpdate: Record<string, unknown> = {}
+    let movedCompany: string | null = null
+    if (caller && caller.toLowerCase() !== existingName.toLowerCase()) {
+      const biz = String(input.businessType || '').trim().toLowerCase()
+      const looksLikeBiz = biz.length > 2 && existingName.toLowerCase().includes(biz)
+      if (!existingName || phoneLike(existingName)) {
+        nameUpdate = { customer_name: caller }
+      } else if (COMPANYISH.test(existingName) || looksLikeBiz) {
+        nameUpdate = { customer_name: caller }
+        movedCompany = existingName
+      }
+    }
 
     // Same conversation arriving twice (a retry) replaces rather than appends.
     const withoutThis = transcripts.filter(
       (t: any) => t?.conversation_id !== input.conversationId
     )
+
+    // The displaced company name lands in the brand-name slot the dashboard
+    // reads (web.profile.company) - enrichment, not deletion.
+    const webCtx = (ctx.web || {}) as Record<string, any>
+    const webProfile = (webCtx.profile || {}) as Record<string, any>
+    const companyFold = movedCompany && !webProfile.company
+      ? { web: { ...webCtx, profile: { ...webProfile, company: movedCompany } } }
+      : {}
 
     await supabase
       .from('all_leads')
@@ -470,6 +498,7 @@ export async function recordCallTranscript(input: {
         last_interaction_at: new Date().toISOString(),
         unified_context: {
           ...ctx,
+          ...companyFold,
           voice: {
             ...prior,
             last_transcript_at: new Date().toISOString(),
@@ -493,6 +522,19 @@ export async function recordCallTranscript(input: {
         },
       })
       .eq('id', row.id)
+
+    // Audit trail: renames must be visible in the Activity feed, same as
+    // dashboard edits ("Lead updated by ...").
+    if (nameUpdate.customer_name) {
+      await supabase.from('activities').insert({
+        lead_id: row.id,
+        activity_type: 'note',
+        note: `Lead updated by PROXe: Name: ${existingName || 'empty'} -> ${caller}`
+          + (movedCompany ? `; Brand name: ${movedCompany}` : '')
+          + ' (heard on the call)',
+        created_by: 'proxe-voice',
+      }).then(({ error }: any) => { if (error) console.warn('[leadsSupabase] rename audit failed:', error.message) })
+    }
 
     // ALSO write a `voice_sessions` row: the dashboard's Calls page reads
     // ONLY that table, so calls recorded just into unified_context and
