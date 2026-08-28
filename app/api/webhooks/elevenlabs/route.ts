@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { recordCallTranscript } from '../../../lib/leadsSupabase'
+import { oncallWhatsAppSent } from '../../../lib/oncallWhatsAppSent'
 
 /**
  * ElevenLabs post-call webhook.
@@ -190,6 +191,25 @@ export async function POST(request: NextRequest) {
   const userSpoke = userTurns.some((t) => String(t.text || '').replace(/[.…\s]/g, '').length > 0)
   const isShortHangup = durationSecs <= 10 && !userSpoke
 
+  // QC-02 FIX: check if the on-call WhatsApp already sent mid-conversation.
+  // Mother Dental (bff504ae): agent promised a WA during the call but nothing
+  // sent, then this post-call continuation fired after hangup. The fix adds
+  // /api/agent/send-oncall-wa as an ElevenLabs tool the agent can invoke while
+  // they are still talking. That tool records the send in oncallWhatsAppSent.
+  // If present, skip this generic post-call message to avoid a duplicate.
+  //
+  // Edge cases:
+  // 1. On-call send succeeds → post-call skips (no duplicate)
+  // 2. On-call send fails (bad network, intent API down) → post-call sends
+  //    as fallback, so the caller still gets ONE message
+  // 3. Agent never invokes the tool (prompt issue, tool not configured) →
+  //    post-call sends as before (status quo, no regression)
+  //
+  // The tracking Map is process-local (resets on deploy). A duplicate after
+  // restart is acceptable: better two messages than zero after the agent
+  // promised one on the call.
+  const alreadySent = conversationId && oncallWhatsAppSent.has(conversationId)
+
   // Interested callers get the message TOO - a different one, not none.
   //
   // The 27 Aug "skip after interest=yes" rule inverted the product: the agent
@@ -214,7 +234,7 @@ export async function POST(request: NextRequest) {
   // template is retired from this path entirely.
   const intentBase = process.env.PROXE_INTENT_BASE
   const intentKey = process.env.PROXE_INBOUND_API_KEY
-  if (phone && intentBase && intentKey && !isShortHangup) {
+  if (phone && intentBase && intentKey && !isShortHangup && !alreadySent) {
     const biz = pick('business_type')
     const template = 'proxe_call_followup_util_v2'
     const text = `Hi, we just spoke over a call${biz ? ` about your ${biz}` : ''}. We can continue here.`
@@ -231,6 +251,8 @@ export async function POST(request: NextRequest) {
     }
   } else if (isShortHangup) {
     console.log(`[webhooks/elevenlabs] skipped postcall send for short hangup: ${durationSecs}s, user_spoke=${userSpoke}`)
+  } else if (alreadySent) {
+    console.log(`[webhooks/elevenlabs] skipped postcall send: oncall WA already sent conv=${conversationId}`)
   }
 
   return NextResponse.json({ ok: true, turns: transcript.length })
