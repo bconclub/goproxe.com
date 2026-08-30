@@ -75,6 +75,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Conversations.webp',
   },
+  {
+    slug: 'paid-lead-no-reply',
+    title: 'You paid for the lead. Then you answered tomorrow.',
+    dek: 'Broker inbound dies on a personal WhatsApp. Site visit goes to whoever replied. Answer, qualify, book. Do not wait until the next listing.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
