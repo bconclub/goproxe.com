@@ -40,6 +40,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'after-hours-whatsapp',
+    title: 'After-hours WhatsApp is how you lose the lead',
+    dek: 'They wrote at 11pm. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
