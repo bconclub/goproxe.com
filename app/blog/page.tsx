@@ -42,25 +42,7 @@ export default function BlogIndexPage() {
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  style={{
-                    display: 'block',
-                    background: 'linear-gradient(180deg, rgba(20, 13, 48, 0.55) 0%, rgba(11, 7, 30, 0.62) 100%)',
-                    border: '1px solid rgba(196, 181, 253, 0.14)',
-                    borderRadius: '16px',
-                    padding: '24px',
-                    backdropFilter: 'blur(16px) saturate(150%)',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s',
-                    cursor: 'pointer',
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.35)'
-                    e.currentTarget.style.transform = 'translateY(-2px)'
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.14)'
-                    e.currentTarget.style.transform = 'translateY(0)'
-                  }}
+                  className={styles.blogCard}
                 >
                   <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                     <img
@@ -116,24 +98,7 @@ export default function BlogIndexPage() {
           </div>
 
           <div style={{ marginTop: '48px', textAlign: 'center' }}>
-            <Link
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '7px',
-                fontSize: '13.5px',
-                color: 'rgba(255, 255, 255, 0.6)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'rgba(196, 181, 253, 1)'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'
-              }}
-            >
+            <Link href="/" className={styles.navLink}>
               ← Back to home
             </Link>
           </div>
