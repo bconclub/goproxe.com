@@ -6,6 +6,7 @@ import styles from '../../styles/legal.module.css'
 import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
 import { BlogShareRail } from '../../components/blog/BlogShareRail'
 import { BlogToc } from '../../components/blog/BlogToc'
+import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -17,6 +18,27 @@ export const metadata: Metadata = {
     'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
   alternates: {
     canonical: 'https://goproxe.com/blog/crm-wont-answer',
+  },
+  openGraph: {
+    title: 'Your CRM will not answer that WhatsApp',
+    description:
+      'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
+    url: 'https://goproxe.com/blog/crm-wont-answer',
+    images: [
+      {
+        url: 'https://goproxe.com/home/Leads.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Your CRM will not answer that WhatsApp',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Your CRM will not answer that WhatsApp',
+    description:
+      'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
+    images: ['https://goproxe.com/home/Leads.webp'],
   },
 }
 
@@ -156,66 +178,11 @@ export default function CrmWontAnswerPage() {
             </section>
 
             {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <section className={styles.section} style={{ marginTop: '48px' }}>
-                <h2>Related</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {relatedPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
 
             {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <section className={styles.section}>
-                <h2>Recent</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {recentPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
+
 
             {/* Prev/Next Navigation */}
             {(prev || next) && (

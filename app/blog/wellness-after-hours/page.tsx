@@ -6,6 +6,7 @@ import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
 import { BlogShareRail } from '../../components/blog/BlogShareRail'
 import { BlogToc } from '../../components/blog/BlogToc'
+import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -17,6 +18,27 @@ export const metadata: Metadata = {
     'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
   alternates: {
     canonical: 'https://goproxe.com/blog/wellness-after-hours',
+  },
+  openGraph: {
+    title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
+    description:
+      'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
+    url: 'https://goproxe.com/blog/wellness-after-hours',
+    images: [
+      {
+        url: 'https://goproxe.com/home/Conversations.webp',
+        width: 1200,
+        height: 630,
+        alt: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
+    description:
+      'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
+    images: ['https://goproxe.com/home/Conversations.webp'],
   },
 }
 
@@ -140,66 +162,11 @@ export default function WellnessAfterHoursPage() {
             </section>
 
             {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <section className={styles.section} style={{ marginTop: '48px' }}>
-                <h2>Related</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {relatedPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
 
             {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <section className={styles.section}>
-                <h2>Recent</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {recentPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
+
 
             {/* Prev/Next Navigation */}
             {(prev || next) && (

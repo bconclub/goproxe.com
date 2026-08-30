@@ -6,17 +6,39 @@ import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
 import { BlogShareRail } from '../../components/blog/BlogShareRail'
 import { BlogToc } from '../../components/blog/BlogToc'
+import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
-  title: "They called while you were on a job. The crew that answered got the work. | PROXe",
+  title: 'They called while you were on a job. The crew that answered got the work. | PROXe',
   description:
-    "Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.",
+    'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
   alternates: {
     canonical: 'https://goproxe.com/blog/home-services-on-a-job',
+  },
+  openGraph: {
+    title: 'They called while you were on a job. The crew that answered got the work.',
+    description:
+      'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
+    url: 'https://goproxe.com/blog/home-services-on-a-job',
+    images: [
+      {
+        url: 'https://goproxe.com/home/Leads.webp',
+        width: 1200,
+        height: 630,
+        alt: 'They called while you were on a job. The crew that answered got the work.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'They called while you were on a job. The crew that answered got the work.',
+    description:
+      'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
+    images: ['https://goproxe.com/home/Leads.webp'],
   },
 }
 
@@ -139,66 +161,11 @@ export default function HomeServicesOnAJobPage() {
             </section>
 
             {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <section className={styles.section} style={{ marginTop: '48px' }}>
-                <h2>Related</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {relatedPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
 
             {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <section className={styles.section}>
-                <h2>Recent</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {recentPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
+
 
             {/* Prev/Next Navigation */}
             {(prev || next) && (

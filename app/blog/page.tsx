@@ -47,13 +47,17 @@ export default function BlogIndexPage() {
                   <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                     <img
                       src={post.thumbnail}
-                      alt={post.title}
+                      alt=""
                       style={{
                         width: '160px',
                         height: '120px',
                         objectFit: 'cover',
                         borderRadius: '12px',
                         flexShrink: 0,
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.style.display = 'none'
                       }}
                     />
                     <div style={{ flex: 1, minWidth: '240px' }}>
