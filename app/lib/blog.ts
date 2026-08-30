@@ -33,6 +33,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'not-a-whatsapp-bot',
+    title: 'PROXe is not a WhatsApp chatbot',
+    dek: 'A chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
