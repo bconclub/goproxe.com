@@ -82,6 +82,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'wellness-after-hours',
+    title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
+    dek: 'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
+    date: '2026-08-30',
+    thumbnail: '/home/Conversations.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
