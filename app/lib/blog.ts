@@ -61,6 +61,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'clinics-whatsapp-during-consult',
+    title: 'They WhatsApped while you were in consult. The clinic that answered got the patient.',
+    dek: 'Clinic inbound dies in the chair, at night, and on the missed call. Answer, qualify, book. Do not wait until the next gap.',
+    date: '2026-08-30',
+    thumbnail: '/home/Conversations.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
