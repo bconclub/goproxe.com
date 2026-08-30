@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,23 @@ export default function CoachingParentsAtNightPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/coaching-parents-at-night'
+  const pageTitle = 'The parent messaged at 9pm. The institute that answered got the admission.'
+
+  const tocItems = [
+    { id: 'what-coaching-desks-run', text: 'What coaching desks run' },
+    { id: 'what-to-do-instead', text: 'What to do instead' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +90,7 @@ export default function CoachingParentsAtNightPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>The parent wrote at 9:12pm. JEE, this year, demo this week.</p>
               <p>Your counsellor finished class at 8. Phone on silent. Morning they called. The parent had already booked the institute that asked the two questions at 9:14.</p>
@@ -84,27 +98,27 @@ export default function CoachingParentsAtNightPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What coaching desks run</h2>
+              <h2 id="what-coaching-desks-run">What coaching desks run</h2>
               <p>Counsellor WhatsApp on a personal phone. A greeting. A PDF of batches. A CRM for the admission board.</p>
               <p>DNP is the same leak. They called, parent was in a meeting, nobody wrote on WhatsApp. The lead is not cold. The thread sat.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What to do instead</h2>
+              <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer on WhatsApp, Instagram, the site, the missed call. Same parent. One memory.</p>
               <p>Qualify in the thread: exam, year, city. Offer two counselling slots. Book it. Do not invent a fee or a rank.</p>
               <p>Morning the counsellor walks into a booked demo, not a list of last night's greets.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Institutes that already get inbound on WhatsApp and still answer when class ends. Class ending is too late.</p>
               <p>How PROXe does this for <a href="/industries/coaching">coaching</a>. Same leak for <a href="/industries/clinics">clinics</a> and <a href="/industries/realestate">real estate</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/after-hours-whatsapp">After-hours WhatsApp is how you lose the lead</a>. <a href="/blog/how-fast-to-reply-whatsapp">How fast should you reply to a WhatsApp lead</a>. <a href="/blog/what-is-proxe">What PROXe is</a>.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Does it replace the counsellor?</strong></p>
               <p>No. It does the 9pm reply. The counsellor walks into a booked slot.</p>
               <p><strong>Will it dump the brochure?</strong></p>

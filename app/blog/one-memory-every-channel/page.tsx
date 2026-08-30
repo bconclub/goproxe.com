@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,24 @@ export default function OneMemoryEveryChannelPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/one-memory-every-channel'
+  const pageTitle = 'One lead, four channels, one memory'
+
+  const tocItems = [
+    { id: 'what-people-run', text: 'What people run' },
+    { id: 'what-one-memory-means', text: 'What one memory means' },
+    { id: 'what-it-is-not', text: 'What it is not' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +91,7 @@ export default function OneMemoryEveryChannelPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>They DMed Instagram at night. WhatsApp in the morning. Form on the site at lunch. Called at 4.</p>
               <p>You asked their name four times. They hung up.</p>
@@ -84,14 +99,14 @@ export default function OneMemoryEveryChannelPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What people run</h2>
+              <h2 id="what-people-run">What people run</h2>
               <p>A WhatsApp bot. An Instagram reply from someone else. A site form into a CRM. A missed-call list on paper.</p>
               <p>Each tool has a slice. None of them know it is the same parent, the same patient, the same buyer.</p>
               <p>A CRM can store four rows. It still does not remember the thread.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What one memory means</h2>
+              <h2 id="what-one-memory-means">What one memory means</h2>
               <p>WhatsApp, Instagram, the website, the call write into one conversation.</p>
               <p>They never repeat the exam, the tooth, the locality, the job type.</p>
               <p>You pick up where they left. Night, Sunday, peak hour.</p>
@@ -99,13 +114,13 @@ export default function OneMemoryEveryChannelPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What it is not</h2>
+              <h2 id="what-it-is-not">What it is not</h2>
               <p>Not four chatbots glued together. Not a transcript dump into Zoho. Not "also Instagram" as a toggle.</p>
               <p>If they switch channel, the desk still knows them.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound on more than WhatsApp and still treat each ping as new.</p>
             </section>
 
@@ -118,7 +133,7 @@ export default function OneMemoryEveryChannelPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Is this a WhatsApp tool that also does Instagram?</strong></p>
               <p>No. One memory. Four channels. Same person.</p>
               <p><strong>Will they have to start over on the call?</strong></p>

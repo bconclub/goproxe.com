@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,23 @@ export default function NotAWhatsAppBotPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/not-a-whatsapp-bot'
+  const pageTitle = 'PROXe is not a WhatsApp chatbot'
+
+  const tocItems = [
+    { id: 'what-it-is-not', text: 'What it is not' },
+    { id: 'what-it-actually-does', text: 'What it actually does' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +90,7 @@ export default function NotAWhatsAppBotPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>You already tried a chatbot. It said hello. It sent the brochure. It could not book Tuesday 4pm. It forgot they called in the morning.</p>
               <p>That is a bot. PROXe is not that.</p>
@@ -89,17 +103,17 @@ export default function NotAWhatsAppBotPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What it is not</h2>
+              <h2 id="what-it-is-not">What it is not</h2>
               <p>It is not a menu. It is not an away message. It is not a broadcast tool. It is not a CRM with a chatbot bolted on.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What it actually does</h2>
+              <h2 id="what-it-actually-does">What it actually does</h2>
               <p>Answers in seconds. Qualifies in the thread. Books the slot. Follows up until yes or no. Remembers every channel as one person. Live in 48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound on WhatsApp and still lose the lead. The bot said thanks. Nobody booked.</p>
             </section>
 
@@ -112,7 +126,7 @@ export default function NotAWhatsAppBotPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Is it a WhatsApp Business API tool?</strong></p>
               <p>API is the pipe. PROXe is the person on the other end of the pipe.</p>
               <p><strong>Will it dump templates?</strong></p>

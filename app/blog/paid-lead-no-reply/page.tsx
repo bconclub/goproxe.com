@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,23 @@ export default function PaidLeadNoReplyPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/paid-lead-no-reply'
+  const pageTitle = 'You paid for the lead. Then you answered tomorrow.'
+
+  const tocItems = [
+    { id: 'what-brokers-actually-run', text: 'What brokers actually run' },
+    { id: 'what-to-do-instead', text: 'What to do instead' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +90,7 @@ export default function PaidLeadNoReplyPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>The buyer tapped WhatsApp off the listing at 9:12pm. Locality, budget, this weekend.</p>
               <p>Your phone was in the car. Morning you called. They had already booked the site visit with the broker who asked two questions at 9:14.</p>
@@ -84,21 +98,21 @@ export default function PaidLeadNoReplyPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What brokers actually run</h2>
+              <h2 id="what-brokers-actually-run">What brokers actually run</h2>
               <p>Personal WhatsApp. A greeting. 99acres and MagicBricks dumping into the same chat. Sometimes a CRM for the developer.</p>
               <p>The leak is not attribution. The leak is the independent broker whose number is on the listing, on Instagram, and on the site, and who answers when the site visit ends.</p>
               <p>Four channels, four starts. They tell their budget four times. They hang up.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What to do instead</h2>
+              <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer in seconds on WhatsApp, Instagram, the site, the missed call. Same buyer. One memory.</p>
               <p>Qualify: locality, budget, when. Offer two site-visit slots. Book it. Do not invent a price.</p>
               <p>Morning you walk into a booked visit, not a list of last night&apos;s portal names.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Brokers who already buy inbound and still answer when they are free. Free is too late.</p>
             </section>
 
@@ -111,7 +125,7 @@ export default function PaidLeadNoReplyPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Does it replace the broker?</strong></p>
               <p>No. It does the 9pm reply. You do the visit.</p>
               <p><strong>Will it quote a price?</strong></p>
