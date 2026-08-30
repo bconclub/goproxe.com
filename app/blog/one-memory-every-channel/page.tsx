@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/one-memory-every-channel',
   },
   openGraph: {
-    images: ['/blog/one-memory-every-channel.png'],
+    images: ['https://goproxe.com/home/Leads.webp'],
   },
 }
 

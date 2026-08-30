@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/what-is-proxe',
   },
   openGraph: {
-    images: ['/blog/what-is-proxe.png'],
+    images: ['https://goproxe.com/home/Leads.webp'],
   },
 }
 

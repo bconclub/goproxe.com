@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/wellness-after-hours',
   },
   openGraph: {
-    images: ['/blog/wellness-after-hours.png'],
+    images: ['https://goproxe.com/home/Conversations.webp'],
   },
 }
 

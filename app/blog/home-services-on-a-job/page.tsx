@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/home-services-on-a-job',
   },
   openGraph: {
-    images: ['/blog/home-services-on-a-job.png'],
+    images: ['https://goproxe.com/home/Leads.webp'],
   },
 }
 
