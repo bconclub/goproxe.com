@@ -1,16 +1,6 @@
-import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
-import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
-import { BlogShareRail } from '../../components/blog/BlogShareRail'
-import { BlogToc } from '../../components/blog/BlogToc'
-import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
-const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
-const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
   title: 'Your CRM will not answer that WhatsApp | PROXe',
@@ -20,27 +10,15 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/crm-wont-answer',
   },
   openGraph: {
-    title: 'Your CRM will not answer that WhatsApp',
-    description:
-      'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
-    url: 'https://goproxe.com/blog/crm-wont-answer',
-    images: [
-      {
-        url: 'https://goproxe.com/home/Leads.webp',
-        width: 1200,
-        height: 630,
-        alt: 'Your CRM will not answer that WhatsApp',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Your CRM will not answer that WhatsApp',
-    description:
-      'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['/blog/crm-wont-answer.png'],
   },
 }
+
+const articleContent = `They messaged at 9:12pm. Your CRM made a row. Name, number, source. Status: New. Nobody answered. At 9:18 they booked the clinic that wrote back. The row is still New in the morning. That is not a CRM bug. That is what a CRM is.
+
+What people actually do. Most Indian clinics, coaching desks, and brokers run some mix of three things. A personal phone. The counsellor's WhatsApp. When they leave, the thread leaves with them. A shared inbox. Everyone sees everything. Nobody owns the 11pm message. A CRM. LeadSquared, Zoho, whatever. WhatsApp is a connector. A webhook. A template when the stage changes. The conversation still waits for a person to type.
+
+What a CRM is for. A CRM is a record. Pipeline. Who owns the lead. What stage. What you last logged. Reports for the owner. That work is real. It is not the first 30 seconds. It is not the 9pm WhatsApp.`
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -48,26 +26,26 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is PROXe a CRM?',
+      name: 'Will this replace my CRM?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. PROXe answers, qualifies, books, and follows up. Your CRM can still hold the file.',
+        text: 'No. It does the conversation. Your CRM still owns the pipeline and the file.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Can I keep LeadSquared or Zoho?',
+      name: 'Does it integrate with LeadSquared / Zoho / Salesforce?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The leak is the unanswered chat, not the missing board.',
+        text: 'Yes. Webhooks and REST APIs.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Why not just a WhatsApp chatbot?',
+      name: 'What if we already paid for a CRM?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'A bot dumps FAQs. It does not book, follow up, or remember the call.',
+        text: 'Keep it. The CRM is the record. This answers the lead.',
       },
     },
     {
@@ -82,12 +60,7 @@ const faqSchema = {
 }
 
 export default function CrmWontAnswerPage() {
-  const currentSlug = 'crm-wont-answer'
-  const post = getBlogPost(currentSlug)
-  const relatedPosts = getRelatedPosts(currentSlug, 3)
-  const recentPosts = getRecentPosts(currentSlug, 3)
-  const { prev, next } = getPrevNextPosts(currentSlug)
-
+  const slug = 'crm-wont-answer'
   const pageUrl = 'https://goproxe.com/blog/crm-wont-answer'
   const pageTitle = 'Your CRM will not answer that WhatsApp'
 
@@ -101,20 +74,14 @@ export default function CrmWontAnswerPage() {
   ]
 
   return (
-    <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <BlogShareRail url={pageUrl} title={pageTitle} />
-      <main className={styles.page}>
-        <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>Your CRM will not answer that WhatsApp</h1>
-          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
-
-          <article className={styles.body}>
-            <BlogToc items={tocItems} />
+    <BlogPostWrapper
+      slug={slug}
+      title={pageTitle}
+      pageUrl={pageUrl}
+      tocItems={tocItems}
+      articleContent={articleContent}
+      jsonLdSchemas={[faqSchema]}
+    >
             <section className={styles.section}>
               <p>They messaged at 9:12pm. Your CRM made a row. Name, number, source. Status: New.</p>
               <p>Nobody answered. At 9:18 they booked the clinic that wrote back.</p>
@@ -149,86 +116,34 @@ export default function CrmWontAnswerPage() {
             <section className={styles.section}>
               <h2 id="how-you-should-manage-a-lead">How you should manage a lead</h2>
               <p>Treat the inbound as a conversation, not a row.</p>
-              <p>Answer on the channel they used. WhatsApp, Instagram, the site, the call. Same person. One memory.</p>
-              <p>Qualify in the thread. Book a slot. Follow up until yes or no. Log the outcome after, if you still want a CRM.</p>
-              <p>The record comes after the reply. Not instead of it.</p>
+              <p>Answer on WhatsApp, Instagram, the site, the missed call. Same person. One memory.</p>
+              <p>Ask the two questions. Book the calendar. Follow up until they commit or opt out.</p>
+              <p>The CRM is the second step. It owns the pipeline. It does not own the chat.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Businesses that already get inbound and already have a board. Excel, Zoho, LeadSquared. The board is not the leak. The unanswered chat is.</p>
+              <p>Businesses that already have a CRM and still lose leads because the conversation dies in the first 30 seconds.</p>
+              <p>Your CRM is not broken. The first reply is not its job.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
-              <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
+              <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="questions-people-ask">Questions people ask</h2>
-              <p><strong>Is PROXe a CRM?</strong></p>
-              <p>No. PROXe answers, qualifies, books, and follows up. Your CRM can still hold the file.</p>
-              <p><strong>Can I keep LeadSquared or Zoho?</strong></p>
-              <p>Yes. The leak is the unanswered chat, not the missing board.</p>
-              <p><strong>Why not just a WhatsApp chatbot?</strong></p>
-              <p>A bot dumps FAQs. It does not book, follow up, or remember the call.</p>
+              <p><strong>Will this replace my CRM?</strong></p>
+              <p>No. It does the conversation. Your CRM still owns the pipeline and the file.</p>
+              <p><strong>Does it integrate with LeadSquared / Zoho / Salesforce?</strong></p>
+              <p>Yes. Webhooks and REST APIs.</p>
+              <p><strong>What if we already paid for a CRM?</strong></p>
+              <p>Keep it. The CRM is the record. This answers the lead.</p>
               <p><strong>How long to go live?</strong></p>
               <p>48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <p>The CRM is the file. This page is the desk. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>A CRM is a record. The conversation is a race. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
-
-            {/* Related Posts */}
-            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
-
-            {/* Recent Posts */}
-            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
-
-
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <div
-                style={{
-                  marginTop: '48px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {prev ? (
-                  <Link
-                    href={`/blog/${prev.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <FiArrowLeft size={16} />
-                    <span>{prev.title}</span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next && (
-                  <Link
-                    href={`/blog/${next.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <span>{next.title}</span>
-                    <FiArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className={styles.footer}>
-              <a href="/blog" className={styles.backLink}>
-                <FiArrowLeft size={14} /> Back to blog
-              </a>
-              <span className={styles.brand}>
-                <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
-              </span>
-            </div>
-          </article>
-        </div>
-      </main>
-    </div>
+    </BlogPostWrapper>
   )
 }

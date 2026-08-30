@@ -1,16 +1,6 @@
-import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
-import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
-import { BlogShareRail } from '../../components/blog/BlogShareRail'
-import { BlogToc } from '../../components/blog/BlogToc'
-import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
-const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
-const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
   title: 'What is PROXe? | PROXe',
@@ -20,27 +10,15 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/what-is-proxe',
   },
   openGraph: {
-    title: 'What is PROXe?',
-    description:
-      'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
-    url: 'https://goproxe.com/blog/what-is-proxe',
-    images: [
-      {
-        url: 'https://goproxe.com/home/Leads.webp',
-        width: 1200,
-        height: 630,
-        alt: 'What is PROXe',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'What is PROXe?',
-    description:
-      'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['/blog/what-is-proxe.png'],
   },
 }
+
+const articleContent = `PROXe is an AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way. That is the whole product. Not a chatbot you paste into WhatsApp. Not a CRM you have to open.
+
+The leak it is built for. The lead messages while you are with someone else. You see it at 8am. They already booked the business that answered. Clinics lose the new patient in consult. Coaches lose the parent who wrote after 9pm. Brokers lose the site visit they already paid for. The ad did not fail. The conversation sat there.
+
+What it actually does. Answers in seconds. Night, Sunday, peak hour. Asks one useful question. Doctor. Exam. Area. Job type. Books the slot in the same thread. Follows up until they say yes or no. Remembers the thread. They never repeat themselves. WhatsApp, Instagram, the site, and calls write into one memory.`
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -90,12 +68,7 @@ const faqSchema = {
 }
 
 export default function WhatIsProxePage() {
-  const currentSlug = 'what-is-proxe'
-  const post = getBlogPost(currentSlug)
-  const relatedPosts = getRelatedPosts(currentSlug, 3)
-  const recentPosts = getRecentPosts(currentSlug, 3)
-  const { prev, next } = getPrevNextPosts(currentSlug)
-
+  const slug = 'what-is-proxe'
   const pageUrl = 'https://goproxe.com/blog/what-is-proxe'
   const pageTitle = 'What is PROXe?'
 
@@ -108,20 +81,14 @@ export default function WhatIsProxePage() {
   ]
 
   return (
-    <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <BlogShareRail url={pageUrl} title={pageTitle} />
-      <main className={styles.page}>
-        <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>What is PROXe?</h1>
-          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
-
-          <article className={styles.body}>
-            <BlogToc items={tocItems} />
+    <BlogPostWrapper
+      slug={slug}
+      title={pageTitle}
+      pageUrl={pageUrl}
+      tocItems={tocItems}
+      articleContent={articleContent}
+      jsonLdSchemas={[faqSchema]}
+    >
             <section className={styles.section}>
               <p>PROXe is an AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.</p>
               <p>That is the whole product. Not a chatbot you paste into WhatsApp. Not a CRM you have to open.</p>
@@ -175,59 +142,6 @@ export default function WhatIsProxePage() {
             <section className={styles.section}>
               <p>Why people miss conversations is the leak. This page is the product. Talk to PROXe on <a href="/">the site</a>.</p>
             </section>
-
-            {/* Related Posts */}
-            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
-
-            {/* Recent Posts */}
-            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
-
-
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <div
-                style={{
-                  marginTop: '48px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {prev ? (
-                  <Link
-                    href={`/blog/${prev.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <FiArrowLeft size={16} />
-                    <span>{prev.title}</span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next && (
-                  <Link
-                    href={`/blog/${next.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <span>{next.title}</span>
-                    <FiArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className={styles.footer}>
-              <a href="/blog" className={styles.backLink}>
-                <FiArrowLeft size={14} /> Back to blog
-              </a>
-              <span className={styles.brand}>
-                <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
-              </span>
-            </div>
-          </article>
-        </div>
-      </main>
-    </div>
+    </BlogPostWrapper>
   )
 }

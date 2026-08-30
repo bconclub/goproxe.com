@@ -1,16 +1,6 @@
-import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
-import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
-import { BlogShareRail } from '../../components/blog/BlogShareRail'
-import { BlogToc } from '../../components/blog/BlogToc'
-import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
-const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
-const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
   title: 'They wanted 7pm. You replied at 10am. The other studio got the booking. | PROXe',
@@ -20,74 +10,57 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/wellness-after-hours',
   },
   openGraph: {
-    title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
-    description:
-      'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
-    url: 'https://goproxe.com/blog/wellness-after-hours',
-    images: [
-      {
-        url: 'https://goproxe.com/home/Conversations.webp',
-        width: 1200,
-        height: 630,
-        alt: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
-    description:
-      'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
-    images: ['https://goproxe.com/home/Conversations.webp'],
+    images: ['/blog/wellness-after-hours.png'],
   },
 }
 
+const articleContent = `They wrote at 8:40pm. Trial tomorrow. First class. Reception left at 8. Greeting said closed. Morning you called. They had already booked the studio that offered 7pm or 8pm at 8:41. The leak is not membership software. The leak is the after-7pm WhatsApp that sat.
+
+What wellness desks run. A personal phone at the desk. A greeting. A brochure of packages. Instagram DMs on someone else's phone. Gym, spa, yoga: same pattern. They want a slot tonight or first thing. We will call you tomorrow is how they pick the other place.
+
+What to do instead. Answer on WhatsApp, Instagram, the site, the missed call. Same person. One memory. Qualify: trial or member, which service, when. Offer two slots. Book it. Do not invent a package price. Morning you walk into a booked trial, not a pile of last night's greets.`
+
 const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
   mainEntity: [
     {
-      "@type": "Question",
-      name: "Does it replace the trainer or therapist?",
+      '@type': 'Question',
+      name: 'Does it replace the trainer or therapist?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. It does the 9pm reply. You do the session.",
+        '@type': 'Answer',
+        text: 'No. It does the 9pm reply. You do the session.',
       },
     },
     {
-      "@type": "Question",
-      name: "Will it quote a package?",
+      '@type': 'Question',
+      name: 'Will it quote a package?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. It books the visit and hands you the thread.",
+        '@type': 'Answer',
+        text: 'No. It books the visit and hands you the thread.',
       },
     },
     {
-      "@type": "Question",
-      name: "Do I need night staff?",
+      '@type': 'Question',
+      name: 'Do I need night staff?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. The desk keeps working. You do not.",
+        '@type': 'Answer',
+        text: 'No. The desk keeps working. You do not.',
       },
     },
     {
-      "@type": "Question",
-      name: "How long to go live?",
+      '@type': 'Question',
+      name: 'How long to go live?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "48 hours.",
+        '@type': 'Answer',
+        text: '48 hours.',
       },
     },
   ],
 }
 
 export default function WellnessAfterHoursPage() {
-  const currentSlug = "wellness-after-hours"
-  const post = getBlogPost(currentSlug)
-  const relatedPosts = getRelatedPosts(currentSlug, 3)
-  const recentPosts = getRecentPosts(currentSlug, 3)
-  const { prev, next } = getPrevNextPosts(currentSlug)
-
+  const slug = 'wellness-after-hours'
   const pageUrl = 'https://goproxe.com/blog/wellness-after-hours'
   const pageTitle = 'They wanted 7pm. You replied at 10am. The other studio got the booking.'
 
@@ -99,20 +72,14 @@ export default function WellnessAfterHoursPage() {
   ]
 
   return (
-    <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <BlogShareRail url={pageUrl} title={pageTitle} />
-      <main className={styles.page}>
-        <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>They wanted 7pm. You replied at 10am. The other studio got the booking.</h1>
-          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
-
-          <article className={styles.body}>
-            <BlogToc items={tocItems} />
+    <BlogPostWrapper
+      slug={slug}
+      title={pageTitle}
+      pageUrl={pageUrl}
+      tocItems={tocItems}
+      articleContent={articleContent}
+      jsonLdSchemas={[faqSchema]}
+    >
             <section className={styles.section}>
               <p>They wrote at 8:40pm. Trial tomorrow. First class.</p>
               <p>Reception left at 8. Greeting said closed. Morning you called. They had already booked the studio that offered 7pm or 8pm at 8:41.</p>
@@ -160,59 +127,6 @@ export default function WellnessAfterHoursPage() {
             <section className={styles.section}>
               <p>After hours they still want a slot. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
-
-            {/* Related Posts */}
-            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
-
-            {/* Recent Posts */}
-            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
-
-
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <div
-                style={{
-                  marginTop: '48px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {prev ? (
-                  <Link
-                    href={`/blog/${prev.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <FiArrowLeft size={16} />
-                    <span>{prev.title}</span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next && (
-                  <Link
-                    href={`/blog/${next.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <span>{next.title}</span>
-                    <FiArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className={styles.footer}>
-              <a href="/blog" className={styles.backLink}>
-                <FiArrowLeft size={14} /> Back to blog
-              </a>
-              <span className={styles.brand}>
-                <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
-              </span>
-            </div>
-          </article>
-        </div>
-      </main>
-    </div>
+    </BlogPostWrapper>
   )
 }

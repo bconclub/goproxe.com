@@ -1,16 +1,6 @@
-import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
-import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
-import { BlogShareRail } from '../../components/blog/BlogShareRail'
-import { BlogToc } from '../../components/blog/BlogToc'
-import { BlogRelatedRecent } from '../../components/blog/BlogRelatedRecent'
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
-const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
-const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
   title: 'They called while you were on a job. The crew that answered got the work. | PROXe',
@@ -20,74 +10,57 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/home-services-on-a-job',
   },
   openGraph: {
-    title: 'They called while you were on a job. The crew that answered got the work.',
-    description:
-      'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
-    url: 'https://goproxe.com/blog/home-services-on-a-job',
-    images: [
-      {
-        url: 'https://goproxe.com/home/Leads.webp',
-        width: 1200,
-        height: 630,
-        alt: 'They called while you were on a job. The crew that answered got the work.',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'They called while you were on a job. The crew that answered got the work.',
-    description:
-      'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['/blog/home-services-on-a-job.png'],
   },
 }
 
+const articleContent = `The AC died at 2pm. They WhatsApped. You were on a roof. You replied at 7. They already booked the crew that asked address and slot at 2:04. Night is the same leak. 10pm. You see it at 8am. Gone. You did not lose the job to a bigger brand. You lost it because the chat sat while you worked.
+
+What crews actually run. Personal phone. JustDial, the site, Instagram, the missed call. Four inboxes. No memory. Quote sent, never followed.
+
+What to do instead. Answer on the channel they used. Same person. One memory. Qualify: address, job type, when. Offer two slots. Book tomorrow's first if it is night. Do not invent a quote. You finish the current job. The next one is already on the calendar.`
+
 const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
   mainEntity: [
     {
-      "@type": "Question",
-      name: "Does it replace the technician?",
+      '@type': 'Question',
+      name: 'Does it replace the technician?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. It does the reply while you are on the job. You do the work.",
+        '@type': 'Answer',
+        text: 'No. It does the reply while you are on the job. You do the work.',
       },
     },
     {
-      "@type": "Question",
-      name: "Will it quote a price?",
+      '@type': 'Question',
+      name: 'Will it quote a price?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. It books the visit and hands you the thread.",
+        '@type': 'Answer',
+        text: 'No. It books the visit and hands you the thread.',
       },
     },
     {
-      "@type": "Question",
-      name: "Do I need someone in the office at night?",
+      '@type': 'Question',
+      name: 'Do I need someone in the office at night?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. The desk keeps working. You do not.",
+        '@type': 'Answer',
+        text: 'No. The desk keeps working. You do not.',
       },
     },
     {
-      "@type": "Question",
-      name: "How long to go live?",
+      '@type': 'Question',
+      name: 'How long to go live?',
       acceptedAnswer: {
-        "@type": "Answer",
-        text: "48 hours.",
+        '@type': 'Answer',
+        text: '48 hours.',
       },
     },
   ],
 }
 
 export default function HomeServicesOnAJobPage() {
-  const currentSlug = "home-services-on-a-job"
-  const post = getBlogPost(currentSlug)
-  const relatedPosts = getRelatedPosts(currentSlug, 3)
-  const recentPosts = getRecentPosts(currentSlug, 3)
-  const { prev, next } = getPrevNextPosts(currentSlug)
-
+  const slug = 'home-services-on-a-job'
   const pageUrl = 'https://goproxe.com/blog/home-services-on-a-job'
   const pageTitle = 'They called while you were on a job. The crew that answered got the work.'
 
@@ -99,20 +72,14 @@ export default function HomeServicesOnAJobPage() {
   ]
 
   return (
-    <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <BlogShareRail url={pageUrl} title={pageTitle} />
-      <main className={styles.page}>
-        <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>They called while you were on a job. The crew that answered got the work.</h1>
-          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
-
-          <article className={styles.body}>
-            <BlogToc items={tocItems} />
+    <BlogPostWrapper
+      slug={slug}
+      title={pageTitle}
+      pageUrl={pageUrl}
+      tocItems={tocItems}
+      articleContent={articleContent}
+      jsonLdSchemas={[faqSchema]}
+    >
             <section className={styles.section}>
               <p>The AC died at 2pm. They WhatsApped. You were on a roof. You replied at 7. They already booked the crew that asked address and slot at 2:04.</p>
               <p>Night is the same leak. 10pm. You see it at 8am. Gone.</p>
@@ -159,59 +126,6 @@ export default function HomeServicesOnAJobPage() {
             <section className={styles.section}>
               <p>You do the work. The inbox does not sit. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
-
-            {/* Related Posts */}
-            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
-
-            {/* Recent Posts */}
-            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
-
-
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <div
-                style={{
-                  marginTop: '48px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {prev ? (
-                  <Link
-                    href={`/blog/${prev.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <FiArrowLeft size={16} />
-                    <span>{prev.title}</span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next && (
-                  <Link
-                    href={`/blog/${next.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <span>{next.title}</span>
-                    <FiArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className={styles.footer}>
-              <a href="/blog" className={styles.backLink}>
-                <FiArrowLeft size={14} /> Back to blog
-              </a>
-              <span className={styles.brand}>
-                <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
-              </span>
-            </div>
-          </article>
-        </div>
-      </main>
-    </div>
+    </BlogPostWrapper>
   )
 }
