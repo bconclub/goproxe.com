@@ -16,84 +16,84 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'people-miss-conversations',
     title: 'People miss conversations. Then they lose the lead.',
     dek: 'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
-    date: '2026-08-25',
+    date: '2026-07-21',
     thumbnail: '/home/Conversations.webp',
   },
   {
     slug: 'what-is-proxe',
     title: 'What is PROXe?',
     dek: 'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
-    date: '2026-08-30',
+    date: '2026-07-23',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'crm-wont-answer',
     title: 'Your CRM will not answer that WhatsApp',
     dek: 'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
-    date: '2026-08-30',
+    date: '2026-07-28',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'not-a-whatsapp-bot',
     title: 'PROXe is not a WhatsApp chatbot',
     dek: 'A chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
-    date: '2026-08-30',
+    date: '2026-07-30',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'after-hours-whatsapp',
     title: 'After-hours WhatsApp is how you lose the lead',
     dek: 'They wrote at 11pm. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
-    date: '2026-08-30',
+    date: '2026-08-04',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'how-fast-to-reply-whatsapp',
     title: 'How fast should you reply to a WhatsApp lead',
     dek: 'First useful reply gets the slot. Thanks, we will call you, is not a reply.',
-    date: '2026-08-30',
+    date: '2026-08-06',
     thumbnail: '/home/Conversations.webp',
   },
   {
     slug: 'one-memory-every-channel',
     title: 'One lead, four channels, one memory',
     dek: 'WhatsApp Monday. Instagram Thursday. Site Saturday. Call later. Same person. They should never repeat themselves.',
-    date: '2026-08-30',
+    date: '2026-08-11',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'clinics-whatsapp-during-consult',
     title: 'They WhatsApped while you were in consult. The clinic that answered got the patient.',
     dek: 'Clinic inbound dies in the chair, at night, and on the missed call. Answer, qualify, book. Do not wait until the next gap.',
-    date: '2026-08-30',
+    date: '2026-08-13',
     thumbnail: '/home/Conversations.webp',
   },
   {
     slug: 'coaching-parents-at-night',
     title: 'The parent messaged at 9pm. The institute that answered got the admission.',
     dek: 'Coaching inbound dies after class and after 7pm. Answer, qualify the exam, book the counselling. Do not wait until morning.',
-    date: '2026-08-30',
+    date: '2026-08-18',
     thumbnail: '/home/Conversations.webp',
   },
   {
     slug: 'paid-lead-no-reply',
     title: 'You paid for the lead. Then you answered tomorrow.',
     dek: 'Broker inbound dies on a personal WhatsApp. Site visit goes to whoever replied. Answer, qualify, book. Do not wait until the next listing.',
-    date: '2026-08-30',
+    date: '2026-08-20',
     thumbnail: '/home/Leads.webp',
   },
   {
     slug: 'wellness-after-hours',
     title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
     dek: 'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
-    date: '2026-08-30',
+    date: '2026-08-25',
     thumbnail: '/home/Conversations.webp',
   },
   {
     slug: 'home-services-on-a-job',
     title: 'They called while you were on a job. The crew that answered got the work.',
     dek: 'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
-    date: '2026-08-30',
+    date: '2026-08-27',
     thumbnail: '/home/Leads.webp',
   },
   {
@@ -145,4 +145,16 @@ export function getPrevNextPosts(currentSlug: string): { prev: BlogPost | null; 
     prev: currentIndex > 0 ? sorted[currentIndex - 1] : null,
     next: currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null,
   };
+}
+
+/**
+ * Format a YYYY-MM-DD date string for display in blog posts.
+ */
+export function formatBlogDate(dateStr: string): string {
+  const dateObj = new Date(dateStr);
+  return dateObj.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }
