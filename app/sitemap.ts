@@ -1,10 +1,11 @@
 import type { MetadataRoute } from 'next'
 import { INDUSTRY_SLUGS } from './lib/industries'
 import { COMPARISON_SLUGS } from './lib/comparisons'
+import { BLOG_SLUGS } from './lib/blog'
 
 // Serves /sitemap.xml. The landing page is the product; industry pages are the
 // ad landing pages; comparison pages are SEO landing pages; legal pages are
-// listed so crawlers can verify them.
+// listed so crawlers can verify them; blog posts from the registry.
 // /thank-you is deliberately absent (conversion page, disallowed in robots.ts)
 // and the demo lives on a noindexed host, never here.
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -29,6 +30,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     })),
+    // Blog index
+    {
+      url: 'https://goproxe.com/blog',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    // Blog posts from the registry
+    ...BLOG_SLUGS.map((slug) => ({
+      url: `https://goproxe.com/blog/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    })),
     {
       url: 'https://goproxe.com/privacy-policy',
       lastModified: new Date(),
@@ -40,12 +55,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.3,
-    },
-    {
-      url: 'https://goproxe.com/blog/people-miss-conversations',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
     },
   ]
 }
