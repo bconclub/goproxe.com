@@ -32,7 +32,7 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Can it book on the doctor's calendar?',
+      name: "Can it book on the doctor's calendar?",
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Yes. Two slots. They pick.',
