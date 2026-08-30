@@ -3,18 +3,18 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
-import { getRelatedPosts, getRecentPosts, getPrevNextPosts } from '../../lib/blog'
+import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost } from '../../lib/blog'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
-  title: 'People miss conversations. Then they lose the lead. | PROXe',
+  title: 'What is PROXe? | PROXe',
   description:
-    'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
+    'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
   alternates: {
-    canonical: 'https://goproxe.com/blog/people-miss-conversations',
+    canonical: 'https://goproxe.com/blog/what-is-proxe',
   },
 }
 
@@ -24,57 +24,49 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'How fast should I reply to a WhatsApp lead?',
+      name: 'What is PROXe?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Inside five minutes. On WhatsApp, seconds is better. After thirty minutes you are usually second.',
+        text: 'An AI that answers, qualifies, books and follows up on every lead, on every channel, so you never miss a lead again.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Why do WhatsApp leads go cold overnight?',
+      name: 'Is PROXe a WhatsApp chatbot?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Because they messaged more than one business. The one that answered after hours kept the thread.',
+        text: 'No. WhatsApp is one channel. It also runs Instagram, the site, and calls, and it remembers all of them as one conversation.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What if I reply the next morning?',
+      name: 'How long to go live?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'You can still recover some. Most of the high-intent ones already booked.',
+        text: '48 hours.',
       },
     },
     {
       '@type': 'Question',
-      name: 'How do clinics handle WhatsApp during consults?',
+      name: 'Does it invent a price or a quote?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'They do not, if it lives on one phone. The inbox has to answer while the doctor is with a patient.',
+        text: 'No. It books the call or the visit and hands you the thread.',
       },
     },
     {
       '@type': 'Question',
-      name: 'How do academies handle parent chats after 9pm?',
+      name: 'What happens if they go silent?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Parents message after class/work/9pm; counsellor is off; by morning they booked the place that asked exam and batch.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How do brokers not miss site-visit chats after 7pm?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Same rule. First useful reply gets the visit. Paid leads die in unread chat.',
+        text: 'It follows up until they book, commit, or opt out.',
       },
     },
   ],
 }
 
-export default function BlogPostPage() {
-  const currentSlug = 'people-miss-conversations'
+export default function WhatIsProxePage() {
+  const currentSlug = 'what-is-proxe'
   const relatedPosts = getRelatedPosts(currentSlug, 3)
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
@@ -88,113 +80,62 @@ export default function BlogPostPage() {
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>People miss conversations. Then they lose the lead.</h1>
-          <p className={styles.updated}>August 25, 2026</p>
+          <h1 className={styles.title}>What is PROXe?</h1>
+          <p className={styles.updated}>August 30, 2026</p>
 
           <article className={styles.body}>
             <section className={styles.section}>
-              <p>Parents do not enquire at 10am because that is when your counsellor is free.</p>
-              <p>They enquire at 11pm. After the kid is in bed. After they have compared three institutes on Instagram. After they have already messaged two other numbers.</p>
-              <p>You see the chat at 8:40 the next morning. You type a polite reply.</p>
-              <p>They have already booked a counselling slot somewhere else.</p>
-              <p>This is the leak. Not the ad. Not the offer. The conversation you were not in.</p>
+              <p>PROXe is an AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.</p>
+              <p>That is the whole product. Not a chatbot you paste into WhatsApp. Not a CRM you have to open.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What clinics, coaches, and brokers are actually searching</h2>
-              <p>The searches are blunt.</p>
-              <p>missed WhatsApp leads</p>
-              <p>how fast should I reply on WhatsApp</p>
-              <p>after hours WhatsApp enquiry</p>
-              <p>parents message at night coaching</p>
-              <p>patients WhatsApp during consult</p>
-              <p>site visit lead no reply</p>
-              <p>first broker to reply</p>
-              <p>They are not searching for "AI transformation." They are searching because a chat sat there and the person on the other side left.</p>
+              <h2>The leak it is built for</h2>
+              <p>The lead messages while you are with someone else. You see it at 8am. They already booked the business that answered.</p>
+              <p>Clinics lose the new patient in consult. Coaches lose the parent who wrote after 9pm. Brokers lose the site visit they already paid for.</p>
+              <p>The ad did not fail. The conversation sat there.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>The five-minute window</h2>
-              <p>Industry research on lead response (MIT / InsideSales, cited across sales teams) is ugly and simple: reply inside five minutes and you are in the conversation. Wait thirty minutes and you are a callback they will ignore.</p>
-              <p>WhatsApp makes that worse. The person is already in the app. They sent the same message to two other businesses. The first useful reply gets the slot.</p>
-              <p>A next-morning reply is not late.</p>
-              <p>It is a different conversation. They have already decided.</p>
+              <h2>What it actually does</h2>
+              <p>1. Answers in seconds. Night, Sunday, peak hour.</p>
+              <p>2. Asks one useful question. Doctor. Exam. Area. Job type.</p>
+              <p>3. Books the slot in the same thread.</p>
+              <p>4. Follows up until they say yes or no.</p>
+              <p>5. Remembers the thread. They never repeat themselves.</p>
+              <p>WhatsApp, Instagram, the site, and calls write into one memory. You do the work. The inbox does not sit.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Clinic</h2>
-              <p>You are in consult. WhatsApp fills up. A new patient asked for a slot. You cannot type. They book the next clinic that answered.</p>
-              <p>The search behind that: "patients WhatsApp during consult" and "never miss an appointment lead."</p>
-              <p>The job is not a clever auto-reply. The job is: answer, qualify (new vs follow-up, which doctor, when), book, remind.</p>
-              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>.</p>
+              <h2>What it is not</h2>
+              <p>It is not a WhatsApp auto-reply. An auto-reply says "we will call you tomorrow." That tells them you are closed.</p>
+              <p>It is not a CRM. A CRM stores the lead after you already lost them.</p>
+              <p>It is not a bot you prompt yourself. We train it on your business and it is live in 48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Coaching academy</h2>
-              <p>Parents message after class. After work. After 9pm. Your counsellor is off. By morning the parent has a demo booked at the place that asked which exam and which batch.</p>
-              <p>The search: "coaching admission WhatsApp" and "parents message at night."</p>
-              <p>The job: answer, qualify (exam, class, locality), book counselling, follow up till they decide.</p>
-              <p>How PROXe does this for <a href="/industries/coaching">coaching</a>.</p>
+              <h2>Who it is for</h2>
+              <p>Businesses that already get inbound. WhatsApp. Instagram. The site. The phone. If the enquiry exists and you answer late, this is for you.</p>
+              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>, <a href="/industries/d2c">D2C</a>, and <a href="/industries/spa">spa</a>.</p>
+              <p>Talk to PROXe at <a href="/">goproxe.com</a>. Read about <a href="/blog/people-miss-conversations">why people miss conversations</a> in the first place.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Real estate</h2>
-              <p>You paid for the Meta lead. The site-visit chat lands while you are on another visit. You reply at 7pm. They are already with another broker.</p>
-              <p>The search: "site visit enquiry no reply" and "first reply wins."</p>
-              <p>The job: answer every channel, hold the conversation, book the visit, remind them the day before.</p>
-              <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
-              <p>How PROXe does this for <a href="/industries/wellness">wellness</a>.</p>
-              <p>How PROXe does this for <a href="/industries/professional-services">professional services</a>.</p>
-              <p>How PROXe does this for <a href="/industries/home-services">home services</a>.</p>
+              <h2>Questions people ask</h2>
+              <p><strong>What is PROXe?</strong></p>
+              <p>An AI that answers, qualifies, books and follows up on every lead, on every channel, so you never miss a lead again.</p>
+              <p><strong>Is PROXe a WhatsApp chatbot?</strong></p>
+              <p>No. WhatsApp is one channel. It also runs Instagram, the site, and calls, and it remembers all of them as one conversation.</p>
+              <p><strong>How long to go live?</strong></p>
+              <p>48 hours.</p>
+              <p><strong>Does it invent a price or a quote?</strong></p>
+              <p>No. It books the call or the visit and hands you the thread.</p>
+              <p><strong>What happens if they go silent?</strong></p>
+              <p>It follows up until they book, commit, or opt out.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What not to do</h2>
-              <p>A "we will call you tomorrow" greeting is not a conversation.</p>
-              <p>It tells them you are closed. They will find someone who is not.</p>
-              <p>Leaving the chat on a personal phone is not a system. The owner is in consult, in class, or on a site. The inbox does not care.</p>
-              <p>Stopping after two follow-ups is how quiet leads die. Most of them were comparing, not rejecting you.</p>
-            </section>
-
-            <section className={styles.section}>
-              <h2>What a real reply does</h2>
-              <p>1. Answers in seconds. Even at 11pm.</p>
-              <p>2. Asks one useful question. Exam. Doctor. Budget range. Area. Timeline.</p>
-              <p>3. Books the thing. Counselling, slot, site visit.</p>
-              <p>4. Follows up until they decide.</p>
-              <p>5. Remembers the thread. So the next message is not "hi, who is this?"</p>
-              <p>That is the whole product.</p>
-            </section>
-
-            <section className={styles.section}>
-              <h2>PROXe</h2>
-              <p>PROXe is the AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.</p>
-              <p>You keep working.</p>
-              <p>The conversation does not sit unread.</p>
-            </section>
-
-            <section className={styles.section}>
-              <h2>Questions people type into search (and the short answers)</h2>
-              <p><strong>How fast should I reply to a WhatsApp lead?</strong></p>
-              <p>Inside five minutes. On WhatsApp, seconds is better. After thirty minutes you are usually second.</p>
-              <p><strong>Why do WhatsApp leads go cold overnight?</strong></p>
-              <p>Because they messaged more than one business. The one that answered after hours kept the thread.</p>
-              <p><strong>What if I reply the next morning?</strong></p>
-              <p>You can still recover some. Most of the high-intent ones already booked.</p>
-              <p><strong>How do clinics handle WhatsApp during consults?</strong></p>
-              <p>They do not, if it lives on one phone. The inbox has to answer while the doctor is with a patient.</p>
-              <p><strong>How do brokers not miss site-visit chats?</strong></p>
-              <p>Same rule. First useful reply gets the visit. Paid leads die in unread chat.</p>
-            </section>
-
-            <section className={styles.section}>
-              <h2>If you only do one thing this week</h2>
-              <p>Open last night's WhatsApp.</p>
-              <p>Count the chats that sat more than an hour.</p>
-              <p>That number is not "pending."</p>
-              <p>It is conversations you were not in.</p>
-              <p>Talk to PROXe on the site when you want the inbox to stop leaking.</p>
-              <p><a href="https://goproxe.com">Talk to PROXe</a></p>
+              <p>Why people miss conversations is the leak. This page is the product. Talk to PROXe on <a href="/">the site</a>.</p>
             </section>
 
             {/* Related Posts */}
