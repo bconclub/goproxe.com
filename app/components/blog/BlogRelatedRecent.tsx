@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import type { BlogPost } from '../../lib/blog'
 import { calculateReadingTime } from '../../lib/blog'
