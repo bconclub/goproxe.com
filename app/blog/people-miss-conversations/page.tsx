@@ -206,23 +206,7 @@ export default function BlogPostPage() {
                     <Link
                       key={post.slug}
                       href={`/blog/${post.slug}`}
-                      style={{
-                        display: 'block',
-                        padding: '16px',
-                        background: 'rgba(124, 58, 237, 0.08)',
-                        border: '1px solid rgba(196, 181, 253, 0.2)',
-                        borderRadius: '12px',
-                        textDecoration: 'none',
-                        transition: 'all 0.2s',
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.4)'
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.12)'
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.2)'
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.08)'
-                      }}
+                      className={styles.relatedCard}
                     >
                       <h3
                         style={{
@@ -253,23 +237,7 @@ export default function BlogPostPage() {
                     <Link
                       key={post.slug}
                       href={`/blog/${post.slug}`}
-                      style={{
-                        display: 'block',
-                        padding: '16px',
-                        background: 'rgba(124, 58, 237, 0.08)',
-                        border: '1px solid rgba(196, 181, 253, 0.2)',
-                        borderRadius: '12px',
-                        textDecoration: 'none',
-                        transition: 'all 0.2s',
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.4)'
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.12)'
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(196, 181, 253, 0.2)'
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.08)'
-                      }}
+                      className={styles.recentCard}
                     >
                       <h3
                         style={{
@@ -305,21 +273,7 @@ export default function BlogPostPage() {
                 {prev ? (
                   <Link
                     href={`/blog/${prev.slug}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      color: '#c4b5fd',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.color = '#ede9fe'
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.color = '#c4b5fd'
-                    }}
+                    className={styles.prevNextLink}
                   >
                     <FiArrowLeft size={16} />
                     <span>{prev.title}</span>
@@ -330,21 +284,7 @@ export default function BlogPostPage() {
                 {next && (
                   <Link
                     href={`/blog/${next.slug}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      color: '#c4b5fd',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.color = '#ede9fe'
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.color = '#c4b5fd'
-                    }}
+                    className={styles.prevNextLink}
                   >
                     <span>{next.title}</span>
                     <FiArrowRight size={16} />
