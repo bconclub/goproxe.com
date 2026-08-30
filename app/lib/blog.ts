@@ -47,6 +47,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'how-fast-to-reply-whatsapp',
+    title: 'How fast should you reply to a WhatsApp lead',
+    dek: 'First useful reply gets the slot. Thanks, we will call you, is not a reply.',
+    date: '2026-08-30',
+    thumbnail: '/home/Conversations.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
