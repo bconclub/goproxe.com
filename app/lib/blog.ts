@@ -96,6 +96,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'professional-services-with-a-client',
+    title: 'They WhatsApped while you were with a client. The firm that answered got the brief.',
+    dek: 'CA, lawyer, consultant inbound dies in the meeting. Answer, qualify, book the consult. Do not wait until you hang up.',
+    date: '2026-09-01',
+    thumbnail: '/home/Conversations.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
