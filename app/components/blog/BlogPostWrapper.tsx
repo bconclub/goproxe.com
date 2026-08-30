@@ -57,7 +57,7 @@ export function BlogPostWrapper({
     },
     publisher: {
       '@type': 'Organization',
-      name: 'BCON',
+      name: 'PROXe',
     },
     image: `https://goproxe.com${post?.thumbnail}`,
     wordCount: post?.wordCount,
