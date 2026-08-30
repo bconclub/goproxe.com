@@ -1,0 +1,22 @@
+.hero {
+  width: 100%;
+  margin: 0 0 32px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(20, 13, 48, 0.4);
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  display: block;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    margin: 0 0 24px;
+    border-radius: 12px;
+  }
+}

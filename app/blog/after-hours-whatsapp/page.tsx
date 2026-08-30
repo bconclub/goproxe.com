@@ -1,15 +1,6 @@
-import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
-import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
-import { BlogShareRail } from '../../components/blog/BlogShareRail'
-import { BlogToc } from '../../components/blog/BlogToc'
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
-const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
-const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
   title: 'After-hours WhatsApp is how you lose the lead | PROXe',
@@ -18,7 +9,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://goproxe.com/blog/after-hours-whatsapp',
   },
+  openGraph: {
+    images: ['/blog/after-hours-whatsapp.png'],
+  },
 }
+
+const articleContent = `They wrote at 11pm. You sent the green tick: thanks, we are closed, we will call tomorrow. They did not want a receipt. They wanted Tuesday at 4. The clinic that stayed in the thread got Tuesday. An away message is not an answer. It is a polite way to lose.
+
+What people run. Business hours on the WhatsApp profile. A greeting. A team will get back. Sometimes a bot that dumps timings and a PDF. That is the default. Chatbot vendors sell it. CRMs log it. The slot still goes to whoever replied.
+
+What after-hours should do. Answer on the number they used. Ask the two questions that qualify (what, when, who). Offer two slots. Book one. Remember the thread for morning. Your counsellor walks in to a calendar, not a pile of we'll call you.`
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -68,12 +68,7 @@ const faqSchema = {
 }
 
 export default function AfterHoursWhatsAppPage() {
-  const currentSlug = 'after-hours-whatsapp'
-  const post = getBlogPost(currentSlug)
-  const relatedPosts = getRelatedPosts(currentSlug, 3)
-  const recentPosts = getRecentPosts(currentSlug, 3)
-  const { prev, next } = getPrevNextPosts(currentSlug)
-
+  const slug = 'after-hours-whatsapp'
   const pageUrl = 'https://goproxe.com/blog/after-hours-whatsapp'
   const pageTitle = 'After-hours WhatsApp is how you lose the lead'
 
@@ -85,20 +80,14 @@ export default function AfterHoursWhatsAppPage() {
   ]
 
   return (
-    <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <BlogShareRail url={pageUrl} title={pageTitle} />
-      <main className={styles.page}>
-        <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
-          <h1 className={styles.title}>After-hours WhatsApp is how you lose the lead</h1>
-          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
-
-          <article className={styles.body}>
-            <BlogToc items={tocItems} />
+    <BlogPostWrapper
+      slug={slug}
+      title={pageTitle}
+      pageUrl={pageUrl}
+      tocItems={tocItems}
+      articleContent={articleContent}
+      jsonLdSchemas={[faqSchema]}
+    >
             <section className={styles.section}>
               <p>They wrote at 11pm. You sent the green tick: thanks, we are closed, we will call tomorrow.</p>
               <p>They did not want a receipt. They wanted Tuesday at 4. The clinic that stayed in the thread got Tuesday.</p>
@@ -142,116 +131,8 @@ export default function AfterHoursWhatsAppPage() {
             </section>
 
             <section className={styles.section}>
-              <p>After hours they still want a slot. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>Turn on the desk. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
-
-            {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <section className={styles.section} style={{ marginTop: '48px' }}>
-                <h2>Related</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {relatedPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <section className={styles.section}>
-                <h2>Recent</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {recentPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <div
-                style={{
-                  marginTop: '48px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {prev ? (
-                  <Link
-                    href={`/blog/${prev.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <FiArrowLeft size={16} />
-                    <span>{prev.title}</span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next && (
-                  <Link
-                    href={`/blog/${next.slug}`}
-                    className={styles.prevNextLink}
-                  >
-                    <span>{next.title}</span>
-                    <FiArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className={styles.footer}>
-              <a href="/blog" className={styles.backLink}>
-                <FiArrowLeft size={14} /> Back to blog
-              </a>
-              <span className={styles.brand}>
-                <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
-              </span>
-            </div>
-          </article>
-        </div>
-      </main>
-    </div>
+    </BlogPostWrapper>
   )
 }

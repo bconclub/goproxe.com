@@ -3,12 +3,16 @@
  * Drives the /blog index, sitemap, and post chrome (related/recent/prev/next).
  */
 
+export type Trade = 'healthcare' | 'coaching' | 'realestate' | 'wellness' | 'home-services' | 'professional' | 'product';
+
 export type BlogPost = {
   slug: string;
   title: string;
   dek: string;
   date: string; // YYYY-MM-DD
-  thumbnail: string; // path to image
+  thumbnail: string; // path to 1200x630 hero image
+  trade: Trade;
+  wordCount?: number; // for min read calculation
 };
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -17,91 +21,117 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'People miss conversations. Then they lose the lead.',
     dek: 'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
     date: '2026-07-21',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/people-miss-conversations.png',
+    trade: 'product',
+    wordCount: 520,
   },
   {
     slug: 'what-is-proxe',
     title: 'What is PROXe?',
     dek: 'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
     date: '2026-07-23',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/what-is-proxe.png',
+    trade: 'product',
+    wordCount: 480,
   },
   {
     slug: 'crm-wont-answer',
     title: 'Your CRM will not answer that WhatsApp',
     dek: 'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
     date: '2026-07-28',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/crm-wont-answer.png',
+    trade: 'product',
+    wordCount: 450,
   },
   {
     slug: 'not-a-whatsapp-bot',
     title: 'PROXe is not a WhatsApp chatbot',
     dek: 'A chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
     date: '2026-07-30',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/not-a-whatsapp-bot.png',
+    trade: 'product',
+    wordCount: 430,
   },
   {
     slug: 'after-hours-whatsapp',
     title: 'After-hours WhatsApp is how you lose the lead',
     dek: 'They wrote at 11pm. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
     date: '2026-08-04',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/after-hours-whatsapp.png',
+    trade: 'product',
+    wordCount: 410,
   },
   {
     slug: 'how-fast-to-reply-whatsapp',
     title: 'How fast should you reply to a WhatsApp lead',
     dek: 'First useful reply gets the slot. Thanks, we will call you, is not a reply.',
     date: '2026-08-06',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/how-fast-to-reply-whatsapp.png',
+    trade: 'product',
+    wordCount: 470,
   },
   {
     slug: 'one-memory-every-channel',
     title: 'One lead, four channels, one memory',
     dek: 'WhatsApp Monday. Instagram Thursday. Site Saturday. Call later. Same person. They should never repeat themselves.',
     date: '2026-08-11',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/one-memory-every-channel.png',
+    trade: 'product',
+    wordCount: 490,
   },
   {
     slug: 'clinics-whatsapp-during-consult',
     title: 'They WhatsApped while you were in consult. The clinic that answered got the patient.',
     dek: 'Clinic inbound dies in the chair, at night, and on the missed call. Answer, qualify, book. Do not wait until the next gap.',
     date: '2026-08-13',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/clinics-whatsapp-during-consult.png',
+    trade: 'healthcare',
+    wordCount: 540,
   },
   {
     slug: 'coaching-parents-at-night',
     title: 'The parent messaged at 9pm. The institute that answered got the admission.',
     dek: 'Coaching inbound dies after class and after 7pm. Answer, qualify the exam, book the counselling. Do not wait until morning.',
     date: '2026-08-18',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/coaching-parents-at-night.png',
+    trade: 'coaching',
+    wordCount: 530,
   },
   {
     slug: 'paid-lead-no-reply',
     title: 'You paid for the lead. Then you answered tomorrow.',
     dek: 'Broker inbound dies on a personal WhatsApp. Site visit goes to whoever replied. Answer, qualify, book. Do not wait until the next listing.',
     date: '2026-08-20',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/paid-lead-no-reply.png',
+    trade: 'realestate',
+    wordCount: 510,
   },
   {
     slug: 'wellness-after-hours',
     title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
     dek: 'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
     date: '2026-08-25',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/wellness-after-hours.png',
+    trade: 'wellness',
+    wordCount: 500,
   },
   {
     slug: 'home-services-on-a-job',
     title: 'They called while you were on a job. The crew that answered got the work.',
     dek: 'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
     date: '2026-08-27',
-    thumbnail: '/home/Leads.webp',
+    thumbnail: '/blog/home-services-on-a-job.png',
+    trade: 'home-services',
+    wordCount: 520,
   },
   {
     slug: 'professional-services-with-a-client',
     title: 'They WhatsApped while you were with a client. The firm that answered got the brief.',
     dek: 'CA, lawyer, consultant inbound dies in the meeting. Answer, qualify, book the consult. Do not wait until you hang up.',
     date: '2026-09-01',
-    thumbnail: '/home/Conversations.webp',
+    thumbnail: '/blog/professional-services-with-a-client.png',
+    trade: 'professional',
+    wordCount: 485,
   },
 ];
 
@@ -157,4 +187,37 @@ export function formatBlogDate(dateStr: string): string {
     month: 'long',
     day: 'numeric',
   });
+}
+
+/**
+ * Calculate reading time in minutes from word count (200 words/min, ceil).
+ */
+export function calculateReadingTime(wordCount: number): number {
+  return Math.ceil(wordCount / 200);
+}
+
+/**
+ * Get trade display label.
+ */
+export function getTradeLabel(trade: Trade): string {
+  const labels: Record<Trade, string> = {
+    healthcare: 'Healthcare',
+    coaching: 'Coaching',
+    realestate: 'Real estate',
+    wellness: 'Wellness',
+    'home-services': 'Home services',
+    professional: 'Professional',
+    product: 'Product',
+  };
+  return labels[trade];
+}
+
+/**
+ * Filter posts by trade. Returns all posts if trade is 'all'.
+ */
+export function filterPostsByTrade(trade: Trade | 'all'): BlogPost[] {
+  if (trade === 'all') {
+    return [...BLOG_POSTS].sort((a, b) => b.date.localeCompare(a.date));
+  }
+  return BLOG_POSTS.filter((p) => p.trade === trade).sort((a, b) => b.date.localeCompare(a.date));
 }
