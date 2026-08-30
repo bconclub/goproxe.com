@@ -54,6 +54,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Conversations.webp',
   },
+  {
+    slug: 'one-memory-every-channel',
+    title: 'One lead, four channels, one memory',
+    dek: 'WhatsApp Monday. Instagram Thursday. Site Saturday. Call later. Same person. They should never repeat themselves.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
