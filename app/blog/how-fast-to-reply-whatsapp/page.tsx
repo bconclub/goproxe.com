@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,24 @@ export default function HowFastToReplyWhatsAppPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/how-fast-to-reply-whatsapp'
+  const pageTitle = 'How fast should you reply to a WhatsApp lead'
+
+  const tocItems = [
+    { id: 'what-actually-happens', text: 'What actually happens' },
+    { id: 'what-useful-means', text: 'What useful means' },
+    { id: 'what-not-to-do', text: 'What not to do' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,32 +91,33 @@ export default function HowFastToReplyWhatsAppPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>They sent one line at 9:12pm. You replied at 10am. They booked at 9:14 with whoever wrote back.</p>
               <p>People ask how fast. Fast is not a green tick. Fast is a useful reply: answer, qualify, two slots.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What actually happens</h2>
+              <h2 id="what-actually-happens">What actually happens</h2>
               <p>The message lands while you are in a consult, a class, a site visit. An away message thanks them. A bot dumps the brochure. Morning you call. They already chose.</p>
               <p>Parents message five institutes. Patients message two clinics. Buyers tap three brokers. The first useful reply wins.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What useful means</h2>
+              <h2 id="what-useful-means">What useful means</h2>
               <p>Not "hi, thanks for messaging us." Not "we will call you tomorrow."</p>
               <p>Ask the one question that qualifies. Offer Tuesday or Wednesday. Book it in the thread.</p>
               <p>Seconds, not hours. Night and Sunday count.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What not to do</h2>
+              <h2 id="what-not-to-do">What not to do</h2>
               <p>Do not quote a 5-minute rule as if it were your number. Old lead-response studies are not WhatsApp India, and they are not ours. The job is still the same: first useful reply gets the work.</p>
               <p>A CRM row at 10am is not a reply. A chatbot greeting is not a reply.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound and still answer when they are free. Free is too late.</p>
             </section>
 
@@ -115,7 +130,7 @@ export default function HowFastToReplyWhatsAppPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>How fast is fast?</strong></p>
               <p>In the thread, in seconds, with a slot. Not a receipt.</p>
               <p><strong>Do I need someone on the phone at 11pm?</strong></p>

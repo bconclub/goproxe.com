@@ -1,0 +1,77 @@
+.shareRail {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .shareRail {
+    display: block;
+    position: fixed;
+    left: max(20px, calc((100vw - 1160px) / 2 - 80px));
+    top: 200px;
+  }
+
+  .shareRailInner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 200px;
+  }
+
+  .shareButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(124, 58, 237, 0.12);
+    border: 1px solid rgba(196, 181, 253, 0.2);
+    color: rgba(196, 181, 253, 0.85);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .shareButton:hover {
+    background: rgba(124, 58, 237, 0.2);
+    border-color: rgba(196, 181, 253, 0.4);
+    color: #ede9fe;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 1199px) {
+  .shareRail {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+  }
+
+  .shareRailInner {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .shareButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(124, 58, 237, 0.12);
+    border: 1px solid rgba(196, 181, 253, 0.2);
+    color: rgba(196, 181, 253, 0.85);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .shareButton:hover {
+    background: rgba(124, 58, 237, 0.2);
+    border-color: rgba(196, 181, 253, 0.4);
+    color: #ede9fe;
+  }
+}

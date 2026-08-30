@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,23 @@ export default function HomeServicesOnAJobPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/home-services-on-a-job'
+  const pageTitle = 'They called while you were on a job. The crew that answered got the work.'
+
+  const tocItems = [
+    { id: 'what-crews-actually-run', text: 'What crews actually run' },
+    { id: 'what-to-do-instead', text: 'What to do instead' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +90,7 @@ export default function HomeServicesOnAJobPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>The AC died at 2pm. They WhatsApped. You were on a roof. You replied at 7. They already booked the crew that asked address and slot at 2:04.</p>
               <p>Night is the same leak. 10pm. You see it at 8am. Gone.</p>
@@ -84,19 +98,19 @@ export default function HomeServicesOnAJobPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What crews actually run</h2>
+              <h2 id="what-crews-actually-run">What crews actually run</h2>
               <p>Personal phone. JustDial, the site, Instagram, the missed call. Four inboxes. No memory. Quote sent, never followed.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What to do instead</h2>
+              <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer on the channel they used. Same person. One memory.</p>
               <p>Qualify: address, job type, when. Offer two slots. Book tomorrow&apos;s first if it is night. Do not invent a quote.</p>
               <p>You finish the current job. The next one is already on the calendar.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Home-service crews that already get inbound and still answer when they park. Parking is too late.</p>
             </section>
 
@@ -109,7 +123,7 @@ export default function HomeServicesOnAJobPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Does it replace the technician?</strong></p>
               <p>No. It does the reply while you are on the job. You do the work.</p>
               <p><strong>Will it quote a price?</strong></p>

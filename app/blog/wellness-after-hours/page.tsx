@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,23 @@ export default function WellnessAfterHoursPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/wellness-after-hours'
+  const pageTitle = 'They wanted 7pm. You replied at 10am. The other studio got the booking.'
+
+  const tocItems = [
+    { id: 'what-wellness-desks-run', text: 'What wellness desks run' },
+    { id: 'what-to-do-instead', text: 'What to do instead' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +90,7 @@ export default function WellnessAfterHoursPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>They wrote at 8:40pm. Trial tomorrow. First class.</p>
               <p>Reception left at 8. Greeting said closed. Morning you called. They had already booked the studio that offered 7pm or 8pm at 8:41.</p>
@@ -84,20 +98,20 @@ export default function WellnessAfterHoursPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What wellness desks run</h2>
+              <h2 id="what-wellness-desks-run">What wellness desks run</h2>
               <p>A personal phone at the desk. A greeting. A brochure of packages. Instagram DMs on someone else&apos;s phone.</p>
               <p>Gym, spa, yoga: same pattern. They want a slot tonight or first thing. "We will call you tomorrow" is how they pick the other place.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What to do instead</h2>
+              <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer on WhatsApp, Instagram, the site, the missed call. Same person. One memory.</p>
               <p>Qualify: trial or member, which service, when. Offer two slots. Book it. Do not invent a package price.</p>
               <p>Morning you walk into a booked trial, not a pile of last night&apos;s greets.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Studios that already get inbound after 7pm and still treat it as tomorrow&apos;s work. Tomorrow is too late.</p>
             </section>
 
@@ -110,7 +124,7 @@ export default function WellnessAfterHoursPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Does it replace the trainer or therapist?</strong></p>
               <p>No. It does the 9pm reply. You do the session.</p>
               <p><strong>Will it quote a package?</strong></p>

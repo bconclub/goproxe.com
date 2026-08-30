@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -64,12 +66,25 @@ export default function CrmWontAnswerPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/crm-wont-answer'
+  const pageTitle = 'Your CRM will not answer that WhatsApp'
+
+  const tocItems = [
+    { id: 'what-people-actually-do', text: 'What people actually do' },
+    { id: 'what-a-crm-is-for', text: 'What a CRM is for' },
+    { id: 'what-it-will-not-do', text: 'What it will not do' },
+    { id: 'how-you-should-manage-a-lead', text: 'How you should manage a lead' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -77,6 +92,7 @@ export default function CrmWontAnswerPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>They messaged at 9:12pm. Your CRM made a row. Name, number, source. Status: New.</p>
               <p>Nobody answered. At 9:18 they booked the clinic that wrote back.</p>
@@ -84,7 +100,7 @@ export default function CrmWontAnswerPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What people actually do</h2>
+              <h2 id="what-people-actually-do">What people actually do</h2>
               <p>Most Indian clinics, coaching desks, and brokers run some mix of three things.</p>
               <p>A personal phone. The counsellor's WhatsApp. When they leave, the thread leaves with them.</p>
               <p>A shared inbox. Everyone sees everything. Nobody owns the 11pm message.</p>
@@ -93,13 +109,13 @@ export default function CrmWontAnswerPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What a CRM is for</h2>
+              <h2 id="what-a-crm-is-for">What a CRM is for</h2>
               <p>A CRM is a record. Pipeline. Who owns the lead. What stage. What you last logged. Reports for the owner.</p>
               <p>That work is real. It is not the first 30 seconds. It is not the 9pm WhatsApp. It is not the Instagram comment that became a site form that became a missed call.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What it will not do</h2>
+              <h2 id="what-it-will-not-do">What it will not do</h2>
               <p>It will not answer in seconds when the counsellor is in a consult.</p>
               <p>It will not ask the two questions that qualify the job, then offer two slots.</p>
               <p>It will not book the calendar.</p>
@@ -109,7 +125,7 @@ export default function CrmWontAnswerPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>How you should manage a lead</h2>
+              <h2 id="how-you-should-manage-a-lead">How you should manage a lead</h2>
               <p>Treat the inbound as a conversation, not a row.</p>
               <p>Answer on the channel they used. WhatsApp, Instagram, the site, the call. Same person. One memory.</p>
               <p>Qualify in the thread. Book a slot. Follow up until yes or no. Log the outcome after, if you still want a CRM.</p>
@@ -117,14 +133,14 @@ export default function CrmWontAnswerPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound and already have a board. Excel, Zoho, LeadSquared. The board is not the leak. The unanswered chat is.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Is PROXe a CRM?</strong></p>
               <p>No. PROXe answers, qualifies, books, and follows up. Your CRM can still hold the file.</p>
               <p><strong>Can I keep LeadSquared or Zoho?</strong></p>

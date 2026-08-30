@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -80,12 +82,29 @@ export default function BlogPostPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/people-miss-conversations'
+  const pageTitle = 'People miss conversations. Then they lose the lead.'
+
+  const tocItems = [
+    { id: 'what-clinics-coaches-and-brokers-are-actually-searching', text: 'What clinics, coaches, and brokers are actually searching' },
+    { id: 'the-five-minute-window', text: 'The five-minute window' },
+    { id: 'clinic', text: 'Clinic' },
+    { id: 'coaching-academy', text: 'Coaching academy' },
+    { id: 'real-estate', text: 'Real estate' },
+    { id: 'what-not-to-do', text: 'What not to do' },
+    { id: 'what-a-real-reply-does', text: 'What a real reply does' },
+    { id: 'proxe', text: 'PROXe' },
+    { id: 'questions-people-type-into-search-and-the-short-answers', text: 'Questions people type into search (and the short answers)' },
+    { id: 'if-you-only-do-one-thing-this-week', text: 'If you only do one thing this week' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -93,6 +112,7 @@ export default function BlogPostPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>Parents do not enquire at 10am because that is when your counsellor is free.</p>
               <p>They enquire at 11pm. After the kid is in bed. After they have compared three institutes on Instagram. After they have already messaged two other numbers.</p>
@@ -102,7 +122,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What clinics, coaches, and brokers are actually searching</h2>
+              <h2 id="what-clinics-coaches-and-brokers-are-actually-searching">What clinics, coaches, and brokers are actually searching</h2>
               <p>The searches are blunt.</p>
               <p>missed WhatsApp leads</p>
               <p>how fast should I reply on WhatsApp</p>
@@ -115,7 +135,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>The five-minute window</h2>
+              <h2 id="the-five-minute-window">The five-minute window</h2>
               <p>Industry research on lead response (MIT / InsideSales, cited across sales teams) is ugly and simple: reply inside five minutes and you are in the conversation. Wait thirty minutes and you are a callback they will ignore.</p>
               <p>WhatsApp makes that worse. The person is already in the app. They sent the same message to two other businesses. The first useful reply gets the slot.</p>
               <p>A next-morning reply is not late.</p>
@@ -123,7 +143,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Clinic</h2>
+              <h2 id="clinic">Clinic</h2>
               <p>You are in consult. WhatsApp fills up. A new patient asked for a slot. You cannot type. They book the next clinic that answered.</p>
               <p>The search behind that: "patients WhatsApp during consult" and "never miss an appointment lead."</p>
               <p>The job is not a clever auto-reply. The job is: answer, qualify (new vs follow-up, which doctor, when), book, remind.</p>
@@ -131,7 +151,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Coaching academy</h2>
+              <h2 id="coaching-academy">Coaching academy</h2>
               <p>Parents message after class. After work. After 9pm. Your counsellor is off. By morning the parent has a demo booked at the place that asked which exam and which batch.</p>
               <p>The search: "coaching admission WhatsApp" and "parents message at night."</p>
               <p>The job: answer, qualify (exam, class, locality), book counselling, follow up till they decide.</p>
@@ -139,7 +159,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Real estate</h2>
+              <h2 id="real-estate">Real estate</h2>
               <p>You paid for the Meta lead. The site-visit chat lands while you are on another visit. You reply at 7pm. They are already with another broker.</p>
               <p>The search: "site visit enquiry no reply" and "first reply wins."</p>
               <p>The job: answer every channel, hold the conversation, book the visit, remind them the day before.</p>
@@ -150,7 +170,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What not to do</h2>
+              <h2 id="what-not-to-do">What not to do</h2>
               <p>A "we will call you tomorrow" greeting is not a conversation.</p>
               <p>It tells them you are closed. They will find someone who is not.</p>
               <p>Leaving the chat on a personal phone is not a system. The owner is in consult, in class, or on a site. The inbox does not care.</p>
@@ -158,7 +178,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What a real reply does</h2>
+              <h2 id="what-a-real-reply-does">What a real reply does</h2>
               <p>1. Answers in seconds. Even at 11pm.</p>
               <p>2. Asks one useful question. Exam. Doctor. Budget range. Area. Timeline.</p>
               <p>3. Books the thing. Counselling, slot, site visit.</p>
@@ -168,14 +188,14 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>PROXe</h2>
+              <h2 id="proxe">PROXe</h2>
               <p>PROXe is the AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.</p>
               <p>You keep working.</p>
               <p>The conversation does not sit unread.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people type into search (and the short answers)</h2>
+              <h2 id="questions-people-type-into-search-and-the-short-answers">Questions people type into search (and the short answers)</h2>
               <p><strong>How fast should I reply to a WhatsApp lead?</strong></p>
               <p>Inside five minutes. On WhatsApp, seconds is better. After thirty minutes you are usually second.</p>
               <p><strong>Why do WhatsApp leads go cold overnight?</strong></p>
@@ -189,7 +209,7 @@ export default function BlogPostPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>If you only do one thing this week</h2>
+              <h2 id="if-you-only-do-one-thing-this-week">If you only do one thing this week</h2>
               <p>Open last night's WhatsApp.</p>
               <p>Count the chats that sat more than an hour.</p>
               <p>That number is not "pending."</p>

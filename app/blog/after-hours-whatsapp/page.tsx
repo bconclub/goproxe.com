@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getRelatedPosts, getRecentPosts, getPrevNextPosts, getBlogPost, formatBlogDate } from '../../lib/blog'
+import { BlogShareRail } from '../../components/blog/BlogShareRail'
+import { BlogToc } from '../../components/blog/BlogToc'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -72,12 +74,23 @@ export default function AfterHoursWhatsAppPage() {
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
 
+  const pageUrl = 'https://goproxe.com/blog/after-hours-whatsapp'
+  const pageTitle = 'After-hours WhatsApp is how you lose the lead'
+
+  const tocItems = [
+    { id: 'what-people-run', text: 'What people run' },
+    { id: 'what-after-hours-should-do', text: 'What after-hours should do' },
+    { id: 'who-this-is-for', text: 'Who this is for' },
+    { id: 'questions-people-ask', text: 'Questions people ask' },
+  ]
+
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <BlogShareRail url={pageUrl} title={pageTitle} />
       <main className={styles.page}>
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
@@ -85,6 +98,7 @@ export default function AfterHoursWhatsAppPage() {
           <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
+            <BlogToc items={tocItems} />
             <section className={styles.section}>
               <p>They wrote at 11pm. You sent the green tick: thanks, we are closed, we will call tomorrow.</p>
               <p>They did not want a receipt. They wanted Tuesday at 4. The clinic that stayed in the thread got Tuesday.</p>
@@ -92,13 +106,13 @@ export default function AfterHoursWhatsAppPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>What people run</h2>
+              <h2 id="what-people-run">What people run</h2>
               <p>Business hours on the WhatsApp profile. A greeting. A "team will get back." Sometimes a bot that dumps timings and a PDF.</p>
               <p>That is the default. Chatbot vendors sell it. CRMs log it. The slot still goes to whoever replied.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>What after-hours should do</h2>
+              <h2 id="what-after-hours-should-do">What after-hours should do</h2>
               <p>Answer on the number they used.</p>
               <p>Ask the two questions that qualify (what, when, who).</p>
               <p>Offer two slots. Book one. Remember the thread for morning.</p>
@@ -107,14 +121,14 @@ export default function AfterHoursWhatsAppPage() {
             </section>
 
             <section className={styles.section}>
-              <h2>Who this is for</h2>
+              <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound after 7pm and treat it as tomorrow's work. Tomorrow is too late.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>.</p>
             </section>
 
             <section className={styles.section}>
-              <h2>Questions people ask</h2>
+              <h2 id="questions-people-ask">Questions people ask</h2>
               <p><strong>Do I turn off the away message?</strong></p>
               <p>Replace it. Closed is a fact. Unanswered is a choice.</p>
               <p><strong>Will it book while I sleep?</strong></p>
