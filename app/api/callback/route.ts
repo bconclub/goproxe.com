@@ -136,24 +136,13 @@ export async function POST(request: Request) {
   const now = Date.now()
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
 
-  // QUIET HOURS. This route dials the instant a number arrives, and it never
-  // looked at the clock: PROXe rang a lead at 12:13 AM and talked for four
-  // minutes. Speed is the pitch, but not at midnight.
-  //
-  // Refused AND SCHEDULED. A callback promised for 9 AM and silently never
-  // placed is worse than an honest "we will ring you in the morning". The
-  // scheduled_callback_at timestamp is written to the lead so the cron job
-  // can find and dial these when the time comes.
-  if (isQuiet(new Date(now))) {
-    const callAfter = nextOpenLabel(new Date(now))
-    const callAfterTime = nextOpenTime(new Date(now))
-    console.log('[api/callback] suppressed, quiet hours', { callAfter })
-    
-    // Schedule the callback for when quiet hours end
-    await scheduleCallback({ phone, scheduledFor: callAfterTime })
-    
-    return NextResponse.json({ ok: false, reason: 'quiet_hours', callAfter })
-  }
+  // VISITOR-INITIATED CALLS ARE EXEMPT FROM QUIET HOURS. Z, 31 Aug 2026:
+  // "the rule was given only for OUTBOUND calls, not for people who are
+  // trying to call us. If they put their number at this point in time, they
+  // can talk." Someone typing their number at 1 AM is awake, at their phone,
+  // asking - by 9 AM they have cooled. The 8 PM-9 AM wall stays absolute for
+  // everything PROACTIVE (crons, scheduled retries, sequences); this route is
+  // the person knocking, and we answer.
 
   // The 24h phone limit is answered from the DATABASE, not the Map below.
   // The Map is per-process: every deploy and every pm2 restart emptied it, so
