@@ -8,6 +8,7 @@ import { BlogToc } from './BlogToc'
 import { BlogHero } from './BlogHero'
 import { BlogMeta } from './BlogMeta'
 import { BlogListen } from './BlogListen'
+import { BlogRelatedRecent } from './BlogRelatedRecent'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -107,7 +108,7 @@ export function BlogPostWrapper({
           <h1 className={styles.title}>{title}</h1>
 
           <BlogHero
-            src={post?.thumbnail || `/blog/${slug}.png`}
+            src={post?.thumbnail || '/home/Leads.webp'}
             alt={title}
           />
 
@@ -125,66 +126,11 @@ export function BlogPostWrapper({
             {children}
 
             {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <section className={styles.section} style={{ marginTop: '48px' }}>
-                <h2>Related</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {relatedPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={relatedPosts} title="Related" cardClassName={styles.relatedCard} />
 
             {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <section className={styles.section}>
-                <h2>Recent</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {recentPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentCard}
-                    >
-                      <h3
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '18px',
-                          fontWeight: 400,
-                          margin: '0 0 6px',
-                          color: '#ede9fe',
-                        }}
-                      >
-                        {post.title}
-                      </h3>
-                      <p style={{ fontSize: '14px', color: 'rgba(220, 215, 245, 0.75)', margin: 0 }}>
-                        {post.dek}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <BlogRelatedRecent posts={recentPosts} title="Recent" cardClassName={styles.recentCard} />
+
 
             {/* Prev/Next Navigation */}
             {(prev || next) && (

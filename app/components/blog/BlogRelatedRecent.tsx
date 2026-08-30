@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { BlogPost } from '../../lib/blog'
+import { calculateReadingTime } from '../../lib/blog'
 import styles from '../../styles/legal.module.css'
 
 interface BlogRelatedRecentProps {
@@ -22,7 +23,13 @@ export function BlogRelatedRecent({ posts, title, cardClassName }: BlogRelatedRe
             month: 'long',
             day: 'numeric',
           })
-          const readTime = '3 min read'
+          const readTime = post.wordCount ? calculateReadingTime(post.wordCount) : 3
+          
+          // Determine fallback image based on thumbnail
+          const fallbackImage = post.thumbnail.includes('Conversations') 
+            ? '/home/Conversations.webp' 
+            : '/home/Leads.webp'
+          
           return (
             <Link
               key={post.slug}
@@ -34,15 +41,17 @@ export function BlogRelatedRecent({ posts, title, cardClassName }: BlogRelatedRe
                 src={post.thumbnail}
                 alt=""
                 style={{
-                  width: '120px',
-                  height: '90px',
+                  width: '160px',
+                  height: '120px',
                   objectFit: 'cover',
                   borderRadius: '8px',
                   flexShrink: 0,
                 }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
-                  target.style.display = 'none'
+                  if (target.src !== fallbackImage) {
+                    target.src = fallbackImage
+                  }
                 }}
               />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -77,7 +86,7 @@ export function BlogRelatedRecent({ posts, title, cardClassName }: BlogRelatedRe
                     margin: 0,
                   }}
                 >
-                  {formattedDate} · {readTime}
+                  {formattedDate} · {readTime} min read
                 </p>
               </div>
             </Link>
