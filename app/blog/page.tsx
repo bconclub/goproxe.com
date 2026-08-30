@@ -1,7 +1,7 @@
 import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BLOG_POSTS } from '../lib/blog'
+import { BlogHub } from '../components/blog/BlogHub'
 import styles from '../styles/legal.module.css'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
@@ -17,8 +17,6 @@ export const metadata: Metadata = {
 }
 
 export default function BlogIndexPage() {
-  const sortedPosts = [...BLOG_POSTS].sort((a, b) => b.date.localeCompare(a.date))
-
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
       <main className={styles.page}>
@@ -29,75 +27,11 @@ export default function BlogIndexPage() {
             How businesses miss conversations, lose leads, and what to do about it.
           </p>
 
-          <div style={{ marginTop: '48px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            {sortedPosts.map((post) => {
-              const dateObj = new Date(post.date)
-              const formattedDate = dateObj.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-
-              return (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className={styles.blogCard}
-                >
-                  <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                    <img
-                      src={post.thumbnail}
-                      alt={post.title}
-                      style={{
-                        width: '160px',
-                        height: '120px',
-                        objectFit: 'cover',
-                        borderRadius: '12px',
-                        flexShrink: 0,
-                      }}
-                    />
-                    <div style={{ flex: 1, minWidth: '240px' }}>
-                      <h2
-                        style={{
-                          fontFamily: 'var(--font-proxe-heading)',
-                          fontSize: '24px',
-                          fontWeight: 400,
-                          lineHeight: 1.2,
-                          margin: '0 0 8px',
-                          color: '#f1edff',
-                        }}
-                      >
-                        {post.title}
-                      </h2>
-                      <p
-                        style={{
-                          fontSize: '15px',
-                          lineHeight: 1.65,
-                          color: 'rgba(220, 215, 245, 0.82)',
-                          margin: '0 0 12px',
-                        }}
-                      >
-                        {post.dek}
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: 'var(--font-proxe-mono)',
-                          fontSize: '12px',
-                          letterSpacing: '0.04em',
-                          color: 'rgba(196, 181, 253, 0.6)',
-                          margin: 0,
-                        }}
-                      >
-                        {formattedDate}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
+          <div style={{ marginTop: '48px' }}>
+            <BlogHub />
           </div>
 
-          <div style={{ marginTop: '48px', textAlign: 'center' }}>
+          <div style={{ marginTop: '64px', textAlign: 'center' }}>
             <Link href="/" className={styles.navLink}>
               ← Back to home
             </Link>

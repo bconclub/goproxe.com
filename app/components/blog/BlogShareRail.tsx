@@ -3,6 +3,7 @@
 import { FiCopy, FiCheck } from 'react-icons/fi'
 import { FaWhatsapp, FaLinkedin, FaXTwitter } from 'react-icons/fa6'
 import { useState } from 'react'
+import { track } from '../../lib/analytics'
 import styles from './BlogShareRail.module.css'
 
 type BlogShareRailProps = {
@@ -23,11 +24,16 @@ export function BlogShareRail({ url, title }: BlogShareRailProps) {
     }
   }
 
+  const handleWhatsAppClick = () => {
+    track('whatsapp_click', { location: 'blog_share_rail' })
+  }
+
   const shareLinks = [
     {
       name: 'Share on WhatsApp',
       icon: FaWhatsapp,
       url: `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`,
+      onClick: handleWhatsAppClick,
     },
     {
       name: 'Share on LinkedIn',
@@ -52,6 +58,7 @@ export function BlogShareRail({ url, title }: BlogShareRailProps) {
             rel="noopener noreferrer"
             className={styles.shareButton}
             aria-label={link.name}
+            onClick={link.onClick}
           >
             <link.icon size={20} />
           </a>
