@@ -26,6 +26,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Leads.webp',
   },
+  {
+    slug: 'crm-wont-answer',
+    title: 'Your CRM will not answer that WhatsApp',
+    dek: 'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
