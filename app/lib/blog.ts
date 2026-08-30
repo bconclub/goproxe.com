@@ -89,6 +89,13 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '2026-08-30',
     thumbnail: '/home/Conversations.webp',
   },
+  {
+    slug: 'home-services-on-a-job',
+    title: 'They called while you were on a job. The crew that answered got the work.',
+    dek: 'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
+    date: '2026-08-30',
+    thumbnail: '/home/Leads.webp',
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
