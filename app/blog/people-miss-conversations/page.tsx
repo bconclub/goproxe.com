@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
-import { getRelatedPosts, getRecentPosts, getPrevNextPosts } from '../../lib/blog'
+import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate } from '../../lib/blog'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
@@ -75,6 +75,7 @@ const faqSchema = {
 
 export default function BlogPostPage() {
   const currentSlug = 'people-miss-conversations'
+  const post = getBlogPost(currentSlug)
   const relatedPosts = getRelatedPosts(currentSlug, 3)
   const recentPosts = getRecentPosts(currentSlug, 3)
   const { prev, next } = getPrevNextPosts(currentSlug)
@@ -89,7 +90,7 @@ export default function BlogPostPage() {
         <div className={styles.column}>
           <p className={styles.eyebrow}>Blog</p>
           <h1 className={styles.title}>People miss conversations. Then they lose the lead.</h1>
-          <p className={styles.updated}>August 25, 2026</p>
+          <p className={styles.updated}>{post ? formatBlogDate(post.date) : ''}</p>
 
           <article className={styles.body}>
             <section className={styles.section}>
