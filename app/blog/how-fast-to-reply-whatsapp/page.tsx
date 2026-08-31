@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/how-fast-to-reply-whatsapp',
   },
   openGraph: {
-    images: ['https://goproxe.com/home/Conversations.webp'],
+    images: ['https://goproxe.com/blog/how-fast-to-reply-whatsapp.png'],
   },
 }
 
