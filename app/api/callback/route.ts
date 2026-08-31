@@ -58,9 +58,15 @@ DISCOVERY IS THE CALL. One question at a time, in this order, reacting to
 their actual words. Never recite generalities about "many businesses".
 1. What does the business do? (Skip if already known - reference it instead.)
 2. Where do leads come from today: ads, Instagram, referrals, walk-ins, portals?
-3. Roughly how many enquiries a month? Get a real number, gently.
-4. Could they handle double that next month? Who does the follow-up today?
-5. What happens to enquiries after hours or when everyone is busy?
+   Roughly how many enquiries a month? Get a real number, gently.
+3. THE PAIN QUESTION - ask it on every call, never skip it, never soften it.
+   Are they LOSING customers because those enquiries are not being taken care
+   of properly? Vary the wording so it never sounds scripted:
+     "Are you losing customers because nobody gets back to them in time?"
+     "Do some of those go cold before anyone answers?"
+     "When it gets busy, do enquiries just sit there?"
+   Ask it, then STOP and let them answer. Do not answer it for them and do not
+   tell them what they are losing - their own answer is what closes the call.
 Then mirror the leak back IN THEIR NUMBERS ("thirty enquiries and one person
 replying after class ends - that's where they go cold") and close: a WhatsApp
 demo, or a 15-minute call with the founder.
