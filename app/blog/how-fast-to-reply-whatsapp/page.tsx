@@ -26,26 +26,26 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'How fast is fast enough?',
+      name: 'How fast is fast?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Useful reply in seconds. Night and Sunday. If they are in the app, you can win.',
+        text: 'In the thread, in seconds, with a slot. Not a receipt.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What if they message at 11pm?',
+      name: 'Do I need someone on the phone at 11pm?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Answer at 11pm. Book the slot. Morning is second.',
+        text: 'No. The desk has to keep working. The human does not.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Do I need night staff?',
+      name: 'Is an auto-reply enough?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. The desk needs to keep working. You do not.',
+        text: 'No. Auto-reply parks. See after-hours.',
       },
     },
     {
@@ -114,18 +114,18 @@ export default function HowFastToReplyWhatsAppPage() {
 
             <section className={styles.section}>
               <h2 id="questions-people-ask">Questions people ask</h2>
-              <p><strong>How fast is fast enough?</strong></p>
-              <p>Useful reply in seconds. Night and Sunday. If they are in the app, you can win.</p>
-              <p><strong>What if they message at 11pm?</strong></p>
-              <p>Answer at 11pm. Book the slot. Morning is second.</p>
-              <p><strong>Do I need night staff?</strong></p>
-              <p>No. The desk needs to keep working. You do not.</p>
+              <p><strong>How fast is fast?</strong></p>
+              <p>In the thread, in seconds, with a slot. Not a receipt.</p>
+              <p><strong>Do I need someone on the phone at 11pm?</strong></p>
+              <p>No. The desk has to keep working. The human does not.</p>
+              <p><strong>Is an auto-reply enough?</strong></p>
+              <p>No. Auto-reply parks. See <a href="/blog/after-hours-whatsapp">After-hours WhatsApp is how you lose the lead</a>.</p>
               <p><strong>How long to go live?</strong></p>
               <p>48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <p>First useful reply wins. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>First useful reply gets the slot. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )

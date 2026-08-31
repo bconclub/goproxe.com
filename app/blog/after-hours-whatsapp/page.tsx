@@ -131,7 +131,7 @@ export default function AfterHoursWhatsAppPage() {
             </section>
 
             <section className={styles.section}>
-              <p>Turn on the desk. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>After hours they still want a slot. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )

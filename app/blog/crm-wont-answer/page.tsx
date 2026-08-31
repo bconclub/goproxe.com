@@ -26,26 +26,26 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Will this replace my CRM?',
+      name: 'Is PROXe a CRM?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. It does the conversation. Your CRM still owns the pipeline and the file.',
+        text: 'No. PROXe answers, qualifies, books, and follows up. Your CRM can still hold the file.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Does it integrate with LeadSquared / Zoho / Salesforce?',
+      name: 'Can I keep LeadSquared or Zoho?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. Webhooks and REST APIs.',
+        text: 'Yes. The leak is the unanswered chat, not the missing board.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What if we already paid for a CRM?',
+      name: 'Why not just a WhatsApp chatbot?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Keep it. The CRM is the record. This answers the lead.',
+        text: 'A bot dumps FAQs. It does not book, follow up, or remember the call.',
       },
     },
     {
@@ -116,33 +116,32 @@ export default function CrmWontAnswerPage() {
             <section className={styles.section}>
               <h2 id="how-you-should-manage-a-lead">How you should manage a lead</h2>
               <p>Treat the inbound as a conversation, not a row.</p>
-              <p>Answer on WhatsApp, Instagram, the site, the missed call. Same person. One memory.</p>
-              <p>Ask the two questions. Book the calendar. Follow up until they commit or opt out.</p>
-              <p>The CRM is the second step. It owns the pipeline. It does not own the chat.</p>
+              <p>Answer on the channel they used. WhatsApp, Instagram, the site, the call. Same person. One memory.</p>
+              <p>Qualify in the thread. Book a slot. Follow up until yes or no. Log the outcome after, if you still want a CRM.</p>
+              <p>The record comes after the reply. Not instead of it.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Businesses that already have a CRM and still lose leads because the conversation dies in the first 30 seconds.</p>
-              <p>Your CRM is not broken. The first reply is not its job.</p>
+              <p>Businesses that already get inbound and already have a board. Excel, Zoho, LeadSquared. The board is not the leak. The unanswered chat is.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
-              <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
+              <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="questions-people-ask">Questions people ask</h2>
-              <p><strong>Will this replace my CRM?</strong></p>
-              <p>No. It does the conversation. Your CRM still owns the pipeline and the file.</p>
-              <p><strong>Does it integrate with LeadSquared / Zoho / Salesforce?</strong></p>
-              <p>Yes. Webhooks and REST APIs.</p>
-              <p><strong>What if we already paid for a CRM?</strong></p>
-              <p>Keep it. The CRM is the record. This answers the lead.</p>
+              <p><strong>Is PROXe a CRM?</strong></p>
+              <p>No. PROXe answers, qualifies, books, and follows up. Your CRM can still hold the file.</p>
+              <p><strong>Can I keep LeadSquared or Zoho?</strong></p>
+              <p>Yes. The leak is the unanswered chat, not the missing board.</p>
+              <p><strong>Why not just a WhatsApp chatbot?</strong></p>
+              <p>A bot dumps FAQs. It does not book, follow up, or remember the call.</p>
               <p><strong>How long to go live?</strong></p>
               <p>48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <p>A CRM is a record. The conversation is a race. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>The CRM is the file. This page is the desk. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )

@@ -149,32 +149,38 @@ export default function BlogPostPage() {
 
             <section className={styles.section}>
               <h2 id="real-estate">Real estate</h2>
-              <p>Buyer lands off 99acres at 10pm. You are on a site visit or at dinner. You call in the morning. They already confirmed a slot with the broker who asked two questions at 10:02pm.</p>
-              <p>The search: "paid leads no reply" and "how to respond fast to WhatsApp leads."</p>
-              <p>The job: answer, qualify (locality, budget, when), book the visit.</p>
+              <p>You paid for the Meta lead. The site-visit chat lands while you are on another visit. You reply at 7pm. They are already with another broker.</p>
+              <p>The search: "site visit enquiry no reply" and "first reply wins."</p>
+              <p>The job: answer every channel, hold the conversation, book the visit, remind them the day before.</p>
               <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
+              <p>How PROXe does this for <a href="/industries/wellness">wellness</a>.</p>
+              <p>How PROXe does this for <a href="/industries/professional-services">professional services</a>.</p>
+              <p>How PROXe does this for <a href="/industries/home-services">home services</a>.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="what-not-to-do">What not to do</h2>
-              <p>Do not send "thanks, we are closed." Closed is a fact. Unanswered is a choice.</p>
-              <p>Do not dump a brochure or a price list. They already read that on the site.</p>
-              <p>Do not rely on a CRM to run the conversation. A CRM is a record. It does not answer at 11pm.</p>
+              <p>A "we will call you tomorrow" greeting is not a conversation.</p>
+              <p>It tells them you are closed. They will find someone who is not.</p>
+              <p>Leaving the chat on a personal phone is not a system. The owner is in consult, in class, or on a site. The inbox does not care.</p>
+              <p>Stopping after two follow-ups is how quiet leads die. Most of them were comparing, not rejecting you.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="what-a-real-reply-does">What a real reply does</h2>
-              <p>Answers on the channel they used. No form fill. No "we will call you."</p>
-              <p>Asks the one question that qualifies. New patient or follow-up. JEE or NEET. 2BHK or 3BHK.</p>
-              <p>Offers two slots. Books one. Remembers the thread for morning.</p>
+              <p>1. Answers in seconds. Even at 11pm.</p>
+              <p>2. Asks one useful question. Exam. Doctor. Budget range. Area. Timeline.</p>
+              <p>3. Books the thing. Counselling, slot, site visit.</p>
+              <p>4. Follows up until they decide.</p>
+              <p>5. Remembers the thread. So the next message is not "hi, who is this?"</p>
+              <p>That is the whole product.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="proxe">PROXe</h2>
-              <p>PROXe answers, qualifies, books and follows up on every lead, on every channel. WhatsApp, Instagram, the site, the call.</p>
-              <p>Same person. One memory. Live in 48 hours.</p>
-              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
-              <p>Talk to PROXe at <a href="/">goproxe.com</a>.</p>
+              <p>PROXe is the AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way.</p>
+              <p>You keep working.</p>
+              <p>The conversation does not sit unread.</p>
             </section>
 
             <section className={styles.section}>
@@ -187,17 +193,18 @@ export default function BlogPostPage() {
               <p>You can still recover some. Most of the high-intent ones already booked.</p>
               <p><strong>How do clinics handle WhatsApp during consults?</strong></p>
               <p>They do not, if it lives on one phone. The inbox has to answer while the doctor is with a patient.</p>
-              <p><strong>How do academies handle parent chats after 9pm?</strong></p>
-              <p>Parents message after class/work/9pm; counsellor is off; by morning they booked the place that asked exam and batch.</p>
-              <p><strong>How do brokers not miss site-visit chats after 7pm?</strong></p>
+              <p><strong>How do brokers not miss site-visit chats?</strong></p>
               <p>Same rule. First useful reply gets the visit. Paid leads die in unread chat.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="if-you-only-do-one-thing-this-week">If you only do one thing this week</h2>
-              <p>Pull the last 20 unanswered chats. Count how many came in after 7pm or during your consult/class/visit. That is the number.</p>
-              <p>The ad did not fail. The conversation sat there.</p>
-              <p>Talk to PROXe on <a href="/">the site</a>.</p>
+              <p>Open last night's WhatsApp.</p>
+              <p>Count the chats that sat more than an hour.</p>
+              <p>That number is not "pending."</p>
+              <p>It is conversations you were not in.</p>
+              <p>Talk to PROXe on the site when you want the inbox to stop leaking.</p>
+              <p><a href="https://goproxe.com">Talk to PROXe</a></p>
             </section>
     </BlogPostWrapper>
   )
