@@ -126,7 +126,7 @@ export default function PaidLeadNoReplyPage() {
             </section>
 
             <section className={styles.section}>
-              <p>You already paid for them. The inbox should not sit. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>You already paid. The chat should not sit. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )
