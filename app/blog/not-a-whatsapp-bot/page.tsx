@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/not-a-whatsapp-bot',
   },
   openGraph: {
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['https://goproxe.com/blog/not-a-whatsapp-bot.png'],
   },
 }
 
@@ -26,26 +26,26 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is this a chatbot?',
+      name: 'Is it a WhatsApp Business API tool?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. A chatbot parks the conversation. This finishes it.',
+        text: 'API is the pipe. PROXe is the person on the other end of the pipe.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Does it work on Instagram and the site too?',
+      name: 'Will it dump templates?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. Same memory.',
+        text: 'No. It talks in the thread. Follow-up is until yes or no, not a blast.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Will it invent a price?',
+      name: 'Does it invent a price?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. It books the consult and hands you the thread.',
+        text: 'No. It books the call or the visit and hands you the thread.',
       },
     },
     {
@@ -113,18 +113,18 @@ export default function NotAWhatsAppBotPage() {
 
             <section className={styles.section}>
               <h2 id="questions-people-ask">Questions people ask</h2>
-              <p><strong>Is this a chatbot?</strong></p>
-              <p>No. A chatbot parks the conversation. This finishes it.</p>
-              <p><strong>Does it work on Instagram and the site too?</strong></p>
-              <p>Yes. Same memory.</p>
-              <p><strong>Will it invent a price?</strong></p>
-              <p>No. It books the consult and hands you the thread.</p>
+              <p><strong>Is it a WhatsApp Business API tool?</strong></p>
+              <p>API is the pipe. PROXe is the person on the other end of the pipe.</p>
+              <p><strong>Will it dump templates?</strong></p>
+              <p>No. It talks in the thread. Follow-up is until yes or no, not a blast.</p>
+              <p><strong>Does it invent a price?</strong></p>
+              <p>No. It books the call or the visit and hands you the thread.</p>
               <p><strong>How long to go live?</strong></p>
               <p>48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <p>A chatbot parks. This finishes. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>A chatbot parks. This finishes. Talk to PROXe on <a href="/">the site</a>.</p>
             </section>
     </BlogPostWrapper>
   )

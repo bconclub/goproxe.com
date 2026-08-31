@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/one-memory-every-channel',
   },
   openGraph: {
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['https://goproxe.com/blog/one-memory-every-channel.png'],
   },
 }
 
@@ -111,27 +111,27 @@ export default function OneMemoryEveryChannelPage() {
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
               <p>Businesses that already get inbound on more than WhatsApp and still treat each ping as new.</p>
+              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
             </section>
 
             <section className={styles.section}>
-              <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>. <a href="/blog/crm-wont-answer">Your CRM will not answer that WhatsApp</a>.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="questions-people-ask">Questions people ask</h2>
-              <p><strong>Does it remember across WhatsApp, Instagram, and the site?</strong></p>
-              <p>Yes. Same thread.</p>
-              <p><strong>Is this a shared inbox?</strong></p>
-              <p>No. A shared inbox is still one channel. This is one memory across every channel.</p>
-              <p><strong>Do I need to integrate a CRM?</strong></p>
-              <p>Your CRM still owns the file. This runs the conversation.</p>
+              <p><strong>Is this a WhatsApp tool that also does Instagram?</strong></p>
+              <p>No. One memory. Four channels. Same person.</p>
+              <p><strong>Will they have to start over on the call?</strong></p>
+              <p>No. The call is the same thread.</p>
+              <p><strong>Does the CRM replace this?</strong></p>
+              <p>No. The CRM files it after. See <a href="/blog/crm-wont-answer">Your CRM will not answer that WhatsApp</a>.</p>
               <p><strong>How long to go live?</strong></p>
               <p>48 hours.</p>
             </section>
 
             <section className={styles.section}>
-              <p>One lead. One memory. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>One person. One memory. Every channel. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )

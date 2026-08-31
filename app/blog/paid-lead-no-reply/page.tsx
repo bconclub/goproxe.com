@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://goproxe.com/blog/paid-lead-no-reply',
   },
   openGraph: {
-    images: ['https://goproxe.com/home/Leads.webp'],
+    images: ['https://goproxe.com/blog/paid-lead-no-reply.png'],
   },
 }
 
@@ -126,7 +126,7 @@ export default function PaidLeadNoReplyPage() {
             </section>
 
             <section className={styles.section}>
-              <p>You already paid for them. The inbox should not sit. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
+              <p>You already paid. The chat should not sit. Talk to PROXe on the site (<a href="/">goproxe.com</a>).</p>
             </section>
     </BlogPostWrapper>
   )
