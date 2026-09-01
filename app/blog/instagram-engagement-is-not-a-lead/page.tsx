@@ -60,7 +60,9 @@ No. It books the trial or the consult and hands you the thread.
 
 48 hours.
 
-The feed is not the desk. Talk to PROXe on the site.`
+The feed is not the desk. Talk to PROXe on the site.
+
+Related: A conversation that books. One lead, four channels, one memory. Who answers the customer. Industries: Coaching, Wellness, Fitness.`
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -189,6 +191,7 @@ export default function InstagramEngagementIsNotALeadPage() {
 
             <section className={styles.section}>
               <p>The feed is not the desk. Talk to PROXe on the site.</p>
+              <p>Related: <a href="/blog/conversation-that-books">A conversation that books</a>. <a href="/blog/one-memory-every-channel">One lead, four channels, one memory</a>. <a href="/blog/who-answers-the-customer">Who answers the customer</a>. Industries: <a href="/industries/coaching">Coaching</a>, <a href="/industries/wellness">Wellness</a>, <a href="/industries/wellness">Fitness</a>.</p>
             </section>
     </BlogPostWrapper>
   )
