@@ -164,6 +164,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 511,
     related: ['who-answers-the-customer', 'follow-up-is-a-system', 'how-fast-to-reply-whatsapp'],
   },
+  {
+    slug: 'instagram-engagement-is-not-a-lead',
+    title: 'Instagram engagement is not a lead',
+    dek: 'A like is not a booking. A comment is not a booking.',
+    date: '2026-09-11',
+    thumbnail: '/blog/instagram-engagement-is-not-a-lead.png',
+    trade: 'product',
+    wordCount: 620,
+    related: ['conversation-that-books', 'one-memory-every-channel', 'who-answers-the-customer'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
