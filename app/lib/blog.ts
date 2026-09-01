@@ -144,6 +144,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 743,
     related: ['crm-wont-answer', 'what-is-proxe', 'not-a-whatsapp-bot'],
   },
+  {
+    slug: 'follow-up-is-a-system',
+    title: 'Follow-up is a system',
+    dek: 'The first reply is not the job. Most teams treat it like it is.',
+    date: '2026-09-04',
+    thumbnail: '/blog/follow-up-is-a-system.png',
+    trade: 'product',
+    wordCount: 390,
+    related: ['who-answers-the-customer', 'how-fast-to-reply-whatsapp', 'what-is-proxe'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
