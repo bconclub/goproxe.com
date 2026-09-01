@@ -154,6 +154,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 390,
     related: ['who-answers-the-customer', 'how-fast-to-reply-whatsapp', 'what-is-proxe'],
   },
+  {
+    slug: 'conversation-that-books',
+    title: 'A conversation that books',
+    dek: 'A reply is not a booking. Most first messages are a thanks, a brochure, or a link.',
+    date: '2026-09-09',
+    thumbnail: '/blog/conversation-that-books.png',
+    trade: 'product',
+    wordCount: 511,
+    related: ['who-answers-the-customer', 'follow-up-is-a-system', 'how-fast-to-reply-whatsapp'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
