@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 }
 
-const articleContent = `They wrote at 2:10pm. GST notice. Can you take this. You were in a meeting. Phone down. You replied at 6. They had already booked the CA who asked two questions at 2:12. Silence is not professionalism. It is a lost brief.
+const articleContent = `They wrote at 2:10pm. Can you take a new brief. Need someone this week. You were in a meeting. Phone down. You replied at 6. They had already booked the CA who asked two questions at 2:12. Silence is not professionalism. It is a lost brief.
 
 What firms actually run. Personal WhatsApp. A greeting. Email tomorrow. A CRM for the file. Lawyer in court, consultant on a call, CA in a close: same leak. After hours the same. They wanted a slot this week.
 
@@ -81,7 +81,7 @@ export default function ProfessionalServicesWithAClientPage() {
       jsonLdSchemas={[faqSchema]}
     >
             <section className={styles.section}>
-              <p>They wrote at 2:10pm. GST notice. Can you take this.</p>
+              <p>They wrote at 2:10pm. Can you take a new brief. Need someone this week.</p>
               <p>You were in a meeting. Phone down. You replied at 6. They had already booked the CA who asked two questions at 2:12.</p>
               <p>Silence is not professionalism. It is a lost brief.</p>
             </section>
