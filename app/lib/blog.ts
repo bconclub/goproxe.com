@@ -13,6 +13,7 @@ export type BlogPost = {
   thumbnail: string; // path to 1200x630 hero image
   trade: Trade;
   wordCount?: number; // for min read calculation
+  related?: string[]; // optional override for related post slugs (in order)
 };
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -133,6 +134,16 @@ export const BLOG_POSTS: BlogPost[] = [
     trade: 'professional',
     wordCount: 485,
   },
+  {
+    slug: 'who-answers-the-customer',
+    title: 'Who answers the customer',
+    dek: 'Most teams can show you the lead. Fewer can say who is supposed to talk to them.',
+    date: '2026-09-02',
+    thumbnail: '/blog/who-answers-the-customer.png',
+    trade: 'product',
+    wordCount: 743,
+    related: ['crm-wont-answer', 'what-is-proxe', 'not-a-whatsapp-bot'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
@@ -142,10 +153,22 @@ export function getBlogPost(slug: string): BlogPost | undefined {
 }
 
 /**
- * Get related posts for a given slug. For now, returns other published posts
- * in reverse chronological order (most recent first).
+ * Get related posts for a given slug. If the post has a `related` array,
+ * returns those specific posts in order. Otherwise, returns other published
+ * posts in reverse chronological order (most recent first).
  */
 export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPost[] {
+  const currentPost = getBlogPost(currentSlug);
+  
+  // If post has custom related slugs, use those
+  if (currentPost?.related && currentPost.related.length > 0) {
+    return currentPost.related
+      .map((slug) => getBlogPost(slug))
+      .filter((p): p is BlogPost => p !== undefined)
+      .slice(0, limit);
+  }
+  
+  // Otherwise, fall back to reverse chronological
   return BLOG_POSTS.filter((p) => p.slug !== currentSlug)
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit);
