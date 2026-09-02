@@ -177,7 +177,7 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'one-number-a-whole-team',
     title: 'One number is not a whole team',
-    dek: "The business number lives on one phone. The owner's.",
+    dek: "The business number lives on one phone. The owner.",
     date: '2026-09-16',
     thumbnail: '/blog/one-number-a-whole-team.png',
     trade: 'product',
