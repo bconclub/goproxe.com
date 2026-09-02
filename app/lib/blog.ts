@@ -204,6 +204,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['conversation-that-books', 'what-to-measure-on-inbound', 'what-is-proxe', 'who-answers-the-customer'],
   },
+  {
+    slug: 'a-missed-call-is-still-a-lead',
+    title: 'A missed call is still a lead',
+    dek: 'A ring is not a booking.',
+    date: '2026-09-25',
+    thumbnail: '/blog/a-missed-call-is-still-a-lead.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['after-hours-whatsapp', 'how-fast-to-reply-whatsapp', 'who-answers-the-customer', 'conversation-that-books'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
