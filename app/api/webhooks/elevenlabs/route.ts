@@ -154,10 +154,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 500 })
     }
 
-    // Pure outreach agents stop here (Arc-only). Intro/test agents continue
-    // through to write the PROXe voice row below so the chat SoT shows it.
+    // Outreach dials ALSO land in PROXe now, as OUTBOUND, with the lead created
+    // from what the dialer knew. Z, 2 Sep: "I should be seeing it in my
+    // outbound inside PROXe". They still skip the post-call WhatsApp nudge
+    // below: that continuation is written for a visitor who asked us to call,
+    // and the outreach agent sends its own WhatsApp on the call via the tool.
     if (isOutreach && !isIntroTest) {
-      return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length })
+      const dv = (d.conversation_initiation_client_data?.dynamic_variables ?? {}) as Record<string, any>
+      try {
+        await recordCallTranscript({
+          phone,
+          conversationId,
+          transcript,
+          durationSecs: d.metadata?.call_duration_secs ?? null,
+          status: d.status ?? null,
+          summary: d.analysis?.transcript_summary ?? null,
+          callerName: pick('caller_name') ?? (typeof dv.first_name === 'string' ? dv.first_name : null),
+          businessType: pick('business_type') ?? (typeof dv.vertical === 'string' ? dv.vertical : null),
+          interest: pick('interest'),
+          city: pick('city') ?? (typeof dv.city === 'string' ? dv.city : null),
+          direction: 'outbound',
+          kind: 'outreach',
+          agentId,
+          agentName: d.agent_name ?? d.metadata?.agent_name ?? null,
+          createIfMissing: {
+            name: typeof dv.first_name === 'string' ? dv.first_name : null,
+            business: typeof dv.business_name === 'string' ? dv.business_name : null,
+            city: typeof dv.city === 'string' ? dv.city : null,
+            vertical: typeof dv.vertical === 'string' ? dv.vertical : null,
+          },
+        })
+      } catch (err) {
+        console.error('[webhooks/elevenlabs] outreach PROXe record failed', err)
+      }
+      return NextResponse.json({ ok: true, routed: 'arc+proxe', turns: transcript.length })
     }
   }
 
@@ -173,6 +203,12 @@ export async function POST(request: NextRequest) {
       businessType: pick('business_type'),
       interest: pick('interest'),
       city: pick('city'),
+      // The visitor asked for this call on the site: an inbound request we
+      // fulfilled by dialling. Not outreach.
+      direction: 'inbound',
+      kind: 'callback',
+      agentId,
+      agentName: d.agent_name ?? d.metadata?.agent_name ?? null,
     })
   } catch (err) {
     // Answer 500 so ElevenLabs retries — a lost transcript is not recoverable

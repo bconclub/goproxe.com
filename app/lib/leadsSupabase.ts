@@ -579,6 +579,18 @@ export async function recordCallTranscript(input: {
   businessType?: string | null
   interest?: string | null
   city?: string | null
+  /** Who started it. A callback the visitor asked for is INBOUND (the request
+   *  came in, we only dialled); a cold outreach dial is OUTBOUND. The Calls
+   *  page used to show everything as outbound because the dial direction was
+   *  the only thing recorded (Z, 2 Sep: "outbound and inbound should be
+   *  different, here everything is put together"). */
+  direction?: 'inbound' | 'outbound'
+  kind?: 'callback' | 'outreach'
+  agentId?: string | null
+  agentName?: string | null
+  /** Outreach dials people we have never seen. Create the lead from what the
+   *  dialer knew, so the call has somewhere to land. */
+  createIfMissing?: { name?: string | null; business?: string | null; city?: string | null; vertical?: string | null } | null
 }): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return
@@ -611,6 +623,29 @@ export async function recordCallTranscript(input: {
         .limit(1)
         .maybeSingle()
       row = data as any
+    }
+
+    if (!row && input.createIfMissing && normalized) {
+      const c = input.createIfMissing
+      const { data: created, error: cErr } = await supabase
+        .from('all_leads')
+        .insert({
+          customer_name: trimOrNull(c.name ?? '') ?? null,
+          phone: input.phone ?? null,
+          customer_phone_normalized: normalized,
+          first_touchpoint: 'voice',
+          last_touchpoint: 'voice',
+          last_interaction_at: new Date().toISOString(),
+          brand: BRAND,
+          unified_context: {
+            web: { source: 'outreach', ...(trimOrNull(c.business ?? '') ? { brand_name: trimOrNull(c.business ?? '') } : {}) },
+            voice: { business_type: c.vertical ?? null, city: c.city ?? null, initiated_by: 'proxe' },
+          },
+        })
+        .select('id, unified_context, customer_name')
+        .single()
+      if (cErr) console.error('[leadsSupabase] outreach lead create failed', cErr.message)
+      row = (created as any) ?? null
     }
 
     if (!row) {
@@ -733,7 +768,12 @@ export async function recordCallTranscript(input: {
         external_session_id: input.conversationId,
         call_duration_seconds: input.durationSecs ?? null,
         call_status: input.status ?? 'completed',
-        call_direction: 'outbound',
+        call_direction: input.direction ?? 'inbound',
+        channel_data: {
+          kind: input.kind ?? 'callback',
+          agent_id: input.agentId ?? null,
+          agent_name: input.agentName ?? null,
+        },
         transcription,
         call_summary: input.summary ?? null,
       }
