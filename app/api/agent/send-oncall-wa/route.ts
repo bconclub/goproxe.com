@@ -77,8 +77,14 @@ export async function POST(request: NextRequest) {
   // - conversation_id: join back to the post-call event
   // - tool_call_id: unique per invocation
   // - parameters: whatever the agent passed (phone, business_type, etc.)
-  const conversationId: string | null = payload.conversation_id ?? null
-  const phone: string | null = payload.parameters?.phone ?? null
+  // Two shapes arrive here. The ElevenLabs tool posts the request_body_schema
+  // FLAT ({ phone, business_type, conversation_id }); the older wrapped shape
+  // ({ conversation_id, parameters: { phone } }) is kept so nothing that still
+  // sends it breaks. Reading only the wrapped shape was why every live tool
+  // call 400'd with "missing phone" while the agent told the caller it was sent.
+  const params = payload.parameters ?? payload
+  const conversationId: string | null = payload.conversation_id ?? params.conversation_id ?? null
+  const phone: string | null = params.phone ?? null
 
   if (!conversationId) {
     console.error('[agent/send-oncall-wa] missing conversation_id')
@@ -104,7 +110,7 @@ export async function POST(request: NextRequest) {
 
   // Extract optional business context from tool parameters. The agent is
   // instructed to pass business_type if known, so the message can reference it.
-  const biz = payload.parameters?.business_type ?? null
+  const biz = params.business_type ?? null
   const template = 'proxe_call_followup_util_v2'
   const text = `Hi, we just spoke over a call${biz ? ` about your ${biz}` : ''}. We can continue here.`
 
