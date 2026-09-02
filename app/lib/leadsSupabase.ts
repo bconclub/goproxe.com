@@ -403,7 +403,7 @@ export async function getPendingScheduledCallbacks(): Promise<Array<{
     // Fetch leads with pending scheduled callbacks
     const { data, error } = await supabase
       .from('all_leads')
-      .select('id, phone, unified_context')
+      .select('id, phone, customer_phone_normalized, unified_context')
       .eq('brand', BRAND)
       .not('phone', 'is', null)
       .not('unified_context->voice->scheduled_callback_at', 'is', null)
@@ -416,7 +416,7 @@ export async function getPendingScheduledCallbacks(): Promise<Array<{
     if (!data) return []
 
     // Filter in-memory for due callbacks with pending status
-    const pending: Array<{ id: string; phone: string; scheduledFor: Date }> = []
+    const pending: Array<{ id: string; phone: string; phoneNormalized: string | null; scheduledFor: Date }> = []
     
     for (const lead of data) {
       const voice = (lead.unified_context as Record<string, any> | null)?.voice
@@ -435,6 +435,7 @@ export async function getPendingScheduledCallbacks(): Promise<Array<{
       pending.push({
         id: lead.id as string,
         phone: lead.phone as string,
+        phoneNormalized: (lead.customer_phone_normalized as string | null) ?? null,
         scheduledFor: scheduledDate,
       })
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPendingScheduledCallbacks, markScheduledCallbackProcessed, recordCallbackDial } from '../../../lib/leadsSupabase'
 import { isQuiet } from '../../../lib/quietHours'
+import { toE164India } from '@/app/lib/phoneE164'
 
 /**
  * [DEV] Cron job to process scheduled callbacks.
@@ -87,14 +88,27 @@ export async function GET(request: Request) {
         }
       }
 
-      // Dial the callback
+      // Dial the callback - in E.164, never as typed. The 10-digit normalized
+      // column wins when present; the raw phone is only a fallback. A number
+      // that cannot be normalized is a failed callback, not a dial to whoever
+      // "+" + digits happens to reach.
+      const dialTo = toE164India(callback.phoneNormalized) ?? toE164India(callback.phone)
+      if (!dialTo) {
+        console.error('[cron/scheduled-callbacks] unroutable phone, not dialling', {
+          leadId: callback.id, phone: callback.phone,
+        })
+        await markScheduledCallbackProcessed({ leadId: callback.id, status: 'failed' })
+        await recordCallbackDial({ phone: callback.phone, status: 'failed', reason: 'bad_phone' })
+        results.failed++
+        continue
+      }
       const res = await fetch('https://api.elevenlabs.io/v1/convai/sip-trunk/outbound-call', {
         method: 'POST',
         headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           agent_id: AGENT_ID,
           agent_phone_number_id: PHONE_NUMBER_ID,
-          to_number: callback.phone,
+          to_number: dialTo,
         }),
       })
 

@@ -112,6 +112,10 @@ function toE164(raw: string, market: string): string | null {
     if (digits.length === 10) return `+91${digits}`
     if (digits.length === 11 && digits.startsWith('0')) return `+91${digits.slice(1)}`
     if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`
+    // Anything else typed into the India form is a typo (an 11-digit "9722…"
+    // became +972 and rang Israel four times in Aug 2026). Never guess a
+    // country from a typo.
+    return null
   } else {
     if (digits.length === 10) return `+1${digits}`
     if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`
