@@ -392,6 +392,7 @@ export async function scheduleCallback(input: {
 export async function getPendingScheduledCallbacks(): Promise<Array<{
   id: string
   phone: string
+  phoneNormalized: string | null
   scheduledFor: Date
 }>> {
   const supabase = getSupabaseServiceClient()
