@@ -184,6 +184,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 510,
     related: ['crm-wont-answer', 'home-services-on-a-job', 'one-memory-every-channel'],
   },
+  {
+    slug: 'what-to-measure-on-inbound',
+    title: 'What to measure on inbound',
+    dek: 'Most teams measure the wrong clock.',
+    date: '2026-09-18',
+    thumbnail: '/blog/what-to-measure-on-inbound.png',
+    trade: 'product',
+    wordCount: 410,
+    related: ['how-fast-to-reply-whatsapp', 'people-miss-conversations', 'what-is-proxe', 'follow-up-is-a-system'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
