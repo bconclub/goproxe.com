@@ -174,6 +174,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 620,
     related: ['conversation-that-books', 'one-memory-every-channel', 'who-answers-the-customer'],
   },
+  {
+    slug: 'one-number-a-whole-team',
+    title: 'One number is not a whole team',
+    dek: 'The business number lives on one phone. The owner's.',
+    date: '2026-09-16',
+    thumbnail: '/blog/one-number-a-whole-team.png',
+    trade: 'product',
+    wordCount: 510,
+    related: ['crm-wont-answer', 'home-services-on-a-job', 'one-memory-every-channel'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
