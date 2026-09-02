@@ -5,7 +5,7 @@ import styles from '../../styles/legal.module.css'
 export const metadata: Metadata = {
   title: 'One number is not a whole team | PROXe',
   description:
-    "The business number lives on one phone. The owner's.",
+    "The business number lives on one phone. The owner.",
   alternates: {
     canonical: 'https://goproxe.com/blog/one-number-a-whole-team',
   },
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 }
 
-const articleContent = `The business number lives on one phone. The owner's. Staff cannot see the chats. Two people guess who already replied. The owner goes out, the phone goes with them, and so do the customers.
+const articleContent = `The business number lives on one phone. The owner. Staff cannot see the chats. Two people guess who already replied. The owner goes out, the phone goes with them, and so do the customers.
 
 One number is not a desk. It is a pocket.
 
@@ -144,7 +144,7 @@ export default function OneNumberAWholeTeamPage() {
       jsonLdSchemas={[faqSchema]}
     >
             <section className={styles.section}>
-              <p>The business number lives on one phone. The owner's. Staff cannot see the chats. Two people guess who already replied. The owner goes out, the phone goes with them, and so do the customers.</p>
+              <p>The business number lives on one phone. The owner. Staff cannot see the chats. Two people guess who already replied. The owner goes out, the phone goes with them, and so do the customers.</p>
               <p>One number is not a desk. It is a pocket.</p>
               <p>The job is the same as every other inbound. Answer. Two questions. Two slots. Follow up until they decide. The number has to be shareable without becoming "who has the phone."</p>
             </section>
