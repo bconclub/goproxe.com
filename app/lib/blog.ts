@@ -197,7 +197,7 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'the-website-is-not-the-desk',
     title: 'The website is not the desk',
-    dek: 'The owner.',
+    dek: 'A form is not a booking.',
     date: '2026-09-23',
     thumbnail: '/blog/the-website-is-not-the-desk.png',
     trade: 'product',
