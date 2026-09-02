@@ -5,7 +5,7 @@ import styles from '../../styles/legal.module.css'
 export const metadata: Metadata = {
   title: 'One number is not a whole team | PROXe',
   description:
-    'The business number lives on one phone. The owner's.',
+    "The business number lives on one phone. The owner's.",
   alternates: {
     canonical: 'https://goproxe.com/blog/one-number-a-whole-team',
   },
