@@ -13,6 +13,7 @@ import IndustriesSection from './IndustriesSection';
 import PricingSection from './PricingSection';
 import HeroPhoneCapture from './shared/HeroPhoneCapture';
 import WhatsAppHeaderButton from './shared/WhatsAppHeaderButton';
+import { BlogSection } from './BlogSection';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { track, initScrollDepthTracking } from '../lib/analytics';
 import { captureAttribution } from '../lib/attribution';
@@ -1620,6 +1621,9 @@ export default function ProxeLanding() {
           </div>
         </div>
       </section>
+
+      {/* ===== Blog Section ===== */}
+      <BlogSection />
 
       {/* ===== 15. Footer CTA ===== */}
       {/* ===== 15. Closing CTA — glass card, eyebrow chip, split headline,

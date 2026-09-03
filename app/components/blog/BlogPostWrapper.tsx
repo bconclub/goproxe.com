@@ -4,9 +4,11 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import styles from '../../styles/legal.module.css'
 import { getBlogPost, getRelatedPosts, getRecentPosts, getPrevNextPosts, formatBlogDate, calculateReadingTime, getTradeLabel } from '../../lib/blog'
 import { BlogShareRail } from './BlogShareRail'
+import { BlogShareRow } from './BlogShareRow'
 import { BlogToc } from './BlogToc'
 import { BlogHero } from './BlogHero'
 import { BlogMeta } from './BlogMeta'
+import { BlogAuthor } from './BlogAuthor'
 import { BlogListen } from './BlogListen'
 import { BlogRelatedRecent } from './BlogRelatedRecent'
 
@@ -112,11 +114,15 @@ export function BlogPostWrapper({
             alt={title}
           />
 
+          <BlogAuthor />
+
           <BlogMeta
             date={post ? formatBlogDate(post.date) : ''}
             readTime={readTime}
             tradeLabel={tradeLabel}
           />
+
+          <BlogShareRow url={pageUrl} title={title} />
 
           <BlogListen content={articleContent} duration={readTime} />
 

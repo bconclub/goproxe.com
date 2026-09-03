@@ -1,0 +1,27 @@
+.shareRow {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  color: rgba(196, 181, 253, 0.85);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.shareButton:hover {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(196, 181, 253, 0.4);
+  color: #ede9fe;
+  transform: translateY(-2px);
+}
