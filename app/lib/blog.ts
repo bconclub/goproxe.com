@@ -234,6 +234,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['conversation-that-books', 'follow-up-is-a-system', 'what-to-measure-on-inbound', 'handoff-without-starting-over'],
   },
+  {
+    slug: 'dont-invent-the-price',
+    title: 'Do not invent the price',
+    dek: 'A fee you made up is not a booking.',
+    date: '2026-09-03',
+    thumbnail: '/blog/dont-invent-the-price.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['conversation-that-books', 'handoff-without-starting-over', 'what-is-proxe', 'the-website-is-not-the-desk'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
