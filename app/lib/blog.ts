@@ -284,6 +284,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['conversation-that-books', 'dont-invent-the-price', 'the-calendar-is-not-the-desk', 'who-answers-the-customer'],
   },
+  {
+    slug: 'email-is-not-the-desk',
+    title: 'Email is not the desk',
+    dek: 'The enquiry is the thread they already opened.',
+    date: '2026-09-03',
+    thumbnail: '/blog/email-is-not-the-desk.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['one-memory-every-channel', 'how-fast-to-reply-whatsapp', 'who-answers-the-customer', 'qualify-before-you-book'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
