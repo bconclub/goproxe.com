@@ -224,6 +224,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['one-memory-every-channel', 'one-number-a-whole-team', 'crm-wont-answer', 'conversation-that-books'],
   },
+  {
+    slug: 'after-they-book',
+    title: 'After they book',
+    dek: 'A booking is not the end.',
+    date: '2026-09-03',
+    thumbnail: '/blog/after-they-book.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['conversation-that-books', 'follow-up-is-a-system', 'what-to-measure-on-inbound', 'handoff-without-starting-over'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
