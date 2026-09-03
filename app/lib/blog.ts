@@ -294,6 +294,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['one-memory-every-channel', 'how-fast-to-reply-whatsapp', 'who-answers-the-customer', 'qualify-before-you-book'],
   },
+  {
+    slug: 'a-broadcast-is-not-a-reply',
+    title: 'A broadcast is not a reply',
+    dek: 'A blast is marketing. Inbound still needs a reply in their thread.',
+    date: '2026-09-03',
+    thumbnail: '/blog/a-broadcast-is-not-a-reply.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['the-ad-is-not-the-desk', 'follow-up-is-a-system', 'who-answers-the-customer', 'qualify-before-you-book'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
