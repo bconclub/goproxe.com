@@ -264,6 +264,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['paid-lead-no-reply', 'who-answers-the-customer', 'what-to-measure-on-inbound', 'the-website-is-not-the-desk'],
   },
+  {
+    slug: 'silence-is-not-a-decision',
+    title: 'Silence is not a decision',
+    dek: 'No reply is not a no.',
+    date: '2026-09-03',
+    thumbnail: '/blog/silence-is-not-a-decision.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['follow-up-is-a-system', 'after-they-book', 'what-to-measure-on-inbound', 'conversation-that-books'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
