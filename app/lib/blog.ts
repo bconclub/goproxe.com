@@ -274,6 +274,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['follow-up-is-a-system', 'after-they-book', 'what-to-measure-on-inbound', 'conversation-that-books'],
   },
+  {
+    slug: 'qualify-before-you-book',
+    title: 'Qualify before you book',
+    dek: 'A reply is not a qualified lead.',
+    date: '2026-09-03',
+    thumbnail: '/blog/qualify-before-you-book.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['conversation-that-books', 'dont-invent-the-price', 'the-calendar-is-not-the-desk', 'who-answers-the-customer'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
