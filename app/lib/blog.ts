@@ -214,6 +214,16 @@ export const BLOG_POSTS: BlogPost[] = [
     wordCount: 450,
     related: ['after-hours-whatsapp', 'how-fast-to-reply-whatsapp', 'who-answers-the-customer', 'conversation-that-books'],
   },
+  {
+    slug: 'handoff-without-starting-over',
+    title: 'Handoff without starting over',
+    dek: 'A handoff is not a new chat.',
+    date: '2026-09-03',
+    thumbnail: '/blog/handoff-without-starting-over.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['one-memory-every-channel', 'one-number-a-whole-team', 'crm-wont-answer', 'conversation-that-books'],
+  },
 ];
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
