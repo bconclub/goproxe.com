@@ -94,9 +94,14 @@ fi
 echo "Going live..."
 PREV=$(readlink -f "$CURRENT" 2>/dev/null || true)
 ln -sfn "$REL" "$CURRENT"
-if pm2 describe "$APP" >/dev/null 2>&1; then
+# The pm2 app must run FROM the symlink, not from the repo checkout (its
+# old home). If it still points elsewhere, re-create it once; from then on a
+# restart re-resolves the symlink to the new release.
+cwd_now=$(pm2 describe "$APP" 2>/dev/null | grep -E 'exec cwd' | sed -E 's/.*│ *exec cwd *│ *([^ ]+).*//' || true)
+if [ "$cwd_now" = "$CURRENT" ]; then
   pm2 restart "$APP" --update-env >/dev/null
 else
+  pm2 delete "$APP" >/dev/null 2>&1 || true
   pm2 start npm --name "$APP" --cwd "$CURRENT" -- start >/dev/null
 fi
 pm2 save >/dev/null
