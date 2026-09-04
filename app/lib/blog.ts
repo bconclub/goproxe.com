@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-forward-is-not-a-handoff',
+    title: 'A forward is not a handoff',
+    dek: 'Passing the chat is not the desk.',
+    date: '2026-09-04',
+    thumbnail: '/blog/a-forward-is-not-a-handoff.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['handoff-without-starting-over', 'the-group-chat-is-not-the-desk', 'two-people-one-lead'],
+  },
+  {
     slug: 'the-weekend-pile-is-not-a-system',
     title: 'The weekend pile is not a system',
     dek: 'Monday catch-up is not the desk.',
