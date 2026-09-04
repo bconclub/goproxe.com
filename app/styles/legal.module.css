@@ -50,6 +50,32 @@
   margin: 0 0 12px;
 }
 
+/* Breadcrumb trail above the post title: the eyebrow's voice, made a path. */
+.crumbs { margin: 0 0 12px; }
+.crumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.55);
+}
+.crumbs li { min-width: 0; }
+.crumbs li:last-child { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.crumbs a {
+  color: rgba(196, 181, 253, 0.85);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.crumbs a:hover { color: #fff; }
+.crumbs [aria-current="page"] { color: rgba(255, 255, 255, 0.55); }
+
 .title {
   font-family: var(--font-proxe-heading), 'Instrument Serif', serif;
   font-size: 46px;

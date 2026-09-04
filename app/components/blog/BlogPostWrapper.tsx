@@ -106,7 +106,17 @@ export function BlogPostWrapper({
       <BlogShareRail url={pageUrl} title={title} />
       <main className={styles.page}>
         <div className={styles.column}>
-          <p className={styles.eyebrow}>Blog</p>
+          {/* Breadcrumbs (Z, 4 Sep). Same trail the BreadcrumbList schema above
+              already declares, now visible: Home / Blog / this post. */}
+          <nav aria-label="Breadcrumb" className={styles.crumbs}>
+            <ol>
+              <li><a href="/">Home</a></li>
+              <li aria-hidden="true">/</li>
+              <li><a href="/blog">Blog</a></li>
+              <li aria-hidden="true">/</li>
+              <li><span aria-current="page">{title}</span></li>
+            </ol>
+          </nav>
           <h1 className={styles.title}>{title}</h1>
 
           <BlogHero
