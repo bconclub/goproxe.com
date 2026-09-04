@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'the-weekend-pile-is-not-a-system',
+    title: 'The weekend pile is not a system',
+    dek: 'Monday catch-up is not the desk.',
+    date: '2026-09-04',
+    thumbnail: '/blog/the-weekend-pile-is-not-a-system.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['closing-the-inbox-is-not-done', 'silence-is-not-a-decision', 'follow-up-is-a-system'],
+  },
+  {
     slug: 'a-voice-note-dump-is-not-a-reply',
     title: 'A voice note dump is not a reply',
     dek: 'A long clip is not the next line.',
