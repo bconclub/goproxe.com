@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ill-get-back-to-you-is-not-a-reply',
+    title: 'I\'ll get back to you is not a reply',
+    dek: 'Parking language is not the desk.',
+    date: '2026-09-04',
+    thumbnail: '/blog/ill-get-back-to-you-is-not-a-reply.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['silence-is-not-a-decision', 'qualify-before-you-book', 'when-they-ask-for-a-person', 'follow-up-is-a-system'],
+  },
+  {
     slug: 'when-they-ask-for-a-person',
     title: 'When they ask for a person',
     dek: '"Can I talk to someone" is not a dump. The desk still asks, then hands the thread over.',
