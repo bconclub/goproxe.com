@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-voice-note-dump-is-not-a-reply',
+    title: 'A voice note dump is not a reply',
+    dek: 'A long clip is not the next line.',
+    date: '2026-09-04',
+    thumbnail: '/blog/a-voice-note-dump-is-not-a-reply.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['noted-is-not-a-next-line', 'seen-is-not-a-reply', 'ill-get-back-to-you-is-not-a-reply'],
+  },
+  {
     slug: 'saving-the-contact-is-not-done',
     title: 'Saving the contact is not done',
     dek: 'A new contact is a file. It is not the desk.',
