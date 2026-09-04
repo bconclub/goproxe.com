@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-status-is-not-a-message',
+    title: 'A status is not a message',
+    dek: 'The CRM moved. The lead did not hear you.',
+    date: '2026-09-04',
+    thumbnail: '/blog/a-status-is-not-a-message.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['ill-get-back-to-you-is-not-a-reply', 'silence-is-not-a-decision', 'follow-up-is-a-system', 'qualify-before-you-book'],
+  },
+  {
     slug: 'ill-get-back-to-you-is-not-a-reply',
     title: 'I\'ll get back to you is not a reply',
     dek: 'Parking language is not the desk.',
