@@ -45,3 +45,7 @@ next-env.d.ts
 .claude/state/
 .next-chk/
 .next-alt/
+
+# Narrated blog audio: generated on the VPS at deploy (scripts/gen-blog-audio.mjs)
+/public/blog-audio/
+/blog-audio-cache/

@@ -134,7 +134,7 @@ export function BlogPostWrapper({
 
           <BlogShareRow url={pageUrl} title={title} />
 
-          <BlogListen content={articleContent} duration={readTime} />
+          <BlogListen slug={slug} duration={readTime} />
 
           <article className={styles.body} style={{ marginTop: '24px' }}>
             <BlogToc items={tocItems} />
