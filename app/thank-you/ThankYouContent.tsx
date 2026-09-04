@@ -14,7 +14,7 @@ const FALLBACK_EMAIL = 'brands@bconclub.com'
 export default function ThankYouContent() {
   const params = useSearchParams()
   /** Dodo sends the buyer back here with ?checkout=success after payment. */
-  const paid = params.get('checkout') === 'success'
+  const paid = params?.get('checkout') === 'success'
 
   const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
