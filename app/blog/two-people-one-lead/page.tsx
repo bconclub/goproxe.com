@@ -26,8 +26,8 @@ If both of you are online and neither owns the chat, you do not have coverage. Y
 
 Owner replies on WhatsApp. Partner replies on Instagram. Different fee.
 Night shift rewrites the morning promise.
-Both book a slot. Neither checks the calendar.
-Handoff is a screenshot with no thread.
+Both book a slot. Neither checks the calendar. The calendar is not the desk.
+Handoff is a screenshot with no thread. Handoff without starting over.
 
 You can name who speaks next. You can open one thread and see every ask and every slot.
 If the lead has to reconcile two chats, you did not desk. You split.
@@ -140,8 +140,8 @@ export default function TwoPeopleOneLeadPage() {
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Owner replies on WhatsApp. Partner replies on Instagram. Different fee.</p>
               <p>Night shift rewrites the morning promise.</p>
-              <p>Both book a slot. Neither checks the calendar.</p>
-              <p>Handoff is a screenshot with no thread.</p>
+              <p>Both book a slot. Neither checks the calendar. <a href="/blog/the-calendar-is-not-the-desk">The calendar is not the desk</a>.</p>
+              <p>Handoff is a screenshot with no thread. <a href="/blog/handoff-without-starting-over">Handoff without starting over</a>.</p>
             </section>
 
             <section className={styles.section}>
