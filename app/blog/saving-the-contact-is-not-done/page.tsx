@@ -132,8 +132,8 @@ export default function SavingTheContactIsNotDonePage() {
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Save contact. <a href="/blog/closing-the-inbox-is-not-done">Close the chat</a>.</p>
-              <p>Add to CRM. Leave New.</p>
-              <p>Screenshot the number into Notes. No reply.</p>
+              <p>Add to CRM. <a href="/blog/a-status-is-not-a-message">Leave New</a>.</p>
+              <p>Screenshot the number into Notes. <a href="/blog/noted-is-not-a-next-line">No reply</a>.</p>
               <p>Forward the vCard to the group. No line back to the lead.</p>
             </section>
 
