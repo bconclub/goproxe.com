@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'two-people-one-lead',
+    title: 'Two people, one lead',
+    dek: 'Two humans on the same chat is not coverage.',
+    date: '2026-09-04',
+    thumbnail: '/blog/two-people-one-lead.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['one-number-a-whole-team', 'handoff-without-starting-over', 'when-they-ask-for-a-person', 'conversation-that-books'],
+  },
+  {
     slug: 'a-status-is-not-a-message',
     title: 'A status is not a message',
     dek: 'The CRM moved. The lead did not hear you.',
