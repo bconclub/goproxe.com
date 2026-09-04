@@ -45,7 +45,7 @@ export const BLOG_POSTS: BlogPost[] = [
     thumbnail: '/blog/a-no-show-is-still-a-lead.png',
     trade: 'product',
     wordCount: 450,
-    related: ['after-they-book', 'silence-is-not-a-decision', 'follow-up-is-a-system'],
+    related: ['after-they-book', 'a-reschedule-needs-a-slot', 'silence-is-not-a-decision', 'follow-up-is-a-system'],
   },
   {
     slug: 'seen-is-not-a-reply',
