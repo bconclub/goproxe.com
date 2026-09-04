@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
+import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 
 /**
  * The bots' dial button. One authenticated POST places an outreach call from
@@ -11,7 +12,8 @@ import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
  * comment in api/callback/route.ts). Dynamic variables are the supported
  * per-call substitution and need no override permissions on the agent.
  *
- * Auth: Authorization: Bearer <DIAL_API_KEY>. Fail closed.
+ * Auth: Authorization: Bearer <DIAL_API_KEY> (the bots) or <BDR_DIAL_KEY>
+ * (the BDR team's passcode, typed into /bdr). Fail closed.
  *
  * SAFETY - the batch lock lives HERE, not in the bots' judgment:
  * - DIAL_ALLOWLIST (csv of numbers): while set, ONLY those numbers can be
@@ -25,8 +27,12 @@ import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
  *   vars?: { business_name, vertical, city, first_name, research_hook, last_summary },
  *   dry_run?: true      // resolve + report, place no call
  * }
- * Results (recording + transcript + stage) land on ARC via the ElevenLabs
- * post-call webhook; nothing is written to PROXe.
+ * Results (recording + transcript + summary) land on ARC AND in PROXe via the
+ * ElevenLabs post-call webhook (api/webhooks/elevenlabs): the call shows on
+ * the Calls page as outbound / outreach, and the lead is created if new.
+ *
+ * Quiet hours (8 PM - 9 AM IST) are refused here too: an AI cold call at
+ * night is the one thing no BDR should be able to do by accident.
  */
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
@@ -50,11 +56,12 @@ function toE164(input: string): string | null {
 }
 
 export async function POST(request: Request) {
-  const expected = process.env.DIAL_API_KEY
   const got = (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '')
-  if (!expected || got !== expected) {
+  const keys = [process.env.DIAL_API_KEY, process.env.BDR_DIAL_KEY].filter((k): k is string => !!k)
+  if (!got || !keys.includes(got)) {
     return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   }
+  const caller = got === process.env.BDR_DIAL_KEY ? 'bdr' : 'bot'
   if (!API_KEY) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
@@ -85,7 +92,11 @@ export async function POST(request: Request) {
 
   const last = await lastCallbackAt(phone)
   if (last && Date.now() - last.getTime() < PHONE_COOLDOWN_MS) {
-    return NextResponse.json({ ok: false, reason: 'recently_called' })
+    return NextResponse.json({ ok: false, reason: 'recently_called', last_called_at: last.toISOString() })
+  }
+  const now = new Date()
+  if (isQuiet(now) && body.dry_run !== true) {
+    return NextResponse.json({ ok: false, reason: 'quiet_hours', opens_at: nextOpenTime(now).toISOString() }, { status: 409 })
   }
 
   const v = body.vars && typeof body.vars === 'object' ? body.vars : {}
@@ -124,7 +135,7 @@ export async function POST(request: Request) {
   }
 
   const out = await res.json().catch(() => ({}))
-  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}` }).catch(() => {})
-  console.log(`[outreach-dial] dialed ${phone} agent=${agentKey}`)
+  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}_${caller}` }).catch(() => {})
+  console.log(`[outreach-dial] dialed ${phone} agent=${agentKey} by=${caller}`)
   return NextResponse.json({ ok: true, dialed: phone, agent: agentKey, conversation_id: out.conversation_id ?? null })
 }
