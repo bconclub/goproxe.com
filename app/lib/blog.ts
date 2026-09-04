@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'noted-is-not-a-next-line',
+    title: 'Noted is not a next line',
+    dek: 'Parking the ask is not the next line.',
+    date: '2026-09-04',
+    thumbnail: '/blog/noted-is-not-a-next-line.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['ill-get-back-to-you-is-not-a-reply', 'seen-is-not-a-reply', 'a-status-is-not-a-message'],
+  },
+  {
     slug: 'a-no-show-is-still-a-lead',
     title: 'A no-show is still a lead',
     dek: 'Empty chair is not closed.',
