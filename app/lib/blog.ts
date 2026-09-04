@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-reschedule-needs-a-slot',
+    title: 'A reschedule needs a slot',
+    dek: 'Let\'s move it is not done.',
+    date: '2026-09-04',
+    thumbnail: '/blog/a-reschedule-needs-a-slot.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['a-no-show-is-still-a-lead', 'the-calendar-is-not-the-desk', 'after-they-book', 'silence-is-not-a-decision'],
+  },
+  {
     slug: 'the-group-chat-is-not-the-desk',
     title: 'The group chat is not the desk',
     dek: 'Staff chatter is not the lead thread.',
