@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'the-group-chat-is-not-the-desk',
+    title: 'The group chat is not the desk',
+    dek: 'Staff chatter is not the lead thread.',
+    date: '2026-09-04',
+    thumbnail: '/blog/the-group-chat-is-not-the-desk.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['two-people-one-lead', 'when-they-ask-for-a-person', 'handoff-without-starting-over', 'seen-is-not-a-reply'],
+  },
+  {
     slug: 'a-no-show-is-still-a-lead',
     title: 'A no-show is still a lead',
     dek: 'Empty chair is not closed.',
