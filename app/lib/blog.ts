@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-draft-is-not-a-reply',
+    title: 'A draft is not a reply',
+    dek: 'Typing and leaving it is not the desk.',
+    date: '2026-09-04',
+    thumbnail: '/blog/a-draft-is-not-a-reply.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['noted-is-not-a-next-line', 'seen-is-not-a-reply', 'ill-get-back-to-you-is-not-a-reply'],
+  },
+  {
     slug: 'a-forward-is-not-a-handoff',
     title: 'A forward is not a handoff',
     dek: 'Passing the chat is not the desk.',
