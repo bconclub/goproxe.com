@@ -6,7 +6,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
  * The BDR team's dial page. One form, one call. Posts to /api/outreach-dial
  * with the team passcode (BDR_DIAL_KEY on the server); every lock lives in
  * that route: allowlist, one call per number per 24h, quiet hours 8 PM-9 AM
- * IST. The call itself is placed by Proxy (ElevenLabs); the recording,
+ * IST. The call itself is placed by PROXe (ElevenLabs); the recording,
  * transcript and summary show up on the PROXe Calls page as an outbound
  * outreach call, and the lead is created there if it is new.
  *
@@ -113,9 +113,9 @@ export default function BdrDialPage() {
   return (
     <main style={S.main}>
       <div style={S.wrap}>
-        <h1 style={S.h1}>Proxy dialer</h1>
+        <h1 style={S.h1}>PROXe dialer</h1>
         <p style={S.lede}>
-          Fill what you know, pick the agent, dial. Proxy makes the call and books the demo. The recording and summary show on the PROXe Calls page.
+          Fill what you know, pick the agent, dial. PROXe makes the call and books the demo. The recording and summary show on the PROXe Calls page.
         </p>
 
         <div>
@@ -166,7 +166,7 @@ export default function BdrDialPage() {
         </div>
 
         <div>
-          <label style={S.label}>Why them (one line Proxy can say)</label>
+          <label style={S.label}>Why them (one line PROXe can say)</label>
           <input style={S.field} value={hook} onChange={(e) => setHook(e.target.value)} placeholder="You run Meta ads for the clinic, and ads only pay when every enquiry gets answered." />
         </div>
 
@@ -182,7 +182,7 @@ export default function BdrDialPage() {
             Check
           </button>
           <button type="button" disabled={!canDial || busy} onClick={() => dial(false)} style={{ ...S.dial, opacity: !canDial || busy ? 0.4 : 1 }}>
-            {busy ? 'Dialling…' : 'Dial with Proxy'}
+            {busy ? 'Dialling…' : 'Dial with PROXe'}
           </button>
         </div>
 
@@ -194,7 +194,7 @@ export default function BdrDialPage() {
         )}
 
         <p style={S.fine}>
-          One call per number per day. No calls 8 PM to 9 AM IST. Proxy asks for the demo once, sends the WhatsApp itself, and hangs up under three minutes.
+          One call per number per day. No calls 8 PM to 9 AM IST. PROXe asks for the demo once, sends the WhatsApp itself, and hangs up under three minutes.
         </p>
       </div>
     </main>
