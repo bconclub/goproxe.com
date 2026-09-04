@@ -448,13 +448,19 @@ export async function recordCallTranscript(input: {
     const prior = (ctx.voice || {}) as Record<string, any>
     const transcripts = Array.isArray(prior.transcripts) ? prior.transcripts : []
 
-    // Only fill a blank name — never overwrite one already on the record. A
-    // name typed into a form is more reliable than one transcribed off a phone
-    // line, and a later call must not downgrade it.
+    // A name heard on a call is a speech-to-text GUESS and is never written to
+    // customer_name - not even into a blank one. "Nishant" filled a blank here
+    // on 26 Aug and the dashboard then greeted a man called Arun by it in
+    // every WhatsApp until a human corrected it. The heard name is stored as
+    // an unconfirmed candidate (unified_context.name_candidate) for a human to
+    // confirm on the lead card; the dashboard's outbound copy ignores it.
     const existingName =
       typeof row.customer_name === 'string' ? row.customer_name.trim() : ''
-    const nameUpdate =
-      !existingName && input.callerName ? { customer_name: input.callerName } : {}
+    const nameUpdate = {}
+    const candidate =
+      input.callerName && input.callerName.trim().toLowerCase() !== existingName.toLowerCase()
+        ? { name_candidate: { value: input.callerName.trim(), source: 'voice_transcript', at: new Date().toISOString(), conversation_id: input.conversationId ?? null } }
+        : {}
 
     // Same conversation arriving twice (a retry) replaces rather than appends.
     const withoutThis = transcripts.filter(
@@ -469,6 +475,7 @@ export async function recordCallTranscript(input: {
         last_interaction_at: new Date().toISOString(),
         unified_context: {
           ...ctx,
+          ...candidate,
           voice: {
             ...prior,
             last_transcript_at: new Date().toISOString(),
