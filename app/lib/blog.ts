@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'when-they-ask-for-a-person',
+    title: 'When they ask for a person',
+    dek: '"Can I talk to someone" is not a dump. The desk still asks, then hands the thread over.',
+    date: '2026-09-04',
+    thumbnail: '/blog/when-they-ask-for-a-person.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['handoff-without-starting-over', 'qualify-before-you-book', 'one-memory-every-channel', 'who-answers-the-customer'],
+  },
+  {
     slug: 'people-miss-conversations',
     title: 'People miss conversations. Then they lose the lead.',
     dek: 'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
