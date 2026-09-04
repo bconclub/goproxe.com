@@ -680,9 +680,9 @@ export async function recordCallTranscript(input: {
       const biz = String(input.businessType || '').trim().toLowerCase()
       const looksLikeBiz = biz.length > 2 && existingName.toLowerCase().includes(biz)
       if (!existingName || phoneLike(existingName)) {
-        nameUpdate = { customer_name: caller }
+        nameUpdate = {} // a heard name is a GUESS - kept as name_candidate below, never written here
       } else if (COMPANYISH.test(existingName) || looksLikeBiz) {
-        nameUpdate = { customer_name: caller }
+        nameUpdate = {} // a heard name is a GUESS - kept as name_candidate below, never written here
         movedCompany = existingName
       }
     }
@@ -700,6 +700,16 @@ export async function recordCallTranscript(input: {
       ? { web: { ...webCtx, profile: { ...webProfile, company: movedCompany } } }
       : {}
 
+    // Speech-to-text mishears Indian names. "Nishant" filled a blank name on
+    // 26 Aug and the dashboard greeted a man called Arun by it in every
+    // WhatsApp until a human corrected it. The heard name is stored as an
+    // unconfirmed candidate for a human to confirm on the lead card; the
+    // dashboard's outbound copy ignores it (core lib/leadName).
+    const candidate =
+      caller && caller.toLowerCase() !== existingName.toLowerCase()
+        ? { name_candidate: { value: caller, source: 'voice_transcript', at: new Date().toISOString(), conversation_id: input.conversationId ?? null } }
+        : {}
+
     await supabase
       .from('all_leads')
       .update({
@@ -708,6 +718,7 @@ export async function recordCallTranscript(input: {
         last_interaction_at: new Date().toISOString(),
         unified_context: {
           ...ctx,
+          ...candidate,
           ...companyFold,
           voice: {
             ...prior,
@@ -735,13 +746,11 @@ export async function recordCallTranscript(input: {
 
     // Audit trail: renames must be visible in the Activity feed, same as
     // dashboard edits ("Lead updated by ...").
-    if (nameUpdate.customer_name) {
+    if ((candidate as any).name_candidate) {
       await supabase.from('activities').insert({
         lead_id: row.id,
         activity_type: 'note',
-        note: `Lead updated by PROXe: Name: ${existingName || 'empty'} -> ${caller}`
-          + (movedCompany ? `; Brand name: ${movedCompany}` : '')
-          + ' (heard on the call)',
+        note: `Heard on the call: "${caller}" - unconfirmed, not used in messages. Confirm it on the lead card if it is right.`,
         created_by: 'proxe-voice',
       }).then(({ error }: any) => { if (error) console.warn('[leadsSupabase] rename audit failed:', error.message) })
     }
