@@ -4,7 +4,7 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 
 /**
  * The bots' dial button. One authenticated POST places an outreach call from
- * one of the three PROXe outreach agents, with the prospect's story passed as
+ * one of the three PROXe outreach agents (Intro DM = dm, Intro Cold = noname, Follow-up = warm), with the prospect's story passed as
  * ElevenLabs DYNAMIC VARIABLES ({{business_name}} etc. in the agent prompts).
  *
  * Variables, never conversation_config_override: overrides shipped twice on

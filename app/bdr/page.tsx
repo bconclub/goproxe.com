@@ -17,9 +17,9 @@ import { useEffect, useState, type CSSProperties } from 'react'
 type AgentKey = 'dm' | 'noname' | 'warm'
 
 const AGENTS: Array<{ key: AgentKey; label: string; when: string }> = [
-  { key: 'dm', label: 'Sell DM', when: "You know the decision maker's first name." },
-  { key: 'noname', label: 'Sell Cold', when: 'You only know the business. Reception may answer.' },
-  { key: 'warm', label: 'Sell Warm', when: 'Second touch. Paste what happened last time.' },
+  { key: 'dm', label: 'Intro DM', when: "First call, you know the decision maker's first name." },
+  { key: 'noname', label: 'Intro Cold', when: 'First call, you only know the business. Reception may answer.' },
+  { key: 'warm', label: 'Follow-up', when: 'Second touch. Paste what happened last time.' },
 ]
 
 const VERTICALS = ['clinic', 'coaching academy', 'real estate', 'salon / spa', 'restaurant', 'retail store', 'marketing agency', 'gym', 'school', 'other']
