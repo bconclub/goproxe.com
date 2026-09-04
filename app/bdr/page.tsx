@@ -1,202 +1,362 @@
 'use client'
 
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 /**
- * The BDR team's dial page. One form, one call. Posts to /api/outreach-dial
- * with the team passcode (BDR_DIAL_KEY on the server); every lock lives in
- * that route: allowlist, one call per number per 24h, quiet hours 8 PM-9 AM
- * IST. The call itself is placed by PROXe (ElevenLabs); the recording,
- * transcript and summary show up on the PROXe Calls page as an outbound
- * outreach call, and the lead is created there if it is new.
+ * The BDR team's dial page. Fill what you know, pick the agent, dial. The
+ * right-hand panel shows the exact first line PROXe will say with those
+ * values, then follows the call live (ringing, talking, done + summary) via
+ * /api/outreach-dial/status. Every lock lives server-side in the dial
+ * route: allowlist, one call per number per 24h, quiet hours 8 PM-9 AM IST.
  *
- * Inline styles on purpose: this site has no Tailwind, and the page must
- * never pull the marketing stylesheet along.
+ * Inline CSS in one <style> block on purpose: this site has no Tailwind,
+ * and the page must never pull the marketing stylesheet along.
  */
 
 type AgentKey = 'dm' | 'noname' | 'warm'
+type Vars = { first: string; business: string; vertical: string; city: string; hook: string; last: string }
+type Recent = { at: number; phone: string; agent: AgentKey; business: string; conv: string | null; outcome?: string }
+type Live = { status: string; duration: number | null; summary: string | null; last_lines: string[]; caller_spoke: boolean; termination: string | null; turns: number }
 
-const AGENTS: Array<{ key: AgentKey; label: string; when: string }> = [
-  { key: 'dm', label: 'Intro DM', when: "First call, you know the decision maker's first name." },
-  { key: 'noname', label: 'Intro Cold', when: 'First call, you only know the business. Reception may answer.' },
-  { key: 'warm', label: 'Follow-up', when: 'Second touch. Paste what happened last time.' },
+const AGENTS: Array<{ key: AgentKey; label: string; when: string; opener: (v: Vars) => string; second: (v: Vars) => string }> = [
+  {
+    key: 'dm',
+    label: 'Intro DM',
+    when: 'First call. You know the decision maker’s name.',
+    opener: (v) => `Hi ${v.first || 'there'}, this is PROXe. I am an AI, and I’m calling to introduce myself. Can I have thirty seconds?`,
+    second: (v) => `I take care of the customer side of a business, every enquiry and chat on WhatsApp, the website and Instagram. Would something like that be useful at ${v.business || 'your business'}?`,
+  },
+  {
+    key: 'noname',
+    label: 'Intro Cold',
+    when: 'First call. You only know the business. Reception may answer.',
+    opener: (v) => `Hi, is this ${v.business || 'the business'}? This is PROXe, an AI. Can I have thirty seconds?`,
+    second: () => 'I take care of the customer side of a business. Could I speak to whoever handles enquiries or marketing?',
+  },
+  {
+    key: 'warm',
+    label: 'Follow-up',
+    when: 'Second touch. Paste what happened last time.',
+    opener: (v) => `Hi ${v.first || 'there'}, PROXe here, following up like I said I would. Is now okay?`,
+    second: (v) => `${v.last ? v.last.replace(/\.?$/, '.') : 'Last time we spoke about PROXe.'} What was left open on your side?`,
+  },
 ]
 
-const VERTICALS = ['clinic', 'coaching academy', 'real estate', 'salon / spa', 'restaurant', 'retail store', 'marketing agency', 'gym', 'school', 'other']
+const VERTICALS = ['clinic', 'dental clinic', 'coaching academy', 'school', 'real estate', 'salon / spa', 'gym', 'restaurant', 'retail store', 'marketing agency', 'other']
 
-const S: Record<string, CSSProperties> = {
-  main: { minHeight: '100vh', background: '#0A0A0A', color: '#fff', padding: '24px 16px 48px', fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, sans-serif' },
-  wrap: { maxWidth: 440, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 },
-  h1: { fontSize: 22, fontWeight: 800, margin: 0 },
-  lede: { fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: '4px 0 8px', lineHeight: 1.45 },
-  label: { display: 'block', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.5)', marginBottom: 6 },
-  field: { width: '100%', boxSizing: 'border-box', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '12px 12px', fontSize: 16, outline: 'none' },
-  agentBtn: { textAlign: 'left', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '10px 12px', cursor: 'pointer', width: '100%' },
-  agentBtnOn: { borderColor: '#fff', background: 'rgba(255,255,255,0.12)' },
-  row2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
-  btnRow: { display: 'flex', gap: 8, paddingTop: 8 },
-  check: { flex: 1, borderRadius: 10, border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: '#fff', padding: '12px', fontSize: 14, fontWeight: 600, cursor: 'pointer' },
-  dial: { flex: 2, borderRadius: 10, border: 0, background: '#fff', color: '#000', padding: '12px', fontSize: 14, fontWeight: 800, cursor: 'pointer' },
-  fine: { fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5, paddingTop: 8 },
+const REASONS: Record<string, string> = {
+  unauthorized: 'Wrong passcode.',
+  bad_phone: 'Not an Indian mobile number. Ten digits.',
+  not_in_allowlist: 'This number is not on the approved list for this batch. Ask Z.',
+  recently_called: 'Already called in the last 24 hours. PROXe will not dial the same number twice in a day.',
+  quiet_hours: 'Quiet hours, 8 PM to 9 AM IST. Dial again after 9.',
+  unknown_agent: 'Unknown agent.',
 }
 
 export default function BdrDialPage() {
   const [key, setKey] = useState('')
   const [phone, setPhone] = useState('')
   const [agent, setAgent] = useState<AgentKey>('dm')
-  const [firstName, setFirstName] = useState('')
+  const [first, setFirst] = useState('')
   const [business, setBusiness] = useState('')
   const [vertical, setVertical] = useState('clinic')
   const [city, setCity] = useState('Bangalore')
   const [hook, setHook] = useState('')
-  const [lastSummary, setLastSummary] = useState('')
+  const [last, setLast] = useState('')
   const [busy, setBusy] = useState(false)
-  const [result, setResult] = useState<{ ok: boolean; text: string; conv?: string | null } | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [conv, setConv] = useState<string | null>(null)
+  const [live, setLive] = useState<Live | null>(null)
+  const [recent, setRecent] = useState<Recent[]>([])
+  const pollRef = useRef<number | null>(null)
 
   useEffect(() => {
-    try { setKey(localStorage.getItem('bdr-dial-key') || '') } catch { /* private mode */ }
+    try {
+      setKey(localStorage.getItem('bdr-dial-key') || '')
+      setRecent(JSON.parse(localStorage.getItem('bdr-recent') || '[]'))
+    } catch { /* private mode */ }
   }, [])
 
-  const digits = phone.replace(/\D/g, '')
-  const phoneOk = digits.length === 10 || (digits.length === 12 && digits.startsWith('91'))
-  const canDial = !!key && phoneOk && !!business.trim() && (agent !== 'dm' || !!firstName.trim()) && (agent !== 'warm' || !!lastSummary.trim())
+  const digits = phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '')
+  const phoneOk = digits.length === 10 && /^[6-9]/.test(digits)
+  const needFirst = agent === 'dm'
+  const needLast = agent === 'warm'
+  const missing: string[] = []
+  if (!key.trim()) missing.push('passcode')
+  if (!phoneOk) missing.push('a 10-digit phone')
+  if (!business.trim()) missing.push('the business name')
+  if (needFirst && !first.trim()) missing.push('the first name')
+  if (needLast && !last.trim()) missing.push('what happened last time')
+  const canDial = missing.length === 0 && !busy
 
-  async function dial(dryRun: boolean) {
-    setBusy(true); setResult(null)
-    try { localStorage.setItem('bdr-dial-key', key) } catch { /* ignore */ }
+  const vars: Vars = { first: first.trim(), business: business.trim(), vertical, city: city.trim(), hook: hook.trim(), last: last.trim() }
+  const A = AGENTS.find((a) => a.key === agent)!
+  const script = useMemo(() => ({ opener: A.opener(vars), second: A.second(vars) }), [A, first, business, last]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function remember(r: Recent) {
+    const next = [r, ...recent.filter((x) => x.conv !== r.conv)].slice(0, 12)
+    setRecent(next)
+    try { localStorage.setItem('bdr-recent', JSON.stringify(next)) } catch { /* ignore */ }
+  }
+
+  async function dial() {
+    setBusy(true); setError(null); setLive(null); setConv(null)
+    try { localStorage.setItem('bdr-dial-key', key.trim()) } catch { /* ignore */ }
     try {
       const res = await fetch('/api/outreach-dial', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key.trim()}` },
         body: JSON.stringify({
-          phone: digits,
-          agent,
-          dry_run: dryRun,
+          phone: digits, agent,
           vars: {
-            first_name: firstName.trim() || undefined,
-            business_name: business.trim(),
-            vertical,
-            city: city.trim() || undefined,
-            research_hook: hook.trim() || undefined,
-            last_summary: lastSummary.trim() || undefined,
+            first_name: vars.first || undefined, business_name: vars.business, vertical, city: vars.city || undefined,
+            research_hook: vars.hook || undefined, last_summary: vars.last || undefined,
           },
         }),
       })
       const j = await res.json().catch(() => ({}))
       if (res.ok && j.ok) {
-        setResult({
-          ok: true,
-          text: dryRun
-            ? `Would dial ${j.would_dial} with ${AGENTS.find((a) => a.key === agent)?.label}. Nothing placed.`
-            : `Ringing ${j.dialed}. The call lands on the PROXe Calls page about a minute after it ends.`,
-          conv: j.conversation_id ?? null,
-        })
-        if (!dryRun) setPhone('')
+        setConv(j.conversation_id ?? null)
+        setLive({ status: 'initiated', duration: null, summary: null, last_lines: [], caller_spoke: false, termination: null, turns: 0 })
+        remember({ at: Date.now(), phone: digits, agent, business: vars.business, conv: j.conversation_id ?? null })
+        setPhone('')
       } else {
-        const why: Record<string, string> = {
-          unauthorized: 'Wrong passcode.',
-          bad_phone: 'That is not an Indian mobile number (10 digits).',
-          not_in_allowlist: 'This number is not on the approved list for this batch. Ask Z.',
-          recently_called: `Already called in the last 24 hours${j.last_called_at ? ` (${new Date(j.last_called_at).toLocaleString('en-IN')})` : ''}. Not dialling again.`,
-          quiet_hours: `Quiet hours (8 PM to 9 AM IST). Opens ${j.opens_at ? new Date(j.opens_at).toLocaleString('en-IN') : 'at 9 AM'}.`,
-          unknown_agent: 'Unknown agent.',
-        }
-        setResult({ ok: false, text: why[j.reason] || `Failed: ${j.reason || res.status}` })
+        setError(REASONS[j.reason] || `Could not dial: ${j.reason || res.status}. Try again, then tell Z.`)
       }
     } catch (e) {
-      setResult({ ok: false, text: `Network error: ${(e as Error).message}` })
+      setError(`No connection: ${(e as Error).message}`)
     } finally {
       setBusy(false)
     }
   }
 
+  // Follow the call until it ends.
+  useEffect(() => {
+    if (!conv) return
+    let stopped = false
+    const tick = async () => {
+      try {
+        const r = await fetch(`/api/outreach-dial/status?id=${conv}`, { headers: { Authorization: `Bearer ${key.trim()}` }, cache: 'no-store' })
+        const j = await r.json()
+        if (stopped) return
+        if (j.ok) {
+          setLive(j)
+          if (j.status === 'done' || j.status === 'failed') {
+            const secs = Number(j.duration || 0)
+            const outcome = j.status === 'failed' || !j.caller_spoke ? 'no answer' : `${Math.floor(secs / 60)}m ${secs % 60}s`
+            setRecent((cur) => {
+              const next = cur.map((x) => (x.conv === conv ? { ...x, outcome } : x))
+              try { localStorage.setItem('bdr-recent', JSON.stringify(next)) } catch { /* ignore */ }
+              return next
+            })
+            return
+          }
+        }
+      } catch { /* keep polling */ }
+      pollRef.current = window.setTimeout(tick, 4000)
+    }
+    tick()
+    return () => { stopped = true; if (pollRef.current) window.clearTimeout(pollRef.current) }
+  }, [conv]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const stage = !live ? null
+    : live.status === 'done' ? (live.caller_spoke ? 'done' : 'noanswer')
+    : live.status === 'failed' ? 'failed'
+    : live.status === 'processing' ? 'wrapping'
+    : live.turns > 1 ? 'talking'
+    : 'ringing'
+
+  const stageLabel = stage === 'ringing' ? 'Ringing'
+    : stage === 'talking' ? `Talking${live?.duration ? ` · ${live.duration}s` : ''}`
+    : stage === 'wrapping' ? 'Call ended, writing the summary'
+    : stage === 'done' ? `Done · ${live?.duration ?? 0}s`
+    : stage === 'noanswer' ? 'No answer'
+    : 'Could not connect'
+
   return (
-    <main style={S.main}>
-      <div style={S.wrap}>
-        <h1 style={S.h1}>PROXe dialer</h1>
-        <p style={S.lede}>
-          Fill what you know, pick the agent, dial. PROXe makes the call and books the demo. The recording and summary show on the PROXe Calls page.
-        </p>
+    <main className="bdr">
+      <style>{CSS}</style>
 
-        <div>
-          <label style={S.label}>Team passcode</label>
-          <input style={S.field} type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder="From Z" autoComplete="off" />
+      <section className="form">
+        <header>
+          <p className="kicker">PROXe dialer</p>
+          <h1>Put PROXe on the phone with {first.trim() || business.trim() || 'your next prospect'}.</h1>
+          <p className="lede">Fill in what you know. PROXe introduces itself, handles the objections, books the fifteen-minute demo and sends the WhatsApp. The recording and summary land on the Calls page.</p>
+        </header>
+
+        <div className="row">
+          <label>
+            <span>Passcode</span>
+            <input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder="From Z" autoComplete="off" />
+          </label>
+          <label>
+            <span>Mobile number</span>
+            <div className="phone">
+              <b>+91</b>
+              <input inputMode="numeric" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98450 12345" aria-invalid={phone.length > 0 && !phoneOk} />
+            </div>
+          </label>
         </div>
 
-        <div>
-          <label style={S.label}>Phone (10 digits)</label>
-          <input style={S.field} inputMode="numeric" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98450 12345" />
-        </div>
+        <fieldset className="agents">
+          <legend>Which call is this?</legend>
+          {AGENTS.map((a) => (
+            <label key={a.key} className={agent === a.key ? 'on' : ''}>
+              <input type="radio" name="agent" value={a.key} checked={agent === a.key} onChange={() => setAgent(a.key)} />
+              <b>{a.label}</b>
+              <small>{a.when}</small>
+            </label>
+          ))}
+        </fieldset>
 
-        <div>
-          <label style={S.label}>Agent</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {AGENTS.map((a) => (
-              <button key={a.key} type="button" onClick={() => setAgent(a.key)} style={{ ...S.agentBtn, ...(agent === a.key ? S.agentBtnOn : {}) }}>
-                <span style={{ display: 'block', fontSize: 14, fontWeight: 700 }}>{a.label}</span>
-                <span style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{a.when}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label style={S.label}>Business name</label>
-          <input style={S.field} value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Smile Dental Clinic" />
-        </div>
+        <label>
+          <span>Business</span>
+          <input value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Smile Dental Clinic" />
+        </label>
 
         {agent !== 'noname' && (
-          <div>
-            <label style={S.label}>Decision maker&apos;s first name{agent === 'dm' ? '' : ' (if known)'}</label>
-            <input style={S.field} value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Ramesh" />
-          </div>
+          <label>
+            <span>Decision maker&apos;s first name{needFirst ? '' : ' (if known)'}</span>
+            <input value={first} onChange={(e) => setFirst(e.target.value)} placeholder="Ramesh" />
+          </label>
         )}
 
-        <div style={S.row2}>
-          <div>
-            <label style={S.label}>Type of business</label>
-            <select style={S.field} value={vertical} onChange={(e) => setVertical(e.target.value)}>
+        <div className="row">
+          <label>
+            <span>Type of business</span>
+            <select value={vertical} onChange={(e) => setVertical(e.target.value)}>
               {VERTICALS.map((v) => <option key={v} value={v}>{v}</option>)}
             </select>
-          </div>
-          <div>
-            <label style={S.label}>City</label>
-            <input style={S.field} value={city} onChange={(e) => setCity(e.target.value)} />
-          </div>
+          </label>
+          <label>
+            <span>City</span>
+            <input value={city} onChange={(e) => setCity(e.target.value)} />
+          </label>
         </div>
 
-        <div>
-          <label style={S.label}>Why them (one line PROXe can say)</label>
-          <input style={S.field} value={hook} onChange={(e) => setHook(e.target.value)} placeholder="You run Meta ads for the clinic, and ads only pay when every enquiry gets answered." />
-        </div>
+        <label>
+          <span>Why them <em>one line PROXe can say if they ask &ldquo;why me&rdquo;</em></span>
+          <input value={hook} onChange={(e) => setHook(e.target.value)} placeholder="You run Meta ads for the clinic, and ads only pay when every enquiry gets answered." />
+        </label>
 
         {agent === 'warm' && (
-          <div>
-            <label style={S.label}>What happened last time</label>
-            <textarea style={{ ...S.field, resize: 'vertical' }} rows={3} value={lastSummary} onChange={(e) => setLastSummary(e.target.value)} placeholder="Spoke on Tuesday, asked for pricing on WhatsApp, said call back after the weekend." />
-          </div>
+          <label>
+            <span>What happened last time <em>PROXe opens by proving it remembers</em></span>
+            <textarea rows={3} value={last} onChange={(e) => setLast(e.target.value)} placeholder="Spoke on Tuesday, asked for pricing on WhatsApp, said call back after the weekend." />
+          </label>
         )}
 
-        <div style={S.btnRow}>
-          <button type="button" disabled={!canDial || busy} onClick={() => dial(true)} style={{ ...S.check, opacity: !canDial || busy ? 0.4 : 1 }}>
-            Check
+        <div className="cta">
+          <button type="button" className="dial" disabled={!canDial} onClick={dial}>
+            {busy ? 'Dialling…' : `Dial ${vars.first || vars.business || 'now'}`}
           </button>
-          <button type="button" disabled={!canDial || busy} onClick={() => dial(false)} style={{ ...S.dial, opacity: !canDial || busy ? 0.4 : 1 }}>
-            {busy ? 'Dialling…' : 'Dial with PROXe'}
-          </button>
+          <p className="hint">{missing.length ? `Needs ${missing.join(', ')}.` : 'One call per number per day. No calls 8 PM to 9 AM IST.'}</p>
         </div>
 
-        {result && (
-          <div style={{ borderRadius: 10, padding: '12px', fontSize: 14, border: `1px solid ${result.ok ? 'rgba(16,185,129,0.5)' : 'rgba(239,68,68,0.5)'}`, background: result.ok ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)' }}>
-            {result.text}
-            {result.conv && <span style={{ display: 'block', marginTop: 4, fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>conversation {result.conv}</span>}
+        {error && <p className="error" role="alert">{error}</p>}
+      </section>
+
+      <aside className="side">
+        <div className="script">
+          <p className="kicker">What PROXe will say</p>
+          <p className="line">&ldquo;{script.opener}&rdquo;</p>
+          <p className="then">then, once they say yes</p>
+          <p className="line dim">&ldquo;{script.second}&rdquo;</p>
+          <p className="foot">Voice: Raj. Under three minutes. Asks for the demo once, then sends the WhatsApp itself.</p>
+        </div>
+
+        {live && stage && (
+          <div className={`live ${stage}`} aria-live="polite">
+            <p className="kicker">{stageLabel}</p>
+            {stage === 'talking' && live.last_lines.map((l, i) => <p key={i} className="turn">{l}</p>)}
+            {stage === 'done' && <p className="summary">{live.summary || 'Summary is on the Calls page in a minute.'}</p>}
+            {stage === 'noanswer' && <p className="summary">They did not pick up, or hung up on the opener. PROXe will not redial today. Try tomorrow, or send the WhatsApp from the inbox.</p>}
+            {stage === 'failed' && <p className="summary">The number did not ring. Check the digits.</p>}
           </div>
         )}
 
-        <p style={S.fine}>
-          One call per number per day. No calls 8 PM to 9 AM IST. PROXe asks for the demo once, sends the WhatsApp itself, and hangs up under three minutes.
-        </p>
-      </div>
+        {recent.length > 0 && (
+          <div className="recent">
+            <p className="kicker">Your recent calls</p>
+            <ul>
+              {recent.map((r) => (
+                <li key={`${r.at}-${r.phone}`}>
+                  <span>{r.business || r.phone}</span>
+                  <small>{AGENTS.find((a) => a.key === r.agent)?.label} · {new Date(r.at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</small>
+                  <em>{r.outcome || '…'}</em>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
     </main>
   )
 }
+
+const CSS = `
+.bdr{--bg:#0d0b12;--panel:#15121d;--line:rgba(196,181,253,.14);--ink:#f3efff;--ink-2:#b9b0cf;--ink-3:#8b81a3;--accent:#a78bfa;--accent-ink:#1b0b3a;--ok:#5eead4;--warn:#fbbf24;--bad:#fb7185;
+  min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:32px;padding:32px 24px 64px;max-width:1080px;margin:0 auto;box-sizing:border-box}
+.bdr *{box-sizing:border-box}
+.bdr header{margin-bottom:8px}
+.bdr .kicker{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.bdr h1{font-size:clamp(26px,3.4vw,36px);line-height:1.1;letter-spacing:-.025em;font-weight:800;margin:0 0 10px}
+.bdr .lede{color:var(--ink-2);margin:0;max-width:60ch}
+.form{display:flex;flex-direction:column;gap:18px}
+.form label{display:flex;flex-direction:column;gap:6px;min-width:0}
+.form label>span{font-size:13px;font-weight:600;color:var(--ink-2)}
+.form label>span em{font-style:normal;font-weight:400;color:var(--ink-3);margin-left:6px}
+.form input,.form select,.form textarea{width:100%;font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:48px;outline:none;transition:border-color 150ms cubic-bezier(.16,1,.3,1),box-shadow 150ms cubic-bezier(.16,1,.3,1)}
+.form textarea{resize:vertical;min-height:88px}
+.form input::placeholder,.form textarea::placeholder{color:var(--ink-3)}
+.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(167,139,250,.22)}
+.form input[aria-invalid="true"]{border-color:var(--bad)}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.phone{display:flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding-left:14px;min-height:48px}
+.phone b{color:var(--ink-3);font-weight:600;margin-right:4px}
+.phone input{border:0;background:transparent;padding-left:6px;min-height:46px}
+.phone:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(167,139,250,.22)}
+.phone input:focus{box-shadow:none}
+.agents{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.agents legend{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px}
+.agents label{position:relative;display:flex;flex-direction:column;gap:4px;padding:12px 14px;min-height:78px;border:1px solid var(--line);border-radius:12px;background:var(--panel);cursor:pointer;transition:border-color 150ms cubic-bezier(.16,1,.3,1),background 150ms}
+.agents label:hover{border-color:rgba(167,139,250,.5)}
+.agents label.on{border-color:var(--accent);background:rgba(167,139,250,.1)}
+.agents input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.agents input:focus-visible+b{outline:2px solid var(--accent);outline-offset:6px;border-radius:4px}
+.agents b{font-size:15px;font-weight:700}
+.agents small{font-size:12.5px;color:var(--ink-2);line-height:1.35}
+.cta{display:flex;flex-direction:column;gap:8px;padding-top:6px}
+.dial{font:inherit;font-weight:800;font-size:17px;color:var(--accent-ink);background:var(--accent);border:0;border-radius:14px;min-height:56px;padding:0 22px;cursor:pointer;transition:transform 120ms cubic-bezier(.16,1,.3,1),filter 120ms}
+.dial:hover:not(:disabled){filter:brightness(1.06)}
+.dial:active:not(:disabled){transform:translateY(1px)}
+.dial:disabled{opacity:.38;cursor:not-allowed}
+.dial:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.hint{margin:0;font-size:13px;color:var(--ink-3)}
+.error{margin:0;padding:12px 14px;border-radius:12px;background:rgba(251,113,133,.12);color:#ffd4dc;font-size:14px}
+.side{display:flex;flex-direction:column;gap:16px;position:sticky;top:24px;align-self:start}
+.script,.live,.recent{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.script .line{margin:0;font-size:17px;line-height:1.45;font-weight:600;letter-spacing:-.01em}
+.script .line.dim{font-weight:500;color:var(--ink-2)}
+.script .then{margin:12px 0 6px;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.script .foot{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
+.live{animation:rise 420ms cubic-bezier(.16,1,.3,1)}
+.live .kicker{color:var(--ink-2)}
+.live.ringing .kicker,.live.talking .kicker{color:var(--ok)}
+.live.ringing .kicker::before,.live.talking .kicker::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:8px;animation:pulse 1.2s ease-in-out infinite}
+.live.noanswer .kicker{color:var(--warn)}
+.live.failed .kicker{color:var(--bad)}
+.live .turn{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+.live .summary{margin:6px 0 0;font-size:14.5px;line-height:1.5}
+.recent ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.recent li{display:grid;grid-template-columns:1fr auto;grid-template-areas:"a c" "b c";column-gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.recent li:first-child{border-top:0;padding-top:0}
+.recent li span{grid-area:a;font-size:14px;font-weight:600}
+.recent li small{grid-area:b;font-size:12px;color:var(--ink-3)}
+.recent li em{grid-area:c;align-self:center;font-style:normal;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.live{animation:none}.live .kicker::before{animation:none}}
+@media (max-width:860px){.bdr{grid-template-columns:1fr;gap:24px;padding:20px 16px 48px}.side{position:static}.agents{grid-template-columns:1fr}.form .row{grid-template-columns:1fr}}
+`
