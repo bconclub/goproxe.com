@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
 
-# Never run two deploys against the VPS at once — a newer push cancels an
-# in-progress deploy so they don't race on `reset --hard` / `rm -rf .next` / build.
+# One deploy at a time. Runs queue (never cancel: a cancelled job leaves its
+# SSH-side process running on the box); deploy.sh holds a lock on the VPS too.
 concurrency:
   group: deploy-vps
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -26,36 +26,15 @@ jobs:
           # Next build can exceed 10m on a 2-core box.
           command_timeout: 25m
           script: |
-            set -e
+            # ONE deploy path. The release-based script (scripts/deploy-vps.sh,
+            # installed at /var/www/goproxe/deploy.sh) takes a lock, builds in
+            # its own directory, smoke-tests, then flips a symlink. Runs that
+            # arrive while one is in progress wait for the lock instead of
+            # racing it. Never put npm ci / rm -rf .next / reset --hard here
+            # again: on 4 Sep two of those ran at once and took the site down.
             cd /var/www/goproxe
-            # Force-sync to origin/main. reset --hard never fails on a dirty tree
-            # or a stray untracked file, and it leaves untracked .env.local intact.
-            git fetch origin
-            git reset --hard origin/main
-            npm ci --production=false
-            # Archive the outgoing build's hashed static chunks BEFORE deleting
-            # .next. Clarity session replays (and any browser tab open across a
-            # deploy) request the chunk filenames that existed at record time;
-            # rm -rf .next was 404ing them, which is why every replay recorded
-            # before a deploy played back completely unstyled.
-            mkdir -p /var/www/goproxe-static-archive
-            if [ -d .next/static ]; then cp -r .next/static/. /var/www/goproxe-static-archive/ || true; fi
-            rm -rf .next
-            # 4GB, not 2GB. Runs 266 and 268 hung for 745s and 904s and then
-            # failed, on a box showing 4-10% CPU and 2.7GB of 8GB RAM used at
-            # sample time. A Next build OOM-killed against a 2GB heap looks
-            # exactly like that: long stall, then death, with the spike too
-            # brief to appear in 30-minute metrics. The VPS has 8GB, so 4GB is
-            # affordable and still leaves room for the running app.
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            # Show what actually happened; without this a remote failure is
-            # invisible from GitHub's side.
-            npm run build || { echo "[deploy] BUILD FAILED"; tail -40 ~/.npm/_logs/*.log 2>/dev/null; exit 1; }
-            # Merge archived chunks back in WITHOUT overwriting the new build
-            # (-n = no-clobber, the fresh files always win). Next serves
-            # /_next/static straight from this directory, so restored old
-            # filenames resolve again. Prune the archive after 30 days.
-            cp -rn /var/www/goproxe-static-archive/. .next/static/ 2>/dev/null || true
-            find /var/www/goproxe-static-archive -type f -mtime +30 -delete 2>/dev/null || true
-            pm2 restart goproxe || pm2 start npm --name goproxe -- start
-            pm2 save
+            git fetch origin main
+            git checkout -q main
+            git pull --ff-only origin main
+            cp scripts/deploy-vps.sh deploy.sh && chmod +x deploy.sh
+            bash deploy.sh

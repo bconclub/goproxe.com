@@ -34,7 +34,8 @@ SMOKE_PORT=3007
 KEEP=3
 
 exec 9>/tmp/goproxe-deploy.lock
-if ! flock -n 9; then echo "another deploy is running; not starting a second one"; exit 1; fi
+if ! flock -w 1800 9; then echo "another deploy held the lock for 30 minutes; giving up"; exit 1; fi
+echo "lock acquired"
 
 mkdir -p "$RELEASES"
 
@@ -97,7 +98,7 @@ ln -sfn "$REL" "$CURRENT"
 # The pm2 app must run FROM the symlink, not from the repo checkout (its
 # old home). If it still points elsewhere, re-create it once; from then on a
 # restart re-resolves the symlink to the new release.
-cwd_now=$(pm2 describe "$APP" 2>/dev/null | grep -E 'exec cwd' | sed -E 's/.*│ *exec cwd *│ *([^ ]+).*//' || true)
+cwd_now=$(pm2 describe "$APP" 2>/dev/null | grep -E 'exec cwd' | awk -F'│' '{gsub(/ /,"",$3); print $3}' || true)
 if [ "$cwd_now" = "$CURRENT" ]; then
   pm2 restart "$APP" --update-env >/dev/null
 else
