@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'pinning-the-chat-is-not-done',
+    title: 'Pinning the chat is not done',
+    dek: 'Starring the thread is not the desk.',
+    date: '2026-09-04',
+    thumbnail: '/blog/pinning-the-chat-is-not-done.png',
+    trade: 'product',
+    wordCount: 450,
+    related: ['closing-the-inbox-is-not-done', 'noted-is-not-a-next-line', 'a-draft-is-not-a-reply'],
+  },
+  {
     slug: 'a-draft-is-not-a-reply',
     title: 'A draft is not a reply',
     dek: 'Typing and leaving it is not the desk.',
