@@ -78,6 +78,11 @@ NODE_OPTIONS="--max-old-space-size=6144" npm run build
 test -f .next/BUILD_ID
 
 echo "Smoke test on :$SMOKE_PORT ..."
+# A smoke server left behind by an earlier run (killing the npx wrapper did
+# not kill its child) held the port and failed every deploy after it. Clear
+# the port first, and kill by port afterwards, not by wrapper pid.
+fuser -k "$SMOKE_PORT/tcp" 2>/dev/null || true
+pkill -f "next start -p $SMOKE_PORT" 2>/dev/null || true
 ( npx next start -p $SMOKE_PORT >/tmp/goproxe-smoke.log 2>&1 & echo $! >/tmp/goproxe-smoke.pid )
 ok=0
 for i in $(seq 1 30); do
@@ -88,6 +93,8 @@ for i in $(seq 1 30); do
   fi
 done
 kill "$(cat /tmp/goproxe-smoke.pid)" 2>/dev/null || true
+fuser -k "$SMOKE_PORT/tcp" 2>/dev/null || true
+pkill -f "next start -p $SMOKE_PORT" 2>/dev/null || true
 sleep 1
 if [ "$ok" != 1 ]; then
   echo "SMOKE TEST FAILED - the new build never served / with its CSS. Live site untouched."
