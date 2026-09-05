@@ -12178,18 +12178,20 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   min-height: 52px;
   border-radius: 999px;
   border: 0;
-  background: #fff;
-  color: #1a0b3a;
+  /* Same violet as the ready-to-dial phone button, never white (Z, 5 Sep:
+     "Call me now can also not be a white button"). */
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  color: #ffffff;
   font: inherit;
   font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.01em;
   cursor: pointer;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), filter 120ms;
 }
 .proxe-root .proxe-hero-details-go:hover,
-.proxe-hero-details-go:hover { filter: brightness(1.04); }
+.proxe-hero-details-go:hover { filter: brightness(1.08); }
 .proxe-root .proxe-hero-details-go:active,
 .proxe-hero-details-go:active { transform: translateY(1px); }
 .proxe-root .proxe-hero-details-skip,

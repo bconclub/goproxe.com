@@ -170,7 +170,6 @@ export default function HeroPhoneCapture() {
               ref={nameRef}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ramesh"
               autoComplete="name"
             />
           </label>
@@ -179,7 +178,6 @@ export default function HeroPhoneCapture() {
             <input
               value={business}
               onChange={(e) => setBusiness(e.target.value)}
-              placeholder="Smile Dental"
               autoComplete="organization"
             />
           </label>
