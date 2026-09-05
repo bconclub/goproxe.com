@@ -38,10 +38,11 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
 
 const PHONE = '918123808817' // +91 81238 08817, E.164 without the + (PROXe WABA)
 
-function waLink(name?: string): string {
+function waLink(name?: string, brand?: string): string {
   const who = (name || '').trim().split(/\s+/)[0]
+  const biz = (brand || '').trim()
   const text = who
-    ? `Hi, I'm ${who}. I want to know more about PROXe.`
+    ? `Hi, I'm ${who}${biz ? ` from ${biz}` : ''}. I want to know more about PROXe.`
     : 'Hi, I want to know more about PROXe.'
   return `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`
 }
@@ -57,6 +58,7 @@ export default function WhatsAppGate({
 }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [brand, setBrand] = useState('')
   const [err, setErr] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const nameRef = useRef<HTMLInputElement>(null)
@@ -90,12 +92,14 @@ export default function WhatsAppGate({
   const start = () => {
     const cleanName = name.trim()
     if (!cleanName) { setErr('Your name, so we know who we are talking to.'); return }
+    const cleanBrand = brand.trim().replace(/\s+/g, ' ')
+    if (!cleanBrand) { setErr('Your business, so PROXe knows what it is talking about.'); return }
     if (digits.length < 10) { setErr('A 10-digit mobile number, please.'); return }
     setBusy(true)
 
     // Opened FIRST, on the gesture, so no popup blocker eats it. The capture
     // below still runs - fetch does not need the tab.
-    const win = window.open(waLink(cleanName), '_blank', 'noopener')
+    const win = window.open(waLink(cleanName, cleanBrand), '_blank', 'noopener')
 
     // trackLead fires the pixel and RETURNS the id; the same id then rides
     // into submitLead so Meta merges the browser event with the server one
@@ -104,17 +108,17 @@ export default function WhatsAppGate({
     try {
       eventId = trackLead({ source: 'whatsapp_gate' }) || eventId
       track('whatsapp_click', { location })
-      storeUserProfile({ name: cleanName, phone: digits })
+      storeUserProfile({ ...(getStoredUser('proxe') ?? {}), name: cleanName, phone: digits, promptedPhone: true })
     } catch { /* analytics must never block the chat */ }
 
     // Attribution rides along inside submitLead (UTMs, referrer, landing page).
-    void submitLead({ type: 'lead', name: cleanName, phone: digits, source: 'whatsapp_gate', eventId })
+    void submitLead({ type: 'lead', name: cleanName, phone: digits, brandName: cleanBrand, source: 'whatsapp_gate', eventId })
       .finally(() => {
         setBusy(false)
         onClose()
         // Popup blocked despite the gesture: fall back to a same-tab navigation
         // rather than leaving them staring at a closed dialog.
-        if (!win) window.location.href = waLink(cleanName)
+        if (!win) window.location.href = waLink(cleanName, cleanBrand)
       })
   }
 
@@ -130,15 +134,8 @@ export default function WhatsAppGate({
     <div className="wag-backdrop" role="dialog" aria-modal="true" aria-label="Start a WhatsApp chat" onClick={onClose}>
       <div className="wag-card" onClick={(e) => e.stopPropagation()}>
         <div className="wag-head">
-          <div>
-            <h3 className="wag-title">Let&apos;s talk on WhatsApp</h3>
-            <p className="wag-sub">Two quick steps and PROXe replies in seconds.</p>
-          </div>
+          <h3 className="wag-title">Let&apos;s talk on WhatsApp</h3>
           <button className="wag-x" onClick={onClose} aria-label="Close">×</button>
-        </div>
-        <div className="wag-steps" aria-hidden="true">
-          <span className="on" />
-          <span className={digitsTyped >= 10 ? 'on' : ''} />
         </div>
 
         <label className="wag-label" htmlFor="wag-name">Your name</label>
@@ -151,6 +148,17 @@ export default function WhatsAppGate({
           onKeyDown={(e) => { if (e.key === 'Enter') start() }}
           placeholder="Your name"
           autoComplete="name"
+        />
+
+        <label className="wag-label" htmlFor="wag-brand">Your business</label>
+        <input
+          id="wag-brand"
+          className="wag-input"
+          value={brand}
+          onChange={(e) => { setBrand(e.target.value); setErr(null) }}
+          onKeyDown={(e) => { if (e.key === 'Enter') start() }}
+          placeholder="Business or brand name"
+          autoComplete="organization"
         />
 
         <label className="wag-label" htmlFor="wag-phone">Mobile number</label>
@@ -174,7 +182,6 @@ export default function WhatsAppGate({
           {busy ? 'Opening WhatsApp…' : 'Open WhatsApp'}
           {!busy && <span aria-hidden="true" className="wag-arrow">↗</span>}
         </button>
-        <p className="wag-fine">We only use this to reply to you.</p>
       </div>
     </div>,
     host,
