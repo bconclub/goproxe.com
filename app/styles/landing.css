@@ -12069,11 +12069,13 @@ button.pr-cta { padding: 0 22px; }
 .wag-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .wag-title { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
 .wag-sub { margin: 6px 0 0; font-size: 14.5px; color: var(--wag-muted); line-height: 1.4; }
+.proxe-root .wag-x,
 .wag-x {
   flex-shrink: 0; width: 36px; height: 36px; margin: -6px -8px 0 0;
   background: none; border: 0; border-radius: 8px; cursor: pointer;
   font-size: 22px; line-height: 1; color: var(--wag-muted);
 }
+.proxe-root .wag-x:hover,
 .wag-x:hover { color: var(--wag-ink); background: var(--wag-field); }
 .wag-steps { display: flex; gap: 6px; margin: 14px 0 26px; }
 .wag-steps span { display: block; width: 14px; height: 4px; border-radius: 2px; background: var(--wag-line); transition: width 0.2s, background 0.2s; }
@@ -12100,6 +12102,7 @@ button.pr-cta { padding: 0 22px; }
   font-size: 17px; color: var(--wag-muted); pointer-events: none;
 }
 .wag-err { margin: -8px 0 14px; font-size: 13px; color: #d92d20; }
+.proxe-root .wag-go,
 .wag-go {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%; min-height: 56px; padding: 0 16px;
@@ -12108,8 +12111,11 @@ button.pr-cta { padding: 0 22px; }
   background: #25d366; border: 0; border-radius: 12px;
   transition: filter 0.15s ease, transform 0.12s ease;
 }
+.proxe-root .wag-go:hover,
 .wag-go:hover { filter: brightness(1.05) }
+.proxe-root .wag-go:active,
 .wag-go:active { transform: translateY(1px) }
+.proxe-root .wag-go:disabled,
 .wag-go:disabled { opacity: 0.6; cursor: default }
 .wag-arrow { font-size: 17px; }
 .wag-fine { margin: 14px 0 0; font-size: 12.5px; text-align: center; color: var(--wag-muted); }
