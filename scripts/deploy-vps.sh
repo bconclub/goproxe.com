@@ -55,6 +55,10 @@ git pull --ff-only origin main
 SHA=$(git rev-parse --short HEAD)
 REL="$RELEASES/$(date +%Y%m%d-%H%M%S)-$SHA"
 mkdir -p "$REL"
+# A release that dies before it goes live (npm ci, build, smoke) is removed;
+# only the flip step below disarms this.
+cleanup_failed_release() { [ -d "$REL" ] && [ "$(readlink -f "$CURRENT" 2>/dev/null)" != "$REL" ] && rm -rf "$REL" && echo "removed failed release $REL"; }
+trap cleanup_failed_release EXIT
 
 echo "Exporting clean source to $REL ..."
 git archive HEAD | tar -x -C "$REL"
@@ -92,6 +96,7 @@ if [ "$ok" != 1 ]; then
   exit 1
 fi
 
+trap - EXIT
 echo "Going live..."
 PREV=$(readlink -f "$CURRENT" 2>/dev/null || true)
 ln -sfn "$REL" "$CURRENT"
