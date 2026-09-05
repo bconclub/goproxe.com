@@ -12114,6 +12114,10 @@ button.pr-cta { padding: 0 22px; }
 .proxe-root .wag-go:disabled,
 .wag-go:disabled { opacity: 0.6; cursor: default }
 .wag-arrow { font-size: 17px; }
+/* The chat widget iframe sits at the max z-index and covered the Open WhatsApp
+   button on phones. Step aside while the gate is open. */
+html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
+
 @media (max-width: 640px) {
   /* Phone: a bottom sheet, full width, clear of the home indicator. */
   .wag-backdrop { align-items: flex-end; padding: 0; }
