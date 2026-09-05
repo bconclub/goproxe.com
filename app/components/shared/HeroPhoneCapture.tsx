@@ -145,8 +145,17 @@ export default function HeroPhoneCapture() {
     window.setTimeout(() => setCallSettled(true), 20000);
   };
 
-  if (status === 'details' || status === 'dialing') {
-    const dialing = status === 'dialing';
+  if (status === 'dialing') {
+    return (
+      <div className="proxe-hero-details proxe-hero-details--dialing" role="status" aria-live="polite">
+        <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
+        <p className="proxe-hero-details-title">Connecting your call{name.trim() ? `, ${name.trim().split(' ')[0]}` : ''}.</p>
+        <p className="proxe-hero-details-note">Your phone rings in a few seconds. It is PROXe.</p>
+      </div>
+    );
+  }
+
+  if (status === 'details') {
     return (
       <form
         className="proxe-hero-details"
@@ -155,42 +164,34 @@ export default function HeroPhoneCapture() {
       >
         <p className="proxe-hero-details-title">Who should PROXe ask for?</p>
         <div className="proxe-hero-details-fields">
-          <input
-            ref={nameRef}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            autoComplete="name"
-            aria-label="Your name"
-            disabled={dialing}
-          />
-          <input
-            value={business}
-            onChange={(e) => setBusiness(e.target.value)}
-            placeholder="Your business"
-            autoComplete="organization"
-            aria-label="Your business"
-            disabled={dialing}
-          />
+          <label>
+            <span>Your name</span>
+            <input
+              ref={nameRef}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ramesh"
+              autoComplete="name"
+            />
+          </label>
+          <label>
+            <span>Your business</span>
+            <input
+              value={business}
+              onChange={(e) => setBusiness(e.target.value)}
+              placeholder="Smile Dental"
+              autoComplete="organization"
+            />
+          </label>
         </div>
         <div className="proxe-hero-details-actions">
-          <button type="submit" className="proxe-hero-details-go" disabled={dialing}>
-            {dialing ? 'Connecting your call…' : 'Call me now'}
-          </button>
-          {!dialing && (
-            <button type="button" className="proxe-hero-details-skip" onClick={() => void dial('skip')}>
-              Skip
-            </button>
-          )}
+          <button type="submit" className="proxe-hero-details-go">Call me now</button>
+          <button type="button" className="proxe-hero-details-skip" onClick={() => void dial('skip')}>Skip</button>
         </div>
-        {!dialing && (
-          <div className="proxe-hero-details-timer" aria-hidden="true">
-            <span style={{ width: `${(secondsLeft / DETAILS_SECONDS) * 100}%` }} />
-          </div>
-        )}
-        <p className="proxe-hero-details-note" role="status">
-          {dialing ? 'Dialling…' : `PROXe calls in ${secondsLeft}s either way.`}
-        </p>
+        <div className="proxe-hero-details-timer" aria-hidden="true">
+          <span style={{ width: `${(secondsLeft / DETAILS_SECONDS) * 100}%` }} />
+        </div>
+        <p className="proxe-hero-details-note" role="status">PROXe calls in {secondsLeft}s either way.</p>
       </form>
     );
   }
