@@ -61,7 +61,9 @@ export type ProxeEvent =
   | 'callback_start'       // first digit typed into the hero phone field
   | 'callback_submit'      // a valid number was submitted, dial requested
   | 'callback_dialed'      // the dial was ACCEPTED by the telephony side
-  | 'hero_name_added'      // step two of the hero callback: a name landed on the lead
+  | 'hero_details_shown'     // hero callback: number in, name + business screen shown
+  | 'hero_details_submitted' // hero callback: dialled from the details screen (Enter / Call me now / countdown)
+  | 'hero_details_skipped'   // hero callback: dialled via Skip
   | 'callback_failed'      // the dial did not happen — param: reason
   | 'callback_blocked'     // cooldown guard refused (they just called)
   // ── Click / interaction detail ──────────────────────────────────

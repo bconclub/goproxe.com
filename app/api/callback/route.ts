@@ -131,7 +131,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
 
-  let body: { phone?: string; market?: string }
+  let body: { phone?: string; market?: string; name?: string; business?: string }
   try {
     body = await request.json()
   } catch {
@@ -139,6 +139,8 @@ export async function POST(request: Request) {
   }
 
   const phone = toE164(body.phone ?? '', body.market === 'usd' ? 'usd' : 'inr')
+  const callerName = String(body.name ?? '').trim().replace(/\s+/g, ' ').slice(0, 60)
+  const callerBusiness = String(body.business ?? '').trim().replace(/\s+/g, ' ').slice(0, 80)
   if (!phone) {
     return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
   }
@@ -205,6 +207,15 @@ export async function POST(request: Request) {
         agent_id: AGENT_ID,
         agent_phone_number_id: PHONE_NUMBER_ID,
         to_number: phone,
+        // Name + business from the hero's details step. Dynamic variables are
+        // the supported per-call substitution (used by the outreach agents);
+        // this is NOT a conversation_config_override, which broke twice.
+        ...(callerName || callerBusiness
+          ? { conversation_initiation_client_data: { dynamic_variables: {
+              ...(callerName ? { first_name: callerName.split(' ')[0] } : {}),
+              ...(callerBusiness ? { business_name: callerBusiness } : {}),
+            } } }
+          : {}),
       }),
     })
 

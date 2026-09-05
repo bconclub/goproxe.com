@@ -7,39 +7,36 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
 /**
- * Hero quick-capture: one phone field, one tap, PROXe dials back in seconds.
+ * Hero quick-capture: one phone field, one tap, then a short "who should PROXe
+ * ask for?" step, then PROXe dials.
  *
- * The lowest-friction conversion on the page — no name, no email, no modal.
- * Lands in the same /api/lead sink as the deploy form (Supabase `all_leads`
- * upserts by phone, so if the visitor later completes the full form the two
- * touches merge onto one row). Fires the same funnel events as the deploy
- * form (`lead_form_start` → `form_completed`/Meta `Lead`) with
- * source: 'hero_phone' so ad platforms can optimise toward it from day one.
+ * Order matters (Z, 5 Sep): the call used to start the moment the number was
+ * in and the name was asked while the phone rang. Now the number saves the
+ * lead immediately, the visitor gets ONE screen for name + business, and the
+ * dial fires on "Call me now", on Enter, on Skip, or on its own after 12
+ * seconds. The fields never block the call; they only make it better.
  *
- * The button is the interaction: an empty field shows a "Get a call back" pill;
- * the first digit collapses it into a circle whose ring fills digit by digit
- * (full at 10 — a complete local number). A full ring lights the brand
- * gradient and breathes; the tap POSTs /api/callback, which has the ElevenLabs
- * "PROXe Website Callback" agent dial them from our SIP number. Then: Ringing…
+ * Same /api/lead sink as the deploy form (Supabase all_leads upserts by
+ * phone), same funnel events (lead_form_start -> form_completed/Meta Lead),
+ * source: 'hero_phone'. The dial POSTs /api/callback with name + business so
+ * the ElevenLabs agent has them as dynamic variables.
  */
+const DETAILS_SECONDS = 12;
+
+type Status = 'idle' | 'details' | 'dialing' | 'done';
+
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'done'>('idle');
+  const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
-  // Placeholder set post-mount: detectMarket() reads navigator/Intl, which
-  // don't exist during SSR — setting it in render would risk a hydration
-  // mismatch between the server's fallback and the client's real market.
   const [placeholder, setPlaceholder] = useState('Your phone number');
-  /** Flips ~20s after the dial: long enough that the phone has rung and been
-      answered, after which "PROXe is calling you" is stale and the space is
-      better spent pointing somewhere. */
   const [callSettled, setCallSettled] = useState(false);
-  // Step two, after the number: who to ask for. A number alone left the lead
-  // nameless whenever the call did not connect (two of four on 4 Sep), and
-  // the BDR then dials a stranger. Optional, never blocks the dial.
   const [name, setName] = useState('');
-  const [nameState, setNameState] = useState<'ask' | 'saving' | 'saved' | 'skip'>('ask');
+  const [business, setBusiness] = useState('');
+  const [secondsLeft, setSecondsLeft] = useState(DETAILS_SECONDS);
   const startedRef = useRef(false);
+  const dialedRef = useRef(false);
+  const nameRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setPlaceholder(detectMarket() === 'inr' ? '+91 98765 43210' : '+1 555 000 1234');
@@ -59,101 +56,87 @@ export default function HeroPhoneCapture() {
     if (error) setError('');
   };
 
+  // Step 1 -> step 2. The number is the conversion: lead saved, Meta Lead
+  // fired. The dial waits for the details screen (or its countdown).
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = phone.trim();
     const digits = trimmed.replace(/\D/g, '');
-    
-    // Empty submission is "start the form", not a failed validation.
-    // Focus the input; do not track form_error.
     if (digits.length === 0) {
       const form = e.currentTarget as HTMLFormElement;
-      const input = form.querySelector<HTMLInputElement>('.proxe-hero-phone-input');
-      input?.focus();
+      form.querySelector<HTMLInputElement>('.proxe-hero-phone-input')?.focus();
       return;
     }
-    
-    // Real incomplete numbers (1–7 or >15 digits) are actual failed attempts.
     if (digits.length < 8 || digits.length > 15) {
       setError('That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: 'length' });
       return;
     }
-    // Measure how far the call button has to travel to reach the far end of the
-    // pill, and hand it to CSS. It cannot be expressed in the stylesheet: the
-    // distance is the pill's width minus the button's, and `translateX(-100%)`
-    // resolves against the BUTTON, which is only 46px wide.
-    const form = e.currentTarget as HTMLFormElement;
-    const btn = form.querySelector<HTMLElement>('.proxe-hero-phone-btn');
-    if (btn) form.style.setProperty('--pill-slide', `${-(btn.offsetLeft - 4)}px`);
-
-    setStatus('submitting');
-
-    // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
-    // Same id to both paths so Meta merges pixel + CAPI into one Lead.
     const leadEventId = trackLead({ source: 'hero_phone' });
     track('callback_submit', { market: detectMarket() });
-
-    // Prefill the chat widget / deploy form if they engage again later.
-    // storeUserProfile REPLACES the stored blob, so merge — a phone-only
-    // capture must never wipe a name/email captured elsewhere.
     storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, promptedPhone: true }, 'proxe');
+    void submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone', eventId: leadEventId });
+    track('hero_details_shown', { source: 'hero_phone' });
+    setSecondsLeft(DETAILS_SECONDS);
+    setStatus('details');
+  };
 
-    // Capture the lead AND start the dial in parallel — the ring must start
-    // while they are still looking at the page. Neither blocks the other;
-    // the lead sink alone failing must not stop the call, and vice versa.
-    // Read the BODY, not just the HTTP status. The route answers 200 for
-    // several outcomes that are not "a phone is ringing" - most importantly the
-    // cooldown guard - so trusting r.ok alone showed "Ringing… pick up" when
-    // nothing had been dialled.
-    // Hard 20s ceiling on the dial. Without it a request that never settles
-    // leaves the control stuck mid-gesture forever: the button parked at the
-    // end of its travel, the field disabled, and nothing to tell the person
-    // whether their phone is about to ring. An abort is recoverable; a hang is
-    // not.
+  // Countdown: dial on its own when it runs out.
+  useEffect(() => {
+    if (status !== 'details') return;
+    nameRef.current?.focus();
+    const t = window.setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) { window.clearInterval(t); void dial('timeout'); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  const dial = async (how: 'submit' | 'skip' | 'timeout') => {
+    if (dialedRef.current) return;
+    dialedRef.current = true;
+    const trimmed = phone.trim();
+    const cleanName = name.trim().replace(/\s+/g, ' ');
+    const cleanBusiness = business.trim().replace(/\s+/g, ' ');
+    track(how === 'skip' ? 'hero_details_skipped' : 'hero_details_submitted', { source: 'hero_phone', how, named: !!cleanName, business: !!cleanBusiness });
+    if (cleanName || cleanBusiness) {
+      storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, ...(cleanName ? { name: cleanName } : {}), promptedPhone: true }, 'proxe');
+    }
+    setStatus('dialing');
+
+    // Hard 20s ceiling on the dial: an abort is recoverable, a hang is not.
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
-
-    const [, dial] = await Promise.all([
-      submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone', eventId: leadEventId }),
+    const [, dialRes] = await Promise.all([
+      cleanName || cleanBusiness
+        ? submitLead({ type: 'lead', phone: trimmed, name: cleanName || undefined, brandName: cleanBusiness || undefined, source: 'hero_phone' })
+        : Promise.resolve(true),
       fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: trimmed, market: detectMarket() }),
+        body: JSON.stringify({ phone: trimmed, market: detectMarket(), name: cleanName || undefined, business: cleanBusiness || undefined }),
         signal: ac.signal,
       })
         .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
-        .catch((err) => ({
-          ok: false,
-          reason: err?.name === 'AbortError' ? 'timeout' : 'network_error',
-        })),
+        .catch((err) => ({ ok: false, reason: err?.name === 'AbortError' ? 'timeout' : 'network_error' })),
     ]);
     window.clearTimeout(timeout);
 
-    if (!dial?.ok) {
-      // The outcome, measured. `recently_called` is the cooldown guard doing
-      // its job, not a failure — it gets its own event so the two never blur
-      // together in a funnel.
-      const reason = dial?.reason ?? 'unknown';
-      // `recently_called` and `quiet_hours` are guards doing their job, not
-      // failures. They get their own event so the two never blur together with
-      // a real breakage in a funnel.
-      if (reason === 'recently_called' || reason === 'quiet_hours') {
-        track('callback_blocked', { reason });
-      } else {
-        track('callback_failed', { reason, market: detectMarket() });
-      }
+    if (!dialRes?.ok) {
+      const reason = dialRes?.reason ?? 'unknown';
+      if (reason === 'recently_called' || reason === 'quiet_hours') track('callback_blocked', { reason });
+      else track('callback_failed', { reason, market: detectMarket() });
       setError(
         reason === 'recently_called'
           ? 'We just called you. Check your phone, or try again in a minute.'
-          // Say the actual hour. "We will call you later" reads as a brush-off;
-          // a time reads as a commitment, and it explains why nothing rang.
           : reason === 'quiet_hours'
-            ? `Number saved. It is late here, so PROXe will call you at ${dial?.callAfter || '9:00 AM'}.`
+            ? `Number saved. It is late here, so PROXe will call you at ${dialRes?.callAfter || '9:00 AM'}.`
             : 'Number saved. PROXe will call you shortly.'
       );
-      // Back to idle also resets the slide: the --dialing class goes, so the
-      // button returns to its place rather than staying where it stopped.
+      dialedRef.current = false;
       setStatus('idle');
       return;
     }
@@ -162,53 +145,63 @@ export default function HeroPhoneCapture() {
     window.setTimeout(() => setCallSettled(true), 20000);
   };
 
-  const saveName = async () => {
-    const clean = name.trim().replace(/\s+/g, ' ');
-    if (!clean) { setNameState('skip'); return; }
-    setNameState('saving');
-    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), name: clean }, 'proxe');
-    // Same sink, same phone: /api/lead upserts by number, so this only adds
-    // the name to the row the dial just created.
-    await submitLead({ type: 'lead', name: clean, phone: phone.trim(), source: 'hero_phone' });
-    track('hero_name_added', { source: 'hero_phone' });
-    setNameState('saved');
-  };
+  if (status === 'details' || status === 'dialing') {
+    const dialing = status === 'dialing';
+    return (
+      <form
+        className="proxe-hero-details"
+        onSubmit={(e) => { e.preventDefault(); void dial('submit'); }}
+        aria-label="Who should PROXe ask for"
+      >
+        <p className="proxe-hero-details-title">Who should PROXe ask for?</p>
+        <div className="proxe-hero-details-fields">
+          <input
+            ref={nameRef}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="name"
+            aria-label="Your name"
+            disabled={dialing}
+          />
+          <input
+            value={business}
+            onChange={(e) => setBusiness(e.target.value)}
+            placeholder="Your business"
+            autoComplete="organization"
+            aria-label="Your business"
+            disabled={dialing}
+          />
+        </div>
+        <div className="proxe-hero-details-actions">
+          <button type="submit" className="proxe-hero-details-go" disabled={dialing}>
+            {dialing ? 'Connecting your call…' : 'Call me now'}
+          </button>
+          {!dialing && (
+            <button type="button" className="proxe-hero-details-skip" onClick={() => void dial('skip')}>
+              Skip
+            </button>
+          )}
+        </div>
+        {!dialing && (
+          <div className="proxe-hero-details-timer" aria-hidden="true">
+            <span style={{ width: `${(secondsLeft / DETAILS_SECONDS) * 100}%` }} />
+          </div>
+        )}
+        <p className="proxe-hero-details-note" role="status">
+          {dialing ? 'Dialling…' : `PROXe calls in ${secondsLeft}s either way.`}
+        </p>
+      </form>
+    );
+  }
 
   if (status === 'done') {
-    // States what we did, not what their phone is about to do. "Ringing… pick
-    // up." narrates and instructs, and it is a claim we cannot actually verify
-    // - we know the dial was accepted, not that anything rang. After a beat the
-    // panel steps aside for a next action, because by then they are on the
-    // call and the capture field has nothing left to say.
     return (
-      <div
-        className={'proxe-hero-phone-done' + (callSettled ? ' proxe-hero-phone-done--next' : '')}
-        role="status"
-      >
+      <div className={'proxe-hero-phone-done' + (callSettled ? ' proxe-hero-phone-done--next' : '')} role="status">
         {!callSettled ? (
           <>
             <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
-            PROXe is calling you.
-            {nameState === 'saved' ? (
-              <p className="proxe-hero-phone-named">Thanks, {name.trim().split(' ')[0]}.</p>
-            ) : nameState !== 'skip' ? (
-              <form
-                className="proxe-hero-phone-name"
-                onSubmit={(e) => { e.preventDefault(); void saveName(); }}
-              >
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name, so PROXe knows who to ask for"
-                  autoComplete="name"
-                  aria-label="Your name"
-                  autoFocus
-                />
-                <button type="submit" disabled={nameState === 'saving' || !name.trim()}>
-                  {nameState === 'saving' ? '…' : 'Save'}
-                </button>
-              </form>
-            ) : null}
+            PROXe is calling you{name.trim() ? `, ${name.trim().split(' ')[0]}` : ''}.
           </>
         ) : (
           <a href="#voice" className="proxe-hero-phone-next">
@@ -224,22 +217,12 @@ export default function HeroPhoneCapture() {
   const btnClass =
     'proxe-hero-phone-btn' +
     (typing ? ' proxe-hero-phone-btn--call' : '') +
-    (ready ? ' proxe-hero-phone-btn--ready' : '') +
-    (status === 'submitting' ? ' proxe-hero-phone-btn--dialing' : '');
+    (ready ? ' proxe-hero-phone-btn--ready' : '');
 
   return (
     <>
-      {/* State drives the whole pill, not just the button: the ring wakes up as
-          soon as a digit lands, brightens when the number is complete, and the
-          fill sweeps across on submit. One control that responds, rather than a
-          field sitting next to a button. */}
       <form
-        className={
-          'proxe-hero-phone' +
-          (typing ? ' proxe-hero-phone--active' : '') +
-          (ready ? ' proxe-hero-phone--ready' : '') +
-          (status === 'submitting' ? ' proxe-hero-phone--dialing' : '')
-        }
+        className={'proxe-hero-phone' + (typing ? ' proxe-hero-phone--active' : '') + (ready ? ' proxe-hero-phone--ready' : '')}
         onSubmit={handleSubmit}
         noValidate
       >
@@ -252,17 +235,10 @@ export default function HeroPhoneCapture() {
           value={phone}
           onChange={handleChange}
           aria-label="Phone number"
-          disabled={status === 'submitting'}
         />
-        <button
-          type="submit"
-          className={btnClass}
-          disabled={status === 'submitting'}
-          aria-label="Get a call back"
-        >
+        <button type="submit" className={btnClass} aria-label="Get a call back">
           {typing ? (
             <>
-              {/* Progress ring — fills digit by digit, full at 10. */}
               <svg className="proxe-hero-phone-btn-ringtrack" viewBox="0 0 52 52" aria-hidden="true">
                 <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="2.5" />
                 <circle
@@ -289,11 +265,6 @@ export default function HeroPhoneCapture() {
           )}
         </button>
       </form>
-      {status === 'submitting' && (
-        // The slide finishes in 0.7s but the dial can take several seconds.
-        // Without this the pill just sits there, emptied, saying nothing.
-        <p className="proxe-hero-phone-connecting" role="status">Connecting your call…</p>
-      )}
       {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
     </>
   );

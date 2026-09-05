@@ -12130,40 +12130,71 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .wag-title { font-size: 22px; }
 }
 
-/* Hero callback, step two: the dial is already ringing; ask who to ask for. */
-.proxe-hero-phone-name {
+/* Hero callback, step two: number is in, the dial waits up to 12s for a
+   name and a business, then goes anyway. Fits a 375px hero. */
+.proxe-hero-details {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  max-width: 420px;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
 }
-.proxe-hero-phone-name input {
-  flex: 1;
+.proxe-hero-details-title {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+}
+.proxe-hero-details-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.proxe-hero-details-fields input {
+  width: 100%;
   min-width: 0;
-  min-height: 44px;
-  border-radius: 999px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  padding: 0 16px;
   font: inherit;
   font-size: 16px;
   outline: none;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.proxe-hero-phone-name input::placeholder { color: rgba(255, 255, 255, 0.55); }
-.proxe-hero-phone-name input:focus { border-color: rgba(255, 255, 255, 0.6); }
-.proxe-hero-phone-name button {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0 16px;
+.proxe-hero-details-fields input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.proxe-hero-details-fields input:focus { border-color: rgba(196, 181, 253, 0.9); box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25); }
+.proxe-hero-details-fields input:disabled { opacity: 0.6; }
+.proxe-hero-details-actions { display: flex; gap: 8px; align-items: center; }
+.proxe-hero-details-go {
+  flex: 1;
+  min-height: 48px;
   border-radius: 999px;
   border: 0;
   background: #fff;
   color: #1a0b3a;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
 }
-.proxe-hero-phone-name button:disabled { opacity: 0.4; cursor: default; }
-.proxe-hero-phone-named { margin-top: 10px; font-size: 14px; opacity: 0.8; }
+.proxe-hero-details-go:disabled { opacity: 0.7; cursor: default; }
+.proxe-hero-details-skip {
+  min-height: 48px;
+  min-width: 64px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.proxe-hero-details-timer { height: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
+.proxe-hero-details-timer span { display: block; height: 100%; background: rgba(196, 181, 253, 0.95); transition: width 1s linear; }
+.proxe-hero-details-note { margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.6); text-align: center; }
+@media (max-width: 420px) {
+  .proxe-hero-details-fields { grid-template-columns: 1fr; }
+}
