@@ -12047,6 +12047,9 @@ button.pr-cta { padding: 0 22px; }
 }
 @keyframes wagIn { from { opacity: 0 } to { opacity: 1 } }
 .wag-card {
+  /* Portalled to <body>, outside .proxe-root, so the font must be set here
+     or the card falls back to the browser serif. */
+  font-family: var(--font-proxe-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   position: relative;
   width: 100%;
   max-width: 380px;
@@ -12065,7 +12068,7 @@ button.pr-cta { padding: 0 22px; }
   font-size: 22px; line-height: 1; opacity: 0.45; color: inherit;
 }
 .wag-x:hover { opacity: 0.9 }
-.wag-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+.wag-head { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
 .wag-icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
@@ -12097,3 +12100,41 @@ button.pr-cta { padding: 0 22px; }
 .wag-go:hover { filter: brightness(1.06) }
 .wag-go:disabled { opacity: 0.6; cursor: default }
 .wag-fine { margin: 10px 0 0; font-size: 11px; text-align: center; opacity: 0.45; }
+
+/* Hero callback, step two: the dial is already ringing; ask who to ask for. */
+.proxe-hero-phone-name {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  max-width: 420px;
+}
+.proxe-hero-phone-name input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+.proxe-hero-phone-name input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.proxe-hero-phone-name input:focus { border-color: rgba(255, 255, 255, 0.6); }
+.proxe-hero-phone-name button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 0;
+  background: #fff;
+  color: #1a0b3a;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.proxe-hero-phone-name button:disabled { opacity: 0.4; cursor: default; }
+.proxe-hero-phone-named { margin-top: 10px; font-size: 14px; opacity: 0.8; }

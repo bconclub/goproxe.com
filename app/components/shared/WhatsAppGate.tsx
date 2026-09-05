@@ -125,10 +125,7 @@ export default function WhatsAppGate({
         <button className="wag-x" onClick={onClose} aria-label="Close">×</button>
         <div className="wag-head">
           <span className="wag-icon"><FaWhatsapp size={20} /></span>
-          <div>
-            <h3 className="wag-title">Chat with PROXe</h3>
-            <p className="wag-sub">Two things and the chat opens. We reply in seconds.</p>
-          </div>
+          <h3 className="wag-title">Chat with PROXe</h3>
         </div>
 
         <label className="wag-label">
@@ -163,7 +160,6 @@ export default function WhatsAppGate({
           <FaWhatsapp size={16} />
           {busy ? 'Opening WhatsApp…' : 'Start the chat'}
         </button>
-        <p className="wag-fine">We only use this to answer you. No spam.</p>
       </div>
     </div>,
     document.body,

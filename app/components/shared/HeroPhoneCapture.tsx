@@ -34,6 +34,11 @@ export default function HeroPhoneCapture() {
       answered, after which "PROXe is calling you" is stale and the space is
       better spent pointing somewhere. */
   const [callSettled, setCallSettled] = useState(false);
+  // Step two, after the number: who to ask for. A number alone left the lead
+  // nameless whenever the call did not connect (two of four on 4 Sep), and
+  // the BDR then dials a stranger. Optional, never blocks the dial.
+  const [name, setName] = useState('');
+  const [nameState, setNameState] = useState<'ask' | 'saving' | 'saved' | 'skip'>('ask');
   const startedRef = useRef(false);
 
   useEffect(() => {
@@ -157,6 +162,18 @@ export default function HeroPhoneCapture() {
     window.setTimeout(() => setCallSettled(true), 20000);
   };
 
+  const saveName = async () => {
+    const clean = name.trim().replace(/\s+/g, ' ');
+    if (!clean) { setNameState('skip'); return; }
+    setNameState('saving');
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), name: clean }, 'proxe');
+    // Same sink, same phone: /api/lead upserts by number, so this only adds
+    // the name to the row the dial just created.
+    await submitLead({ type: 'lead', name: clean, phone: phone.trim(), source: 'hero_phone' });
+    track('hero_name_added', { source: 'hero_phone' });
+    setNameState('saved');
+  };
+
   if (status === 'done') {
     // States what we did, not what their phone is about to do. "Ringing… pick
     // up." narrates and instructs, and it is a claim we cannot actually verify
@@ -172,6 +189,26 @@ export default function HeroPhoneCapture() {
           <>
             <span className="proxe-hero-phone-done-ring" aria-hidden="true" />
             PROXe is calling you.
+            {nameState === 'saved' ? (
+              <p className="proxe-hero-phone-named">Thanks, {name.trim().split(' ')[0]}.</p>
+            ) : nameState !== 'skip' ? (
+              <form
+                className="proxe-hero-phone-name"
+                onSubmit={(e) => { e.preventDefault(); void saveName(); }}
+              >
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name, so PROXe knows who to ask for"
+                  autoComplete="name"
+                  aria-label="Your name"
+                  autoFocus
+                />
+                <button type="submit" disabled={nameState === 'saving' || !name.trim()}>
+                  {nameState === 'saving' ? '…' : 'Save'}
+                </button>
+              </form>
+            ) : null}
           </>
         ) : (
           <a href="#voice" className="proxe-hero-phone-next">
