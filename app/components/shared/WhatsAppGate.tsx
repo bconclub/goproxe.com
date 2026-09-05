@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { FaWhatsapp } from 'react-icons/fa'
 import { submitLead } from '../../lib/leads'
 import { track, trackLead, newEventId } from '../../lib/analytics'
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
@@ -119,49 +118,65 @@ export default function WhatsAppGate({
       })
   }
 
+  // Portal INTO .proxe-root, not <body>: the brand font variables
+  // (--font-proxe-sans etc.) live on that element, and a card rendered
+  // outside it fell back to the browser serif (Z, 5 Sep).
+  const host = typeof document !== 'undefined'
+    ? (document.querySelector('.proxe-root') as HTMLElement | null) ?? document.body
+    : null
+  if (!host) return null
+  const digitsTyped = phone.replace(/\D/g, '').length
   return createPortal(
     <div className="wag-backdrop" role="dialog" aria-modal="true" aria-label="Start a WhatsApp chat" onClick={onClose}>
       <div className="wag-card" onClick={(e) => e.stopPropagation()}>
-        <button className="wag-x" onClick={onClose} aria-label="Close">×</button>
         <div className="wag-head">
-          <span className="wag-icon"><FaWhatsapp size={20} /></span>
-          <h3 className="wag-title">Chat with PROXe</h3>
+          <div>
+            <h3 className="wag-title">Let&apos;s talk on WhatsApp</h3>
+            <p className="wag-sub">Two quick steps and PROXe replies in seconds.</p>
+          </div>
+          <button className="wag-x" onClick={onClose} aria-label="Close">×</button>
+        </div>
+        <div className="wag-steps" aria-hidden="true">
+          <span className="on" />
+          <span className={digitsTyped >= 10 ? 'on' : ''} />
         </div>
 
-        <label className="wag-label">
-          Your name
-          <input
-            ref={nameRef}
-            className="wag-input"
-            value={name}
-            onChange={(e) => { setName(e.target.value); setErr(null) }}
-            onKeyDown={(e) => { if (e.key === 'Enter') start() }}
-            placeholder="Name"
-            autoComplete="name"
-          />
-        </label>
+        <label className="wag-label" htmlFor="wag-name">Your name</label>
+        <input
+          id="wag-name"
+          ref={nameRef}
+          className="wag-input"
+          value={name}
+          onChange={(e) => { setName(e.target.value); setErr(null) }}
+          onKeyDown={(e) => { if (e.key === 'Enter') start() }}
+          placeholder="Your name"
+          autoComplete="name"
+        />
 
-        <label className="wag-label">
-          WhatsApp number
+        <label className="wag-label" htmlFor="wag-phone">Mobile number</label>
+        <div className="wag-phone">
+          <span className="wag-cc">+91</span>
           <input
+            id="wag-phone"
             className="wag-input"
             value={phone}
             onChange={(e) => { setPhone(e.target.value); setErr(null) }}
             onKeyDown={(e) => { if (e.key === 'Enter') start() }}
-            placeholder="10-digit mobile"
+            placeholder="Mobile number"
             inputMode="tel"
             autoComplete="tel"
           />
-        </label>
+        </div>
 
-        {err && <p className="wag-err">{err}</p>}
+        {err && <p className="wag-err" role="alert">{err}</p>}
 
         <button className="wag-go" onClick={start} disabled={busy}>
-          <FaWhatsapp size={16} />
-          {busy ? 'Opening WhatsApp…' : 'Start the chat'}
+          {busy ? 'Opening WhatsApp…' : 'Open WhatsApp'}
+          {!busy && <span aria-hidden="true" className="wag-arrow">↗</span>}
         </button>
+        <p className="wag-fine">We only use this to reply to you.</p>
       </div>
     </div>,
-    document.body,
+    host,
   )
 }
