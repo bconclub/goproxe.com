@@ -49,3 +49,7 @@ next-env.d.ts
 # Narrated blog audio: generated on the VPS at deploy (scripts/gen-blog-audio.mjs)
 /public/blog-audio/
 /blog-audio-cache/
+
+# installed copies of the deploy scripts on the VPS (repo root, never committed)
+/deploy.sh
+/deploy-poll.sh

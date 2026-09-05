@@ -6,6 +6,12 @@ on:
 
 # One deploy at a time. Runs queue (never cancel: a cancelled job leaves its
 # SSH-side process running on the box); deploy.sh holds a lock on the VPS too.
+#
+# This Action is the FAST path, not the only path. On 5 Sep 2026 the SSH dial
+# from the runner timed out ("dial tcp :22: i/o timeout") and main sat
+# undeployed for two hours. The box now also polls GitHub every two minutes
+# (scripts/deploy-poll.sh via cron) and runs the same deploy.sh when main is
+# ahead of the live release. A failed run here is a delay, not an outage.
 concurrency:
   group: deploy-vps
   cancel-in-progress: false
@@ -15,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
+        id: ssh1
+        continue-on-error: true
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -32,6 +40,21 @@ jobs:
             # arrive while one is in progress wait for the lock instead of
             # racing it. Never put npm ci / rm -rf .next / reset --hard here
             # again: on 4 Sep two of those ran at once and took the site down.
+            cd /var/www/goproxe
+            git fetch origin main
+            git checkout -q main
+            git pull --ff-only origin main
+            cp scripts/deploy-vps.sh deploy.sh && chmod +x deploy.sh
+            bash deploy.sh
+      - name: Deploy via SSH (retry after a dial timeout)
+        if: steps.ssh1.outcome == 'failure'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 25m
+          script: |
             cd /var/www/goproxe
             git fetch origin main
             git checkout -q main
