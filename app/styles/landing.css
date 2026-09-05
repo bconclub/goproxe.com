@@ -12133,6 +12133,9 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 /* Hero callback, step two: number is in, the dial waits up to 12s for a
    name and a business, then goes anyway. Fits a 375px hero. */
 .proxe-hero-details {
+  /* Its own panel. As loose text under the headline the question read as
+     more subtitle and the step did not register as a step (Z, 5 Sep: "it's
+     going along with the subtext itself, so it's not different"). */
   width: 100%;
   max-width: 460px;
   margin: 0 auto;
@@ -12140,13 +12143,22 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   flex-direction: column;
   gap: 10px;
   text-align: left;
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: proxeConnected 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .proxe-hero-details-title {
-  margin: 0 0 2px;
-  font-size: 16px;
+  margin: 0 0 4px;
+  font-size: 15px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  text-align: center;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  text-align: left;
 }
 .proxe-hero-details-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .proxe-hero-details-fields label { display: flex; flex-direction: column; gap: 6px; min-width: 0; text-align: left; }
