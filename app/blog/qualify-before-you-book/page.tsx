@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Qualify before you book | PROXe',
+  title: 'Qualify before you book',
   description: `A reply is not a qualified lead.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/qualify-before-you-book',

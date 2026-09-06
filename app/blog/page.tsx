@@ -9,7 +9,7 @@ const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: '
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
 export const metadata: Metadata = {
-  title: 'Blog | PROXe',
+  title: 'Blog',
   description: 'How businesses miss conversations, lose leads, and what to do about it.',
   alternates: {
     canonical: 'https://goproxe.com/blog',

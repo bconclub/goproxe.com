@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `Noted is not a next line | PROXe`,
+  title: `Noted is not a next line`,
   description: `Parking the ask is not the next line.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/noted-is-not-a-next-line',

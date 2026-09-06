@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Do not invent the price | PROXe',
+  title: 'Do not invent the price',
   description: `A fee you made up is not a booking.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/dont-invent-the-price',

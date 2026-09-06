@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'The weekend pile is not a system | PROXe',
+  title: 'The weekend pile is not a system',
   description: 'Monday catch-up is not the desk.',
   alternates: {
     canonical: 'https://goproxe.com/blog/the-weekend-pile-is-not-a-system',

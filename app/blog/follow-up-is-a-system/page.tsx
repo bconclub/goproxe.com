@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Follow-up is a system | PROXe',
+  title: 'Follow-up is a system',
   description:
     'The first reply is not the job. Most teams treat it like it is.',
   alternates: {

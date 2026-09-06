@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Silence is not a decision | PROXe',
+  title: 'Silence is not a decision',
   description: `No reply is not a no.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/silence-is-not-a-decision',

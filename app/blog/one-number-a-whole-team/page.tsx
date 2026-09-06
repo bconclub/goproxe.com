@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'One number is not a whole team | PROXe',
+  title: 'One number is not a whole team',
   description:
     "The business number lives on one phone. The owner.",
   alternates: {

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `A forward is not a handoff | PROXe`,
+  title: `A forward is not a handoff`,
   description: `Passing the chat is not the desk.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-forward-is-not-a-handoff',

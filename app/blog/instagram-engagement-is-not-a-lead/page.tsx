@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Instagram engagement is not a lead | PROXe',
+  title: 'Instagram engagement is not a lead',
   description:
     'A like is not a booking. A comment is not a booking.',
   alternates: {

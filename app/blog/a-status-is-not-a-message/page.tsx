@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'A status is not a message | PROXe',
+  title: 'A status is not a message',
   description:
     'The CRM moved. The lead did not hear you.',
   alternates: {

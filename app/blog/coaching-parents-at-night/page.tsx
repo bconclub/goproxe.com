@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'The parent messaged at 9pm. The institute that answered got the admission. | PROXe',
+  title: 'The parent messaged at 9pm. The institute that answered got the admission.',
   description:
     'Coaching inbound dies after class and after 7pm. Answer, qualify the exam, book the counselling. Do not wait until morning.',
   alternates: {

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'How fast should you reply to a WhatsApp lead | PROXe',
+  title: 'How fast should you reply to a WhatsApp lead',
   description:
     'First useful reply gets the slot. Thanks, we will call you, is not a reply.',
   alternates: {

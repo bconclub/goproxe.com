@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'A broadcast is not a reply | PROXe',
+  title: 'A broadcast is not a reply',
   description:
     'A blast is marketing. Inbound still needs a reply in their thread.',
   alternates: {
