@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'They called while you were on a job. The crew that answered got the work. | PROXe',
+  title: 'They called while you were on a job. The crew that answered got the work.',
   description:
     'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
   alternates: {

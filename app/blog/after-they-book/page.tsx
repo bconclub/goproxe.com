@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `After they book | PROXe`,
+  title: `After they book`,
   description: `A booking is not the end.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/after-they-book',

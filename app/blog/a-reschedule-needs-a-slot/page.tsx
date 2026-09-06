@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `A reschedule needs a slot | PROXe`,
+  title: `A reschedule needs a slot`,
   description: `Let's move it is not done.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-reschedule-needs-a-slot',

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Two people, one lead | PROXe',
+  title: 'Two people, one lead',
   description:
     'Two humans on the same chat is not coverage.',
   alternates: {

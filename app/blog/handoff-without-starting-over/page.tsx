@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `Handoff without starting over | PROXe`,
+  title: `Handoff without starting over`,
   description: `A handoff is not a new chat.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/handoff-without-starting-over',

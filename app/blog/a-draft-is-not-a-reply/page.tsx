@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `A draft is not a reply | PROXe`,
+  title: `A draft is not a reply`,
   description: `Typing and leaving it is not the desk.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-draft-is-not-a-reply',

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `A no-show is still a lead | PROXe`,
+  title: `A no-show is still a lead`,
   description: `Empty chair is not closed.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-no-show-is-still-a-lead',

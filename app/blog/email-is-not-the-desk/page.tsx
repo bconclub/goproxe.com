@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Email is not the desk | PROXe',
+  title: 'Email is not the desk',
   description:
     'The enquiry is the thread they already opened.',
   alternates: {

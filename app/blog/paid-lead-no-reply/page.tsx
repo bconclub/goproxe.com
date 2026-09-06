@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'You paid for the lead. Then you answered tomorrow. | PROXe',
+  title: 'You paid for the lead. Then you answered tomorrow.',
   description:
     'Broker inbound dies on a personal WhatsApp. Site visit goes to whoever replied. Answer, qualify, book. Do not wait until the next listing.',
   alternates: {

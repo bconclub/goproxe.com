@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'A missed call is still a lead | PROXe',
+  title: 'A missed call is still a lead',
   description: `A ring is not a booking.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-missed-call-is-still-a-lead',

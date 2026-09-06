@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'What is PROXe? | PROXe',
+  title: 'What is PROXe?',
   description:
     'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
   alternates: {

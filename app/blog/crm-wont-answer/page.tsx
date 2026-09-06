@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Your CRM will not answer that WhatsApp | PROXe',
+  title: 'Your CRM will not answer that WhatsApp',
   description:
     'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
   alternates: {

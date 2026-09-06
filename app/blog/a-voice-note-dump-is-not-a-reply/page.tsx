@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `A voice note dump is not a reply | PROXe`,
+  title: `A voice note dump is not a reply`,
   description: `A long clip is not the next line.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-voice-note-dump-is-not-a-reply',

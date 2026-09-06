@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'A conversation that books | PROXe',
+  title: 'A conversation that books',
   description:
     'A reply is not a booking. Most first messages are a thanks, a brochure, or a link.',
   alternates: {

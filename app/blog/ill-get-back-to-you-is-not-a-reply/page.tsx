@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'I\'ll get back to you is not a reply | PROXe',
+  title: 'I\'ll get back to you is not a reply',
   description:
     'Parking language is not the desk.',
   alternates: {

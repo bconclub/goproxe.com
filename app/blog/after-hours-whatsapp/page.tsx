@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'After-hours WhatsApp is how you lose the lead | PROXe',
+  title: 'After-hours WhatsApp is how you lose the lead',
   description:
     'They wrote at 11pm. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
   alternates: {

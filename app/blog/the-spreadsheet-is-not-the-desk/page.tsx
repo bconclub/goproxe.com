@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: `The spreadsheet is not the desk | PROXe`,
+  title: `The spreadsheet is not the desk`,
   description: `A row is not a next line.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/the-spreadsheet-is-not-the-desk',

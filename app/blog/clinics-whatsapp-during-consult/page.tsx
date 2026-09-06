@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'They WhatsApped while you were in consult. The clinic that answered got the patient. | PROXe',
+  title: 'They WhatsApped while you were in consult. The clinic that answered got the patient.',
   description:
     'Clinic inbound dies in the chair, at night, and on the missed call. Answer, qualify, book. Do not wait until the next gap.',
   alternates: {

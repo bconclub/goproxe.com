@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'What to measure on inbound | PROXe',
+  title: 'What to measure on inbound',
   description:
     'Most teams measure the wrong clock.',
   alternates: {

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'When they ask for a person | PROXe',
+  title: 'When they ask for a person',
   description:
     '"Can I talk to someone" is not a dump. The desk still asks, then hands the thread over.',
   alternates: {

@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Closing the inbox is not done | PROXe',
+  title: 'Closing the inbox is not done',
   description:
     'Zero unread is not zero open leads.',
   alternates: {

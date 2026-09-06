@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'The group chat is not the desk | PROXe',
+  title: 'The group chat is not the desk',
   description:
     'Staff chatter is not the lead thread.',
   alternates: {

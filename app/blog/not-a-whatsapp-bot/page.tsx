@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'PROXe is not a WhatsApp chatbot | PROXe',
+  title: 'PROXe is not a WhatsApp chatbot',
   description:
     'A chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
   alternates: {

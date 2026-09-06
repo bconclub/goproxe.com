@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Seen is not a reply | PROXe',
+  title: 'Seen is not a reply',
   description:
     'Blue ticks are not the desk.',
   alternates: {
