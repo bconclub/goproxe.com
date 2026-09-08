@@ -502,7 +502,7 @@ export async function recordCallbackDial(input: {
   if (!normalized) return
 
   try {
-    const { data: existing } = await supabase
+    let existing = await supabase
       .from('all_leads')
       .select('id, unified_context')
       .eq('customer_phone_normalized', normalized)
@@ -510,10 +510,33 @@ export async function recordCallbackDial(input: {
       .order('last_interaction_at', { ascending: false })
       .limit(1)
       .maybeSingle()
+      .then(({ data }) => data)
 
-    // The lead is written in parallel with the dial, so on a first-ever capture
-    // this can lose the race. No row means nothing to annotate; the next call
-    // for the same number will find it.
+    // Outreach dials can target people never captured as leads (Arc
+    // outreach_targets rows). If no lead exists, CREATE ONE now — the
+    // timestamp must land somewhere or the cooldown cannot work. A stub lead
+    // with just a phone is enough: the post-call webhook will enrich it when
+    // the conversation completes.
+    if (!existing) {
+      const { data: created, error: cErr } = await supabase
+        .from('all_leads')
+        .insert({
+          phone: input.phone ?? null,
+          customer_phone_normalized: normalized,
+          first_touchpoint: 'voice',
+          last_touchpoint: 'voice',
+          last_interaction_at: new Date().toISOString(),
+          brand: BRAND,
+          unified_context: { voice: { source: 'outreach_dial_record' } },
+        })
+        .select('id, unified_context')
+        .single()
+      if (cErr) {
+        console.error('[leadsSupabase] recordCallbackDial: stub lead create failed', cErr.message)
+        return
+      }
+      existing = created as any
+    }
     if (!existing) return
 
     const ctx = (existing.unified_context as Record<string, any>) || {}
