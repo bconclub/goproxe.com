@@ -33,6 +33,15 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  *
  * Quiet hours (8 PM - 9 AM IST) are refused here too: an AI cold call at
  * night is the one thing no BDR should be able to do by accident.
+ *
+ * [DEV] RETRY POLICY FOR CALLERS:
+ * NEVER retry on HTTP 504 / timeout without first checking the phone's status.
+ * The server records the dial as soon as ElevenLabs accepts it, even if the
+ * nginx proxy times out before returning the response. A blind retry will hit
+ * the recently_called guard and be refused. To retry safely:
+ * 1. Wait 5+ seconds for the DB write to settle.
+ * 2. Call again; if you get {reason: "recently_called"}, the first call placed.
+ * 3. If you get another timeout, the phone is blocked or there's an infra issue.
  */
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
@@ -134,8 +143,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: `dial_http_${res.status}` }, { status: 502 })
   }
 
+  // [DEV] Record the dial IMMEDIATELY after ElevenLabs accepts, BEFORE parsing
+  // the response or writing to the client. This closes the 504 race: if nginx
+  // times out before the HTTP response completes, the dial is still recorded,
+  // so a retry will hit the recently_called guard and cannot place a second call.
+  // The conversation_id is parsed afterward and passed as null if unavailable;
+  // recordCallbackDial tolerates that (the post-call webhook will fill it).
+  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}_${caller}`, conversationId: null }).catch(() => {})
+
   const out = await res.json().catch(() => ({}))
-  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}_${caller}` }).catch(() => {})
-  console.log(`[outreach-dial] dialed ${phone} agent=${agentKey} by=${caller}`)
+  console.log(`[outreach-dial] dialed ${phone} agent=${agentKey} by=${caller} conversation_id=${out.conversation_id ?? 'null'}`)
   return NextResponse.json({ ok: true, dialed: phone, agent: agentKey, conversation_id: out.conversation_id ?? null })
 }
