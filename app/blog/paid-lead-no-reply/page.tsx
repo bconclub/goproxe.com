@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'You paid for the lead. Then you answered tomorrow.',
+  title: 'Paid Meta lead, answered tomorrow: first reply wins the site visit',
   description:
-    'Broker inbound dies on a personal WhatsApp. Site visit goes to whoever replied. Answer, qualify, book. Do not wait until the next listing.',
+    'You paid for the lead. Then you answered tomorrow. Broker WhatsApp dies on a personal phone. First useful reply books the site visit.',
   alternates: {
     canonical: 'https://goproxe.com/blog/paid-lead-no-reply',
   },
@@ -62,7 +62,7 @@ const faqSchema = {
 export default function PaidLeadNoReplyPage() {
   const slug = 'paid-lead-no-reply'
   const pageUrl = 'https://goproxe.com/blog/paid-lead-no-reply'
-  const pageTitle = 'You paid for the lead. Then you answered tomorrow.'
+  const pageTitle = 'Paid Meta lead, answered tomorrow: first reply wins the site visit'
 
   const tocItems = [
     { id: 'what-brokers-actually-run', text: 'What brokers actually run' },

@@ -5,7 +5,7 @@ import styles from '../../styles/legal.module.css'
 export const metadata: Metadata = {
   title: 'How fast should you reply to a WhatsApp lead',
   description:
-    'First useful reply gets the slot. Thanks, we will call you, is not a reply.',
+    'How fast to reply to a WhatsApp lead in India. First useful reply gets the slot. Thanks, we will call you, is not a reply.',
   alternates: {
     canonical: 'https://goproxe.com/blog/how-fast-to-reply-whatsapp',
   },

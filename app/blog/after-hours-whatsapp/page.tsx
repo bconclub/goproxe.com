@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'After-hours WhatsApp is how you lose the lead',
+  title: 'After-hours WhatsApp leads: why morning replies lose them',
   description:
-    'They wrote at 11pm. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
+    'After-hours WhatsApp is how you lose the lead. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
   alternates: {
     canonical: 'https://goproxe.com/blog/after-hours-whatsapp',
   },
@@ -70,7 +70,7 @@ const faqSchema = {
 export default function AfterHoursWhatsAppPage() {
   const slug = 'after-hours-whatsapp'
   const pageUrl = 'https://goproxe.com/blog/after-hours-whatsapp'
-  const pageTitle = 'After-hours WhatsApp is how you lose the lead'
+  const pageTitle = 'After-hours WhatsApp leads: why morning replies lose them'
 
   const tocItems = [
     { id: 'what-people-run', text: 'What people run' },

@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Your CRM will not answer that WhatsApp',
+  title: 'CRM vs WhatsApp: why your CRM never replies',
   description:
-    'A CRM stores the lead. It does not answer, qualify, book, or follow up. That is why the chat still sits.',
+    'Your CRM stores the lead. It does not answer, qualify, book, or follow up on WhatsApp. That is why the chat still sits.',
   alternates: {
     canonical: 'https://goproxe.com/blog/crm-wont-answer',
   },
@@ -62,7 +62,7 @@ const faqSchema = {
 export default function CrmWontAnswerPage() {
   const slug = 'crm-wont-answer'
   const pageUrl = 'https://goproxe.com/blog/crm-wont-answer'
-  const pageTitle = 'Your CRM will not answer that WhatsApp'
+  const pageTitle = 'CRM vs WhatsApp: why your CRM never replies'
 
   const tocItems = [
     { id: 'what-people-actually-do', text: 'What people actually do' },
