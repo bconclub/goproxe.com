@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'The parent messaged at 9pm. The institute that answered got the admission.',
+  title: 'Coaching WhatsApp after 9pm: parents who booked elsewhere',
   description:
-    'Coaching inbound dies after class and after 7pm. Answer, qualify the exam, book the counselling. Do not wait until morning.',
+    'Parents message coaching institutes after class and after 7pm. Answer, qualify the exam, book counselling. Do not wait until morning.',
   alternates: {
     canonical: 'https://goproxe.com/blog/coaching-parents-at-night',
   },
@@ -62,7 +62,7 @@ const faqSchema = {
 export default function CoachingParentsAtNightPage() {
   const slug = 'coaching-parents-at-night'
   const pageUrl = 'https://goproxe.com/blog/coaching-parents-at-night'
-  const pageTitle = 'The parent messaged at 9pm. The institute that answered got the admission.'
+  const pageTitle = 'Coaching WhatsApp after 9pm: parents who booked elsewhere'
 
   const tocItems = [
     { id: 'what-coaching-desks-run', text: 'What coaching desks run' },

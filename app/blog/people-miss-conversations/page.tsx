@@ -3,7 +3,7 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'People miss conversations. Then they lose the lead.',
+  title: 'Missed WhatsApp leads: how chats go cold overnight',
   description:
     'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
   alternates: {
@@ -78,7 +78,7 @@ const faqSchema = {
 export default function BlogPostPage() {
   const slug = 'people-miss-conversations'
   const pageUrl = 'https://goproxe.com/blog/people-miss-conversations'
-  const pageTitle = 'People miss conversations. Then they lose the lead.'
+  const pageTitle = 'Missed WhatsApp leads: how chats go cold overnight'
 
   const tocItems = [
     { id: 'what-clinics-coaches-and-brokers-are-actually-searching', text: 'What clinics, coaches, and brokers are actually searching' },

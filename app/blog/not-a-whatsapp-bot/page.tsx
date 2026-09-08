@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'PROXe is not a WhatsApp chatbot',
+  title: 'WhatsApp chatbot vs AI that books (not FAQ dumps)',
   description:
-    'A chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
+    'A WhatsApp chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
   alternates: {
     canonical: 'https://goproxe.com/blog/not-a-whatsapp-bot',
   },
@@ -62,7 +62,7 @@ const faqSchema = {
 export default function NotAWhatsAppBotPage() {
   const slug = 'not-a-whatsapp-bot'
   const pageUrl = 'https://goproxe.com/blog/not-a-whatsapp-bot'
-  const pageTitle = 'PROXe is not a WhatsApp chatbot'
+  const pageTitle = 'WhatsApp chatbot vs AI that books (not FAQ dumps)'
 
   const tocItems = [
     { id: 'what-it-is-not', text: 'What it is not' },

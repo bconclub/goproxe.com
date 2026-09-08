@@ -3,8 +3,8 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'A missed call is still a lead',
-  description: `A ring is not a booking.`,
+  title: 'Missed call still a lead: call back before they book elsewhere',
+  description: `A missed call is still a lead. A ring is not a booking. Call back, qualify, book before they choose the next number.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-missed-call-is-still-a-lead',
   },
@@ -130,7 +130,7 @@ const faqSchema = {
 export default function AMissedCallIsStillALeadPage() {
   const slug = 'a-missed-call-is-still-a-lead'
   const pageUrl = 'https://goproxe.com/blog/a-missed-call-is-still-a-lead'
-  const pageTitle = 'A missed call is still a lead'
+  const pageTitle = 'Missed call still a lead: call back before they book elsewhere'
 
   const tocItems = [
     { id: 'two-different-jobs', text: 'Two different jobs' },

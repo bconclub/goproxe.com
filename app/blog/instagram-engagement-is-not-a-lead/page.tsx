@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'Instagram engagement is not a lead',
+  title: 'Instagram likes are not leads. DMs that book are.',
   description:
-    'A like is not a booking. A comment is not a booking.',
+    'A like is not a booking. A comment is not a booking. Instagram engagement is not a lead until the conversation books.',
   alternates: {
     canonical: 'https://goproxe.com/blog/instagram-engagement-is-not-a-lead',
   },
@@ -114,7 +114,7 @@ const faqSchema = {
 export default function InstagramEngagementIsNotALeadPage() {
   const slug = 'instagram-engagement-is-not-a-lead'
   const pageUrl = 'https://goproxe.com/blog/instagram-engagement-is-not-a-lead'
-  const pageTitle = 'Instagram engagement is not a lead'
+  const pageTitle = 'Instagram likes are not leads. DMs that book are.'
 
   const tocItems = [
     { id: 'two-different-jobs', text: 'Two different jobs' },

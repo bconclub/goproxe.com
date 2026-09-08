@@ -3,9 +3,9 @@ import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
 export const metadata: Metadata = {
-  title: 'They WhatsApped while you were in consult. The clinic that answered got the patient.',
+  title: 'Clinic WhatsApp during consult: answer without leaving the chair',
   description:
-    'Clinic inbound dies in the chair, at night, and on the missed call. Answer, qualify, book. Do not wait until the next gap.',
+    'Patients WhatsApp during consult. The clinic that answered got the patient. Answer, qualify, book. Do not wait until the next gap.',
   alternates: {
     canonical: 'https://goproxe.com/blog/clinics-whatsapp-during-consult',
   },
@@ -25,7 +25,7 @@ Who this is for. Clinics that already get inbound on WhatsApp and still answer b
 export default function ClinicsWhatsAppDuringConsultPage() {
   const slug = 'clinics-whatsapp-during-consult'
   const pageUrl = 'https://goproxe.com/blog/clinics-whatsapp-during-consult'
-  const pageTitle = 'They WhatsApped while you were in consult. The clinic that answered got the patient.'
+  const pageTitle = 'Clinic WhatsApp during consult: answer without leaving the chair'
 
   const tocItems = [
     { id: 'what-clinics-actually-run', text: 'What clinics actually run' },
