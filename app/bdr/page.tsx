@@ -181,8 +181,8 @@ export default function BdrDialPage() {
         <header>
           <p className="kicker">PROXe dialer</p>
           <h1>Put PROXe on the phone with {first.trim() || business.trim() || 'your next prospect'}.</h1>
-          <p className="lede">Fill in what you know. PROXe introduces itself, handles the objections, books the fifteen-minute demo and sends the WhatsApp. The recording and summary land on the Calls page.</p>
-        </header>
+          <p className="lede">Pick an agent and review the call in ARC. Prospects stay in ARC until qualified. WhatsApp delivery is tracked separately.</p>
+        <p className="hint"><a href="https://arc.bconclub.com/dashboard/outreach?view=calls" target="_blank" rel="noreferrer" style={{ color: "var(--accent)", textDecoration: "underline" }}>Review recordings and transcripts in ARC</a></p></header>
 
         <div className="row">
           <label>
@@ -269,7 +269,7 @@ export default function BdrDialPage() {
           <div className={`live ${stage}`} aria-live="polite">
             <p className="kicker">{stageLabel}</p>
             {stage === 'talking' && live.last_lines.map((l, i) => <p key={i} className="turn">{l}</p>)}
-            {stage === 'done' && <p className="summary">{live.summary || 'Summary is on the Calls page in a minute.'}</p>}
+            {stage === 'done' && <p className="summary">{live.summary || 'Open ARC to review the recording and transcript.'}</p>}
             {stage === 'noanswer' && <p className="summary">They did not pick up, or hung up on the opener. PROXe will not redial today. Try tomorrow, or send the WhatsApp from the inbox.</p>}
             {stage === 'failed' && <p className="summary">The number did not ring. Check the digits.</p>}
           </div>

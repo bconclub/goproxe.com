@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { lastCallbackAt, recordCallbackDial } from '../../lib/leadsSupabase'
+import { lastCallbackAt } from '../../lib/leadsSupabase'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 
 /**
@@ -27,9 +27,8 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  *   vars?: { business_name, vertical, city, first_name, research_hook, last_summary },
  *   dry_run?: true      // resolve + report, place no call
  * }
- * Results (recording + transcript + summary) land on ARC AND in PROXe via the
- * ElevenLabs post-call webhook (api/webhooks/elevenlabs): the call shows on
- * the Calls page as outbound / outreach, and the lead is created if new.
+ * Call results stay in ARC. Explicit qualification and handoff are required
+ * before PROXe receives a contact. Dial reservations never create a lead.
  *
  * Quiet hours (8 PM - 9 AM IST) are refused here too: an AI cold call at
  * night is the one thing no BDR should be able to do by accident.
@@ -53,7 +52,6 @@ const AGENTS: Record<string, string> = {
   warm: process.env.OUTREACH_AGENT_WARM || 'agent_1201m0sn71mvf3arwzfwv4h9s2v1',
 }
 
-const PHONE_COOLDOWN_MS = 24 * 60 * 60 * 1000
 
 function toE164(input: string): string | null {
   const digits = String(input || '').replace(/\D/g, '')
@@ -99,10 +97,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'not_in_allowlist' }, { status: 403 })
   }
 
-  const last = await lastCallbackAt(phone)
-  if (last && Date.now() - last.getTime() < PHONE_COOLDOWN_MS) {
-    return NextResponse.json({ ok: false, reason: 'recently_called', last_called_at: last.toISOString() })
-  }
+  // Read historical cooldowns during migration; never create or update a PROXe lead.
+  const previous = await lastCallbackAt(phone);
+  if (previous && Date.now() - previous.getTime() < 24 * 60 * 60 * 1000) return NextResponse.json({ ok: false, reason: 'recently_called', last_called_at: previous.toISOString() }, { status: 409 });
   const now = new Date()
   if (isQuiet(now) && body.dry_run !== true) {
     return NextResponse.json({ ok: false, reason: 'quiet_hours', opens_at: nextOpenTime(now).toISOString() }, { status: 409 })
@@ -125,6 +122,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, dry_run: true, would_dial: phone, agent: agentKey, agent_id: agentId, dynamic_variables })
   }
 
+  // Reserve in ARC before dialing. No stub PROXe lead, and concurrent workers cannot double-dial.
+  const arcKey = process.env.ARC_INGEST_SECRET;
+  if (!arcKey) return NextResponse.json({ ok: false, reason: 'arc_not_configured' }, { status: 503 });
+  try {
+    const reserve = await fetch((process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com') + '/api/agent/outreach/reserve', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + arcKey, 'X-Agent-Name': 'bdr-' + caller },
+      body: JSON.stringify({ phone }), signal: AbortSignal.timeout(15000),
+    });
+    if (!reserve.ok) return NextResponse.json({ ok: false, reason: reserve.status === 409 ? 'recently_called' : 'arc_reservation_failed' }, { status: reserve.status === 409 ? 409 : 503 });
+  } catch { return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 503 }); }
   const res = await fetch('https://api.elevenlabs.io/v1/convai/sip-trunk/outbound-call', {
     method: 'POST',
     headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
@@ -139,17 +146,8 @@ export async function POST(request: Request) {
   if (!res.ok) {
     const detail = await res.text().catch(() => '')
     console.error('[outreach-dial] dial failed', res.status, detail.slice(0, 300))
-    await recordCallbackDial({ phone, status: 'failed', reason: `outreach_http_${res.status}` }).catch(() => {})
     return NextResponse.json({ ok: false, reason: `dial_http_${res.status}` }, { status: 502 })
   }
-
-  // [DEV] Record the dial IMMEDIATELY after ElevenLabs accepts, BEFORE parsing
-  // the response or writing to the client. This closes the 504 race: if nginx
-  // times out before the HTTP response completes, the dial is still recorded,
-  // so a retry will hit the recently_called guard and cannot place a second call.
-  // The conversation_id is parsed afterward and passed as null if unavailable;
-  // recordCallbackDial tolerates that (the post-call webhook will fill it).
-  await recordCallbackDial({ phone, status: 'dialing', reason: `outreach_${agentKey}_${caller}`, conversationId: null }).catch(() => {})
 
   const out = await res.json().catch(() => ({}))
   console.log(`[outreach-dial] dialed ${phone} agent=${agentKey} by=${caller} conversation_id=${out.conversation_id ?? 'null'}`)
