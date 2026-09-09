@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { lastCallbackAt } from '../../lib/leadsSupabase'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 
 /**
@@ -58,7 +57,6 @@ function toE164(input: string): string | null {
   if (!digits) return null
   if (digits.length === 10) return `+91${digits}`
   if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`
-  if (digits.length >= 11) return `+${digits}`
   return null
 }
 
@@ -81,12 +79,16 @@ export async function POST(request: Request) {
   const phone = toE164(body.phone)
   if (!phone) return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
 
-  const agentKey = String(body.agent || '')
+  const requestedAgent = String(body.agent || '');
+  const first = String(body.vars?.first_name || '').trim();
+  const agentKey = requestedAgent === 'dm' && (!first || /^(there|unknown|n\/?a)$/i.test(first)) ? 'noname' : requestedAgent
   const agentId = AGENTS[agentKey]
   if (!agentId) {
     return NextResponse.json({ ok: false, reason: 'unknown_agent', agents: Object.keys(AGENTS) }, { status: 400 })
   }
 
+  if (agentKey === 'warm' && !String(body.vars?.last_summary || '').trim()) return NextResponse.json({ ok: false, reason: 'followup_context_required' }, { status: 400 });
+  if (!String(body.vars?.business_name || '').trim()) return NextResponse.json({ ok: false, reason: 'business_required' }, { status: 400 });
   // The batch lock. While the allowlist is set, everything else is refused,
   // loudly, so a bot cannot start a batch nobody approved.
   // Compare on the last 10 digits: entries are typed bare (9731660933)
@@ -97,9 +99,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'not_in_allowlist' }, { status: 403 })
   }
 
-  // Read historical cooldowns during migration; never create or update a PROXe lead.
-  const previous = await lastCallbackAt(phone);
-  if (previous && Date.now() - previous.getTime() < 24 * 60 * 60 * 1000) return NextResponse.json({ ok: false, reason: 'recently_called', last_called_at: previous.toISOString() }, { status: 409 });
   const now = new Date()
   if (isQuiet(now) && body.dry_run !== true) {
     return NextResponse.json({ ok: false, reason: 'quiet_hours', opens_at: nextOpenTime(now).toISOString() }, { status: 409 })
@@ -114,13 +113,10 @@ export async function POST(request: Request) {
     city: String(v.city || 'Bangalore'),
     first_name: String(v.first_name || 'there'),
     research_hook: String(v.research_hook || 'They run a local business that gets enquiries online.'),
-    last_summary: String(v.last_summary || 'They previously showed interest in PROXe.'),
-    wa_number: process.env.OUTREACH_WA_NUMBER || '+91 81238 08817',
+    last_summary: String(v.last_summary || 'No previous conversation recorded.'),
+    arc_target_id: String(body.target_id || ''),
   }
 
-  if (body.dry_run === true) {
-    return NextResponse.json({ ok: true, dry_run: true, would_dial: phone, agent: agentKey, agent_id: agentId, dynamic_variables })
-  }
 
   // Reserve in ARC before dialing. No stub PROXe lead, and concurrent workers cannot double-dial.
   const arcKey = process.env.ARC_INGEST_SECRET;
@@ -128,9 +124,13 @@ export async function POST(request: Request) {
   try {
     const reserve = await fetch((process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com') + '/api/agent/outreach/reserve', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + arcKey, 'X-Agent-Name': 'bdr-' + caller },
-      body: JSON.stringify({ phone }), signal: AbortSignal.timeout(15000),
+      body: JSON.stringify({ phone, target_id: body.target_id, dry_run: body.dry_run === true }), signal: AbortSignal.timeout(15000),
     });
-    if (!reserve.ok) return NextResponse.json({ ok: false, reason: reserve.status === 409 ? 'recently_called' : 'arc_reservation_failed' }, { status: reserve.status === 409 ? 409 : 503 });
+    if (!reserve.ok) return NextResponse.json({ ok: false, reason: reserve.status === 409 ? 'recently_called_or_ambiguous_target' : 'arc_reservation_failed' }, { status: reserve.status === 409 ? 409 : 503 });
+    const reservation = await reserve.json();
+    if (!reservation.target_id) return NextResponse.json({ ok: false, reason: 'arc_target_required' }, { status: 503 });
+    dynamic_variables.arc_target_id = reservation.target_id;
+    if (body.dry_run === true) return NextResponse.json({ ok: true, dry_run: true, would_dial: phone, agent: agentKey, agent_id: agentId, storage: 'arc', quiet_hours: isQuiet(now), dynamic_variables });
   } catch { return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 503 }); }
   const res = await fetch('https://api.elevenlabs.io/v1/convai/sip-trunk/outbound-call', {
     method: 'POST',

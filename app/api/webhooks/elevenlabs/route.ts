@@ -1,3 +1,4 @@
+import { callOwner, callEvidence } from '../../../lib/outreachPolicy'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { recordCallTranscript } from '../../../lib/leadsSupabase'
@@ -108,24 +109,12 @@ export async function POST(request: NextRequest) {
     return s.length ? s : null
   }
 
-  // OUTREACH DIALS: send to Arc for tracking, but ALSO write to PROXe for
-  // intro/test agents. Cold-dial transcripts are prospect noise (Arc only),
-  // but intro/test dials are real conversations that must show in chat SoT.
-  // Intro agent added 2026-08-26 DEV fix: agent_0301m0na3jjdfkta2sza4h317m4d.
-  const OUTREACH_AGENTS = new Set(
-    (process.env.OUTREACH_AGENT_IDS ||
-      'agent_8901m0sn6y14eegsqh7mmgdswm92,agent_9901m0sn70f1ejn84enhccrns2kt,agent_1201m0sn71mvf3arwzfwv4h9s2v1'
-    ).split(',').map((s) => s.trim()).filter(Boolean),
-  )
-  const INTRO_TEST_AGENTS = new Set(
-    (process.env.INTRO_TEST_AGENT_IDS || 'agent_0301m0na3jjdfkta2sza4h317m4d')
-      .split(',').map((s) => s.trim()).filter(Boolean),
-  )
-  const agentId: string | null = d.agent_id ?? d.metadata?.agent_id ?? null
-  const isOutreach = agentId && OUTREACH_AGENTS.has(agentId)
-  const isIntroTest = agentId && INTRO_TEST_AGENTS.has(agentId)
+  const agentId: string | null = d.agent_id ?? d.metadata?.agent_id ?? null;
+  const owner = callOwner(agentId);
+  if (owner === 'unknown') return NextResponse.json({ ok: false, reason: 'unknown_agent' }, { status: 422 });
+  const evidence = callEvidence({ ...d, status: d.status || 'done' });
 
-  if (isOutreach || isIntroTest) {
+  if (owner === 'arc') {
     const ingestBase = process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com'
     const ingestSecret = process.env.ARC_INGEST_SECRET || ''
     if (!ingestSecret) {
@@ -142,13 +131,17 @@ export async function POST(request: NextRequest) {
           phone,
           conversation_id: conversationId,
           transcript: (summary ? `SUMMARY: ${summary}\n\n` : '') + lines,
-          disposition: pick('interest') === 'yes' ? 'interested' : undefined,
+          disposition: evidence.outcome,
+          callback_request: evidence.callback_request,
+          occurred_at: d.metadata?.start_time_unix_secs ? new Date(d.metadata.start_time_unix_secs * 1000).toISOString() : undefined,
+          target_id: d.conversation_initiation_client_data?.dynamic_variables?.arc_target_id || undefined,
+          agent_id: agentId,
         }),
       })
       if (!fwd.ok) {
         const detail = await fwd.text().catch(() => '')
         console.error('[webhooks/elevenlabs] ARC ingest failed', fwd.status, detail.slice(0, 200))
-        if (fwd.status !== 404) return NextResponse.json({ ok: false, reason: 'arc_ingest_failed' }, { status: 500 })
+        return NextResponse.json({ ok: false, reason: 'arc_ingest_failed' }, { status: 500 })
       }
     } catch (err) {
       console.error('[webhooks/elevenlabs] ARC ingest unreachable', err)

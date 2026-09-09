@@ -1,3 +1,4 @@
+import { callOwner } from '../../../lib/outreachPolicy'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { oncallWhatsAppSent } from '../../../lib/oncallWhatsAppSent'
@@ -94,6 +95,22 @@ export async function POST(request: NextRequest) {
     console.error('[agent/send-oncall-wa] missing phone parameter')
     return NextResponse.json({ ok: false, reason: 'missing_phone' }, { status: 400 })
   }
+
+  // Verify provider ownership before any PROXe lookup, write or send. Never trust a supplied agent ID.
+  try {
+    const key = process.env.ELEVENLABS_API_KEY;
+    if (!key || !/^conv_[a-zA-Z0-9]+$/.test(conversationId)) return NextResponse.json({ ok: false, reason: 'unverified_call' }, { status: 503 });
+    const check = await fetch('https://api.elevenlabs.io/v1/convai/conversations/' + conversationId, {
+      headers: { 'xi-api-key': key }, cache: 'no-store', signal: AbortSignal.timeout(10000),
+    });
+    if (!check.ok) return NextResponse.json({ ok: false, reason: 'unverified_call' }, { status: 503 });
+    const call = await check.json();
+    const owner = callOwner(call.agent_id);
+    if (owner === 'arc') return NextResponse.json({ ok: false, sent: false, reason: 'arc_only_outreach', message: 'Outbound follow-up stays in ARC for review. Nothing was sent.' }, { status: 409 });
+    if (owner !== 'inbound') return NextResponse.json({ ok: false, reason: 'unknown_agent' }, { status: 403 });
+    const actualPhone = String(call.metadata?.phone_call?.external_number || '').replace(/\D/g, '');
+    if (!actualPhone || actualPhone !== String(phone).replace(/\D/g, '')) return NextResponse.json({ ok: false, reason: 'recipient_mismatch' }, { status: 403 });
+  } catch { return NextResponse.json({ ok: false, reason: 'unverified_call' }, { status: 503 }); }
 
   if (!INTENT_BASE || !INTENT_KEY) {
     console.error('[agent/send-oncall-wa] PROXE_INTENT_BASE or PROXE_INBOUND_API_KEY not configured')

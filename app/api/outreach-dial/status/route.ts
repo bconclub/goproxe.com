@@ -1,3 +1,4 @@
+import { callOwner, callEvidence } from '../../../lib/outreachPolicy'
 import { NextResponse } from 'next/server'
 
 /**
@@ -25,6 +26,8 @@ export async function GET(request: Request) {
   })
   if (!res.ok) return NextResponse.json({ ok: false, reason: `upstream_${res.status}` }, { status: 502 })
   const d: any = await res.json().catch(() => ({}))
+  if (callOwner(d.agent_id) !== 'arc') return NextResponse.json({ ok: false, reason: 'not_outreach' }, { status: 404 });
+  const evidence = callEvidence(d);
   const md = d.metadata || {}
   const turns: Array<{ role?: string; message?: string | null }> = Array.isArray(d.transcript) ? d.transcript : []
   const spoke = turns.filter((t) => t.role !== 'agent' && String(t.message || '').trim()).length
@@ -35,7 +38,10 @@ export async function GET(request: Request) {
     duration: md.call_duration_secs ?? null,
     termination: md.termination_reason ?? null,
     turns: turns.length,
-    caller_spoke: spoke > 0,
+    caller_spoke: evidence.caller_spoke,
+    outcome: evidence.outcome,
+    callback_request: evidence.callback_request,
+    qualified: false,
     summary: d.analysis?.transcript_summary ?? null,
     last_lines: turns.slice(-3).map((t) => `${t.role === 'agent' ? 'PROXe' : 'Them'}: ${String(t.message || '').trim()}`).filter((l) => !l.endsWith(': ')),
   })
