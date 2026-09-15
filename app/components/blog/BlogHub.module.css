@@ -60,7 +60,7 @@
 
 .cardImage {
   width: 100%;
-  aspect-ratio: 1200 / 630;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: rgba(20, 13, 48, 0.6);
 }
