@@ -6,23 +6,7 @@ import { submitLead } from '../../lib/leads';
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
-/**
- * Hero quick-capture: one phone field, one tap, then a short "who should PROXe
- * ask for?" step, then PROXe dials.
- *
- * Order matters (Z, 5 Sep): the call used to start the moment the number was
- * in and the name was asked while the phone rang. Now the number saves the
- * lead immediately, the visitor gets ONE screen for name + business, and the
- * dial fires on "Call me now", on Enter, on Skip, or on its own after 12
- * seconds. The fields never block the call; they only make it better.
- *
- * Same /api/lead sink as the deploy form (Supabase all_leads upserts by
- * phone), same funnel events (lead_form_start -> form_completed/Meta Lead),
- * source: 'hero_phone'. The dial POSTs /api/callback with name + business so
- * the ElevenLabs agent has them as dynamic variables.
- */
-const DETAILS_SECONDS = 12;
-
+/** Phone first, then required identity details. Only explicit submission saves and dials. */
 type Status = 'idle' | 'details' | 'dialing' | 'done';
 
 export default function HeroPhoneCapture() {
@@ -33,7 +17,6 @@ export default function HeroPhoneCapture() {
   const [callSettled, setCallSettled] = useState(false);
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
-  const [secondsLeft, setSecondsLeft] = useState(DETAILS_SECONDS);
   const startedRef = useRef(false);
   const dialedRef = useRef(false);
   const nameRef = useRef<HTMLInputElement | null>(null);
@@ -56,8 +39,7 @@ export default function HeroPhoneCapture() {
     if (error) setError('');
   };
 
-  // Step 1 -> step 2. The number is the conversion: lead saved, Meta Lead
-  // fired. The dial waits for the details screen (or its countdown).
+  // Collect phone without saving an incomplete lead or starting a call.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = phone.trim();
@@ -72,57 +54,53 @@ export default function HeroPhoneCapture() {
       track('form_error', { form: 'hero_phone', field: 'phone', reason: 'length' });
       return;
     }
-    const leadEventId = trackLead({ source: 'hero_phone' });
-    track('callback_submit', { market: detectMarket() });
-    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, promptedPhone: true }, 'proxe');
-    void submitLead({ type: 'lead', phone: trimmed, source: 'hero_phone', eventId: leadEventId });
+    setError('');
     track('hero_details_shown', { source: 'hero_phone' });
-    setSecondsLeft(DETAILS_SECONDS);
     setStatus('details');
   };
 
-  // Countdown: dial on its own when it runs out.
   useEffect(() => {
-    if (status !== 'details') return;
-    nameRef.current?.focus();
-    const t = window.setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) { window.clearInterval(t); void dial('timeout'); return 0; }
-        return s - 1;
-      });
-    }, 1000);
-    return () => window.clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (status === 'details') nameRef.current?.focus();
   }, [status]);
 
-  const dial = async (how: 'submit' | 'skip' | 'timeout') => {
+  const dial = async () => {
     if (dialedRef.current) return;
-    dialedRef.current = true;
     const trimmed = phone.trim();
     const cleanName = name.trim().replace(/\s+/g, ' ');
     const cleanBusiness = business.trim().replace(/\s+/g, ' ');
-    track(how === 'skip' ? 'hero_details_skipped' : 'hero_details_submitted', { source: 'hero_phone', how, named: !!cleanName, business: !!cleanBusiness });
-    if (cleanName || cleanBusiness) {
-      storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, ...(cleanName ? { name: cleanName } : {}), promptedPhone: true }, 'proxe');
+    if (!cleanName || !cleanBusiness) {
+      setError('Enter your name and business before requesting a call.');
+      return;
     }
+    dialedRef.current = true;
+    setError('');
+    track('hero_details_submitted', { source: 'hero_phone', how: 'submit', named: true, business: true });
+    const leadEventId = trackLead({ source: 'hero_phone' });
+    track('callback_submit', { market: detectMarket() });
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: trimmed, name: cleanName, promptedPhone: true }, 'proxe');
     setStatus('dialing');
+    const saveController = new AbortController();
+    const saveTimeout = window.setTimeout(() => saveController.abort(), 20000);
+    const saved = await submitLead({ type: 'lead', phone: trimmed, name: cleanName, brandName: cleanBusiness, source: 'hero_phone', eventId: leadEventId }, saveController.signal);
+    window.clearTimeout(saveTimeout);
+    if (!saved) {
+      setError("We couldn't save your details. Please try again. No call was started.");
+      dialedRef.current = false;
+      setStatus('details');
+      return;
+    }
 
     // Hard 20s ceiling on the dial: an abort is recoverable, a hang is not.
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
-    const [, dialRes] = await Promise.all([
-      cleanName || cleanBusiness
-        ? submitLead({ type: 'lead', phone: trimmed, name: cleanName || undefined, brandName: cleanBusiness || undefined, source: 'hero_phone' })
-        : Promise.resolve(true),
-      fetch('/api/callback', {
+    const dialRes = await fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: trimmed, market: detectMarket(), name: cleanName || undefined, business: cleanBusiness || undefined }),
+        body: JSON.stringify({ phone: trimmed, market: detectMarket(), name: cleanName || undefined, business: cleanBusiness, source: 'hero_phone' }),
         signal: ac.signal,
       })
         .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
-        .catch((err) => ({ ok: false, reason: err?.name === 'AbortError' ? 'timeout' : 'network_error' })),
-    ]);
+        .catch((err) => ({ ok: false, reason: err?.name === 'AbortError' ? 'timeout' : 'network_error' }));
     window.clearTimeout(timeout);
 
     if (!dialRes?.ok) {
@@ -134,10 +112,10 @@ export default function HeroPhoneCapture() {
           ? 'We just called you. Check your phone, or try again in a minute.'
           : reason === 'quiet_hours'
             ? `Number saved. It is late here, so PROXe will call you at ${dialRes?.callAfter || '9:00 AM'}.`
-            : 'Number saved. PROXe will call you shortly.'
+            : 'We could not confirm your call. Your details are saved. Please try again shortly.'
       );
       dialedRef.current = false;
-      setStatus('idle');
+      setStatus('details');
       return;
     }
     track('callback_dialed', { market: detectMarket() });
@@ -159,7 +137,7 @@ export default function HeroPhoneCapture() {
     return (
       <form
         className="proxe-hero-details"
-        onSubmit={(e) => { e.preventDefault(); void dial('submit'); }}
+        onSubmit={(e) => { e.preventDefault(); void dial(); }}
         aria-label="Who should PROXe ask for"
       >
         <p className="proxe-hero-details-title">Who should PROXe ask for?</p>
@@ -170,6 +148,8 @@ export default function HeroPhoneCapture() {
               ref={nameRef}
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+              maxLength={60}
               autoComplete="name"
             />
           </label>
@@ -178,18 +158,18 @@ export default function HeroPhoneCapture() {
             <input
               value={business}
               onChange={(e) => setBusiness(e.target.value)}
+              required
+              maxLength={80}
               autoComplete="organization"
             />
           </label>
         </div>
         <div className="proxe-hero-details-actions">
           <button type="submit" className="proxe-hero-details-go">Call me now</button>
-          <button type="button" className="proxe-hero-details-skip" onClick={() => void dial('skip')}>Skip</button>
+          <button type="button" className="proxe-hero-details-skip" onClick={() => { setError(''); setStatus('idle'); }}>Back</button>
         </div>
-        <div className="proxe-hero-details-timer" aria-hidden="true">
-          <span style={{ width: `${(secondsLeft / DETAILS_SECONDS) * 100}%` }} />
-        </div>
-        <p className="proxe-hero-details-note" role="status">PROXe calls in {secondsLeft}s either way.</p>
+        <p className="proxe-hero-details-note">We'll call after you submit your details.</p>
+        {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
       </form>
     );
   }

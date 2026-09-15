@@ -36,7 +36,7 @@ function cookie(name: string): string | undefined {
   return m ? decodeURIComponent(m[1]) : undefined
 }
 
-export async function submitLead(input: LeadInput): Promise<boolean> {
+export async function submitLead(input: LeadInput, signal?: AbortSignal): Promise<boolean> {
   if (typeof window === 'undefined') return false
   try {
     const attr = getAttribution()
@@ -63,6 +63,7 @@ export async function submitLead(input: LeadInput): Promise<boolean> {
       body: JSON.stringify({ ...input, ...attr, ...capi }),
       // Survive a navigation that happens right after submit (booking → /thank-you).
       keepalive: true,
+      signal,
     })
     return res.ok
   } catch {

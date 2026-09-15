@@ -131,7 +131,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
 
-  let body: { phone?: string; market?: string; name?: string; business?: string }
+  let body: { phone?: string; market?: string; name?: string; business?: string; source?: string }
   try {
     body = await request.json()
   } catch {
@@ -143,6 +143,10 @@ export async function POST(request: Request) {
   const callerBusiness = String(body.business ?? '').trim().replace(/\s+/g, ' ').slice(0, 80)
   if (!phone) {
     return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
+  }
+
+  if (body.source === 'hero_phone' && (!callerName || !callerBusiness)) {
+    return NextResponse.json({ ok: false, reason: 'missing_details' }, { status: 400 })
   }
 
   const now = Date.now()

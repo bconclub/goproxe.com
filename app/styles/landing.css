@@ -12225,8 +12225,6 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-hero-details--dialing { align-items: center; text-align: center; padding: 8px 0; }
 .proxe-hero-details--dialing .proxe-hero-details-title { font-size: 20px; font-weight: 700; }
 .proxe-hero-details--dialing .proxe-hero-details-note { font-size: 14px; color: rgba(255, 255, 255, 0.75); }
-.proxe-hero-details-timer { height: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
-.proxe-hero-details-timer span { display: block; height: 100%; background: rgba(196, 181, 253, 0.95); transition: width 1s linear; }
 .proxe-hero-details-note { margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.6); text-align: center; }
 @media (max-width: 420px) {
   .proxe-hero-details-fields { grid-template-columns: 1fr; }
