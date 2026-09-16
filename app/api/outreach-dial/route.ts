@@ -1,3 +1,4 @@
+import { spokenBusinessName } from '../../lib/spokenBusinessName'
 import { NextResponse } from 'next/server'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
   // Every variable the prompts reference gets a value: an unfilled {{var}}
   // read aloud as literal braces would torch the call.
   const dynamic_variables = {
-    business_name: String(v.business_name || 'your business'),
+    business_name: spokenBusinessName(v.business_name, v.city),
     vertical: String(v.vertical || 'business'),
     city: String(v.city || 'Bangalore'),
     first_name: String(v.first_name || 'there'),
