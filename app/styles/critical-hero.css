@@ -30,3 +30,7 @@ html:has(.proxe-root),body:has(.proxe-root){background:#14102e!important}
 @media (max-width:768px){.proxe-hero-seg{display:block}.proxe-hero-title{letter-spacing:-.01em}}
 
 .proxe-hero-subtitle{margin:26px auto 0;max-width:580px;color:rgba(255,255,255,.72);font-family:var(--proxe-font-sans);font-weight:400;font-size:clamp(17px,1.55vw,22px);line-height:1.6;letter-spacing:.005em;text-shadow:0 1px 4px rgba(10,20,60,.45)}
+
+/* Customer headline: two balanced desktop lines, four readable mobile phrases. */
+.proxe-hero-title.proxe-hero-title-customer{font-size:clamp(28px,4.7vw,68px);max-width:100%}
+@media(max-width:768px){.proxe-hero-title.proxe-hero-title-customer{font-size:clamp(28px,9.5vw,66px)}}

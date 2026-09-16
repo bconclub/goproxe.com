@@ -1426,27 +1426,11 @@ export default function ProxeLanding() {
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
           <div className="proxe-hero-eyebrow">AI Lead Conversion</div>
-          {/* Two lines, and only two. The <br> alone did not hold: on a phone
-              "Never Miss a Lead" was wide enough to wrap again, so the headline
-              read as three ragged lines with "Lead" stranded on its own. Each
-              line is now its own non-breaking block, so the break lands where
-              it is written or not at all. */}
-          <h1 className="proxe-hero-title">
-            {/* Split into segments so the mobile break is chosen, not left to
-                the browser. Inline on desktop (renders as one line, exactly as
-                before); block on mobile, which gives "Never Miss / a Lead /
-                Ever Again." instead of letting natural wrapping strand "Lead"
-                alone on a line. Spaces between segments ensure crawlers and
-                screen readers see "Never Miss a Lead Ever Again." */}
-            <span className="proxe-hero-line">
-              <span className="proxe-hero-seg">Never Miss</span>
-              {' '}
-              <span className="proxe-hero-seg">a Lead</span>
-            </span>
+          <h1 className="proxe-hero-title proxe-hero-title-customer">
+            <span className="proxe-hero-line"><span className="proxe-hero-seg">You run</span>{' '}<span className="proxe-hero-seg">the business.</span></span>
             {' '}
-            <span className="proxe-hero-line">Ever Again.</span>
-          </h1>
-          <p className="proxe-hero-subtitle">
+            <span className="proxe-hero-line"><span className="proxe-hero-seg">PROXe handles</span>{' '}<span className="proxe-hero-seg">your customers.</span></span>
+          </h1>          <p className="proxe-hero-subtitle">
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and keeps them warm until they&rsquo;re ready to buy.
           </p>
           {/* Quick capture — phone in, callback out. The primary hero action. */}
