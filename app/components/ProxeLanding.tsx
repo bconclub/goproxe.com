@@ -1429,8 +1429,9 @@ export default function ProxeLanding() {
           <h1 className="proxe-hero-title proxe-hero-title-customer">
             <span className="proxe-hero-line"><span className="proxe-hero-seg">You run</span>{' '}<span className="proxe-hero-seg">the business.</span></span>
             {' '}
-            <span className="proxe-hero-line"><span className="proxe-hero-seg">PROXe handles</span>{' '}<span className="proxe-hero-seg">your customers.</span></span>
-          </h1>          <p className="proxe-hero-subtitle">
+            <span className="proxe-hero-line"><span className="proxe-hero-seg">PROXe runs</span>{' '}<span className="proxe-hero-seg">the leads.</span></span>
+          </h1>
+          <p className="proxe-hero-subtitle">
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and keeps them warm until they&rsquo;re ready to buy.
           </p>
           {/* Quick capture — phone in, callback out. The primary hero action. */}
