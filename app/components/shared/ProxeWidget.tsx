@@ -64,7 +64,7 @@ export default function ProxeWidget() {
   // dashboard is confusing, and every message typed into it writes a REAL
   // conversation into the platform.
   const pathname = usePathname()
-  const enabled = !pathname?.startsWith('/demo')
+  const enabled = Boolean(pathname) && !pathname.startsWith('/demo') && !pathname.startsWith('/deploy')
   useTrimWidgetDeadZone(enabled)
   if (!enabled) return null
   // Defer widget load until the browser is idle to avoid blocking LCP

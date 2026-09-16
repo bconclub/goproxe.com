@@ -37,17 +37,15 @@ type Market = 'inr' | 'usd'
 const CURRENCY: Record<Market, Currency> = { inr: 'INR', usd: 'USD' }
 
 const INCLUDED = [
-  'Every channel: website chat, WhatsApp, Instagram, Messenger, email, voice',
-  'One unified memory, so a customer never repeats themselves',
-  'Up to 500 leads managed a month',
-  'Automatic follow-up until they reply',
-  'Lead scoring and a full pipeline dashboard',
+  'WhatsApp, website, Instagram and voice in one place',
+  'Follows up while your team gets on with the business',
+  `${PRICING.included_seats} team seats included`,
 ]
 
 export default function DeployConfigurator({ initialMarket }: { initialMarket: Market }) {
   const router = useRouter()
-  const [market, setMarket] = useState<Market>(initialMarket)
-  const [seats, setSeats] = useState(PRICING.included_seats)
+  const [market] = useState<Market>(initialMarket)
+  const seats = PRICING.included_seats
   const [gstin, setGstin] = useState('')
   const [hasGst, setHasGst] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -99,11 +97,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
       }
       // Name the real reason. "Something went wrong" on a payment page is how a
       // buyer decides the product is not ready.
-      setError(
-        data?.reason === 'seat_product_not_configured'
-          ? 'Extra seats cannot be purchased online yet. Continue with the two included seats, or talk to us and we will set it up for you.'
-          : 'Checkout is unavailable right now. Nothing has been charged.',
-      )
+      setError('Checkout is unavailable right now. Nothing has been charged.')
       setBusy(false)
     } catch {
       setError('Checkout is unavailable right now. Nothing has been charged.')
@@ -114,18 +108,19 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
   return (
     <div className={styles.wrap}>
       <header className={styles.head}>
-        <h1 className={styles.title}>Deploy PROXe</h1>
-        <p className={styles.sub}>
-          Pick your team size, add your GSTIN if you have one, and see exactly what you pay before
-          anything is charged.
-        </p>
+        <p className={styles.eyebrow}>PROXe Core</p>
+        <h1 className={styles.title}>Start with PROXe.</h1>
+        <p className={styles.sub}>Your customer conversations, handled from day one.</p>
       </header>
 
       <div className={styles.grid}>
         <section className={styles.config}>
-          <div className={styles.card}>
+          <section className={styles.plan} aria-labelledby="plan-title">
             <div className={styles.cardHead}>
-              <h2 className={styles.cardTitle}>PROXe Core</h2>
+              <div>
+                <h2 className={styles.cardTitle} id="plan-title">PROXe Core</h2>
+                <p className={styles.planHint}>Everything you need to start handling leads properly.</p>
+              </div>
               <span className={styles.price}>
                 {formatMoney(PRICING.core_price[currency], currency)}
                 <span className={styles.per}>/month</span>
@@ -136,64 +131,30 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
                 <li key={line}>{line}</li>
               ))}
             </ul>
-          </div>
-
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Team seats</h2>
-            <p className={styles.hint}>
-              One owner login is always free. Core includes {PRICING.included_seats} team seats;
-              each extra seat is {formatMoney(PRICING.seat_price[currency], currency)} a month.
-            </p>
-            <div className={styles.stepper}>
-              <button
-                type="button"
-                className={styles.stepBtn}
-                onClick={() => setSeats((s) => Math.max(PRICING.included_seats, s - 1))}
-                disabled={seats <= PRICING.included_seats}
-                aria-label="Remove a seat"
-              >
-                &minus;
-              </button>
-              <span className={styles.stepValue} aria-live="polite">
-                {seats}
-              </span>
-              <button
-                type="button"
-                className={styles.stepBtn}
-                onClick={() => setSeats((s) => Math.min(PRICING.max_seats, s + 1))}
-                disabled={seats >= PRICING.max_seats}
-                aria-label="Add a seat"
-              >
-                +
-              </button>
-              <span className={styles.stepNote}>
-                {q.billable_seats === 0
-                  ? 'both included'
-                  : `${q.billable_seats} paid seat${q.billable_seats > 1 ? 's' : ''}`}
-              </span>
-            </div>
-            {seats >= PRICING.max_seats && (
-              <p className={styles.hint}>
-                Need more than {PRICING.max_seats}? Talk to us and we will quote it properly.
-              </p>
-            )}
-          </div>
+          </section>
 
           {market === 'inr' && (
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>GST</h2>
-              <label className={styles.checkRow}>
-                <input
-                  type="checkbox"
-                  checked={hasGst}
-                  onChange={(e) => setHasGst(e.target.checked)}
-                />
-                <span>I am registered under GST and have a GSTIN</span>
-              </label>
+            <section className={styles.gst} aria-labelledby="gst-title">
+              <div className={styles.gstHead}>
+                <div>
+                  <h2 className={styles.gstTitle} id="gst-title">Have a GSTIN?</h2>
+                  <p className={styles.gstHint}>Add it only if you are GST registered.</p>
+                </div>
+                <button
+                  type="button"
+                  className={hasGst ? styles.gstToggleOn : styles.gstToggle}
+                  onClick={() => setHasGst((value) => !value)}
+                  aria-expanded={hasGst}
+                  aria-controls="gstin-field"
+                >
+                  {hasGst ? 'Remove' : 'Add GSTIN'}
+                </button>
+              </div>
 
               {hasGst && (
                 <>
                   <input
+                    id="gstin-field"
                     className={`${styles.input} ${gstinTouched && !gstinValid ? styles.inputError : ''}`}
                     value={gstin}
                     onChange={(e) => setGstin(e.target.value.toUpperCase())}
@@ -211,70 +172,30 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
                   )}
                   {gstinValid && (
                     <p className={styles.goodText}>
-                      Reverse charge applies. We do not levy 18% GST. You self-assess it in GSTR-3B
-                      and claim the input credit on the same line, so it costs you nothing.
+                      Your tax treatment is reflected in the total before payment.
                     </p>
                   )}
                 </>
               )}
 
-              {!hasGst && (
-                <p className={styles.hint}>
-                  Without a GSTIN, 18% GST is added on top and remitted for you. Add a GSTIN above
-                  and reverse charge applies instead.
-                </p>
-              )}
-            </div>
+            </section>
           )}
-
-          <div className={styles.marketRow}>
-            <button
-              type="button"
-              className={market === 'inr' ? styles.marketOn : styles.marketOff}
-              onClick={() => setMarket('inr')}
-            >
-              India, INR
-            </button>
-            <button
-              type="button"
-              className={market === 'usd' ? styles.marketOn : styles.marketOff}
-              onClick={() => setMarket('usd')}
-            >
-              International, USD
-            </button>
-          </div>
         </section>
 
         <aside className={styles.summary}>
-          <h2 className={styles.cardTitle}>What you pay</h2>
+          <p className={styles.summaryEyebrow}>YOUR PLAN</p>
+          <h2 className={styles.summaryTitle}>PROXe Core</h2>
 
           <dl className={styles.lines}>
             <div className={styles.line}>
               <dt>PROXe Core</dt>
               <dd>{formatMoney(q.base, currency)}</dd>
             </div>
-            <div className={styles.line}>
-              <dt>
-                Team seats
-                <span className={styles.lineNote}>
-                  {q.billable_seats > 0
-                    ? `${q.billable_seats} x ${formatMoney(PRICING.seat_price[currency], currency)}`
-                    : `${PRICING.included_seats} included`}
-                </span>
-              </dt>
-              <dd>{formatMoney(q.seat_total, currency)}</dd>
-            </div>
-
-            <div className={`${styles.line} ${styles.subtotal}`}>
-              <dt>Subtotal</dt>
-              <dd>{formatMoney(q.subtotal, currency)}</dd>
-            </div>
-
             {q.tax_mode === 'b2c' && (
               <div className={styles.line}>
                 <dt>
                   GST
-                  <span className={styles.lineNote}>18%, collected and remitted for you</span>
+                  <span className={styles.lineNote}>18%</span>
                 </dt>
                 <dd>{formatMoney(q.tax, currency)}</dd>
               </div>
@@ -284,7 +205,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
               <div className={styles.line}>
                 <dt>
                   GST
-                  <span className={styles.lineNote}>reverse charge, not levied</span>
+                  <span className={styles.lineNote}>not added</span>
                 </dt>
                 <dd>{formatMoney(0, currency)}</dd>
               </div>
@@ -294,7 +215,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
               <div className={styles.line}>
                 <dt>
                   Tax
-                  <span className={styles.lineNote}>no Indian GST on an export of services</span>
+                  <span className={styles.lineNote}>not added</span>
                 </dt>
                 <dd>{formatMoney(0, currency)}</dd>
               </div>
@@ -306,8 +227,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
             <strong>{formatMoney(q.grand_total, currency)}</strong>
           </div>
           <p className={styles.totalNote}>
-            Billed monthly. Cancel any time. Seats can be changed mid-month and are prorated to the
-            day.
+            Billed monthly. Cancel any time. Nothing is charged until payment.
           </p>
 
           <button type="button" className={styles.cta} onClick={goToPayment} disabled={busy}>

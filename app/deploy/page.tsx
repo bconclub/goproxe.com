@@ -11,9 +11,8 @@ import DeployConfigurator from './DeployConfigurator'
  */
 
 export const metadata: Metadata = {
-  title: 'Deploy PROXe - configure your plan',
-  description:
-    'Pick your team size, add your GSTIN if you have one, and see exactly what you pay before anything is charged.',
+  title: 'Start with PROXe',
+  description: 'Start PROXe with a clear monthly price before payment.',
   // A checkout configurator has nothing to offer a search engine and should not
   // compete with the pricing page for the same intent.
   robots: { index: false, follow: true },
