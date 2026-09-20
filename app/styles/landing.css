@@ -4512,6 +4512,14 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   color: #fff;
   border-bottom-color: rgba(196, 181, 253, 0.9);
 }
+.pf-badges {
+  margin-top: 20px;
+  text-align: center;
+}
+.pf-badges img {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 
 

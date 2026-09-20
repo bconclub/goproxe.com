@@ -1784,6 +1784,11 @@ export default function ProxeLanding() {
                 rel="noopener noreferrer"
               >BCON</a>. All rights reserved.
             </div>
+            <div className="pf-badges">
+              <a href="https://fazier.com" target="_blank" rel="noopener noreferrer">
+                <img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light" width="120" alt="Fazier badge" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
