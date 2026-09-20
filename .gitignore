@@ -53,3 +53,4 @@ next-env.d.ts
 # installed copies of the deploy scripts on the VPS (repo root, never committed)
 /deploy.sh
 /deploy-poll.sh
+# Deployment trigger Sun Sep 20 06:23:22 PM UTC 2026
