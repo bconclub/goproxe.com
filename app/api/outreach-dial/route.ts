@@ -41,6 +41,19 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  * 1. Wait 5+ seconds for the DB write to settle.
  * 2. Call again; if you get {reason: "recently_called"}, the first call placed.
  * 3. If you get another timeout, the phone is blocked or there's an infra issue.
+ *
+ * [DEV] HANDLING 409 CONFLICTS (Epitome G-P#2 race):
+ * Arc's 24h dial reserve can return HTTP 409 with concrete reasons:
+ * - "recently_called": genuine cooldown, call already placed in last 24h
+ * - "ambiguous_target": multiple active targets for phone, needs manual resolution
+ * - "target_closed": target marked closed/lost in Arc
+ *
+ * On 409, probe/batch scripts should check for same-minute successful conversation:
+ * 1. Query PM2 database `dialed_lines` table: SELECT conversation_id WHERE phone = ? AND created_at >= NOW() - INTERVAL 1 MINUTE
+ * 2. Or query Arc `/api/agent/outreach_messages` with phone + time filter for conversation_id
+ * 3. If a conversation_id exists from the same minute, stamp it (race: probe logged HOLD_409 while
+ *    Intro DM call actually succeeded). Do NOT skip/HOLD.
+ * 4. If no conversation_id exists and reason is "recently_called", respect the cooldown and skip.
  */
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
@@ -127,7 +140,18 @@ export async function POST(request: Request) {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + arcKey, 'X-Agent-Name': 'bdr-' + caller },
       body: JSON.stringify({ phone, target_id: body.target_id, dry_run: body.dry_run === true }), signal: AbortSignal.timeout(15000),
     });
-    if (!reserve.ok) return NextResponse.json({ ok: false, reason: reserve.status === 409 ? 'recently_called_or_ambiguous_target' : 'arc_reservation_failed' }, { status: reserve.status === 409 ? 409 : 503 });
+    if (!reserve.ok) {
+      // [DEV] Pass through Arc's concrete 409 reason instead of lumping them.
+      // Arc returns JSON { reason: "recently_called" | "ambiguous_target" | "target_closed" }
+      // on 409, or a generic error body on other failures. Probe/batch callers can
+      // then distinguish genuine cooldown from same-minute race (see Epitome G-P#2).
+      if (reserve.status === 409) {
+        const arc409 = await reserve.json().catch(() => ({ reason: 'recently_called_or_ambiguous_target' }));
+        const arcReason = arc409.reason || 'recently_called_or_ambiguous_target';
+        return NextResponse.json({ ok: false, reason: arcReason, arc_detail: arc409 }, { status: 409 });
+      }
+      return NextResponse.json({ ok: false, reason: 'arc_reservation_failed' }, { status: 503 });
+    }
     const reservation = await reserve.json();
     if (!reservation.target_id) return NextResponse.json({ ok: false, reason: 'arc_target_required' }, { status: 503 });
     dynamic_variables.arc_target_id = reservation.target_id;
