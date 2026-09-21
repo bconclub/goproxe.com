@@ -14,3 +14,7 @@ Prerequisite: user applies ARC migration 20260908000000_outreach_activity.sql. N
 Provider prompt backups: /root/proxe-call-controls-backups on BDR host, mode 0600. Update script defaults to dry-run; --apply updates only the three named outbound agents.
 
 References: https://elevenlabs.io/docs/eleven-agents/customization/tools/system-tools/end-call and https://elevenlabs.io/docs/api-reference/agents/update
+
+## Opener SoT (21 Sep 2026)
+
+Batch G FAIL: spoken opener lived in ElevenLabs Intro DM / Intro Cold prompts (`Proxy` + thirty seconds), not in `research_hook`. See [OUTBOUND-OPENER.md](./OUTBOUND-OPENER.md) and `scripts/update-outbound-opener.py`.
