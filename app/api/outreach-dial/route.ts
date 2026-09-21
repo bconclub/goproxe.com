@@ -41,6 +41,17 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  * 1. Wait 5+ seconds for the DB write to settle.
  * 2. Call again; if you get {reason: "recently_called"}, the first call placed.
  * 3. If you get another timeout, the phone is blocked or there's an infra issue.
+ *
+ * [DEV] HTTP 409 RACE HANDLING (Epitome G-P#2):
+ * Arc reserve returns 409 for multiple reasons: recently_called (24h cooldown),
+ * ambiguous_target (multiple leads match), or closed/lost/won (deal ended).
+ * The API now passes through Arc's concrete reason field instead of lumping them.
+ * RACE: A same-minute 409 with reason "recently_called" may be a race where the
+ * dial actually succeeded. Before treating 409 as HOLD and skipping FETCH/stamp:
+ * 1. Check PM2 logs for `[outreach-dial] dialed <phone>` within the same minute.
+ * 2. Or query Arc `outreach_messages` for a matching phone + same-minute `conversation_id`.
+ * 3. If a successful CID exists, stamp it instead of skipping. This prevents probes
+ *    from logging HOLD_409 while the call connected (e.g. Epitome probe vs Intro DM).
  */
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
@@ -127,7 +138,17 @@ export async function POST(request: Request) {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + arcKey, 'X-Agent-Name': 'bdr-' + caller },
       body: JSON.stringify({ phone, target_id: body.target_id, dry_run: body.dry_run === true }), signal: AbortSignal.timeout(15000),
     });
-    if (!reserve.ok) return NextResponse.json({ ok: false, reason: reserve.status === 409 ? 'recently_called_or_ambiguous_target' : 'arc_reservation_failed' }, { status: reserve.status === 409 ? 409 : 503 });
+    if (!reserve.ok) {
+      // [DEV] Epitome G-P#2: Arc reserve 409 can mean recently_called, ambiguous target, or closed/lost/won.
+      // Pass through Arc's concrete reason instead of lumping. Callers should check for same-minute success
+      // (PM2 `[outreach-dial] dialed` line or Arc `outreach_messages` table) before treating 409 as HOLD.
+      if (reserve.status === 409) {
+        const arcError = await reserve.json().catch(() => ({}));
+        const arcReason = arcError.reason || 'recently_called_or_ambiguous_target';
+        return NextResponse.json({ ok: false, reason: arcReason, arc_detail: arcError }, { status: 409 });
+      }
+      return NextResponse.json({ ok: false, reason: 'arc_reservation_failed' }, { status: 503 });
+    }
     const reservation = await reserve.json();
     if (!reservation.target_id) return NextResponse.json({ ok: false, reason: 'arc_target_required' }, { status: 503 });
     dynamic_variables.arc_target_id = reservation.target_id;
