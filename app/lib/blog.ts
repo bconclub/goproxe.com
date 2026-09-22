@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'a-reminder-is-not-a-reply',
+    title: 'A reminder is not a reply',
+    dek: 'You set a phone reminder to reply at 6. The lead needed a slot at 2. A reminder is a promise to yourself. The desk is a next line in their thread now.',
+    date: '2026-09-22',
+    thumbnail: '/blog/a-reminder-is-not-a-reply.png',
+    trade: 'product',
+    wordCount: 900,
+    related: ['ill-get-back-to-you-is-not-a-reply', 'after-hours-whatsapp', 'noted-is-not-a-next-line', 'closing-the-inbox-is-not-done', 'seen-is-not-a-reply'],
+  },
+  {
     slug: 'the-spreadsheet-is-not-the-desk',
     title: 'The spreadsheet is not the desk',
     dek: 'A row is not a next line.',
