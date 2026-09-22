@@ -1426,10 +1426,14 @@ export default function ProxeLanding() {
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
           <div className="proxe-hero-eyebrow">AI Lead Conversion</div>
-          <h1 className="proxe-hero-title proxe-hero-title-customer">
-            <span className="proxe-hero-line"><span className="proxe-hero-seg">You run</span>{' '}<span className="proxe-hero-seg">the business.</span></span>
+          <h1 className="proxe-hero-title">
+            <span className="proxe-hero-line">
+              <span className="proxe-hero-seg">Never Miss</span>
+              {' '}
+              <span className="proxe-hero-seg">a Lead</span>
+            </span>
             {' '}
-            <span className="proxe-hero-line"><span className="proxe-hero-seg">PROXe runs</span>{' '}<span className="proxe-hero-seg">the leads.</span></span>
+            <span className="proxe-hero-line">Ever Again.</span>
           </h1>
           <p className="proxe-hero-subtitle">
             PROXe runs the full pipeline. Captures leads across channels, nurtures, scores, and keeps them warm until they&rsquo;re ready to buy.
