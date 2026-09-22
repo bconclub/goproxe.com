@@ -96,8 +96,9 @@ export default function CallMeNowButton({
 
     // Merge, never replace: a phone-only capture must not wipe a name or email
     // captured elsewhere on the page.
+    const knownUser = getStoredUser('proxe')
     storeUserProfile(
-      { ...(getStoredUser('proxe') ?? {}), phone: trimmed, promptedPhone: true },
+      { ...(knownUser ?? {}), phone: trimmed, promptedPhone: true },
       'proxe',
     )
 
@@ -113,7 +114,9 @@ export default function CallMeNowButton({
       fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: trimmed, market: detectMarket() }),
+        // Reuse a name already entered elsewhere on the site. The callback
+        // agent must not ask for identity twice when the browser knows it.
+        body: JSON.stringify({ phone: trimmed, market: detectMarket(), name: knownUser?.name || undefined }),
         signal: ac.signal,
       })
         .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
