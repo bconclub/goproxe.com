@@ -138,9 +138,9 @@ export default function HeroPhoneCapture() {
       <form
         className="proxe-hero-details"
         onSubmit={(e) => { e.preventDefault(); void dial(); }}
-        aria-label="Who should PROXe ask for"
+        aria-label="Your callback details"
       >
-        <p className="proxe-hero-details-title">Who should PROXe ask for?</p>
+        <p className="proxe-hero-details-title">A couple of details before we call</p>
         <div className="proxe-hero-details-fields">
           <label>
             <span>Your name</span>
@@ -168,7 +168,7 @@ export default function HeroPhoneCapture() {
           <button type="submit" className="proxe-hero-details-go">Call me now</button>
           <button type="button" className="proxe-hero-details-skip" onClick={() => { setError(''); setStatus('idle'); }}>Back</button>
         </div>
-        <p className="proxe-hero-details-note">We'll call after you submit your details.</p>
+        <p className="proxe-hero-details-note">Submit to get your call.</p>
         {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
       </form>
     );

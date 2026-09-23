@@ -12138,21 +12138,20 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .wag-title { font-size: 22px; }
 }
 
-/* Hero callback, step two: number is in, the dial waits up to 12s for a
-   name and a business, then goes anyway. Fits a 375px hero. */
+/* Hero callback details: both fields and explicit submission are required. */
 .proxe-hero-details {
   /* Its own panel. As loose text under the headline the question read as
      more subtitle and the step did not register as a step (Z, 5 Sep: "it's
      going along with the subtext itself, so it's not different"). */
   width: 100%;
-  max-width: 460px;
+  max-width: 380px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   text-align: left;
-  padding: 18px 18px 16px;
-  border-radius: 22px;
+  padding: 14px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
@@ -12171,15 +12170,15 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-hero-details-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .proxe-hero-details-fields label { display: flex; flex-direction: column; gap: 6px; min-width: 0; text-align: left; }
 .proxe-hero-details-fields label span {
-  font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none;
   color: rgba(255, 255, 255, 0.72);
 }
 .proxe-hero-details-fields input {
   width: 100%;
   min-width: 0;
-  min-height: 50px;
-  padding: 0 14px;
-  border-radius: 12px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
@@ -12195,7 +12194,7 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-root .proxe-hero-details-go,
 .proxe-hero-details-go {
   flex: 1;
-  min-height: 52px;
+  min-height: 44px;
   border-radius: 999px;
   border: 0;
   /* Same violet as the ready-to-dial phone button, never white (Z, 5 Sep:
@@ -12216,7 +12215,7 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-hero-details-go:active { transform: translateY(1px); }
 .proxe-root .proxe-hero-details-skip,
 .proxe-hero-details-skip {
-  min-height: 52px;
+  min-height: 44px;
   min-width: 72px;
   padding: 0 16px;
   border-radius: 999px;
