@@ -186,12 +186,12 @@ export default function CallMeNowButton({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`pr-cta-callform ${className}`}>
+    <form onSubmit={handleSubmit} autoComplete="off" className={`pr-cta-callform ${className}`}>
       <input
         ref={inputRef}
         type="tel"
         inputMode="tel"
-        autoComplete="tel"
+        autoComplete="off"
         value={phone}
         onChange={handleChange}
         placeholder={placeholder}

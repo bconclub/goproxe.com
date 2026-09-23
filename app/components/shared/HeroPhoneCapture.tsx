@@ -203,12 +203,13 @@ export default function HeroPhoneCapture() {
       <form
         className={'proxe-hero-phone' + (typing ? ' proxe-hero-phone--active' : '') + (ready ? ' proxe-hero-phone--ready' : '')}
         onSubmit={handleSubmit}
+        autoComplete="off"
         noValidate
       >
         <input
           type="tel"
           inputMode="tel"
-          autoComplete="tel"
+          autoComplete="off"
           className="proxe-hero-phone-input"
           placeholder={placeholder}
           value={phone}
