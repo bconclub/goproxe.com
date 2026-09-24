@@ -70,7 +70,11 @@ export default function BdrDialPage() {
   const [historyError, setHistoryError] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const [detail, setDetail] = useState<CallDetail | null>(null)
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const [playbackError, setPlaybackError] = useState('')
   const pollRef = useRef<number | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const playerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     try {
@@ -100,6 +104,17 @@ export default function BdrDialPage() {
       if (!response.ok) throw new Error('Call unavailable')
       setDetail(await response.json())
     } catch { setSelected(null); setHistoryError('Could not load call details.') }
+  }
+
+  function listen(id: string) {
+    const player = audioRef.current
+    if (!player) return
+    setPlayingId(id)
+    setPlaybackError('')
+    player.src = `/api/outreach-dial/history/${encodeURIComponent(id)}/audio`
+    player.load()
+    void player.play().catch(() => setPlaybackError('Press play below to hear this recording.'))
+    requestAnimationFrame(() => playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
   }
 
   async function signOut() {
@@ -201,6 +216,11 @@ export default function BdrDialPage() {
     : stage === 'done' ? `Done · ${live?.duration ?? 0}s`
     : stage === 'noanswer' ? 'No answer'
     : 'Could not connect'
+
+  const playingCall = history.find((call) => call.conversation_id === playingId)
+  const playingLabel = recent.find((call) => call.conv === playingId)?.business || (playingCall
+    ? new Date(playingCall.start_time_unix_secs * 1000).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+    : 'Selected call')
 
   return (
     <main className="bdr">
@@ -308,7 +328,7 @@ export default function BdrDialPage() {
                 <li key={`${r.at}-${r.phone}`}>
                   <span>{r.business || r.phone}</span>
                   <small>{AGENTS.find((a) => a.key === r.agent)?.label} · {new Date(r.at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</small>
-                  <em>{r.outcome || '…'}</em>
+                  <div className="recent-actions"><em>{r.outcome || '…'}</em>{r.conv && <button type="button" className="listen-button" onClick={() => listen(r.conv!)} aria-label={`Listen to ${r.business || r.phone} call`}>Listen</button>}</div>
                 </li>
               ))}
             </ul>
@@ -316,19 +336,27 @@ export default function BdrDialPage() {
         )}
         <div className="recent history">
           <p className="kicker">Call history <button type="button" className="text-button" onClick={loadHistory}>Refresh</button></p>
+          <div className="recording" ref={playerRef} hidden={!playingId}>
+            <p className="recording-title">Recording · {playingLabel}</p>
+            <audio ref={audioRef} controls preload="none" aria-label="Call recording" onError={() => setPlaybackError('Recording unavailable for this call.')} onPlay={() => setPlaybackError('')} />
+            {playbackError && <p className="hint" role="status">{playbackError}</p>}
+          </div>
           {historyError && <p className="error" role="alert">{historyError}</p>}
           {!history.length && !historyError && <p className="hint">No calls yet.</p>}
           <ul>
             {history.map((call) => <li key={call.conversation_id}>
-              <button type="button" className="history-item" onClick={() => openCall(call.conversation_id)} aria-expanded={selected === call.conversation_id}>
-                <span>{new Date(call.start_time_unix_secs * 1000).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
-                <small>{call.status} · {call.call_duration_secs ?? 0}s</small>
-              </button>
+              <div className="history-row">
+                <button type="button" className="history-item" onClick={() => openCall(call.conversation_id)} aria-expanded={selected === call.conversation_id}>
+                  <span>{new Date(call.start_time_unix_secs * 1000).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                  <small>{call.status} · {call.call_duration_secs ?? 0}s · Details</small>
+                </button>
+                <button type="button" className="listen-button" onClick={() => listen(call.conversation_id)} aria-label={`Listen to call from ${new Date(call.start_time_unix_secs * 1000).toLocaleString('en-IN')}`}>Listen</button>
+              </div>
               {selected === call.conversation_id && <div className="call-detail">
                 {!detail ? <p className="hint">Loading…</p> : <>
                   <p>{detail.metadata?.phone_call?.external_number || 'Number unavailable'}</p>
                   {detail.analysis?.transcript_summary && <p>{detail.analysis.transcript_summary}</p>}
-                  {detail.has_audio && <audio controls preload="none" src={`/api/outreach-dial/history/${encodeURIComponent(call.conversation_id)}/audio`} />}
+                  {!detail.has_audio && <p className="hint">No recording for this call.</p>}
                   {detail.transcript?.map((line, i) => <p key={i}><b>{line.role === 'agent' ? 'PROXe' : 'Contact'}:</b> {line.message}</p>)}
                 </>}
               </div>}
@@ -401,8 +429,8 @@ const CSS = `
 .recent li:first-child{border-top:0;padding-top:0}
 .recent li span{grid-area:a;font-size:14px;font-weight:600}
 .recent li small{grid-area:b;font-size:12px;color:var(--ink-3)}
-.recent li em{grid-area:c;align-self:center;font-style:normal;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
-.history .kicker{display:flex;justify-content:space-between}.history li{display:block}.history-item{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer;padding:0}.history-item small{color:var(--ink-3)}.call-detail{padding:10px 0 4px;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}.call-detail p{margin:0 0 8px}.call-detail audio{width:100%;margin:6px 0 12px}
+.recent-actions{grid-area:c;display:flex;flex-direction:column;align-items:flex-end;gap:4px}.recent-actions em{font-style:normal;font-size:12.5px;color:var(--ink-2);white-space:nowrap}.listen-button{border:1px solid var(--accent);border-radius:8px;background:rgba(167,139,250,.12);color:var(--accent);font:inherit;font-size:13px;font-weight:700;padding:5px 10px;cursor:pointer;white-space:nowrap}.listen-button:hover{background:rgba(167,139,250,.22)}.listen-button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.history .kicker{display:flex;justify-content:space-between}.history li{display:block}.history-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.history-item{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer;padding:0}.history-item small{color:var(--ink-3)}.history-item:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.call-detail{padding:10px 0 4px;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}.call-detail p{margin:0 0 8px}.recording{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0 14px}.recording[hidden]{display:none}.recording-title{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--ink)}.recording audio{display:block;width:100%}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.live{animation:none}.live .kicker::before{animation:none}}
