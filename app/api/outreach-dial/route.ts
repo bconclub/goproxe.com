@@ -1,7 +1,7 @@
 import { spokenBusinessName } from '../../lib/spokenBusinessName'
 import { NextResponse } from 'next/server'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
-import { hasBdrSession } from '../../lib/bdrSession'
+import { hasBdrSession, isBdrSameOrigin } from '../../lib/bdrSession'
 
 /**
  * The bots' dial button. One authenticated POST places an outreach call from
@@ -81,12 +81,7 @@ export async function POST(request: Request) {
   if (!manual && !bot) {
     return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   }
-  if (manual) {
-    const origin = request.headers.get('origin')
-    if (origin && origin !== new URL(request.url).origin) {
-      return NextResponse.json({ ok: false, reason: 'forbidden' }, { status: 403 })
-    }
-  }
+  if (manual && !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'forbidden' }, { status: 403 })
   const caller = manual ? 'bdr' : 'bot'
   if (!API_KEY) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })

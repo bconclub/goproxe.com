@@ -43,3 +43,14 @@ export function isBdrOperator(req: Request) {
   const bearer = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '')
   return !!key && bearer === key
 }
+
+export function isBdrSameOrigin(req: Request) {
+  const origin = req.headers.get('origin')
+  if (!origin) return true
+  try {
+    const from = new URL(origin)
+    const target = new URL(req.url)
+    if (process.env.NODE_ENV !== 'production') return from.origin === target.origin
+    return from.protocol === 'https:' && ['goproxe.com', 'www.goproxe.com'].includes(from.host)
+  } catch { return false }
+}

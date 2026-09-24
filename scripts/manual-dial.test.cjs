@@ -16,7 +16,7 @@ async function run(key, dry = false, firstName = 'Rakesh') {
       ARC_INGEST_SECRET: 'arc', DIAL_ALLOWLIST: '8888888888',
     } },
     require: (name) => name === 'next/server' ? { NextResponse: Response }
-      : name.includes('bdrSession') ? { hasBdrSession: (req) => req.headers.get('cookie') === 'signed-session' }
+      : name.includes('bdrSession') ? { hasBdrSession: (req) => req.headers.get('cookie') === 'signed-session', isBdrSameOrigin: () => true }
       : name.includes('quietHours') ? { isQuiet: () => true, nextOpenTime: () => new Date() }
       : { spokenBusinessName: (value) => value },
     fetch: async (url, options) => {

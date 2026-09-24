@@ -18,7 +18,7 @@ vm.runInNewContext(source, {
   exports: handlers, Response, Request, process: { env: { NODE_ENV: 'production' } },
   require: (name) => name === 'next/server' ? { NextResponse }
     : name.includes('supabase') ? { getSupabaseClient: () => ({ auth: { signInWithPassword: async ({ password }) => password === 'correct' ? { data: { user: { id: 'admin-id', email: 'proxe@goproxe.com' } }, error: null } : { data: { user: null }, error: new Error('Invalid') } } }) }
-      : { BDR_ADMIN_EMAIL: 'proxe@goproxe.com', BDR_COOKIE: 'proxe_bdr_session', hasBdrSession: () => false, issueBdrSession: () => 'signed-token' },
+      : { BDR_ADMIN_EMAIL: 'proxe@goproxe.com', BDR_COOKIE: 'proxe_bdr_session', hasBdrSession: () => false, isBdrSameOrigin: (req) => req.headers.get('origin') === 'https://dial.test', issueBdrSession: () => 'signed-token' },
 })
 
 function request(email, password, origin = 'https://dial.test') {
