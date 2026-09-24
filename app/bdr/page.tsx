@@ -250,7 +250,7 @@ export default function BdrDialPage() {
           <button type="button" className="dial" disabled={!canDial} onClick={dial}>
             {busy ? 'Dialling…' : `Dial ${vars.first || vars.business || 'now'}`}
           </button>
-          <p className="hint">{missing.length ? `Needs ${missing.join(', ')}.` : 'One call per number per day. No calls 8 PM to 9 AM IST.'}</p>
+          <p className="hint">{missing.length ? `Needs ${missing.join(', ')}.` : 'Manual dial is ready.'}</p>
         </div>
 
         {error && <p className="error" role="alert">{error}</p>}

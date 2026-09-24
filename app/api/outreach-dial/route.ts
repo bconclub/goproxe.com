@@ -109,12 +109,12 @@ export async function POST(request: Request) {
   // while phone is E164 (+919731660933), and a mismatch here blocked the
   // one number the lock exists to allow.
   const allow = (process.env.DIAL_ALLOWLIST || '').split(',').map((s) => s.replace(/\D/g, '').slice(-10)).filter(Boolean)
-  if (allow.length && !allow.includes(phone.replace(/\D/g, '').slice(-10))) {
+  if (caller !== 'bdr' && allow.length && !allow.includes(phone.replace(/\D/g, '').slice(-10))) {
     return NextResponse.json({ ok: false, reason: 'not_in_allowlist' }, { status: 403 })
   }
 
   const now = new Date()
-  if (isQuiet(now) && body.dry_run !== true) {
+  if (caller !== 'bdr' && isQuiet(now) && body.dry_run !== true) {
     return NextResponse.json({ ok: false, reason: 'quiet_hours', opens_at: nextOpenTime(now).toISOString() }, { status: 409 })
   }
 
@@ -138,7 +138,10 @@ export async function POST(request: Request) {
   try {
     const reserve = await fetch((process.env.ARC_INGEST_BASE || 'https://arc.bconclub.com') + '/api/agent/outreach/reserve', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + arcKey, 'X-Agent-Name': 'bdr-' + caller },
-      body: JSON.stringify({ phone, target_id: body.target_id, dry_run: body.dry_run === true }), signal: AbortSignal.timeout(15000),
+      body: JSON.stringify({ phone, target_id: body.target_id, dry_run: body.dry_run === true,
+        manual_override: caller === 'bdr', business_name: String(v.business_name || '').slice(0, 120),
+        first_name: String(v.first_name || '').slice(0, 80), city: String(v.city || '').slice(0, 80),
+        vertical: String(v.vertical || '').slice(0, 80) }), signal: AbortSignal.timeout(15000),
     });
     if (!reserve.ok) {
       // [DEV] Pass through Arc's concrete 409 reason instead of lumping them.
