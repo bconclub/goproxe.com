@@ -1,6 +1,7 @@
 import { spokenBusinessName } from '../../lib/spokenBusinessName'
 import { NextResponse } from 'next/server'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
+import { hasBdrSession } from '../../lib/bdrSession'
 
 /**
  * The bots' dial button. One authenticated POST places an outreach call from
@@ -12,10 +13,10 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  * comment in api/callback/route.ts). Dynamic variables are the supported
  * per-call substitution and need no override permissions on the agent.
  *
- * Auth: Authorization: Bearer <DIAL_API_KEY> (the bots) or <BDR_DIAL_KEY>
- * (the BDR team's passcode, typed into /bdr). Fail closed.
+ * Auth: Authorization: Bearer <DIAL_API_KEY> for bots, or signed admin
+ * session cookie for manual dialing. Fail closed.
  *
- * SAFETY - the batch lock lives HERE, not in the bots' judgment:
+ * Automated batch lock lives here, not in the bots' judgment:
  * - DIAL_ALLOWLIST (csv of numbers): while set, ONLY those numbers can be
  *   dialed. Ships set to the BDR test number; Z widens it per approved batch.
  * - One call per number per 24h, answered from the database like the hero
@@ -30,8 +31,7 @@ import { isQuiet, nextOpenTime } from '../../lib/quietHours'
  * Call results stay in ARC. Explicit qualification and handoff are required
  * before PROXe receives a contact. Dial reservations never create a lead.
  *
- * Quiet hours (8 PM - 9 AM IST) are refused here too: an AI cold call at
- * night is the one thing no BDR should be able to do by accident.
+ * Quiet hours (8 PM - 9 AM IST) still apply to automated callers.
  *
  * [DEV] RETRY POLICY FOR CALLERS:
  * NEVER retry on HTTP 504 / timeout without first checking the phone's status.
@@ -76,11 +76,18 @@ function toE164(input: string): string | null {
 
 export async function POST(request: Request) {
   const got = (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '')
-  const keys = [process.env.DIAL_API_KEY, process.env.BDR_DIAL_KEY].filter((k): k is string => !!k)
-  if (!got || !keys.includes(got)) {
+  const manual = hasBdrSession(request)
+  const bot = !!process.env.DIAL_API_KEY && got === process.env.DIAL_API_KEY
+  if (!manual && !bot) {
     return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   }
-  const caller = got === process.env.BDR_DIAL_KEY ? 'bdr' : 'bot'
+  if (manual) {
+    const origin = request.headers.get('origin')
+    if (origin && origin !== new URL(request.url).origin) {
+      return NextResponse.json({ ok: false, reason: 'forbidden' }, { status: 403 })
+    }
+  }
+  const caller = manual ? 'bdr' : 'bot'
   if (!API_KEY) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
@@ -95,7 +102,10 @@ export async function POST(request: Request) {
 
   const requestedAgent = String(body.agent || '');
   const first = String(body.vars?.first_name || '').trim();
-  const agentKey = requestedAgent === 'dm' && (!first || /^(there|unknown|n\/?a)$/i.test(first)) ? 'noname' : requestedAgent
+  if (requestedAgent === 'dm' && (!first || /^(there|unknown|n\/?a)$/i.test(first))) {
+    return NextResponse.json({ ok: false, reason: 'first_name_required' }, { status: 400 })
+  }
+  const agentKey = requestedAgent
   const agentId = AGENTS[agentKey]
   if (!agentId) {
     return NextResponse.json({ ok: false, reason: 'unknown_agent', agents: Object.keys(AGENTS) }, { status: 400 })

@@ -1,5 +1,6 @@
 import { callOwner, callEvidence } from '../../../lib/outreachPolicy'
 import { NextResponse } from 'next/server'
+import { isBdrOperator } from '../../../lib/bdrSession'
 
 /**
  * Live status of one outreach call, for the /bdr page to follow a dial it
@@ -11,9 +12,7 @@ import { NextResponse } from 'next/server'
 const API_KEY = process.env.ELEVENLABS_API_KEY
 
 export async function GET(request: Request) {
-  const got = (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '')
-  const keys = [process.env.DIAL_API_KEY, process.env.BDR_DIAL_KEY].filter((k): k is string => !!k)
-  if (!got || !keys.includes(got)) {
+  if (!isBdrOperator(request)) {
     return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   }
   if (!API_KEY) return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
