@@ -12216,16 +12216,16 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-root .proxe-hero-details-skip,
 .proxe-hero-details-skip {
   min-height: 44px;
-  min-width: 72px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0 8px;
+  border: 0;
   background: transparent;
   color: rgba(255, 255, 255, 0.85);
   font: inherit;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .proxe-root .proxe-hero-details-skip:hover,
 .proxe-hero-details-skip:hover { background: rgba(255, 255, 255, 0.1); }
@@ -12235,4 +12235,13 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 .proxe-hero-details-note { margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.6); text-align: center; }
 @media (max-width: 420px) {
   .proxe-hero-details-fields { grid-template-columns: 1fr; }
+}
+
+/* A readable primary action at every phone-entry state. */
+.proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) { max-width: 480px; }
+.proxe-root .proxe-hero-phone-btn--labelled { width: auto; }
+@media (max-width: 420px) {
+  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) { flex-wrap: wrap; border-radius: 20px; }
+  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) .proxe-hero-phone-input { flex-basis: 100%; width: 100%; }
+  .proxe-root .proxe-hero-phone-btn--labelled { width: 100%; }
 }

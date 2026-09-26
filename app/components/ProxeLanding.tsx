@@ -1522,15 +1522,15 @@ export default function ProxeLanding() {
         </div>
       </section>
 
-      {/* ===== 2. How It Works — animated feature cards ===== */}
-      <HowItWorks />
-
-      {/* ===== 3. See PROXe in Action — the live voice demo is the hero ===== */}
+      {/* ===== 2. See PROXe in Action ===== */}
       <ChannelDemo />
 
       {/* ===== 4. Industries — "it works for MY business" lands right after
              seeing it work, while the demo is still fresh ===== */}
       <IndustriesSection />
+
+      {/* ===== How It Works: after relevance, before pricing ===== */}
+      <HowItWorks />
 
       {/* ===== 5. Pricing — ask for the sale once relevance is established ===== */}
       <PricingSection />

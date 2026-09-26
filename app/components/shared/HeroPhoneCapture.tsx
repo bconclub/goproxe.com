@@ -140,10 +140,9 @@ export default function HeroPhoneCapture() {
         onSubmit={(e) => { e.preventDefault(); void dial(); }}
         aria-label="Your callback details"
       >
-        <p className="proxe-hero-details-title">A couple of details before we call</p>
         <div className="proxe-hero-details-fields">
           <label>
-            <span>Your name</span>
+            <span>Name</span>
             <input
               ref={nameRef}
               value={name}
@@ -154,7 +153,7 @@ export default function HeroPhoneCapture() {
             />
           </label>
           <label>
-            <span>Your business</span>
+            <span>Business</span>
             <input
               value={business}
               onChange={(e) => setBusiness(e.target.value)}
@@ -168,7 +167,7 @@ export default function HeroPhoneCapture() {
           <button type="submit" className="proxe-hero-details-go">Call me now</button>
           <button type="button" className="proxe-hero-details-skip" onClick={() => { setError(''); setStatus('idle'); }}>Back</button>
         </div>
-        <p className="proxe-hero-details-note">Submit to get your call.</p>
+        <p className="proxe-hero-details-note">Submit to get a call back.</p>
         {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
       </form>
     );
@@ -195,7 +194,7 @@ export default function HeroPhoneCapture() {
   const typing = phone.trim().length > 0;
   const btnClass =
     'proxe-hero-phone-btn' +
-    (typing ? ' proxe-hero-phone-btn--call' : '') +
+    ' proxe-hero-phone-btn--labelled' +
     (ready ? ' proxe-hero-phone-btn--ready' : '');
 
   return (
@@ -216,33 +215,9 @@ export default function HeroPhoneCapture() {
           onChange={handleChange}
           aria-label="Phone number"
         />
-        <button type="submit" className={btnClass} aria-label="Get a call back">
-          {typing ? (
-            <>
-              <svg className="proxe-hero-phone-btn-ringtrack" viewBox="0 0 52 52" aria-hidden="true">
-                <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="2.5" />
-                <circle
-                  className="proxe-hero-phone-btn-ringfill"
-                  cx="26"
-                  cy="26"
-                  r="24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  pathLength={100}
-                  strokeDasharray="100"
-                  strokeDashoffset={100 - progress * 100}
-                  transform="rotate(-90 26 26)"
-                />
-              </svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-            </>
-          ) : (
-            'Get a call back'
-          )}
+        <button type="submit" className={btnClass} aria-label="Talk to PROXe now">
+          {/* Keep the action readable while entering the number. */}
+          Talk to PROXe now
         </button>
       </form>
       {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
