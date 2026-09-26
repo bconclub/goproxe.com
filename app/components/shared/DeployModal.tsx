@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
-import { track, trackLead, trackCheckoutStart, newEventId } from '../../lib/analytics';
+import { track, trackLead, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
@@ -24,12 +24,7 @@ interface DeployModalProps {
 const SALES_SOURCES = new Set([
   'pricing_scale',
   'industries',
-  'ig_demo',
-  // 'closing_cta' deliberately NOT here any more. That button now reads
-  // "Deploy PROXe" and goes to checkout; leaving it in this set would have
-  // sent the page's largest, most committed CTA to a booking calendar — the
-  // exact mismatch that made a buyer land on the calendar when they meant to
-  // pay. It only reaches this modal as a checkout fallback now.
+  // Deploy CTAs go to brand onboarding, not the sales booking calendar.
   'pricing_core_call', // "Not ready? Book a call" under the Core CTA
   'header_call',
 ]);
@@ -47,7 +42,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   const [isSubmitting, setIsSubmitting] = useState(false);
   /**
    * Two steps on purpose. Step 1 asks only for name + phone and SAVES that
-   * immediately; step 2 collects email, brand and website and goes to payment.
+   * immediately. Deploy visitors continue to /onboarding; sales visitors
+   * keep the optional setup details and booking calendar here.
    *
    * The whole point is the save between them: a five-field wall meant someone
    * who bailed at "Brand website" left nothing behind at all. Now the two
@@ -105,8 +101,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
-  // Declared before handleSubmit uses it — sales sources book a call, everyone
-  // else is buy intent and goes to checkout.
+  // Sales sources book a call; deploy sources start brand onboarding.
   const isSales = SALES_SOURCES.has(source);
 
   if (!isOpen) return null;
@@ -182,6 +177,11 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
     setIsSubmitting(false);
     setErrors({});
+    if (!isSales) {
+      onClose();
+      router.push('/onboarding');
+      return;
+    }
     setStep(2);
   };
 
@@ -232,20 +232,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       return;
     }
 
-    // Buy intent: hand off to Dodo, prefilled with what they just typed, so
-    // nobody types their name and email twice. The onboarding call is booked
-    // AFTER payment, on /thank-you?checkout=success.
-    // Buy intent now goes to /deploy, NOT straight to Dodo.
-    //
-    // Sending someone from here to a card form charged them a number they had
-    // never been shown: seats were not really selectable, and an Indian
-    // business with a GSTIN was billed 18% on top with no way to declare
-    // reverse charge, discovering it only on the invoice. /deploy is where they
-    // pick seats, enter a GSTIN, and see the exact total. Everything typed here
-    // is already in local storage, so the configurator prefills and nothing is
-    // asked twice.
-    trackCheckoutStart(source);
-    router.push('/deploy');
+    // Defensive fallback if a deploy source reaches the sales-only step.
+    onClose();
+    router.push('/onboarding');
   };
 
   // Visitor picked a slot on the flip-side calendar → record it (no second lead
@@ -316,10 +305,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
               <p className={styles.modalSubtitle}>
                 {step === 1
-                  ? 'Two quick steps and PROXe is yours.'
+                  ? 'Start with your name and phone. Next, tell us about your brand.'
                   : isSales
                     ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
-                    : 'Almost there. Next: secure checkout, then you pick your onboarding call.'}
+                    : 'Next: your brand name and website. No payment required.'}
               </p>
               <div className={styles.stepRow} aria-hidden>
                 <span className={`${styles.stepDot} ${styles.stepDotActive}`} />
@@ -410,8 +399,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {step === 1
                   ? (isSubmitting ? 'Saving…' : 'Continue →')
                   : isSubmitting
-                    ? (isSales ? 'Sending…' : 'Opening secure checkout…')
-                    : (isSales ? 'Continue →' : 'Continue to payment →')}
+                    ? (isSales ? 'Sending…' : 'Opening onboarding…')
+                    : (isSales ? 'Continue →' : 'Continue to onboarding →')}
               </button>
 
               {step === 2 && !isSubmitting && (

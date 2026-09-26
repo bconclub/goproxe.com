@@ -11,11 +11,10 @@ interface DeployModalContextType {
   isOpen: boolean;
   setOnFormSubmit: (callback: (() => void) | null) => void;
   /**
-   * "Deploy" CTAs → straight to payment. Falls back to the contact modal if
-   * checkout can't be opened, so the button is never dead.
+   * Deploy CTAs capture contact details, then open brand onboarding.
    */
   startDeploy: (source?: string) => Promise<void>;
-  /** True while a checkout session is being opened (for button busy states). */
+  /** Retained for existing CTA busy-state consumers. */
   isStartingCheckout: boolean;
 }
 
@@ -36,13 +35,8 @@ export function DeployModalProvider({ children }: { children: ReactNode }) {
   const closeModal = () => setIsOpen(false);
 
   /**
-   * A "Deploy" click opens the capture form first, and the form hands off to
-   * Dodo checkout on submit (see DeployModal).
-   *
-   * Details BEFORE payment on purpose: we keep the lead even when someone
-   * abandons the checkout page, and their name/email prefill the Dodo form
-   * instead of being typed twice. The booking calendar then moves to AFTER
-   * payment (/thank-you?checkout=success) as an onboarding call.
+   * Capture name and phone before the separate brand onboarding page.
+   * Sales enquiries retain their existing booking flow.
    */
   const startDeploy = useCallback(async (source = 'unknown') => {
     openModal(source);
