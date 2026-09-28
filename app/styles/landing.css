@@ -12240,8 +12240,48 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 /* A readable primary action at every phone-entry state. */
 .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) { max-width: 480px; }
 .proxe-root .proxe-hero-phone-btn--labelled { width: auto; }
-@media (max-width: 420px) {
-  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) { flex-wrap: wrap; border-radius: 20px; }
-  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) .proxe-hero-phone-input { flex-basis: 100%; width: 100%; }
-  .proxe-root .proxe-hero-phone-btn--labelled { width: 100%; }
+.proxe-hero-phone-field { display: flex; flex: 1; min-width: 0; }
+.proxe-hero-phone-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+  .proxe-hero-phone-field { flex-direction: column; gap: 7px; width: 100%; }
+  .proxe-hero-phone-label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    text-align: left;
+  }
+  .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) .proxe-hero-phone-input {
+    flex: none;
+    width: 100%;
+    height: 52px;
+    padding: 0 15px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    background: rgba(9, 5, 34, 0.48);
+  }
+  .proxe-root .proxe-hero-phone-input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .proxe-root .proxe-hero-phone-input:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+  }
+  .proxe-root .proxe-hero-phone-btn--labelled { width: 100%; height: 48px; }
 }

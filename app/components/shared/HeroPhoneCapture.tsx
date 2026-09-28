@@ -13,17 +13,12 @@ export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
-  const [placeholder, setPlaceholder] = useState('Your phone number');
   const [callSettled, setCallSettled] = useState(false);
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
   const startedRef = useRef(false);
   const dialedRef = useRef(false);
   const nameRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    setPlaceholder(detectMarket() === 'inr' ? '+91 98765 43210' : '+1 555 000 1234');
-  }, []);
 
   const digitCount = phone.replace(/\D/g, '').length;
   const progress = Math.min(digitCount / 10, 1);
@@ -205,16 +200,18 @@ export default function HeroPhoneCapture() {
         autoComplete="off"
         noValidate
       >
-        <input
-          type="tel"
-          inputMode="tel"
-          autoComplete="off"
-          className="proxe-hero-phone-input"
-          placeholder={placeholder}
-          value={phone}
-          onChange={handleChange}
-          aria-label="Phone number"
-        />
+        <label className="proxe-hero-phone-field">
+          <span className="proxe-hero-phone-label">Your phone number</span>
+          <input
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            className="proxe-hero-phone-input"
+            placeholder="Enter phone number"
+            value={phone}
+            onChange={handleChange}
+          />
+        </label>
         <button type="submit" className={btnClass} aria-label="Talk to PROXe now">
           {/* Keep the action readable while entering the number. */}
           Talk to PROXe now
