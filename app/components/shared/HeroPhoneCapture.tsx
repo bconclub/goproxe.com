@@ -200,21 +200,19 @@ export default function HeroPhoneCapture() {
         autoComplete="off"
         noValidate
       >
-        <label className="proxe-hero-phone-field">
-          <span className="proxe-hero-phone-label">Your phone number</span>
-          <input
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            className="proxe-hero-phone-input"
-            placeholder="Enter phone number"
-            value={phone}
-            onChange={handleChange}
-          />
-        </label>
-        <button type="submit" className={btnClass} aria-label="Talk to PROXe now">
+        <input
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          className="proxe-hero-phone-input"
+          placeholder="Phone number"
+          value={phone}
+          onChange={handleChange}
+          aria-label="Your phone number"
+        />
+        <button type="submit" className={btnClass} aria-label="Talk to PROXe">
           {/* Keep the action readable while entering the number. */}
-          Talk to PROXe now
+          Talk to PROXe
         </button>
       </form>
       {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
