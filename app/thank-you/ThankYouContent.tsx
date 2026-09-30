@@ -15,6 +15,16 @@ export default function ThankYouContent() {
   const params = useSearchParams()
   /** Dodo sends the buyer back here with ?checkout=success after payment. */
   const paid = params.get('checkout') === 'success'
+  /**
+   * The payment's own id, whichever of these Dodo appends to the return URL.
+   * GA4 and Google Ads dedupe purchases on transaction_id; without one, every
+   * refresh of this page was a brand new sale with brand new revenue.
+   */
+  const transactionId =
+    params.get('payment_id') ||
+    params.get('subscription_id') ||
+    params.get('transaction_id') ||
+    undefined
 
   const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
@@ -38,9 +48,9 @@ export default function ThankYouContent() {
     // trackPurchase so Meta receives the real subscription amount in the
     // buyer's own currency (Purchase with no value reports as zero revenue,
     // which makes every campaign look like it earned nothing).
-    if (paid) trackPurchase(meta)
+    if (paid) trackPurchase(meta, transactionId)
     else track('demo_booked', meta)
-  }, [paid])
+  }, [paid, transactionId])
 
   /**
    * Post-payment onboarding call. The lead row already exists (captured before

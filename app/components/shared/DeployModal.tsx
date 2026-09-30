@@ -109,6 +109,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   // Declared before handleSubmit uses it — sales sources book a call, everyone
   // else is buy intent and goes to checkout.
   const isSales = SALES_SOURCES.has(source);
+  // Set when the visitor chooses the demo instead of paying. Read in
+  // handleSubmit, which still saves everything they typed before flipping to
+  // the calendar, so a demo booking is never a lost lead.
+  const wantsDemo = useRef(false);
 
   if (!isOpen) return null;
 
@@ -137,7 +141,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email';
     if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
-    if (!formData.websiteUrl.trim()) newErrors.websiteUrl = 'Brand website is required';
+    // Brand website is optional. Plenty of the businesses PROXe is for do not
+    // have one, and blocking the sale over a field we can ask for later is a
+    // bad trade.
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -227,7 +233,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     onFormSubmit?.();
 
     // Sales enquiries never hit checkout — they pick a call slot right here.
-    if (isSales) {
+    if (isSales || wantsDemo.current) {
+        wantsDemo.current = false;
       setIsSubmitting(false);
       setFlipped(true);
       return;
@@ -254,6 +261,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       });
       const data = await res.json().catch(() => null);
       if (data?.ok && data.checkoutUrl) {
+        // Distinct from checkout_start: that one fires on submit, this one only
+        // when a hosted page genuinely exists to send them to. The gap between
+        // the two is checkout failing to open, which is worth being able to see.
+        track('checkout_redirect', { source });
         // Full navigation — checkout is hosted by Dodo. Keep the busy state.
         window.location.href = data.checkoutUrl as string;
         return;
@@ -389,7 +400,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
               <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="websiteUrl" className={styles.label}>
-                  Brand website <span className={styles.required}>*</span>
+                  Brand website (optional)
                 </label>
                 <input
                   type="text" id="websiteUrl" name="websiteUrl"
@@ -412,6 +423,20 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                     ? (isSales ? 'Sending…' : 'Opening secure checkout…')
                     : (isSales ? 'Continue →' : 'Continue to payment →')}
               </button>
+
+              {step === 2 && !isSubmitting && !isSales && (
+                <button
+                  type="button"
+                  className={styles.stepBack}
+                  onClick={() => {
+                    if (!validateStep2()) return;
+                    wantsDemo.current = true;
+                    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+                  }}
+                >
+                  Book a demo first
+                </button>
+              )}
 
               {step === 2 && !isSubmitting && (
                 <button

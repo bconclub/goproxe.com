@@ -10,6 +10,14 @@ const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID
 // always false and the site has never reported a single ad conversion.
 const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1480338647459819'
 const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || 'u43ad5p156'
+// Google Ads. No default on purpose: unlike a GA property or a pixel, a wrong
+// Ads id would file conversions against someone else's campaigns. Unset = the
+// whole Ads path stays inert, which is the correct behaviour until the real id
+// exists. Format: AW-123456789.
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID
+// One gtag.js serves both GA4 and Google Ads; it is loaded once under whichever
+// id is available, then each product is configured separately below.
+const gtagLoaderId = googleAnalyticsId || googleAdsId
 
 const AnalyticsScripts = () => {
   // Only load tags in a production build. `npm run dev` (NODE_ENV=development)
@@ -19,11 +27,11 @@ const AnalyticsScripts = () => {
 
   return (
     <>
-      {googleAnalyticsId && (
+      {gtagLoaderId && (
         <>
           <Script
             id="ga-init"
-            src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${gtagLoaderId}`}
             strategy="afterInteractive"
           />
           <Script id="ga-config" strategy="afterInteractive">
@@ -31,7 +39,21 @@ const AnalyticsScripts = () => {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${googleAnalyticsId}');
+              // ?analytics_debug=1 puts this tab in GA4 DebugView. It has to be
+              // decided HERE, on the config call: gtag only emits the _dbg=1
+              // flag DebugView listens for when debug_mode is configured. The
+              // same flag passed on an individual event is treated as an
+              // ordinary custom parameter and DebugView never sees it.
+              var __proxeDbg = false;
+              try {
+                if (new URLSearchParams(location.search).has('analytics_debug')) {
+                  sessionStorage.setItem('proxe_analytics_debug', '1');
+                }
+                __proxeDbg = sessionStorage.getItem('proxe_analytics_debug') === '1';
+              } catch (e) {}
+              var __proxeCfg = __proxeDbg ? { debug_mode: true } : {};
+              ${googleAnalyticsId ? `gtag('config', '${googleAnalyticsId}', __proxeCfg);` : ''}
+              ${googleAdsId ? `gtag('config', '${googleAdsId}', __proxeCfg);` : ''}
             `}
           </Script>
         </>

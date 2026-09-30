@@ -1,0 +1,317 @@
+<title>PROXe · One Page</title>
+<style>
+  /* A press advertisement in the 1960s manner: one photograph across the top,
+     the headline underneath it, then the argument in columns of small type.
+     Black and white throughout, so it reads the same on paper as on screen. */
+  :root {
+    --paper:    #ffffff;
+    --paper-2:  #f5f5f5;
+    --ink:      #000000;
+    --ink-soft: #333333;
+    --ink-mute: #6b6b6b;
+    --rule:     #cfcfcf;
+    --rule-firm:#000000;
+    --logo: url("data:image/webp;base64,__LOGO_BLACK__");
+    --icon: url("data:image/webp;base64,__ICON_BLACK__");
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans:  "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:#000000; --paper-2:#0f0f0f;
+      --ink:#ffffff; --ink-soft:#cccccc; --ink-mute:#8f8f8f;
+      --rule:#333333; --rule-firm:#ffffff;
+      --logo: url("data:image/webp;base64,__LOGO_WHITE__");
+      --icon: url("data:image/webp;base64,__ICON_WHITE__");
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:#000000; --paper-2:#0f0f0f;
+    --ink:#ffffff; --ink-soft:#cccccc; --ink-mute:#8f8f8f;
+    --rule:#333333; --rule-firm:#ffffff;
+    --logo: url("data:image/webp;base64,__LOGO_WHITE__");
+    --icon: url("data:image/webp;base64,__ICON_WHITE__");
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    line-height: 1.5;
+  }
+  .sheet { max-width: 880px; margin: 0 auto; padding: 34px 30px 44px; }
+
+  /* the plate */
+  .plate {
+    width: 100%; display: block;
+    aspect-ratio: 1400 / 757;
+    background-image: url("data:image/jpeg;base64,__PLATE__");
+    background-size: cover; background-position: 50% 30%;
+    border: 1px solid var(--rule);
+  }
+  .plate-note {
+    font-family: var(--serif); font-style: italic; font-size: 11px;
+    color: var(--ink-mute); text-align: center; margin: 7px 0 0;
+  }
+
+  .eyebrow {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute); text-align: center;
+    margin: 10px 0 0;
+  }
+
+  /* headline, centred under the picture, as these ads set them */
+  h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(28px, 4.4vw, 44px);
+    line-height: 1.1; letter-spacing: -0.012em;
+    text-align: center;
+    margin: 9px auto 0;
+  }
+  .deck {
+    font-family: var(--serif); font-style: italic;
+    font-size: 19px; line-height: 1.45; color: var(--ink-soft);
+    text-align: center; text-wrap: balance;
+    margin: 11px auto 0; max-width: 64ch;
+  }
+
+  .stand {
+    font-family: var(--serif); font-size: 13.2px; line-height: 1.55;
+    color: var(--ink); text-align: center; text-wrap: pretty;
+    margin: 12px auto 0; max-width: 78ch;
+  }
+  .terms p b { font-weight: 700; color: var(--ink); }
+  .fee span { display: block; }
+
+  /* the argument, in columns of small type */
+  .cols {
+    columns: 3; column-gap: 30px;
+    margin-top: 20px; padding-top: 17px;
+    border-top: 1px solid var(--rule);
+  }
+  .cols > * { break-inside: avoid; }
+  h2 {
+    font-family: var(--sans); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); margin: 0 0 6px;
+  }
+  h2:not(:first-of-type) { margin-top: 14px; }
+  /* A section heading must never be left alone at the foot of a column while
+     its first paragraph starts the next one. */
+  h2 { break-after: avoid-column; page-break-after: avoid; }
+  p { margin: 0 0 9px; font-size: 12.4px; }
+  p:last-child { margin-bottom: 0; }
+  .lead-para::first-letter {
+    float: left; font-size: 3em; line-height: 0.8;
+    padding: 0.05em 0.08em 0 0; color: var(--ink);
+  }
+  .run-in { font-family: var(--sans); font-weight: 700; font-size: 11.8px; }
+
+  /* channels, shown rather than claimed */
+  .ch {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--sans); font-size: 10.5px; font-weight: 600;
+    color: var(--ink); border: 1px solid var(--rule);
+    border-radius: 999px; padding: 5px 11px 5px 9px;
+  }
+  .ch svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+
+  .rail-label {
+    font-family: var(--sans); font-size: 8.6px; font-weight: 700;
+    letter-spacing: 0.17em; text-transform: uppercase; color: var(--ink-mute);
+    margin: 15px 0 7px; padding-top: 13px; border-top: 1px solid var(--rule);
+  }
+  .rail { display: flex; flex-wrap: wrap; gap: 7px 8px; margin: 0; padding: 0; border: 0; }
+  .rail--tools .ch { color: var(--ink-soft); }
+
+  /* terms */
+  .terms {
+    margin-top: 13px; padding: 12px 16px;
+    background: var(--paper-2); border: 1px solid var(--rule);
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 26px; align-items: center;
+  }
+  .fee {
+    font-family: var(--sans); font-weight: 800;
+    font-size: 25px; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums; line-height: 1.05;
+  }
+  .fee .was {
+    display: block; font-size: 14px; font-weight: 600;
+    color: var(--ink-mute); letter-spacing: 0; margin-bottom: 1px;
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+  }
+  .fee .per {
+    display: block; font-size: 10px; font-weight: 600;
+    color: var(--ink-mute); letter-spacing: 0; margin-top: 3px;
+  }
+  .terms-copy { font-size: 10.6px; margin: 0; color: var(--ink-soft); line-height: 1.6; }
+  .terms-copy b { color: var(--ink); font-weight: 700; }
+  .terms p { font-size: 10.6px; margin: 0; color: var(--ink-soft); }
+
+  /* sign-off */
+  .ask {
+    margin-top: 20px; padding-top: 15px; border-top: 2px solid var(--rule-firm);
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    align-items: center; gap: 10px 24px;
+  }
+  .ask p { font-size: 12px; max-width: 52ch; margin: 0; }
+  .ask a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--ink); }
+  .ask a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .ask-right { display: flex; align-items: center; gap: 15px; }
+  .wordmark {
+    width: 104px; height: 27px; flex-shrink: 0;
+    background-image: var(--logo);
+    background-repeat: no-repeat; background-position: left center;
+    background-size: contain;
+  }
+  .contact {
+    font-family: var(--sans); font-size: 11.5px; font-weight: 600;
+    display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--ink-soft);
+    justify-content: flex-end;
+  }
+  .signoff {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background-image: var(--icon);
+    background-repeat: no-repeat; background-position: center;
+    background-size: contain;
+  }
+  .slug {
+    font-family: var(--sans); font-size: 9px; font-weight: 600;
+    letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-mute);
+    text-align: center; margin: 18px 0 0;
+  }
+
+  @media (max-width: 780px) {
+    .cols { columns: 1; }
+    .terms { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    :root {
+      --paper:#ffffff; --paper-2:#ffffff;
+      --ink:#000000; --ink-soft:#222222; --ink-mute:#5a5a5a;
+      --rule:#bbbbbb; --rule-firm:#000000;
+      --logo: url("data:image/webp;base64,__LOGO_BLACK__");
+      --icon: url("data:image/webp;base64,__ICON_BLACK__");
+    }
+    .sheet { padding: 0; max-width: none; }
+    .rail, .terms, .ask { break-inside: avoid; }
+  }
+</style>
+
+<div class="sheet">
+
+  <div class="plate" role="img" aria-label="A dentist, a coaching teacher and a boutique owner at work"></div>
+
+  <h1>Your team goes home at 7.<br>PROXe doesn&rsquo;t.</h1>
+
+  <p class="eyebrow">Read this if you are tired of paying for leads that nobody answers</p>
+
+  <p class="stand">
+    Leads are not lost to bad selling. They are lost to a forgotten follow-up and a
+    conversation nobody could remember. PROXe takes every enquiry the moment it
+    lands, on any channel, and carries it forward until the person is ready to buy.
+    Your team walks in already warm. Everything owned, answered.
+  </p>
+
+  <div class="cols">
+
+    <h2>The problem</h2>
+    <p class="lead-para">
+      Nobody drops a lead on purpose. Somebody was on a call. Somebody assumed the
+      other person had it. Friday&rsquo;s Instagram message is still unread on Monday.
+    </p>
+    <p>
+      And when your team finally does reply, they are starting cold. The context is
+      scattered across a phone, a laptop, and someone&rsquo;s memory.
+    </p>
+    <p>
+      You cannot count what you never saw. So the business concludes the marketing is
+      not working, when the marketing worked and nobody was free to answer the door.
+    </p>
+
+    <h2>What PROXe does</h2>
+    <p>
+      <span class="run-in">Takes ownership of every enquiry,</span> in under two
+      seconds, on the channel it arrived on. Phone, WhatsApp, website, Instagram,
+      email.
+    </p>
+    <p>
+      <span class="run-in">Answers what was actually asked.</span> Price, what is
+      included, how soon, what happens next.
+    </p>
+    <p>
+      <span class="run-in">Follows up on its own,</span> again and again, until they
+      reply or the matter is closed.
+    </p>
+    <p>
+      <span class="run-in">Hands the lead to your team</span> when they are ready to
+      buy, with the full history attached.
+    </p>
+
+    <h2>What changes</h2>
+    <p>
+      Your team stops chasing and starts closing. You stop being the bottleneck. The
+      pipeline runs whether you are looking at it or not.
+    </p>
+
+  </div>
+
+  <p class="rail-label">Every channel a customer might reach you on</p>
+  <div class="rail">
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4.6 2.2 6.9 2c.4 0 .7.2.8.6l.9 2.6c.1.3 0 .7-.3.9l-1.4 1a11 11 0 0 0 4.9 4.9l1-1.4c.2-.3.6-.4.9-.3l2.6.9c.4.1.6.4.6.8l-.2 2.3c0 .4-.4.7-.8.7A13.6 13.6 0 0 1 3.9 3c0-.4.3-.8.7-.8Z"/></svg>Voice calls</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 1.6a7.4 7.4 0 0 0-6.3 11.2L1.6 16.4l3.7-1a7.4 7.4 0 1 0 3.7-13.8Zm0 1.5a5.9 5.9 0 1 1-3 11l-.3-.2-2 .5.6-1.9-.2-.3A5.9 5.9 0 0 1 9 3.1Zm-2.6 3c-.2 0-.4 0-.6.3-.2.2-.7.7-.7 1.7s.7 1.9.8 2c.1.2 1.4 2.2 3.4 3 1.7.7 2 .6 2.4.5.4 0 1.2-.5 1.4-1 .2-.5.2-1 .1-1l-.5-.3-1.2-.6c-.2 0-.3 0-.4.1l-.6.7c-.1.2-.2.2-.4.1a4.8 4.8 0 0 1-2.4-2.1c-.2-.3 0-.4.1-.5l.3-.4.2-.4v-.3l-.6-1.5c-.2-.3-.3-.3-.5-.3h-.4Z"/></svg>WhatsApp</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.2 3.6c0-.8.6-1.4 1.4-1.4h10.8c.8 0 1.4.6 1.4 1.4v9c0 .8-.6 1.4-1.4 1.4h-4l.4 1.6h1.5v1.2H5.7v-1.2h1.5l.4-1.6h-4c-.8 0-1.4-.6-1.4-1.4v-9Zm1.5 1.6v7.1h10.6V5.2H3.7Z"/></svg>Website chat</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M5.6 2h6.8A3.6 3.6 0 0 1 16 5.6v6.8a3.6 3.6 0 0 1-3.6 3.6H5.6A3.6 3.6 0 0 1 2 12.4V5.6A3.6 3.6 0 0 1 5.6 2Zm0 1.5A2.1 2.1 0 0 0 3.5 5.6v6.8c0 1.2.9 2.1 2.1 2.1h6.8c1.2 0 2.1-.9 2.1-2.1V5.6c0-1.2-.9-2.1-2.1-2.1H5.6ZM9 5.6a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Zm0 1.5a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Zm3.7-2.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Z"/></svg>Instagram</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M10.4 16.4V9.9h2.2l.3-2.5h-2.5V5.8c0-.7.2-1.2 1.2-1.2h1.4V2.3c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.4v1.8H5.4v2.5h2.2v6.5h2.8Z"/></svg>Facebook</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 1.7C4.8 1.7 1.5 4.8 1.5 8.7c0 2.2 1.1 4.2 2.8 5.5v2.7l2.6-1.4c.7.2 1.4.3 2.1.3 4.2 0 7.5-3.1 7.5-7.1S13.2 1.7 9 1.7Zm.8 9.3-2-2.1-3.7 2.1L7.9 6.8l2 2.1 3.7-2.1L9.8 11Z"/></svg>Messenger</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.6 2.2h10.8c.8 0 1.4.6 1.4 1.4v7.2c0 .8-.6 1.4-1.4 1.4H7.6l-3.5 3v-3h-.5c-.8 0-1.4-.6-1.4-1.4V3.6c0-.8.6-1.4 1.4-1.4Zm1.9 4.3a1 1 0 1 0 0 2.1 1 1 0 0 0 0-2.1Zm3.5 0a1 1 0 1 0 0 2.1 1 1 0 0 0 0-2.1Zm3.5 0a1 1 0 1 0 0 2.1 1 1 0 0 0 0-2.1Z" fill-rule="evenodd"/></svg>SMS</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.2 5c0-.8.6-1.4 1.4-1.4h10.8c.8 0 1.4.6 1.4 1.4v8c0 .8-.6 1.4-1.4 1.4H3.6c-.8 0-1.4-.6-1.4-1.4V5Zm1.9-.1L9 8.7l4.9-3.8H4.1Z"/></svg>Email</span>
+  </div>
+
+  <p class="rail-label">And it reports into the tools your team already lives in</p>
+  <div class="rail rail--tools">
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4.5 11.2a1.6 1.6 0 1 1-1.6-1.6h1.6v1.6Zm.8 0a1.6 1.6 0 0 1 3.2 0v4a1.6 1.6 0 0 1-3.2 0v-4Zm1.6-6.4a1.6 1.6 0 1 1 1.6-1.6v1.6H6.9Zm0 .8a1.6 1.6 0 0 1 0 3.2h-4a1.6 1.6 0 0 1 0-3.2h4Zm6.4 1.6a1.6 1.6 0 1 1 1.6 1.6h-1.6V7.2Zm-.8 0a1.6 1.6 0 0 1-3.2 0v-4a1.6 1.6 0 0 1 3.2 0v4Zm-1.6 6.4a1.6 1.6 0 1 1-1.6 1.6v-1.6h1.6Zm0-.8a1.6 1.6 0 0 1 0-3.2h4a1.6 1.6 0 0 1 0 3.2h-4Z"/></svg>Slack</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M16.2 3.2 2.1 8.6c-.7.3-.7.7-.1.9l3.5 1.1 8.2-5.2c.4-.2.7-.1.4.1L7.4 11.9l-.2 3.6c.3 0 .4-.1.6-.3l1.5-1.4 3.6 2.6c.7.4 1.1.2 1.3-.6l2.3-11c.2-.9-.3-1.3-.9-1Z"/></svg>Telegram</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.6 1.8h10.8c.8 0 1.4.6 1.4 1.4v11.6c0 .8-.6 1.4-1.4 1.4H3.6c-.8 0-1.4-.6-1.4-1.4V3.2c0-.8.6-1.4 1.4-1.4Zm.1 4.4v2.5h4.5V6.2H3.7Zm6 0v2.5h4.6V6.2H9.7Zm-6 4v2.5h4.5v-2.5H3.7Zm6 0v2.5h4.6v-2.5H9.7Z"/></svg>Sheets</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M5 1.6V3H3.9c-.9 0-1.6.7-1.6 1.6v9.4c0 .9.7 1.6 1.6 1.6h10.2c.9 0 1.6-.7 1.6-1.6V4.6c0-.9-.7-1.6-1.6-1.6H13V1.6h-1.5V3h-5V1.6H5ZM3.8 6.6h10.4v7.4H3.8V6.6Z"/></svg>Calendar</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.2 5c0-.8.6-1.4 1.4-1.4h10.8c.8 0 1.4.6 1.4 1.4v8c0 .8-.6 1.4-1.4 1.4H3.6c-.8 0-1.4-.6-1.4-1.4V5Zm1.9-.1L9 8.7l4.9-3.8H4.1Z"/></svg>Email</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6.6 2.4a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 1.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm6.2-.6a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Zm0 1.5a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8ZM6.6 9.6c2.5 0 4.6 1.2 4.6 2.8v2.4H2V12.4c0-1.6 2.1-2.8 4.6-2.8Zm0 1.5c-1.9 0-3.1.8-3.1 1.3v.9h6.2v-.9c0-.5-1.2-1.3-3.1-1.3Zm6.2-1.1c1.8 0 3.2.9 3.2 2v2.3h-3.5v-2.3c0-.7-.3-1.3-.9-1.8a5 5 0 0 1 1.2-.2Z"/></svg>Your CRM</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.2 4.6c0-.8.6-1.4 1.4-1.4h10.8c.8 0 1.4.6 1.4 1.4v8.8c0 .8-.6 1.4-1.4 1.4H3.6c-.8 0-1.4-.6-1.4-1.4V4.6Zm1.5.1v1.6h10.6V4.7H3.7Zm0 3.4v5.2h10.6V8.1H3.7Zm1.3 3h3.4v1.2H5V11.1Z"/></svg>Payment links</span>
+    <span class="ch"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7.4 10.6a3.6 3.6 0 0 0 5.1 0l2.1-2.1a3.6 3.6 0 0 0-5.1-5.1l-1 1a.8.8 0 1 0 1.1 1.1l1-1a2 2 0 0 1 2.9 2.9l-2.1 2.1a2 2 0 0 1-2.9 0 .8.8 0 0 0-1.1 1.1Zm3.2-3.2a3.6 3.6 0 0 0-5.1 0L3.4 9.5a3.6 3.6 0 0 0 5.1 5.1l1-1a.8.8 0 1 0-1.1-1.1l-1 1a2 2 0 0 1-2.9-2.9l2.1-2.1a2 2 0 0 1 2.9 0 .8.8 0 0 0 1.1-1.1Z"/></svg>Webhooks</span>
+  </div>
+
+  <div class="terms">
+    <div class="fee">
+      <span class="was">&#8377;24,999</span>
+      &#8377;9,999<span class="per">per month, founding rate</span>
+    </div>
+    <p class="terms-copy">
+      <b>Founding member rate. First 20 businesses, locked for life.</b> Included:
+      every channel, up to 500 leads managed each month, two team seats. Additional
+      seats &#8377;999. Live in 48 hours, trained on your business. Multi-location and
+      higher volume quoted on a call. Your conversations stay in your dashboard.
+      Never used to train public models.
+    </p>
+  </div>
+
+  <div class="ask">
+    <div class="wordmark" role="img" aria-label="PROXe"></div>
+    <div class="ask-right">
+      <div class="contact">
+        <a href="https://goproxe.com">goproxe.com</a>
+        <span>+91 93532 53817</span>
+      </div>
+      <div class="signoff" role="img" aria-label="PROXe"></div>
+    </div>
+  </div>
+
+  <p class="slug">Never miss a lead ever again.</p>
+
+</div>

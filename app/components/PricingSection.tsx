@@ -65,7 +65,7 @@ const PRICES: Record<Market, {
 };
 
 /** How many founding seats the offer is capped at. */
-const FOUNDING_LIMIT = 50;
+const FOUNDING_LIMIT = 20;
 /**
  * Founding seats already taken. Hardcoded on purpose: it is four real
  * businesses, not a fake urgency ticker, and it should only ever move when a
@@ -244,7 +244,7 @@ export default function PricingSection() {
                   more height than the sentence was worth. */}
               <div className="pr-card-seats">
                 <span className="pr-card-seats-ico"><FiUsers size={12} /></span>
-                <span><strong>2 seats included.</strong> Extra seats {p.seat}/mo each.</span>
+                <span><strong>2 team seats included.</strong> Extra seats {p.seat}/mo each.</span>
               </div>
               <div className="pr-card-sub">
                 Everything you need to capture and convert, live on every channel.
@@ -283,7 +283,10 @@ export default function PricingSection() {
 
             <button
               type="button"
-              onClick={() => void startDeploy('pricing_core')}
+              onClick={() => {
+                track('plan_select', { plan: 'core', market: currency });
+                void startDeploy('pricing_core');
+              }}
               disabled={isStartingCheckout}
               className="pr-cta pr-cta--primary"
             >
