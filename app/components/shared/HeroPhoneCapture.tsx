@@ -140,7 +140,7 @@ export default function HeroPhoneCapture() {
         onSubmit={(e) => { e.preventDefault(); void dial(); }}
         aria-label="Your callback details"
       >
-        <p className="proxe-hero-details-title">A couple of details before we call</p>
+        <p className="proxe-hero-details-title">You're one step from talking to PROXe</p>
         <div className="proxe-hero-details-fields">
           <label>
             <span>Your name</span>
@@ -165,10 +165,10 @@ export default function HeroPhoneCapture() {
           </label>
         </div>
         <div className="proxe-hero-details-actions">
-          <button type="submit" className="proxe-hero-details-go">Call me now</button>
+          <button type="submit" className="proxe-hero-details-go">Talk to PROXe <span aria-hidden="true">→</span></button>
           <button type="button" className="proxe-hero-details-skip" onClick={() => { setError(''); setStatus('idle'); }}>Back</button>
         </div>
-        <p className="proxe-hero-details-note">Submit to get your call.</p>
+        <p className="proxe-hero-details-note">PROXe will call your number when you submit.</p>
         {error && <p className="proxe-hero-phone-error" role="alert">{error}</p>}
       </form>
     );
@@ -216,7 +216,7 @@ export default function HeroPhoneCapture() {
           onChange={handleChange}
           aria-label="Phone number"
         />
-        <button type="submit" className={btnClass} aria-label="Get a call back">
+        <button type="submit" className={btnClass} aria-label="Talk to PROXe">
           {typing ? (
             <>
               <svg className="proxe-hero-phone-btn-ringtrack" viewBox="0 0 52 52" aria-hidden="true">
@@ -241,7 +241,7 @@ export default function HeroPhoneCapture() {
               </svg>
             </>
           ) : (
-            'Get a call back'
+            'Talk to PROXe'
           )}
         </button>
       </form>
