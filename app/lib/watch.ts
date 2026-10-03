@@ -309,6 +309,61 @@ export const WATCH_EPISODES: WatchEpisode[] = [
     ]
   },
   {
+    "slug": "watch-what-to-do-today",
+    "clip": "10-tasks",
+    "order": 9,
+    "title": "What should my team do today?",
+    "dek": "Every follow-up and reminder is already planned and timed. Log a call in two taps and PROXe plans the next step.",
+    "intro": [
+      "PROXe turns every conversation into the next thing to do and schedules it.",
+      "This video shows the task queue and how logging a call sets up the follow-up."
+    ],
+    "shortVersion": [
+      "The next hour on top, the rest of the day below.",
+      "Follow-ups and reminders are created and timed automatically.",
+      "Log a call outcome in two taps; PROXe plans what happens next."
+    ],
+    "promise": "Nothing slips through.",
+    "duration": 34,
+    "video": "/watch/watch-what-to-do-today.mp4",
+    "poster": "/watch/watch-what-to-do-today.jpg",
+    "captions": "/watch/watch-what-to-do-today.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Today, already planned",
+        "text": "What should your team do today? It's already planned."
+      },
+      {
+        "t": 7.3,
+        "title": "Up next and later",
+        "text": "What fires in the next hour sits on top. The rest of the day, right below."
+      },
+      {
+        "t": 14.6,
+        "title": "Timed by PROXe",
+        "text": "Every follow-up and reminder, lined up and timed by PROXe."
+      },
+      {
+        "t": 20.7,
+        "title": "Log a call",
+        "text": "Open any lead. Notes, history and the next step, all in one place."
+      },
+      {
+        "t": 27.8,
+        "title": "Nothing slips",
+        "text": "Nothing slips through. Not one lead."
+      }
+    ],
+    "transcript": [
+      "What should your team do today? It's already planned.",
+      "What fires in the next hour sits on top. The rest of the day, right below.",
+      "Every follow-up and reminder, lined up and timed by PROXe.",
+      "Open any lead. Notes, history and the next step, all in one place.",
+      "Nothing slips through. Not one lead."
+    ]
+  },
+  {
     "slug": "watch-message-hundreds-at-once",
     "clip": "11-campaigns",
     "order": 10,
