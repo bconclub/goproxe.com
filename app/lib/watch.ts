@@ -309,6 +309,67 @@ export const WATCH_EPISODES: WatchEpisode[] = [
     ]
   },
   {
+    "slug": "watch-the-voice-agent",
+    "clip": "04-voice",
+    "order": 5,
+    "title": "The voice agent",
+    "dek": "Every new lead gets a call within a minute. PROXe qualifies them, then writes up the call for you.",
+    "intro": [
+      "PROXe can call every new lead within a minute, qualify them, and log the call for your team.",
+      "This video shows the calls list and what is inside a call: the written summary and the full transcript."
+    ],
+    "shortVersion": [
+      "Inbound and outbound calls, in one list, with duration and what was captured.",
+      "Open a call to read the summary: who they are, what they need, the next step.",
+      "The full transcript sits right below, so nobody has to listen back."
+    ],
+    "promise": "Every lead gets a call. You take the good ones.",
+    "duration": 35,
+    "video": "/watch/watch-the-voice-agent.mp4",
+    "poster": "/watch/watch-the-voice-agent.jpg",
+    "captions": "/watch/watch-the-voice-agent.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "A call within a minute",
+        "text": "What if every new lead got a call within a minute? Every single one."
+      },
+      {
+        "t": 10,
+        "title": "Every call, logged",
+        "text": "PROXe's voice agent calls them, in English or Hindi, and logs every call here."
+      },
+      {
+        "t": 16.9,
+        "title": "Open a call",
+        "text": "Tap any call."
+      },
+      {
+        "t": 18.8,
+        "title": "The summary",
+        "text": "The summary is already written. Who they are, what they need, what happens next."
+      },
+      {
+        "t": 25,
+        "title": "Every word",
+        "text": "Want every word? The full transcript is right below."
+      },
+      {
+        "t": 29.1,
+        "title": "Take the good ones",
+        "text": "Every lead gets a call. You only take the good ones."
+      }
+    ],
+    "transcript": [
+      "What if every new lead got a call within a minute? Every single one.",
+      "PROXe's voice agent calls them, in English or Hindi, and logs every call here.",
+      "Tap any call.",
+      "The summary is already written. Who they are, what they need, what happens next.",
+      "Want every word? The full transcript is right below.",
+      "Every lead gets a call. You only take the good ones."
+    ]
+  },
+  {
     "slug": "watch-what-to-do-today",
     "clip": "10-tasks",
     "order": 9,
