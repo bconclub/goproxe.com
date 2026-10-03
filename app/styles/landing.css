@@ -12276,3 +12276,76 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .proxe-hero-phone-btn--labelled { padding: 0 10px; }
   .proxe-root .proxe-hero-phone:has(.proxe-hero-phone-btn--labelled) .proxe-hero-phone-input { padding: 0 10px; }
 }
+
+/* ── Hero call capture, one row (3 Oct 2026) ────────────────────────────────
+   Number in, phone rings. No second card. Matches the existing outlined field
+   + white button look; states change inside the same row. */
+.proxe-root .hq { width: 100%; max-width: 480px; margin: 24px auto 0; }
+.proxe-root .hq-row { display: flex; gap: 8px; width: 100%; }
+.proxe-root .hq-field {
+  flex: 1; min-width: 0; display: flex; align-items: center; height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 14px;
+  background: rgba(9, 5, 34, 0.48); transition: border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.proxe-root .hq-field:focus-within { border-color: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2); }
+.proxe-root .hq-field--calling { opacity: .75; }
+.proxe-root .hq-cc { padding: 0 2px 0 14px; color: rgba(255, 255, 255, 0.75); font-size: 16px; font-variant-numeric: tabular-nums; }
+.proxe-root .hq-input {
+  flex: 1; min-width: 0; height: 100%; padding: 0 12px 0 8px; border: 0; outline: none; background: transparent;
+  color: #fff; font-family: var(--proxe-font-sans); font-size: 16px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;
+}
+.proxe-root .hq-input::placeholder { color: rgba(255, 255, 255, 0.7); }
+.proxe-root .hq-go {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 52px; padding: 0 20px; border: 0; border-radius: 14px; cursor: pointer;
+  background: #fff; color: #140a33; font-family: var(--proxe-font-sans); font-size: 15px; font-weight: 700;
+  box-shadow: 0 8px 26px rgba(10, 5, 40, 0.35); transition: transform .15s ease, opacity .2s ease;
+}
+.proxe-root .hq-go:hover:not(:disabled) { transform: translateY(-1px); }
+.proxe-root .hq-go:active:not(:disabled) { transform: translateY(1px); }
+.proxe-root .hq-go:disabled { cursor: default; opacity: .9; }
+.proxe-root .hq-go:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.proxe-root .hq-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(20, 10, 51, .25); border-top-color: #140a33; animation: hqSpin .8s linear infinite; }
+@keyframes hqSpin { to { transform: rotate(360deg); } }
+.proxe-root .hq-hint, .proxe-root .hq-error { margin: 10px 0 0; text-align: center; font-size: 13.5px; line-height: 1.4; }
+.proxe-root .hq-hint { color: rgba(255, 255, 255, 0.78); }
+.proxe-root .hq-error { color: #fecaca; }
+.proxe-root .hq-ringing {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  max-width: 480px; min-height: 52px; margin: 24px auto 0; padding: 10px 22px; border-radius: 999px;
+  background: rgba(74, 222, 128, 0.14); border: 1px solid rgba(74, 222, 128, 0.45);
+  color: #fff; font-size: 15px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  animation: hqIn .35s cubic-bezier(.22,1,.36,1) both;
+}
+.proxe-root .hq-phone {
+  position: relative; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  background: #22c55e; color: #fff; animation: hqWiggle 1.1s ease-in-out infinite;
+}
+.proxe-root .hq-phone::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(74, 222, 128, .6); animation: hqPulse 1.4s ease-out infinite; }
+@keyframes hqWiggle { 0%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(-12deg); } 20%, 40% { transform: rotate(12deg); } 50% { transform: rotate(0); } }
+@keyframes hqPulse { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+@keyframes hqIn { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+.proxe-root .hq-next { color: #fff; font-weight: 600; text-decoration: none; }
+.proxe-root .hq-next:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 420px) {
+  .proxe-root .hq-go { padding: 0 14px; font-size: 14px; }
+  .proxe-root .hq-ringing { border-radius: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proxe-root .hq-spin, .proxe-root .hq-phone, .proxe-root .hq-phone::after, .proxe-root .hq-ringing { animation: none; }
+}
+
+/* Hero inline details (3 Oct 2026): name, business, mobile and one arrow, all in one row. */
+.proxe-root .hq { max-width: 720px; }
+.proxe-root .hq-field--name { flex: 1 1 0; }
+.proxe-root .hq-field--biz { flex: 1.1 1 0; }
+.proxe-root .hq-field--phone { flex: 1.5 1 0; }
+.proxe-root .hq-field--name .hq-input, .proxe-root .hq-field--biz .hq-input { padding-left: 14px; letter-spacing: 0; }
+.proxe-root .hq-go { width: 52px; padding: 0; }
+.proxe-root .hq-go svg { transition: transform .2s ease; }
+.proxe-root .hq-go:hover:not(:disabled) svg { transform: translateX(2px); }
+@media (max-width: 640px) {
+  .proxe-root .hq-row { display: grid; grid-template-columns: 1fr 1fr 52px; }
+  .proxe-root .hq-field--phone { grid-column: 1 / 3; }
+  .proxe-root .hq-go { grid-column: 3; grid-row: 2; width: 52px; padding: 0; }
+}

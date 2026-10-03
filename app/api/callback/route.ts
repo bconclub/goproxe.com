@@ -150,8 +150,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
   }
 
-  if (body.source === 'hero_phone' && (!callerName || !callerBusiness)) {
-    return NextResponse.json({ ok: false, reason: 'missing_details' }, { status: 400 })
+  // India: only real mobiles (+91 then 6-9). Landlines, 0000000000 and typos
+  // would burn a call and an agent minute on ad traffic (3 Oct 2026).
+  if (phone.startsWith('+91') && !/^\+91[6-9]\d{9}$/.test(phone)) {
+    return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
   }
 
   const now = Date.now()
@@ -219,12 +221,12 @@ export async function POST(request: Request) {
         // Name + business from the hero's details step. Dynamic variables are
         // the supported per-call substitution (used by the outreach agents);
         // this is NOT a conversation_config_override, which broke twice.
-        ...(callerName || callerBusiness
-          ? { conversation_initiation_client_data: { dynamic_variables: {
-              ...(callerName ? { first_name: callerName.split(' ')[0] } : {}),
-              ...(callerBusiness ? { business_name: callerBusiness } : {}),
-            } } }
-          : {}),
+        // Always send both: the hero form no longer asks for them (3 Oct), and
+        // the agent treats first_name "there" as unknown and asks on the call.
+        conversation_initiation_client_data: { dynamic_variables: {
+          first_name: callerName ? callerName.split(' ')[0] : 'there',
+          business_name: callerBusiness || 'not shared yet',
+        } },
       }),
     })
 
