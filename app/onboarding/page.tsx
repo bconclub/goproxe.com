@@ -1,6 +1,8 @@
 import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 import styles from '../styles/legal.module.css'
+import '../styles/landing.css'
+import IndustryHeader from '../components/industry/IndustryHeader'
 import { WATCH_EPISODES } from '../lib/watch'
 import { OnboardingWatch } from './OnboardingWatch'
 
@@ -23,6 +25,8 @@ export const metadata: Metadata = {
 export default function OnboardingPage() {
   return (
     <div className={`proxe-root ${inter.variable} ${heading.variable} ${mono.variable}`}>
+      {/* The homepage header: WhatsApp + Deploy PROXe on this page too. */}
+      <IndustryHeader slug="onboarding" />
       <main className={styles.page}>
         <OnboardingWatch episodes={WATCH_EPISODES} onboardingUrl={PROXE_ONBOARDING_URL} />
       </main>

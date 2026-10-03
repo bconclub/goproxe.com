@@ -1,4 +1,7 @@
-.wrap { position: relative; z-index: 1; width: 100%; max-width: 980px; margin: 0 auto; }
+.wrap { position: relative; z-index: 1; width: 100%; max-width: 980px; margin: 0 auto; padding-top: 44px; } /* clears the fixed header */
+/* landing.css (loaded for the header) colours every .proxe-root link; keep ours. */
+.wrap a.primary { color: #140d30; }
+.wrap a.secondary { color: #ede9fe; }
 .hero { max-width: 760px; }
 .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 .primary {
