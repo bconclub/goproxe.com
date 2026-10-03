@@ -176,6 +176,7 @@ export default function HeroPhoneCapture() {
   return (
     <div className="hq">
       <form className={'hq-row' + (step === 2 ? ' hq-row--details' : '')} onSubmit={handleSubmit} autoComplete="off" noValidate aria-label="Get a call from PROXe">
+        {step === 1 && (
         <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
           <input
@@ -192,6 +193,7 @@ export default function HeroPhoneCapture() {
             aria-invalid={!!error}
           />
         </label>
+        )}
         {step === 2 && (
           <>
           <label className={'hq-field hq-field--name' + (calling ? ' hq-field--calling' : '')}>
@@ -210,13 +212,13 @@ export default function HeroPhoneCapture() {
           <label className={'hq-field hq-field--biz' + (calling ? ' hq-field--calling' : '')}>
             <input
               className="hq-input"
-              placeholder="Business"
+              placeholder="Brand name"
               autoComplete="organization"
               value={business}
               onChange={(e) => { markStart(); setBusiness(e.target.value); }}
               readOnly={calling}
               maxLength={80}
-              aria-label="Your business"
+              aria-label="Your brand name"
             />
           </label>
           </>
@@ -231,7 +233,9 @@ export default function HeroPhoneCapture() {
       </form>
       {error
         ? <p className="hq-error" role="alert">{error}</p>
-        : <p className="hq-hint">{calling ? 'Connecting. Your phone rings in a few seconds.' : step === 2 ? 'Add your name and business, then tap the arrow. PROXe calls in 5 seconds.' : "PROXe's AI calls you in 5 seconds. Free, no signup."}</p>}
+        : <p className="hq-hint">{calling ? 'Connecting. Your phone rings in a few seconds.' : step === 2
+          ? <>PROXe AI calls {market === 'inr' ? '+91 ' : ''}{phone.replace(/\D/g, '').slice(-10)} in 5 seconds. <button type="button" className="hq-change" onClick={() => { setStep(1); setError(''); }}>Change</button></>
+          : 'PROXe AI calls you in 5 seconds. Free, no signup.'}</p>}
     </div>
   );
 }

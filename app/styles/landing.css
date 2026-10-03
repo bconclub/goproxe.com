@@ -12392,3 +12392,15 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .proxe-root .hq-field--phone, .proxe-root .hq-input::placeholder { animation: none !important; }
 }
+/* Hint stays, quieter (3 Oct 2026): present, not in the face. */
+.proxe-root .hq-hint { color: rgba(255, 255, 255, 0.5); font-size: 12.5px; letter-spacing: 0.01em; }
+/* Step 2 replaces the number: name, brand, arrow in one row (3 Oct 2026). */
+.proxe-root .hq:has(.hq-row--details) { max-width: 560px; }
+.proxe-root .hq-row--details .hq-field--name, .proxe-root .hq-row--details .hq-field--biz { flex: 1 1 0; }
+.proxe-root .hq-change { margin-left: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+@media (max-width: 640px) {
+  .proxe-root .hq-row--details { grid-template-columns: 1fr 1fr 52px; }
+  .proxe-root .hq-row--details .hq-field--name { grid-column: 1; grid-row: 1; }
+  .proxe-root .hq-row--details .hq-field--biz { grid-column: 2; grid-row: 1; }
+  .proxe-root .hq-row--details .hq-go { grid-column: 3; grid-row: 1; }
+}
