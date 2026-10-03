@@ -362,6 +362,49 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "Every reply comes straight back into Chats.",
       "One offer. The right people. One minute."
     ]
+  },
+  {
+    "slug": "watch-get-alerted",
+    "clip": "14-alerts",
+    "order": 11,
+    "title": "Get alerted when it matters",
+    "dek": "PROXe pings you the moment a lead turns hot, books a slot, or asks to talk to a person.",
+    "intro": [
+      "You do not need to watch the dashboard all day. PROXe tells you when something needs you.",
+      "This video shows the notifications and what triggers them."
+    ],
+    "shortVersion": [
+      "Alerts when a lead turns hot, books, or asks for a human.",
+      "New leads and new messages show in one place.",
+      "Choose which alerts you get in settings."
+    ],
+    "promise": "You hear about it the moment it matters.",
+    "duration": 29,
+    "video": "/watch/watch-get-alerted.mp4",
+    "poster": "/watch/watch-get-alerted.jpg",
+    "captions": "/watch/watch-get-alerted.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "A hot lead is waiting",
+        "text": "A hot lead is waiting right now. Do you know?"
+      },
+      {
+        "t": 8.7,
+        "title": "The moment it happens",
+        "text": "PROXe tells you the moment a lead turns hot, books, or asks for a person."
+      },
+      {
+        "t": 24.1,
+        "title": "When it matters",
+        "text": "You hear about it the moment it matters."
+      }
+    ],
+    "transcript": [
+      "A hot lead is waiting right now. Do you know?",
+      "PROXe tells you the moment a lead turns hot, books, or asks for a person.",
+      "You hear about it the moment it matters."
+    ]
   }
 ]
 
