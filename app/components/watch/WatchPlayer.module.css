@@ -65,3 +65,15 @@
   .frame { border-radius: 12px; }
   .chapters { grid-template-columns: 1fr; }
 }
+
+.frame { position: relative; }
+.overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; place-items: center; padding: 24px;
+  background: rgba(10, 6, 30, 0.82); backdrop-filter: blur(6px);
+}
+
+/* On phones the video is too short to hold a form: the overlay opens full-screen. */
+@media (max-width: 640px) {
+  .overlay { position: fixed; inset: 0; z-index: 60; overflow-y: auto; align-items: center; }
+}

@@ -1037,3 +1037,56 @@ export async function updateProxeBooking(input: SupabaseLeadInput): Promise<Supa
     return { ok: false, reason: 'db_error' }
   }
 }
+
+/**
+ * Onboarding videos (goproxe.com/onboarding): record which videos a viewer has
+ * watched on their lead, under unified_context.onboarding_videos. The score is
+ * computed by the caller from the known episode list, never taken from the
+ * browser as-is. Matches the lead by phone + brand, like upsertProxeLead.
+ */
+export async function recordOnboardingProgress(input: {
+  phone: string | null | undefined
+  watched: string[]
+  total: number
+  score: number
+}): Promise<SupabaseLeadResult> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return { ok: false, reason: 'not_configured' }
+  const normalizedPhone = normalizePhone(input.phone)
+  if (!normalizedPhone) return { ok: false, reason: 'no_phone' }
+  try {
+    const { data: existing, error } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('customer_phone_normalized', normalizedPhone)
+      .eq('brand', BRAND)
+      .maybeSingle()
+    if (error) return { ok: false, reason: 'db_error' }
+    if (!existing) return { ok: false, reason: 'no_match' }
+    const ctx = (existing.unified_context as Record<string, any>) || {}
+    const prev = ctx.onboarding_videos || {}
+    const now = new Date().toISOString()
+    const { error: updateError } = await supabase
+      .from('all_leads')
+      .update({
+        last_interaction_at: now,
+        unified_context: {
+          ...ctx,
+          onboarding_videos: {
+            watched: input.watched,
+            total: input.total,
+            score: input.score,
+            started_at: prev.started_at || now,
+            updated_at: now,
+            ...(input.score >= 100 ? { completed_at: prev.completed_at || now } : {}),
+          },
+        },
+      })
+      .eq('id', existing.id)
+    if (updateError) return { ok: false, reason: 'db_error' }
+    return { ok: true, leadId: existing.id as string }
+  } catch (err) {
+    console.error('[leadsSupabase] onboarding progress failed', err)
+    return { ok: false, reason: 'db_error' }
+  }
+}

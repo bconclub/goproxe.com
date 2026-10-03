@@ -62,3 +62,49 @@
   .epTitle { font-size: 28px; }
   .stepsTitle { font-size: 28px; }
 }
+
+/* progress + score */
+.progress { margin-top: 40px; max-width: 760px; }
+.progressText { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: rgba(220, 215, 245, 0.85); font-size: 15px; }
+.progressText strong { color: #fff; }
+.bar { height: 6px; border-radius: 99px; background: rgba(255, 255, 255, 0.08); margin-top: 8px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, #8b5cf6, #c4b5fd); border-radius: 99px; transition: width 0.5s ease; }
+
+/* overlays on the video: up next, unlock */
+.upnext, .gate { text-align: center; max-width: 420px; width: 100%; }
+.upTitle { font-family: var(--font-proxe-heading), 'Instrument Serif', serif; font-size: 30px; line-height: 1.1; color: #fff; margin: 0 0 12px; }
+.ring { width: 64px; height: 64px; margin: 6px auto 0; border-radius: 50%; display: grid; place-items: center; border: 3px solid #a78bfa; color: #fff; font-size: 26px; font-weight: 600; }
+.primaryBtn, .secondaryBtn { min-height: 46px; padding: 0 22px; border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer; }
+.primaryBtn { background: #fff; color: #140d30; border: 0; }
+.primaryBtn:disabled { opacity: 0.6; cursor: default; }
+.secondaryBtn { background: transparent; color: #ede9fe; border: 1px solid rgba(196, 181, 253, 0.35); }
+.primaryBtn:focus-visible, .secondaryBtn:focus-visible, .unlockAll:focus-visible { outline: 2px solid #a78bfa; outline-offset: 3px; }
+.gateText { color: rgba(220, 215, 245, 0.8); font-size: 15px; margin: 0 0 14px; }
+.field { display: block; text-align: left; margin-top: 10px; }
+.field span { display: block; font-size: 13px; color: rgba(220, 215, 245, 0.75); margin-bottom: 5px; }
+.field input {
+  width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid rgba(196, 181, 253, 0.3);
+  background: rgba(255, 255, 255, 0.06); color: #fff; font: inherit; font-size: 16px; padding: 0 14px;
+}
+.field input:focus { outline: 2px solid #a78bfa; border-color: transparent; }
+.err { color: #fca5a5; font-size: 14px; margin: 10px 0 0; }
+
+/* playlist states */
+.thumbWrap { position: relative; display: block; }
+.lockBadge { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10, 6, 30, 0.55); border-radius: 8px; color: #fff; }
+.seen { color: #6ee7b7; display: inline-flex; align-items: center; gap: 4px; }
+.unlockAll {
+  margin-top: 12px; width: 100%; min-height: 44px; border-radius: 12px; border: 1px dashed rgba(196, 181, 253, 0.4);
+  background: transparent; color: #ede9fe; font: inherit; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.unlockAll:hover { background: rgba(124, 58, 237, 0.18); }
+
+/* completion */
+.complete { margin: 18px 0 8px; padding: 18px 20px; border-radius: 14px; border: 1px solid rgba(110, 231, 183, 0.35); background: rgba(16, 185, 129, 0.08); }
+.completeTitle { color: #fff; font-size: 18px; font-weight: 600; margin: 0 0 12px; }
+
+@media (max-width: 640px) {
+  .upTitle { font-size: 24px; }
+  .overlayCompact { padding: 12px; }
+}

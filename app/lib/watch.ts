@@ -94,6 +94,85 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "And when someone books, it lands on your calendar. Reminders and all.",
       "You run the business. PROXe runs the follow-up."
     ]
+  },
+  {
+    "slug": "watch-who-to-call-first",
+    "clip": "05-leads",
+    "order": 2,
+    "title": "Who should I call first?",
+    "dek": "Three hundred leads in a week. This is how PROXe decides who you call first, and shows you exactly why.",
+    "intro": [
+      "Ads work. Then the leads arrive faster than anyone can call them back, and the question becomes who to call first.",
+      "PROXe ranks every lead by what they actually did, so the ones ready to buy are always at the top. This video shows the ranking, the score behind it, and the story inside each lead."
+    ],
+    "shortVersion": [
+      "The Priority Lead Queue on the Overview shows who needs a call now.",
+      "Each lead gets a score from real behaviour: replies, questions about price, bookings, calls.",
+      "Open any lead to see the summary, why they scored what they did, and every message and call in order."
+    ],
+    "promise": "Every lead ranked. The right one called first.",
+    "duration": 51,
+    "video": "/watch/watch-who-to-call-first.mp4",
+    "poster": "/watch/watch-who-to-call-first.jpg",
+    "captions": "/watch/watch-who-to-call-first.vtt",
+    "chapters": [
+      {
+        "t": 3.3,
+        "title": "Leads pour in",
+        "text": "Say you run a lot of ads. Leads pour in. Three hundred, just this week."
+      },
+      {
+        "t": 10.5,
+        "title": "Who do you call first?",
+        "text": "So who do you call first? Honestly, it depends on how your sales run."
+      },
+      {
+        "t": 16.4,
+        "title": "Already ranked",
+        "text": "PROXe already did that thinking. The ones ready to buy sit right at the top."
+      },
+      {
+        "t": 21.4,
+        "title": "One list, every channel",
+        "text": "Every lead, from every channel, in one list."
+      },
+      {
+        "t": 26.7,
+        "title": "A score from what they did",
+        "text": "Each one scored on what they actually did. Replied. Asked the price. Booked a call."
+      },
+      {
+        "t": 33.2,
+        "title": "The story is written",
+        "text": "Open any lead. The story's already written."
+      },
+      {
+        "t": 36.6,
+        "title": "Why they scored ninety",
+        "text": "See exactly why they scored ninety."
+      },
+      {
+        "t": 40.4,
+        "title": "Every message, every call",
+        "text": "Every message. Every call."
+      },
+      {
+        "t": 44.1,
+        "title": "Call the right person first",
+        "text": "So you stop digging, and call the right person first."
+      }
+    ],
+    "transcript": [
+      "Say you run a lot of ads. Leads pour in. Three hundred, just this week.",
+      "So who do you call first? Honestly, it depends on how your sales run.",
+      "PROXe already did that thinking. The ones ready to buy sit right at the top.",
+      "Every lead, from every channel, in one list.",
+      "Each one scored on what they actually did. Replied. Asked the price. Booked a call.",
+      "Open any lead. The story's already written.",
+      "See exactly why they scored ninety.",
+      "Every message. Every call.",
+      "So you stop digging, and call the right person first."
+    ]
   }
 ]
 
