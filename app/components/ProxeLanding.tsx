@@ -16,6 +16,7 @@ import WhatsAppHeaderButton from './shared/WhatsAppHeaderButton';
 import { BlogSection } from './BlogSection';
 import { useDeployModal } from '../contexts/DeployModalContext';
 import { track, initScrollDepthTracking } from '../lib/analytics';
+import { detectMarket } from '../lib/market';
 import { captureAttribution } from '../lib/attribution';
 
 /**
@@ -1218,6 +1219,18 @@ export default function ProxeLanding() {
 
   // Capture first-touch traffic attribution (UTM / referrer) on landing.
   useEffect(() => { captureAttribution(); }, []);
+
+  // Came back from Dodo without paying. Read straight off the URL rather than
+  // useSearchParams so this component needs no Suspense boundary, then strip
+  // the marker so a refresh or a shared link cannot report a second abandon.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('checkout') !== 'cancelled') return;
+    track('checkout_cancelled', { market: detectMarket() });
+    url.searchParams.delete('checkout');
+    window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+  }, []);
 
   // Mount the video iframe when the frame gets NEAR the viewport, not at page
   // load (keeps the 3.1 MiB Vimeo payload off first paint) and not on click

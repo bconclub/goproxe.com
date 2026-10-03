@@ -283,7 +283,10 @@ export default function PricingSection() {
 
             <button
               type="button"
-              onClick={() => void startDeploy('pricing_core')}
+              onClick={() => {
+                track('plan_select', { plan: 'core', market: currency });
+                void startDeploy('pricing_core');
+              }}
               disabled={isStartingCheckout}
               className="pr-cta pr-cta--primary"
             >

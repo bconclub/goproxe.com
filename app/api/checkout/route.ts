@@ -178,7 +178,10 @@ export async function POST(request: Request) {
       // and we don't collect a GST/VAT number on the landing form. The brand
       // name still reaches us via metadata below.
       return_url: `${siteUrl}/thank-you?checkout=success`,
-      cancel_url: `${siteUrl}/#pricing`,
+      // Marked so the landing page can tell a real abandonment apart from an
+      // ordinary visit to the pricing anchor. Without the marker, walking away
+      // from a hosted checkout was completely invisible to us.
+      cancel_url: `${siteUrl}/?checkout=cancelled#pricing`,
       // A lean checkout: pay and get out. Everything below defaults to ON in
       // Dodo, so each line is a field or panel deliberately removed.
       customization: {
