@@ -307,6 +307,61 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "Reminders go out a day before and thirty minutes before. Automatically.",
       "Fewer no-shows. Nobody forgotten."
     ]
+  },
+  {
+    "slug": "watch-message-hundreds-at-once",
+    "clip": "11-campaigns",
+    "order": 10,
+    "title": "Message hundreds of leads at once",
+    "dek": "Describe who should get an offer, pick an approved WhatsApp message, and every reply comes back to Chats.",
+    "intro": [
+      "Campaigns send one approved WhatsApp message to the right group of leads.",
+      "This video shows choosing an audience in plain words, picking a message, and where replies go."
+    ],
+    "shortVersion": [
+      "Describe the audience in plain words; PROXe finds the matching leads.",
+      "Choose an approved WhatsApp template and when it goes out.",
+      "Every reply lands back in Chats, with the lead's history."
+    ],
+    "promise": "One offer. The right people.",
+    "duration": 31,
+    "video": "/watch/watch-message-hundreds-at-once.mp4",
+    "poster": "/watch/watch-message-hundreds-at-once.jpg",
+    "captions": "/watch/watch-message-hundreds-at-once.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "A new offer",
+        "text": "Got a new offer? Hundreds of people should hear about it."
+      },
+      {
+        "t": 7.3,
+        "title": "Pick the audience",
+        "text": "Describe who should get it in plain words. PROXe finds them."
+      },
+      {
+        "t": 16.7,
+        "title": "Pick the message",
+        "text": "Pick an approved WhatsApp message and set when it goes out."
+      },
+      {
+        "t": 21.9,
+        "title": "Replies come back",
+        "text": "Every reply comes straight back into Chats."
+      },
+      {
+        "t": 25.8,
+        "title": "One minute",
+        "text": "One offer. The right people. One minute."
+      }
+    ],
+    "transcript": [
+      "Got a new offer? Hundreds of people should hear about it.",
+      "Describe who should get it in plain words. PROXe finds them.",
+      "Pick an approved WhatsApp message and set when it goes out.",
+      "Every reply comes straight back into Chats.",
+      "One offer. The right people. One minute."
+    ]
   }
 ]
 
