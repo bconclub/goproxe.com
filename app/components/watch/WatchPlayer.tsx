@@ -49,6 +49,11 @@ export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, 
   }, [src, autoPlay, onWatched, onEnded])
 
   const current = [...chapters].reverse().find((c) => c.t <= now + 0.2)
+  const row = useRef<HTMLOListElement>(null)
+  useEffect(() => {
+    const el = row.current?.querySelector<HTMLElement>('[aria-current="true"]')
+    if (el && row.current) row.current.scrollTo({ left: el.offsetLeft - 8, behavior: 'smooth' })
+  }, [current?.t])
   const jump = (t: number) => {
     const v = ref.current
     if (!v) return
@@ -65,7 +70,7 @@ export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, 
         </video>
         {overlay && <div className={styles.overlay}>{overlay}</div>}
       </div>
-      <ol className={styles.chapters} aria-label="Chapters">
+      <ol ref={row} className={styles.chapters} aria-label="Chapters">
         {chapters.map((c) => (
           <li key={c.t}>
             <button

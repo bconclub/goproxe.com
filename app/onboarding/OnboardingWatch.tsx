@@ -31,6 +31,8 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
     stop()
     setPlaying(slug)
     document.getElementById(slug)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // Played straight from the click as well, so phones allow it and a second tap still starts it.
+    document.getElementById(slug)?.querySelector('video')?.play().catch(() => {})
   }, [])
 
   const ended = useCallback((slug: string) => {
@@ -59,7 +61,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
         {episodes.length > 1 && (
           <ol className={o.toc} aria-label="Videos on this page">
             {episodes.map((e, i) => (
-              <li key={e.slug}><a href={`#${e.slug}`}><span className={o.tocN}>{i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
+              <li key={e.slug}><a href={`#${e.slug}`} onClick={(ev) => { ev.preventDefault(); play(e.slug) }}><span className={o.tocN}>{i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
             ))}
           </ol>
         )}
@@ -70,8 +72,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
         const counting = upNext?.from === ep.slug && next
         return (
           <section key={ep.slug} id={ep.slug} className={o.episode}>
-            <p className={o.kicker}>Step {i + 1} of {episodes.length} · {clock(ep.duration)}</p>
-            <h2 className={o.epTitle}>{ep.title}</h2>
+            <h2 className={o.epTitle}><span className={o.epN}>{i + 1}</span>{ep.title}<span className={o.epT}>{clock(ep.duration)}</span></h2>
             <WatchPlayer
               src={ep.video} poster={ep.poster} captions={ep.captions} title={ep.title} chapters={ep.chapters}
               autoPlay={playing === ep.slug}
@@ -88,19 +89,16 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
                 </div>
               ) : null}
             />
-            <div className={o.body}>
+            <details className={o.card}>
+              <summary>
+                <span className={o.dek}>{ep.dek || ep.promise}</span>
+                <span className={o.more}>Details</span>
+              </summary>
               {ep.intro.map((p) => <p key={p} className={o.copy}>{p}</p>)}
-              {ep.shortVersion.length > 0 && (
-                <>
-                  <h3 className={o.h3}>The short version</h3>
-                  <ul className={o.list}>{ep.shortVersion.map((p) => <li key={p}>{p}</li>)}</ul>
-                </>
-              )}
-              <details className={o.transcript}>
-                <summary>Transcript</summary>
-                {ep.chapters.map((c) => <p key={c.t}><strong>{c.title}.</strong> {c.text}</p>)}
-              </details>
-            </div>
+              {ep.shortVersion.length > 0 && <ul className={o.list}>{ep.shortVersion.map((p) => <li key={p}>{p}</li>)}</ul>}
+              <p className={o.label}>Transcript</p>
+              {ep.chapters.map((c) => <p key={c.t} className={o.line}><strong>{c.title}.</strong> {c.text}</p>)}
+            </details>
           </section>
         )
       })}
