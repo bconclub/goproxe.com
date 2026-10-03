@@ -173,6 +173,73 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "Every message. Every call.",
       "So you stop digging, and call the right person first."
     ]
+  },
+  {
+    "slug": "watch-all-your-conversations",
+    "clip": "06-inbox",
+    "order": 3,
+    "title": "Where are all my conversations?",
+    "dek": "WhatsApp, Instagram and your website, all in one inbox. Open any chat and the whole story is already there.",
+    "intro": [
+      "Your customers talk to you on WhatsApp, Instagram and your website. PROXe puts every one of those conversations in one inbox.",
+      "This video shows the inbox, how to filter by channel, and what you see when you open a chat."
+    ],
+    "shortVersion": [
+      "Every conversation from every channel, newest on top.",
+      "Filter to just WhatsApp or just Instagram in one tap.",
+      "Open a chat to see the full thread, the lead's score and their owner. Reply yourself any time and PROXe steps aside."
+    ],
+    "promise": "Every chat, every channel. One inbox.",
+    "duration": 37,
+    "video": "/watch/watch-all-your-conversations.mp4",
+    "poster": "/watch/watch-all-your-conversations.jpg",
+    "captions": "/watch/watch-all-your-conversations.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Where customers talk",
+        "text": "Where do your customers talk to you? WhatsApp. Instagram. Your website."
+      },
+      {
+        "t": 9.4,
+        "title": "Three apps, lost chats",
+        "text": "That's three apps, and a few chats that slip away."
+      },
+      {
+        "t": 13.9,
+        "title": "One inbox",
+        "text": "In PROXe, it all lands in one inbox."
+      },
+      {
+        "t": 17,
+        "title": "Filter by channel",
+        "text": "Just WhatsApp? One tap. Just Instagram? One tap."
+      },
+      {
+        "t": 22.8,
+        "title": "The whole story",
+        "text": "Open a chat and the whole story is there, even the buttons they tapped."
+      },
+      {
+        "t": 27.2,
+        "title": "Who they are",
+        "text": "Plus who they are, and who on your team owns them."
+      },
+      {
+        "t": 31.5,
+        "title": "Jump in anytime",
+        "text": "Jump in anytime. PROXe steps aside. One place, full context."
+      }
+    ],
+    "transcript": [
+      "Where do your customers talk to you? WhatsApp. Instagram. Your website.",
+      "That's three apps, and a few chats that slip away.",
+      "In PROXe, it all lands in one inbox.",
+      "Just WhatsApp? One tap. Just Instagram? One tap.",
+      "Open a chat and the whole story is there, even the buttons they tapped.",
+      "Plus who they are, and who on your team owns them.",
+      "Jump in anytime. PROXe steps aside. One place, full context."
+    ]
   }
 ]
 
