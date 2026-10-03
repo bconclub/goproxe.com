@@ -240,6 +240,73 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "Plus who they are, and who on your team owns them.",
       "Jump in anytime. PROXe steps aside. One place, full context."
     ]
+  },
+  {
+    "slug": "watch-whos-coming-this-week",
+    "clip": "08-bookings",
+    "order": 4,
+    "title": "Who's coming in this week?",
+    "dek": "Every demo, visit and follow-up on one calendar, with reminders that go out on their own.",
+    "intro": [
+      "When a lead books on WhatsApp or on a call, PROXe puts it on your calendar and sends the reminders.",
+      "This video shows the week at a glance, what is inside an event, and today's queue."
+    ],
+    "shortVersion": [
+      "Every booking, follow-up and AI suggestion on one calendar.",
+      "Tap an event to see who, when, and the note your team left.",
+      "Reminders go out a day before and thirty minutes before, automatically."
+    ],
+    "promise": "Fewer no-shows. Nobody forgotten.",
+    "duration": 37,
+    "video": "/watch/watch-whos-coming-this-week.mp4",
+    "poster": "/watch/watch-whos-coming-this-week.jpg",
+    "captions": "/watch/watch-whos-coming-this-week.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Who's coming in?",
+        "text": "Who's coming in this week? And who needs a nudge?"
+      },
+      {
+        "t": 8.5,
+        "title": "One calendar",
+        "text": "PROXe knows. Every demo, every visit, one calendar."
+      },
+      {
+        "t": 15,
+        "title": "Bookings land here",
+        "text": "Someone books on WhatsApp? It just shows up here."
+      },
+      {
+        "t": 18.4,
+        "title": "Inside an event",
+        "text": "Tap it: who, when, and your team's note."
+      },
+      {
+        "t": 22.9,
+        "title": "Today's queue",
+        "text": "Today's queue? Right down the side."
+      },
+      {
+        "t": 25.4,
+        "title": "Automatic reminders",
+        "text": "Reminders go out a day before and thirty minutes before. Automatically."
+      },
+      {
+        "t": 31.8,
+        "title": "Fewer no-shows",
+        "text": "Fewer no-shows. Nobody forgotten."
+      }
+    ],
+    "transcript": [
+      "Who's coming in this week? And who needs a nudge?",
+      "PROXe knows. Every demo, every visit, one calendar.",
+      "Someone books on WhatsApp? It just shows up here.",
+      "Tap it: who, when, and your team's note.",
+      "Today's queue? Right down the side.",
+      "Reminders go out a day before and thirty minutes before. Automatically.",
+      "Fewer no-shows. Nobody forgotten."
+    ]
   }
 ]
 
