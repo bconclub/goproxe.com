@@ -1,12 +1,7 @@
-import type { Metadata } from 'next';
-import OnboardingForm from './OnboardingForm';
+import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Set up your brand',
-  description: 'Start PROXe onboarding with your brand name and website.',
-  robots: { index: false, follow: true },
-};
-
+// Deploy signup goes to the real PROXe onboarding (Z, 3 Oct 2026). This route
+// stays only so old links and bookmarks land in the right place.
 export default function OnboardingPage() {
-  return <OnboardingForm />;
+  redirect('https://proxe.goproxe.com/onboarding');
 }

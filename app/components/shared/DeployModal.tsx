@@ -8,6 +8,10 @@ import { track, trackLead, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
+// The real self-serve setup (reads the website, builds the knowledge base).
+// Z, 3 Oct 2026: Deploy must land here, not on the site's placeholder form.
+const PROXE_ONBOARDING_URL = 'https://proxe.goproxe.com/onboarding';
+
 interface DeployModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -179,7 +183,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     setErrors({});
     if (!isSales) {
       onClose();
-      router.push('/onboarding');
+      window.location.href = PROXE_ONBOARDING_URL;
       return;
     }
     setStep(2);
@@ -234,7 +238,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
     // Defensive fallback if a deploy source reaches the sales-only step.
     onClose();
-    router.push('/onboarding');
+    window.location.href = PROXE_ONBOARDING_URL;
   };
 
   // Visitor picked a slot on the flip-side calendar → record it (no second lead
