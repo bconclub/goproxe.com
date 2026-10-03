@@ -39,10 +39,13 @@ export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, 
       }
     }
     const end = () => onEnded?.()
+    // One video at a time: starting this one pauses every other video on the page.
+    const solo = () => document.querySelectorAll('video').forEach((other) => { if (other !== v && !other.paused) other.pause() })
     v.addEventListener('timeupdate', tick)
     v.addEventListener('ended', end)
+    v.addEventListener('play', solo)
     if (autoPlay) v.play().catch(() => {})
-    return () => { v.removeEventListener('timeupdate', tick); v.removeEventListener('ended', end) }
+    return () => { v.removeEventListener('timeupdate', tick); v.removeEventListener('ended', end); v.removeEventListener('play', solo) }
   }, [src, autoPlay, onWatched, onEnded])
 
   const current = [...chapters].reverse().find((c) => c.t <= now + 0.2)
