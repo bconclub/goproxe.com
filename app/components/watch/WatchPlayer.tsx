@@ -15,6 +15,8 @@ type WatchPlayerProps = {
   /** Fired once when 90% has been watched. */
   onWatched?: () => void
   onEnded?: () => void
+  /** A chapter chip was tapped. */
+  onChapter?: (title: string) => void
   /** Drawn over the video (the up-next countdown, the unlock form). */
   overlay?: ReactNode
 }
@@ -22,7 +24,7 @@ type WatchPlayerProps = {
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
 
 // A video with chapters you can jump to (onboarding videos).
-export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, onWatched, onEnded, overlay }: WatchPlayerProps) {
+export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, onWatched, onEnded, onChapter, overlay }: WatchPlayerProps) {
   const ref = useRef<HTMLVideoElement>(null)
   const [now, setNow] = useState(0)
   const watchedSent = useRef(false)
@@ -87,7 +89,7 @@ export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, 
             <button
               type="button"
               className={`${styles.chapter} ${current?.t === c.t ? styles.active : ''}`}
-              onClick={() => jump(c.t)}
+              onClick={() => { onChapter?.(c.title); jump(c.t) }}
               aria-current={current?.t === c.t ? 'true' : undefined}
             >
               <span className={styles.time}>{clock(c.t)}</span>

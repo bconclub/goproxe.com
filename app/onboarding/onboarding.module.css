@@ -80,6 +80,19 @@
 .primaryBtn { background: #fff; color: #140d30; border: 0; }
 .secondaryBtn { background: transparent; color: #ede9fe; border: 1px solid rgba(196, 181, 253, 0.35); }
 
+/* login gate after a minute of watching, drawn where up-next goes */
+.gate { text-align: center; max-width: 380px; width: 100%; }
+.gateText { color: rgba(220, 215, 245, 0.8); font-size: 15px; line-height: 1.5; margin: 0 0 14px; }
+.field { display: block; text-align: left; margin-top: 10px; }
+.field span { display: block; font-size: 13px; color: rgba(220, 215, 245, 0.75); margin-bottom: 5px; }
+.field input {
+  width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid rgba(196, 181, 253, 0.3);
+  background: rgba(255, 255, 255, 0.06); color: #fff; font: inherit; font-size: 16px; padding: 0 14px;
+}
+.field input:focus { outline: 2px solid #a78bfa; border-color: transparent; }
+.err { color: #fca5a5; font-size: 14px; margin: 10px 0 0; }
+.primaryBtn:disabled { opacity: 0.6; cursor: default; }
+
 /* go live */
 .steps { margin: 96px auto 0; max-width: 860px; text-align: center; }
 .stepsTitle { font-family: var(--font-proxe-heading), 'Instrument Serif', serif; font-weight: 400; font-size: 34px; color: #fff; margin: 0 0 24px; }
