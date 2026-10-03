@@ -59,6 +59,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   })
 
+  // Onboarding: how-it-works videos, then start onboarding
+  entries.push({
+    url: 'https://goproxe.com/onboarding',
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  })
+
   // Blog posts from the registry
   try {
     if (Array.isArray(BLOG_SLUGS)) {
