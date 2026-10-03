@@ -23,6 +23,9 @@
 .toc a:hover { border-color: rgba(167, 139, 250, 0.5); }
 .tocN { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(124, 58, 237, 0.35); color: #fff; font-size: 13px; font-weight: 600; }
 .tocName { flex: 1; }
+.toc a[data-active] { border-color: rgba(196, 181, 253, 0.6); background: rgba(124, 58, 237, 0.22); }
+.toc a[data-done] { border-color: rgba(34, 197, 94, 0.3); }
+.toc a[data-done] .tocN { background: #22c55e; }
 .tocT { font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace; font-size: 12px; color: #c4b5fd; }
 
 /* one video */
@@ -31,9 +34,29 @@
   font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.14em;
   text-transform: uppercase; color: #c4b5fd; margin: 0 0 6px;
 }
-.epTitle { display: flex; align-items: center; gap: 10px; font-family: var(--font-proxe-heading), 'Instrument Serif', serif; font-weight: 400; font-size: 30px; line-height: 1.15; color: #fff; margin: 0 0 12px; }
-.epN { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(124, 58, 237, 0.35); font-family: system-ui, sans-serif; font-size: 14px; font-weight: 600; }
-.epT { margin-left: auto; font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace; font-size: 12px; color: #c4b5fd; }
+/* Episode heading: a lit bar, brighter while its video plays, green once watched. */
+.epTitle {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 12px; padding: 12px 14px; border-radius: 14px;
+  font-family: var(--font-proxe-sans), system-ui, sans-serif; font-weight: 600; font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; color: #fff;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.32), rgba(20, 13, 48, 0.4) 70%);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.epN {
+  flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; font-size: 15px; font-weight: 700;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2); transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.epName { flex: 1; min-width: 0; }
+.epT { flex: none; font-family: var(--font-proxe-mono), 'JetBrains Mono', monospace; font-size: 12px; font-weight: 400; color: #c4b5fd; }
+.epDone {
+  flex: none; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  color: #86efac; background: rgba(34, 197, 94, 0.14); border: 1px solid rgba(34, 197, 94, 0.35);
+}
+.episode[data-active] .epTitle { border-color: rgba(196, 181, 253, 0.7); box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.35), 0 10px 36px rgba(124, 58, 237, 0.35); background: linear-gradient(90deg, rgba(124, 58, 237, 0.55), rgba(20, 13, 48, 0.45) 75%); }
+.episode[data-done] .epTitle { border-color: rgba(34, 197, 94, 0.35); background: linear-gradient(90deg, rgba(34, 197, 94, 0.16), rgba(20, 13, 48, 0.4) 70%); }
+.episode[data-done] .epN { background: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18); }
+.episode[data-done][data-active] .epTitle { box-shadow: 0 10px 36px rgba(34, 197, 94, 0.22); }
 /* One small card under each video: a line about it, everything else behind "Details". */
 .card { border-radius: 12px; border: 1px solid rgba(196, 181, 253, 0.14); background: rgba(20, 13, 48, 0.45); padding: 0 14px; }
 .card summary { list-style: none; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 10px 0; cursor: pointer; }
@@ -68,7 +91,8 @@
 
 @media (max-width: 760px) { .stepList { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
-  .epTitle { font-size: 22px; }
+  .epTitle { font-size: 18px; padding: 10px 12px; gap: 10px; }
+  .epN { width: 28px; height: 28px; font-size: 13px; }
   .toc { grid-template-columns: 1fr; gap: 4px; margin-top: 20px; }
   .toc a { font-size: 14px; min-height: 42px; }
   .stepsTitle { font-size: 28px; }

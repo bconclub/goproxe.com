@@ -8,6 +8,7 @@ import type { WatchEpisode } from '../lib/watch'
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
 const COUNTDOWN = 5
+const DONE_KEY = 'proxe_onboarding_watched'
 
 type Props = { episodes: WatchEpisode[]; onboardingUrl: string }
 
@@ -23,6 +24,25 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
   const [playing, setPlaying] = useState<string | null>(null) // slug told to autoplay
   const [upNext, setUpNext] = useState<{ from: string; left: number } | null>(null)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [active, setActive] = useState<string | null>(null) // slug of the video playing now
+  const [done, setDone] = useState<string[]>([]) // slugs watched to 90%, kept across visits
+
+  useEffect(() => {
+    try { setDone(JSON.parse(localStorage.getItem(DONE_KEY) || '[]')) } catch {}
+    // Whichever video starts playing, its section lights up.
+    const onPlay = (e: Event) => { const id = (e.target as HTMLElement).closest('section')?.id; if (id) setActive(id) }
+    document.addEventListener('play', onPlay, true)
+    return () => document.removeEventListener('play', onPlay, true)
+  }, [])
+
+  const markDone = useCallback((slug: string) => {
+    setDone((d) => {
+      if (d.includes(slug)) return d
+      const next = [...d, slug]
+      try { localStorage.setItem(DONE_KEY, JSON.stringify(next)) } catch {}
+      return next
+    })
+  }, [])
 
   const stop = () => { if (timer.current) clearInterval(timer.current); timer.current = null; setUpNext(null) }
   useEffect(() => () => stop(), [])
@@ -61,7 +81,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
         {episodes.length > 1 && (
           <ol className={o.toc} aria-label="Videos on this page">
             {episodes.map((e, i) => (
-              <li key={e.slug}><a href={`#${e.slug}`} onClick={(ev) => { ev.preventDefault(); play(e.slug) }}><span className={o.tocN}>{i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
+              <li key={e.slug}><a href={`#${e.slug}`} data-done={done.includes(e.slug) || undefined} data-active={active === e.slug || undefined} onClick={(ev) => { ev.preventDefault(); play(e.slug) }}><span className={o.tocN}>{done.includes(e.slug) ? '✓' : i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
             ))}
           </ol>
         )}
@@ -70,12 +90,18 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
       {episodes.map((ep, i) => {
         const next = episodes[i + 1]
         const counting = upNext?.from === ep.slug && next
+        const isDone = done.includes(ep.slug)
         return (
-          <section key={ep.slug} id={ep.slug} className={o.episode}>
-            <h2 className={o.epTitle}><span className={o.epN}>{i + 1}</span>{ep.title}<span className={o.epT}>{clock(ep.duration)}</span></h2>
+          <section key={ep.slug} id={ep.slug} className={o.episode} data-active={active === ep.slug || undefined} data-done={isDone || undefined}>
+            <h2 className={o.epTitle}>
+              <span className={o.epN} aria-hidden="true">{isDone ? '✓' : i + 1}</span>
+              <span className={o.epName}>{ep.title}</span>
+              {isDone ? <span className={o.epDone}>Watched</span> : <span className={o.epT}>{clock(ep.duration)}</span>}
+            </h2>
             <WatchPlayer
               src={ep.video} poster={ep.poster} captions={ep.captions} title={ep.title} chapters={ep.chapters}
               autoPlay={playing === ep.slug}
+              onWatched={() => markDone(ep.slug)}
               onEnded={() => ended(ep.slug)}
               overlay={counting ? (
                 <div className={o.upnext} role="status" aria-live="polite">

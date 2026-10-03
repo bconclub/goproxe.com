@@ -38,7 +38,18 @@ export function WatchPlayer({ src, poster, captions, title, chapters, autoPlay, 
         onWatched?.()
       }
     }
-    const end = () => onEnded?.()
+    // Native fullscreen holds only the <video>, so the up-next overlay and the next
+    // video would both be hidden behind it. Leave fullscreen first, then hand off.
+    const end = () => {
+      const d = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void }
+      const iosV = v as HTMLVideoElement & { webkitDisplayingFullscreen?: boolean; webkitExitFullscreen?: () => void }
+      const fs = document.fullscreenElement || d.webkitFullscreenElement
+      if (fs && (fs === v || fs.contains(v))) {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {})
+        else d.webkitExitFullscreen?.()
+      } else if (iosV.webkitDisplayingFullscreen) iosV.webkitExitFullscreen?.()
+      onEnded?.()
+    }
     // One video at a time: starting this one pauses every other video on the page.
     const solo = () => document.querySelectorAll('video').forEach((other) => { if (other !== v && !other.paused) other.pause() })
     v.addEventListener('timeupdate', tick)
