@@ -12365,3 +12365,30 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq-row--details .hq-field--biz { grid-column: 2; grid-row: 2; }
   .proxe-root .hq-row--details .hq-go { grid-column: 3; grid-row: 2; }
 }
+.proxe-root .hq-go--label { width: auto; padding: 0 22px; white-space: nowrap; }
+@media (max-width: 640px) {
+  .proxe-root .hq-row:not(.hq-row--details) { grid-template-columns: 1fr auto; }
+  .proxe-root .hq-go--label { width: auto; padding: 0 16px; font-size: 14px; }
+}
+/* Step 1: compact 10-digit field with an attention pulse until they type (3 Oct 2026). */
+.proxe-root .hq-row:not(.hq-row--details) { justify-content: center; }
+.proxe-root .hq-row:not(.hq-row--details) .hq-field--phone { flex: 0 0 auto; width: 236px; }
+.proxe-root .hq-field--phone:has(.hq-input:placeholder-shown):not(:focus-within) {
+  border-color: #fff;
+  animation: hqGlow 2s ease-out infinite;
+}
+.proxe-root .hq-field--phone:has(.hq-input:placeholder-shown) .hq-cc { position: relative; }
+.proxe-root .hq-field--phone:has(.hq-input:placeholder-shown):not(:focus-within) .hq-input::placeholder { animation: hqBlink 2s ease-in-out infinite; }
+@keyframes hqGlow {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55), 0 0 18px rgba(167, 139, 250, 0.55); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0), 0 0 26px rgba(167, 139, 250, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 0 18px rgba(167, 139, 250, 0.55); }
+}
+@keyframes hqBlink { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (max-width: 640px) {
+  .proxe-root .hq-row:not(.hq-row--details) { display: flex; }
+  .proxe-root .hq-row:not(.hq-row--details) .hq-field--phone { width: auto; flex: 0 1 220px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proxe-root .hq-field--phone, .proxe-root .hq-input::placeholder { animation: none !important; }
+}
