@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, MapPin, CreditCard, Volume2, VolumeX,
+  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, HeartPulse, Volume2, VolumeX,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
 import { useDeployModal } from "../../contexts/DeployModalContext";
 import { track } from "../../lib/analytics";
 import "./pitch.css";
+import DURATIONS from "../../../public/pitch/audio/durations.json";
 
 // ── PROXe's own palette, from goproxe.com ──
 const C = {
@@ -32,6 +33,9 @@ const LANGS: [string, string][] = [
 ];
 // Every clip is evened to one pace; played a touch faster so it moves.
 const RATE = 1.15;
+// Seconds per clip, per language (scripts/pitch-narration writes it).
+const clock = (t: number) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+const clipSec = (lang: string, key: string): number => (DURATIONS as Record<string, Record<string, number>>)[lang]?.[key] ?? 0;
 const clipUrl = (lang: string, key: string) => (lang === "en" ? `/pitch/audio/${key}.mp3` : `/pitch/audio/${lang}/${key}.mp3`);
 const LINKEDIN = "https://www.linkedin.com/in/thanzeelashruf/";
 
@@ -49,6 +53,9 @@ const inr = (n: number) =>
 
 // ── small parts ──
 
+/** A delay that stretches with the card's voice clip (--pitch-s, set per card). */
+const D = (ms: number) => `calc(${ms}ms * var(--pitch-s, 1))`;
+
 function Brand({ d, color, size = 18 }: { d: string; color: string; size?: number }) {
   return <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden><path d={d} fill={color} /></svg>;
 }
@@ -58,7 +65,7 @@ function Stagger({ on, children, className = "", step = 90 }: { on: boolean; chi
   return (
     <div className={className}>
       {children.map((c, i) => (
-        <div key={i} className={on ? "pitch-in" : "opacity-0"} style={{ animationDelay: `${120 + i * step}ms` }}>{c}</div>
+        <div key={i} className={on ? "pitch-in" : "opacity-0"} style={{ animationDelay: D(120 + i * step) }}>{c}</div>
       ))}
     </div>
   );
@@ -84,7 +91,7 @@ function Rings({ on, rows }: { on: boolean; rows: { value: number; target: numbe
             <circle cx="80" cy="80" r={R[i]} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="10" />
             <circle cx="80" cy="80" r={R[i]} fill="none" stroke={r.color} strokeWidth="10" strokeLinecap="round"
               strokeDasharray={len} strokeDashoffset={on ? len * (1 - frac) : len}
-              style={{ transition: `stroke-dashoffset 1400ms ${EASE} ${300 + i * 150}ms` }} />
+              style={{ transition: `stroke-dashoffset 1400ms ${EASE} ${D(300 + i * 150)}` }} />
           </g>
         );
       })}
@@ -105,7 +112,7 @@ function GapFix({ on }: { on: boolean }) {
       {rows.map((r, i) => {
         const Icon = r.icon;
         return (
-          <div key={r.gap} className={`flex flex-1 flex-col overflow-hidden rounded-2xl bg-white/[0.04] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: `${120 + i * 140}ms` }}>
+          <div key={r.gap} className={`flex flex-1 flex-col overflow-hidden rounded-2xl bg-white/[0.04] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(120 + i * 140) }}>
             <div className="flex flex-1 items-center gap-3 px-3.5 py-2.5">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" style={{ background: "rgba(248,113,113,0.14)", color: C.leak }}><Icon size={15} /></span>
               <span className="min-w-0">
@@ -117,7 +124,7 @@ function GapFix({ on }: { on: boolean }) {
             <div className="flex items-center gap-2 px-3.5 py-1.5 text-[11.5px] font-medium"
               style={{
                 background: "rgba(34,197,94,0.16)", color: "#86efac",
-                transform: on ? "none" : "translateX(-100%)", transition: `transform 600ms ${EASE} ${900 + i * 260}ms`,
+                transform: on ? "none" : "translateX(-100%)", transition: `transform 600ms ${EASE} ${D(900 + i * 260)}`,
               }}>
               <Check size={12} /> PROXe {r.fix}
             </div>
@@ -140,10 +147,10 @@ const SLIDES: Slide[] = [
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className={`h-9 w-auto self-start ${on ? "pitch-in" : ""}`} />
         <div className="flex flex-1 flex-col justify-center">
-          <h1 className={`text-balance text-[34px] font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-[40px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>
+          <h1 className={`text-balance text-[34px] font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-[40px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(150) }}>
             Your AI for the customer side of your business.
           </h1>
-          <p className={`mt-4 text-[16px] text-white/75 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "300ms" }}>
+          <p className={`mt-4 text-[16px] text-white/75 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(300) }}>
             Never miss a lead ever again.
           </p>
         </div>
@@ -255,13 +262,14 @@ const SLIDES: Slide[] = [
     key: "how", label: "How it works",
     render: ({ on }) => (
       <>
-        <Headline>The loop is simple.</Headline>
+        <Headline>Capture. Nurture. Close. Repeat.</Headline>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <Stagger on={on} className="space-y-2" step={140}>
             {[
-              [CalendarCheck, "Book the demo", "every lead offered a slot, reminded, no-shows chased"],
-              [MapPin, "Or book the visit", "a walk-in for the store, clinic, showroom or site"],
-              [CreditCard, "Or make the sale", "the product sold right in the chat, with a payment link"],
+              [Radar, "Capture", "every message, call and DM, logged and scored"],
+              [MessagesSquare, "Nurture", "replies and follow-ups in the business's own tone"],
+              [CalendarCheck, "Close", "books the demo or the visit, or makes the sale in the chat"],
+              [Repeat2, "Repeat", "learns from every conversation"],
             ].map(([I, t, d]) => {
               const Icon = I as typeof Phone;
               return (
@@ -307,7 +315,7 @@ const SLIDES: Slide[] = [
     render: ({ on }) => (
       <>
         <Headline>It lives where your team lives.</Headline>
-        <Body>Customers on WhatsApp and Instagram. Your team on Slack, Telegram and email.</Body>
+        <Body>PROXe responds to you and your team on Slack, Telegram and email.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <Stagger on={on} className="space-y-2.5" step={420}>
             {[
@@ -354,10 +362,85 @@ const SLIDES: Slide[] = [
               <span className="text-[24px] font-bold tabular-nums">92</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full rounded-full" style={{ background: C.violet, width: on ? "92%" : "0%", transition: `width 1200ms ${EASE} 700ms` }} />
+              <div className="h-full rounded-full" style={{ background: C.violet, width: on ? "92%" : "0%", transition: `width 1200ms ${EASE} ${D(700)}` }} />
             </div>
           </div>
           <p className="mt-1.5 text-[10.5px] text-white/30">Illustration</p>
+        </div>
+      </>
+    ),
+  },
+  {
+    key: "built", label: "Built in the last month",
+    render: ({ on }) => (
+      <>
+        <Headline>What we built in the last 30 days.</Headline>
+        <Body>Live with brands today, not on a roadmap.</Body>
+        <div className="flex flex-1 flex-col justify-center pt-4">
+          <Stagger on={on} className="space-y-2" step={700}>
+            {[
+              [Phone, "Kannada voice agents", "for HSH: they call and speak with patients in Kannada"],
+              [HeartPulse, "Complete patient care", "for HSH: enquiry, appointment, reminders, follow-up"],
+              [MessagesSquare, "Closures on chat", "deals closed end to end, inside the conversation"],
+            ].map(([I, t, d]) => {
+              const Icon = I as typeof Phone;
+              return (
+                <div key={t as string} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3.5 py-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white" style={{ background: C.deep }}><Icon size={17} /></span>
+                  <span>
+                    <span className="block text-[14.5px] font-medium text-white">{t as string}</span>
+                    <span className="text-[12px] text-white/55">{d as string}</span>
+                  </span>
+                </div>
+              );
+            })}
+          </Stagger>
+        </div>
+      </>
+    ),
+  },
+  {
+    key: "proof", label: "What changed",
+    render: ({ on }) => (
+      <>
+        <Headline>Zero to 8+.</Headline>
+        <Body>A brand with zero conversions this time last year. This year, 8+ closures at ₹2.5 lakh each, from managing leads better.</Body>
+        <div className="flex flex-1 items-end justify-center gap-6 pb-2 pt-6">
+          {[["Last year", 0, "0"], ["This year", 1, "8+"]].map(([label, full, v], i) => (
+            <div key={label as string} className="flex w-28 flex-col items-center gap-2">
+              <span className={`text-[40px] font-bold leading-none tabular-nums ${on ? "pitch-in" : "opacity-0"}`}
+                style={{ color: i ? C.good : "rgba(255,255,255,0.45)", animationDelay: D(500 + i * 1400) }}>{v as string}</span>
+              <div className="flex h-[150px] w-full items-end overflow-hidden rounded-2xl bg-white/[0.05]">
+                <div className="w-full rounded-2xl" style={{
+                  background: i ? `linear-gradient(180deg, ${C.good}, #15803d)` : "rgba(255,255,255,0.18)",
+                  height: on ? (full ? "100%" : "4%") : "0%",
+                  transition: `height 900ms ${EASE} ${D(500 + i * 1400)}`,
+                }} />
+              </div>
+              <span className="text-[12px] text-white/55">{label as string}</span>
+            </div>
+          ))}
+        </div>
+        <p className={`mt-3 text-center text-[13px] font-medium text-[#86efac] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(2600) }}>₹2.5 lakh per closure · closed on chat</p>
+      </>
+    ),
+  },
+  {
+    key: "insight", label: "What we learned",
+    render: ({ on }) => (
+      <>
+        <Headline>It's not the follow-ups. It's the right lead, at the right time.</Headline>
+        <div className="flex flex-1 flex-col justify-center gap-3 pt-4">
+          <Stagger on={on} className="flex gap-2" step={300}>
+            {["Follow-up 1", "Follow-up 2", "Follow-up 3"].map((f) => (
+              <span key={f} className="whitespace-nowrap rounded-xl bg-white/[0.05] px-2.5 py-2 text-[12px] text-white/40 line-through">{f}</span>
+            ))}
+          </Stagger>
+          <div className={`rounded-2xl px-4 py-3.5 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(2000), background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.35)" }}>
+            <span className="block text-[11.5px] font-medium text-[#86efac]">Hot lead · score 92 · ready now</span>
+            <span className="mt-0.5 block text-[14px] text-white">Your team calls the one who is ready, while they are ready.</span>
+          </div>
+          <p className={`text-[12.5px] text-white/50 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(3400) }}>We track this on every conversation, so it keeps getting sharper.</p>
         </div>
       </>
     ),
@@ -369,7 +452,7 @@ const SLIDES: Slide[] = [
         <Headline>One plan. One price.</Headline>
         <Body>1,000 managed leads a month. Under ₹10 a lead, and every lead managed, forever.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
-          <p className={`text-[56px] font-bold leading-none tracking-[-0.04em] text-white tabular-nums ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>₹9,999</p>
+          <p className={`text-[56px] font-bold leading-none tracking-[-0.04em] text-white tabular-nums ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(150) }}>₹9,999</p>
           <p className="mt-1 text-[14px] text-white/50">per month · 1,000 managed leads · every channel included</p>
           <Stagger on={on} className="mt-5 grid grid-cols-4 gap-2" step={60}>
             {[
@@ -467,7 +550,7 @@ const SLIDES: Slide[] = [
                             return `linear-gradient(90deg, ${C.money} ${filled * 100}%, rgba(255,255,255,0.09) ${filled * 100}%)`;
                           })(),
                           opacity: on ? 1 : 0, transform: on ? "none" : "scale(0.6)",
-                          transition: `opacity 400ms ${EASE} ${200 + i * 30}ms, transform 400ms ${EASE} ${200 + i * 30}ms`,
+                          transition: `opacity 400ms ${EASE} ${D(200 + i * 30)}, transform 400ms ${EASE} ${D(200 + i * 30)}`,
                         }} />
                     ))}
                   </div>
@@ -568,7 +651,7 @@ function Joint({ on, delay, leak = false }: { on: boolean; delay: number; leak?:
       <div className="h-full w-full origin-top"
         style={{
           background: leak ? `repeating-linear-gradient(${C.leak} 0 3px, transparent 3px 6px)` : "rgba(255,255,255,0.25)",
-          transform: on ? "scaleY(1)" : "scaleY(0)", transition: `transform 400ms ${EASE} ${delay}ms`,
+          transform: on ? "scaleY(1)" : "scaleY(0)", transition: `transform 400ms ${EASE} ${D(delay)}`,
         }} />
     </div>
   );
@@ -578,9 +661,11 @@ function Joint({ on, delay, leak = false }: { on: boolean; delay: number; leak?:
 /** Ten tools in a pile; after a beat they fold into one PROXe. */
 function ToolPile({ on }: { on: boolean }) {
   const [merged, setMerged] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!on) { setMerged(false); return; }
-    const t = setTimeout(() => setMerged(true), 2600);
+    const stretch = Number(getComputedStyle(root.current ?? document.body).getPropertyValue("--pitch-s")) || 1;
+    const t = setTimeout(() => setMerged(true), 2600 * stretch);
     return () => clearTimeout(t);
   }, [on]);
   // [name, x%, y%, rotation]
@@ -590,7 +675,7 @@ function ToolPile({ on }: { on: boolean }) {
     ["Google Sheets", 46, 72, 7], ["Calendly", 6, 86, 3],
   ];
   return (
-    <div className="relative h-[230px] w-full">
+    <div ref={root} className="relative h-[230px] w-full">
       {tools.map(([name, x, y, r], i) => (
         <span key={name}
           className="absolute whitespace-nowrap rounded-xl border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[12.5px] text-white/75"
@@ -598,7 +683,7 @@ function ToolPile({ on }: { on: boolean }) {
             left: merged ? "50%" : `${x}%`, top: merged ? "50%" : `${y}%`,
             transform: merged ? "translate(-50%,-50%) scale(0.4)" : `rotate(${r}deg)`,
             opacity: on ? (merged ? 0 : 1) : 0,
-            transition: `left 700ms ${EASE} ${i * 30}ms, top 700ms ${EASE} ${i * 30}ms, transform 700ms ${EASE} ${i * 30}ms, opacity ${merged ? 500 : 400}ms ease ${merged ? 250 + i * 30 : 80 + i * 90}ms`,
+            transition: `left 700ms ${EASE} ${D(i * 30)}, top 700ms ${EASE} ${D(i * 30)}, transform 700ms ${EASE} ${D(i * 30)}, opacity ${merged ? 500 : 400}ms ease ${merged ? `${250 + i * 30}ms` : D(80 + i * 90)}`,
           }}>
           {name}
         </span>
@@ -642,7 +727,7 @@ function Hub({ on }: { on: boolean }) {
             style={{
               left: 116 + Math.cos(a) * R, top: 116 + Math.sin(a) * R,
               transform: `translate(-50%, -50%) scale(${on ? 1 : 0.4})`, opacity: on ? 1 : 0,
-              transition: `transform 600ms ${EASE} ${200 + i * 110}ms, opacity 400ms ${EASE} ${200 + i * 110}ms`,
+              transition: `transform 600ms ${EASE} ${D(200 + i * 110)}, opacity 400ms ${EASE} ${D(200 + i * 110)}`,
             }}>
             <span className="flex h-11 w-11 items-center justify-center rounded-full" style={{ background: "#211a3f", boxShadow: `0 0 0 1px ${C.line}` }}>{it.node}</span>
             <span className="text-[10px] text-white/55">{it.label}</span>
@@ -816,17 +901,54 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, started]);
 
+  // Reading time when the voice is off: ~240 words a minute, plus a beat for the picture.
+  const readMs = useCallback((i: number) => {
+    const words = (cardRefs.current[i]?.textContent ?? "").trim().split(/\s+/).length;
+    return Math.min(20, Math.max(6, Math.round(words / 4) + 3)) * 1000;
+  }, []);
+
+  // Each card's animations stretch to its clip, so lines land as they are said.
+  const baseMs = useRef<number[]>([]);
+  const [totalSec, setTotalSec] = useState(0);
+  useEffect(() => {
+    const voiced = narrate && unlocked;
+    cardRefs.current.forEach((el, i) => {
+      if (!el) { baseMs.current[i] = undefined as unknown as number; return; }
+      if (baseMs.current[i] === undefined) {
+        el.style.removeProperty("--pitch-s");
+        let max = 0;
+        el.querySelectorAll<HTMLElement>("*").forEach((n) => {
+          const cs = getComputedStyle(n);
+          for (const v of `${cs.animationDelay},${cs.transitionDelay}`.split(",")) max = Math.max(max, (parseFloat(v) || 0) * 1000);
+        });
+        baseMs.current[i] = max;
+      }
+      const clip = voiced ? (clipSec(lang, slides[i]!.key) * 1000) / RATE : 0;
+      const base = baseMs.current[i]!;
+      const stretch = clip && base > 300 ? Math.min(3.5, Math.max(1, (clip * 0.65) / base)) : 1;
+      el.style.setProperty("--pitch-s", stretch.toFixed(2));
+    });
+    let total = 0;
+    slides.forEach((s, i) => {
+      const clip = voiced ? clipSec(lang, s.key) / RATE : 0;
+      total += clip ? clip + 0.35 : readMs(i) / 1000;
+    });
+    setTotalSec(Math.round(total));
+    // index too: only cards near the current one are mounted, so each newly
+    // mounted card is measured (once) and stretched as it comes into range.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [narrate, unlocked, lang, n, index]);
+
   // ── reading timer: each card gets the time it takes to read, then moves on ──
   const paused = !started || !inView || held || userPaused || orb || dragging || index === n - 1;
   // The loop reads `paused` through a ref so pausing keeps the elapsed time.
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
   useEffect(() => {
-    const el = cardRefs.current[index];
-    const words = (el?.textContent ?? "").trim().split(/\s+/).length;
-    // ~240 words a minute, plus a beat for the picture.
-    const read = Math.min(20, Math.max(6, Math.round(words / 4) + 3)) * 1000;
-    clipMs.current = 0;
+    const read = readMs(index);
+    // With the voice on, the card lasts exactly as long as its clip, then moves on.
+    const sec = narrate && unlocked ? clipSec(lang, slides[index]!.key) : 0;
+    clipMs.current = sec ? (sec * 1000) / RATE : 0;
     let elapsed = 0;
     let last = performance.now();
     let raf = 0;
@@ -836,7 +958,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
       const stop = pausedRef.current;
       if (!stop && !document.hidden) elapsed += dt;
       // While the voice is on, the card waits for its clip to finish.
-      const total = Math.max(read, clipMs.current ? clipMs.current + 1200 : 0);
+      const total = clipMs.current ? clipMs.current + 350 : read;
       const left = Math.max(0, total - elapsed);
       if (barRef.current) barRef.current.style.transform = `scaleX(${Math.min(1, elapsed / total)})`;
       if (secRef.current) secRef.current.textContent = stop ? "Paused" : `${Math.ceil(left / 1000)}s`;
@@ -847,7 +969,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     return () => cancelAnimationFrame(raf);
     // Restart only when the card changes; pausing must not reset the clock.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, live === null]);
+  }, [index, live === null, narrate, unlocked, lang]);
 
   // Play the current card's clip; stop the last one.
   useEffect(() => {
@@ -856,7 +978,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     if (!narrate || !unlocked) return;
     a.src = clipUrl(lang, slides[index]!.key);
     a.playbackRate = RATE;
-    a.onloadedmetadata = () => { if (isFinite(a.duration)) clipMs.current = (a.duration * 1000) / RATE; a.playbackRate = RATE; };
+    a.onloadedmetadata = () => { a.playbackRate = RATE; };
     a.play().catch(() => {});
     // Warm the next clip so it starts without a gap.
     const next = slides[index + 1];
@@ -1094,7 +1216,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
           <ArrowLeft size={18} />
         </button>
         {/* Phones get a counter; the row of dots needs the room Deploy now uses. */}
-        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}</span>
+        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}{totalSec ? ` · ${clock(totalSec)}` : ""}</span>
         <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
           {slides.map((s, i) => (
             <button key={s.key} onClick={() => go(i)} aria-label={`Go to ${s.label}`}
@@ -1103,6 +1225,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
                 style={{ background: i === index ? C.violet : i < index ? "rgba(167,139,250,0.45)" : "rgba(255,255,255,0.16)" }} />
             </button>
           ))}
+          {totalSec > 0 && <span className="ml-2 font-mono text-[11px] text-white/40" title="Total length">{clock(totalSec)}</span>}
         </div>
         {index === n - 1 ? (
           <button onClick={() => { track("button_click", { label: "deploy_proxe", location: `${variant}_end` }); startDeploy(`pitch_${variant}_end`); }}
