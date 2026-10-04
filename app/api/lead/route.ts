@@ -142,7 +142,14 @@ export async function POST(request: Request) {
   // contact details, which is stable for the same person and still dedupes a
   // retry — but a browser that fired an unmatched pixel id would double-count,
   // which is why the client passes one.
-  if (captured) {
+  // Meta optimises toward whatever we report as Lead. A bare hero number (the
+  // 10th-digit save, no name) and a self-declared job seeker are not leads:
+  // reporting them taught the ads to find people who type a number and leave
+  // (Z, 5 Oct 2026). They are still saved; they just are not conversions.
+  const notAConversion =
+    body.businessType === 'job_seeker' ||
+    (body.source === 'hero_phone' && !String(body.name || '').trim())
+  if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
     void sendCapiEvent({

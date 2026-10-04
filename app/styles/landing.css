@@ -12420,3 +12420,11 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq-row--details .hq-field--type { grid-column: 1 / 3; grid-row: 2; }
   .proxe-root .hq-row--details .hq-go { grid-column: 3; grid-row: 2; }
 }
+/* Name-only step (5 Oct 2026): same compact row as the phone step. */
+.proxe-root .hq-row--name { justify-content: center; }
+.proxe-root .hq-row--name .hq-field--name { flex: 0 1 300px; }
+.proxe-root .hq-row--name .hq-go { width: 52px; padding: 0; }
+@media (max-width: 640px) {
+  .proxe-root .hq-row--name { display: flex; }
+  .proxe-root .hq-row--name .hq-field--name { flex: 1 1 auto; }
+}
