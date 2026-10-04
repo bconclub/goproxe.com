@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import './pitch.css'
+import { PRODUCT_CARDS } from './cards'
 
 // Loaded after the page: the homepage stays fast, the deck arrives when needed.
 const PitchDeck = dynamic(() => import('./PitchDeck').then((m) => m.PitchDeck), {
@@ -11,9 +12,8 @@ const PitchDeck = dynamic(() => import('./PitchDeck').then((m) => m.PitchDeck), 
   loading: () => <div className="h-[660px] rounded-[32px] bg-[#0d0a1c] sm:h-[720px]" />,
 })
 
-// The product story from the pitch, without the round and the plan.
 // Opens on the welcome card; the rest plays full screen once they ask for it.
-const CARDS = ['cover', 'problem', 'gaps', 'who', 'solution', 'how', 'dashboard', 'memory', 'price', 'founder']
+const CARDS = PRODUCT_CARDS
 
 /** Homepage walkthrough: what goes wrong, and what PROXe does about it, in a few swipes. */
 export default function PitchWalkthrough() {

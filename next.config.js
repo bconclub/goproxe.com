@@ -69,6 +69,13 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // Said aloud it is easy to spell wrong; the page is /what-is-proxe.
+      { source: '/what-is-proxie', destination: '/what-is-proxe', permanent: true },
+      { source: '/what-is-proxy', destination: '/what-is-proxe', permanent: true },
+      // The real onboarding (website in, everything pulled) lives on the PROXe app.
+      // Not permanent: browsers cache 308s for good, and this target may move.
+      { source: '/onboarding', destination: 'https://proxe.goproxe.com/onboarding', permanent: false },
+      { source: '/dashboard', destination: '/dashboard-tour', permanent: false },
       {
         source: '/industries/ecommerce',
         destination: '/industries/d2c',

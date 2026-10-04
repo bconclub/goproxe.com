@@ -59,9 +59,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   })
 
-  // Onboarding: how-it-works videos, then start onboarding
+  // What is PROXe: the product story, narrated, ending on the onboarding videos
   entries.push({
-    url: 'https://goproxe.com/onboarding',
+    url: 'https://goproxe.com/what-is-proxe',
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  })
+
+  // Dashboard tour: short videos of the real dashboard
+  entries.push({
+    url: 'https://goproxe.com/dashboard-tour',
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: 0.7,

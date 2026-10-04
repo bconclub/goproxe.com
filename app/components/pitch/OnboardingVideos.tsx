@@ -6,7 +6,7 @@ import './pitch.css'
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`
 
-/** Homepage section: the onboarding videos, each opening on /onboarding. */
+/** Homepage section: the dashboard tour videos, each opening on /dashboard-tour. */
 export default function OnboardingVideos() {
   const eps = [...WATCH_EPISODES].sort((a, b) => a.order - b.order)
   return (
@@ -20,15 +20,15 @@ export default function OnboardingVideos() {
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-white/65">Short videos of PROXe being set up and answering. {eps.length} videos, a few minutes each.</p>
           </div>
-          <a href="/onboarding" onClick={() => track('cta_click', { location: 'home_onboarding_all' })}
+          <a href="/dashboard-tour" onClick={() => track('cta_click', { location: 'home_tour_all' })}
             className="rounded-full px-5 py-3 text-[14px] font-semibold text-white" style={{ background: '#7c3aed' }}>
             Watch them all
           </a>
         </div>
         <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
           {eps.map((e, i) => (
-            <a key={e.slug} href={`/onboarding#${e.slug}`}
-              onClick={() => track('cta_click', { location: `home_onboarding_${e.slug}` })}
+            <a key={e.slug} href={`/dashboard-tour#${e.slug}`}
+              onClick={() => track('cta_click', { location: `home_tour_${e.slug}` })}
               className="group w-[78%] shrink-0 snap-start overflow-hidden rounded-[22px] sm:w-auto"
               style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)), #16112b', boxShadow: '0 0 0 1px rgba(167,139,250,0.2)' }}>
               <div className="relative aspect-video overflow-hidden">

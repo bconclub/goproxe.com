@@ -481,6 +481,25 @@ const SLIDES: Slide[] = [
     ),
   },
   {
+    key: "watch", hero: true, label: "Watch how it works",
+    render: () => (
+      <div className="flex h-full flex-col">
+        <p className="text-[13px] font-medium text-white/70">That is PROXe.</p>
+        <h2 className="mt-1 text-balance text-[32px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">Now see it working, start to finish.</h2>
+        <p className="mt-3 text-[15px] leading-relaxed text-white/75">Short videos of the real PROXe dashboard: where leads land, who to call first, every conversation, and who is coming in this week.</p>
+        <div className="flex-1" />
+        <a href="/dashboard-tour" onPointerDown={(e) => e.stopPropagation()} onClick={() => track("button_click", { label: "watch_how_it_works", location: "explainer_end" })}
+          className="flex items-center justify-between rounded-2xl bg-white px-5 py-4 text-left text-[#3b1a8a] transition-transform active:scale-[0.98]">
+          <span>
+            <span className="block text-[16px] font-semibold">Watch how it works</span>
+            <span className="text-[12px] text-[#3b1a8a]/70">The dashboard tour · a few minutes</span>
+          </span>
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7c3aed] text-white"><Play size={18} className="translate-x-[1px]" /></span>
+        </a>
+      </div>
+    ),
+  },
+  {
     key: "talk", hero: true, label: "Talk to PROXe",
     render: ({ setOrb }) => (
       <div className="flex h-full flex-col">
@@ -596,7 +615,8 @@ function Fit({ children, deps }: { children: React.ReactNode; deps: unknown[] })
  *        quiet until someone turns narration on, and shows only `only` cards.
  */
 export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart }: {
-  variant?: "page" | "embed"; only?: string[];
+  /** page: /pitch. explainer: /what-is-proxe, same full screen, own analytics label. */
+  variant?: "page" | "embed" | "explainer"; only?: string[];
   /** Embed only: narration, language and "Play the pitch" open the full-screen deck instead. */
   onExpand?: () => void;
   /** Page only: X and Escape close an overlay deck instead of going home. */

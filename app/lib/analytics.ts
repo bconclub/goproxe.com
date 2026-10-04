@@ -73,18 +73,18 @@ export type ProxeEvent =
   | 'checkout_redirect'    // actually navigating to the hosted Dodo page
   | 'checkout_cancelled'   // came back to /#pricing from Dodo without paying
   | 'plan_select'          // a pricing plan CTA was chosen — params: plan, market
-  // ── Onboarding videos (/onboarding) ─────────────────────────────
-  | 'onboarding_video_start'    // first play of a video this page view, params: video, index
-  | 'onboarding_video_progress' // crossed 25/50/75/90% of a video, params: video, percent
-  | 'onboarding_video_complete' // a video played to its end, params: video, index
-  | 'onboarding_chapter_jump'   // a chapter chip was tapped, params: video, chapter
-  | 'onboarding_autoplay_next'  // up-next started the next video, params: from, to, how: countdown|button
-  | 'onboarding_upnext_cancel'  // "Stay here" on the up-next countdown, param: video
-  | 'onboarding_fullscreen'     // entered fullscreen, param: video
-  | 'onboarding_gate_shown'     // the 1-minute login gate appeared, params: video, watched_s
-  | 'onboarding_gate_dismiss'   // "Not now" on the gate, param: video
-  | 'onboarding_gate_submit'    // name + mobile given, every video unlocked, param: video
-  | 'onboarding_cta_click'      // a CTA on the page, params: label, location
+  // ── Dashboard tour videos (/dashboard-tour) ─────────────────────────────
+  | 'tour_video_start'    // first play of a video this page view, params: video, index
+  | 'tour_video_progress' // crossed 25/50/75/90% of a video, params: video, percent
+  | 'tour_video_complete' // a video played to its end, params: video, index
+  | 'tour_chapter_jump'   // a chapter chip was tapped, params: video, chapter
+  | 'tour_autoplay_next'  // up-next started the next video, params: from, to, how: countdown|button
+  | 'tour_upnext_cancel'  // "Stay here" on the up-next countdown, param: video
+  | 'tour_fullscreen'     // entered fullscreen, param: video
+  | 'tour_gate_shown'     // the 1-minute login gate appeared, params: video, watched_s
+  | 'tour_gate_dismiss'   // "Not now" on the gate, param: video
+  | 'tour_gate_submit'    // name + mobile given, every video unlocked, param: video
+  | 'tour_cta_click'      // a CTA on the page, params: label, location
   // ── Pitch (/pitch and the homepage walkthrough) ─────────────────
   | 'pitch_view'      // the deck mounted, param: variant (page|embed)
   | 'pitch_start'     // Play the pitch tapped, param: variant
@@ -149,9 +149,9 @@ const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   cta_click: 'CTAClick',
   deploy_modal_open: 'DeployModalOpen',
   nav_click: 'NavClick',
-  onboarding_video_start: 'OnboardingVideoStart',
-  onboarding_video_complete: 'OnboardingVideoComplete',
-  onboarding_gate_shown: 'OnboardingGateShown',
+  tour_video_start: 'TourVideoStart',
+  tour_video_complete: 'TourVideoComplete',
+  tour_gate_shown: 'TourGateShown',
   channel_demo_select: 'ChannelDemoSelect',
   voice_demo_start: 'VoiceDemoStart',
   video_play_click: 'VideoPlayClick',

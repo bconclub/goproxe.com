@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from '../styles/legal.module.css'
-import o from './onboarding.module.css'
+import o from './tour.module.css'
 import { WatchPlayer } from '../components/watch/WatchPlayer'
 import type { WatchEpisode } from '../lib/watch'
 import { track, trackLead } from '../lib/analytics'
@@ -45,7 +45,7 @@ const leaveFullscreen = () => {
 // to the next video and plays it. After a minute of watching, a name and mobile
 // number (saved as a PROXe lead) unlock everything. Every CTA goes to the real
 // PROXe onboarding.
-export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
+export function DashboardTour({ episodes, onboardingUrl }: Props) {
   const [playing, setPlaying] = useState<string | null>(null) // slug told to autoplay
   const [upNext, setUpNext] = useState<{ from: string; left: number } | null>(null)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -67,7 +67,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
     setGate(slug)
     if (!gateShown.current.has(slug)) {
       gateShown.current.add(slug)
-      track('onboarding_gate_shown', { video: slug, watched_s: Math.round(watchedS) })
+      track('tour_gate_shown', { video: slug, watched_s: Math.round(watchedS) })
     }
   }, [])
 
@@ -96,7 +96,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
       // autoPlay has done its job once playback starts; left on, any re-render would replay it.
       setPlaying((p) => (p === s.id ? null : p))
       if (locked()) { s.v.pause(); openGate(s.id, secs); return }
-      if (!started.has(s.id)) { started.add(s.id); track('onboarding_video_start', { video: s.id, index: indexOf(s.id) }) }
+      if (!started.has(s.id)) { started.add(s.id); track('tour_video_start', { video: s.id, index: indexOf(s.id) }) }
     }
     const onTime = (e: Event) => {
       const s = slugOf(e); if (!s) return
@@ -114,17 +114,17 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
         const pct = (v.currentTime / v.duration) * 100
         const seen = hit.get(id) ?? new Set<number>()
         hit.set(id, seen)
-        for (const m of MILESTONES) if (pct >= m && !seen.has(m)) { seen.add(m); track('onboarding_video_progress', { video: id, percent: m }) }
+        for (const m of MILESTONES) if (pct >= m && !seen.has(m)) { seen.add(m); track('tour_video_progress', { video: id, percent: m }) }
       }
       if (!v.paused && locked()) { v.pause(); openGate(id, secs) }
     }
     const onSeeked = (e: Event) => { const s = slugOf(e); if (s) last.set(s.v, s.v.currentTime) }
-    const onEnded = (e: Event) => { const s = slugOf(e); if (s) track('onboarding_video_complete', { video: s.id, index: indexOf(s.id) }) }
+    const onEnded = (e: Event) => { const s = slugOf(e); if (s) track('tour_video_complete', { video: s.id, index: indexOf(s.id) }) }
     const onFs = () => {
       const d = document as Document & { webkitFullscreenElement?: Element }
       const el = document.fullscreenElement || d.webkitFullscreenElement
       const id = el?.closest('section')?.id
-      if (id) track('onboarding_fullscreen', { video: id })
+      if (id) track('tour_fullscreen', { video: id })
     }
 
     document.addEventListener('play', onPlay, true)
@@ -168,7 +168,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
     setUpNext({ from: slug, left })
     timer.current = setInterval(() => {
       left -= 1
-      if (left <= 0) { track('onboarding_autoplay_next', { from: slug, to: next.slug, how: 'countdown' }); play(next.slug) }
+      if (left <= 0) { track('tour_autoplay_next', { from: slug, to: next.slug, how: 'countdown' }); play(next.slug) }
       else setUpNext({ from: slug, left })
     }, 1000)
   }, [episodes, play])
@@ -178,17 +178,17 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
     setViewer(v)
     write(VIEWER_KEY, v)
     setGate(null)
-    track('onboarding_gate_submit', { video: slug })
+    track('tour_gate_submit', { video: slug })
     document.getElementById(slug)?.querySelector('video')?.play().catch(() => {})
   }
 
-  const cta = (label: string, location: string) => () => track('onboarding_cta_click', { label, location })
+  const cta = (label: string, location: string) => () => track('tour_cta_click', { label, location })
 
   return (
     <div className={o.wrap}>
       <header className={o.hero}>
-        <p className={styles.eyebrow}>Onboarding</p>
-        <h1 className={styles.title}>Get started with <span className={styles.accent}>PROXe</span></h1>
+        <p className={styles.eyebrow}>Dashboard tour</p>
+        <h1 className={styles.title}>See the <span className={styles.accent}>PROXe</span> dashboard</h1>
         <p className={styles.lede}>Short videos of the real PROXe dashboard, one step at a time. Watch them, then set PROXe up on your own leads.</p>
         <div className={o.ctas}>
           <a href={onboardingUrl} className={o.primary} onClick={cta('start_onboarding', 'hero')}>Start onboarding →</a>
@@ -197,7 +197,7 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
         {episodes.length > 1 && (
           <ol className={o.toc} aria-label="Videos on this page">
             {episodes.map((e, i) => (
-              <li key={e.slug}><a href={`#${e.slug}`} data-done={done.includes(e.slug) || undefined} data-active={active === e.slug || undefined} onClick={(ev) => { ev.preventDefault(); track('onboarding_cta_click', { label: e.slug, location: 'contents' }); play(e.slug) }}><span className={o.tocN}>{done.includes(e.slug) ? '✓' : i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
+              <li key={e.slug}><a href={`#${e.slug}`} data-done={done.includes(e.slug) || undefined} data-active={active === e.slug || undefined} onClick={(ev) => { ev.preventDefault(); track('tour_cta_click', { label: e.slug, location: 'contents' }); play(e.slug) }}><span className={o.tocN}>{done.includes(e.slug) ? '✓' : i + 1}</span><span className={o.tocName}>{e.title}</span><span className={o.tocT}>{clock(e.duration)}</span></a></li>
             ))}
           </ol>
         )}
@@ -219,12 +219,12 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
               autoPlay={playing === ep.slug}
               onWatched={() => markDone(ep.slug)}
               onEnded={() => ended(ep.slug)}
-              onChapter={(chapter) => track('onboarding_chapter_jump', { video: ep.slug, chapter })}
+              onChapter={(chapter) => track('tour_chapter_jump', { video: ep.slug, chapter })}
               overlay={gate === ep.slug && !viewer ? (
                 <GateForm
                   slug={ep.slug}
                   onUnlocked={(v) => unlocked(ep.slug, v)}
-                  onClose={() => { setGate(null); track('onboarding_gate_dismiss', { video: ep.slug }) }}
+                  onClose={() => { setGate(null); track('tour_gate_dismiss', { video: ep.slug }) }}
                 />
               ) : counting ? (
                 <div className={o.upnext} role="status" aria-live="polite">
@@ -232,8 +232,8 @@ export function OnboardingWatch({ episodes, onboardingUrl }: Props) {
                   <p className={o.upTitle}>{next.title}</p>
                   <div className={o.ring} aria-label={`Playing in ${upNext!.left} seconds`}>{upNext!.left}</div>
                   <div className={o.ctas} style={{ justifyContent: 'center', marginTop: 16 }}>
-                    <button type="button" className={o.primaryBtn} onClick={() => { track('onboarding_autoplay_next', { from: ep.slug, to: next.slug, how: 'button' }); play(next.slug) }}>Play now</button>
-                    <button type="button" className={o.secondaryBtn} onClick={() => { track('onboarding_upnext_cancel', { video: ep.slug }); stop() }}>Stay here</button>
+                    <button type="button" className={o.primaryBtn} onClick={() => { track('tour_autoplay_next', { from: ep.slug, to: next.slug, how: 'button' }); play(next.slug) }}>Play now</button>
+                    <button type="button" className={o.secondaryBtn} onClick={() => { track('tour_upnext_cancel', { video: ep.slug }); stop() }}>Stay here</button>
                   </div>
                 </div>
               ) : null}
@@ -285,8 +285,8 @@ function GateForm({ slug, onUnlocked, onClose }: { slug: string; onUnlocked: (v:
     if (name.trim().length < 2) return setError('Please enter your name.')
     if (digits.length < 10) return setError('Please enter a 10-digit mobile number.')
     setBusy(true); setError('')
-    const eventId = trackLead({ source: 'onboarding_videos' })
-    await submitLead({ type: 'lead', name: name.trim(), phone: digits, source: 'onboarding-videos', eventId })
+    const eventId = trackLead({ source: 'dashboard_tour' })
+    await submitLead({ type: 'lead', name: name.trim(), phone: digits, source: 'dashboard-tour', eventId })
     // Unlock even if saving the lead failed: a network hiccup must not lock someone out.
     onUnlocked({ name: name.trim(), phone: digits })
   }
