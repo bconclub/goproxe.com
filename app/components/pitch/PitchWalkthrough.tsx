@@ -18,6 +18,8 @@ const CARDS = PRODUCT_CARDS
 /** Homepage walkthrough: what goes wrong, and what PROXe does about it, in a few swipes. */
 export default function PitchWalkthrough() {
   const [full, setFull] = useState(false)
+  // The card they tapped; the full deck opens there and narrates from it.
+  const [at, setAt] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
   // The portal sits outside the homepage root, so carry its font over.
   const font = full && sectionRef.current ? getComputedStyle(sectionRef.current).getPropertyValue('--font-proxe-sans') : ''
@@ -43,13 +45,13 @@ export default function PitchWalkthrough() {
             Where leads get lost, and what PROXe does about it.
           </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-white/65">
-            Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap the speaker to play it, narrated, full screen.
+            Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap any card to play it, narrated, full screen.
           </p>
         </div>
-        <PitchDeck variant="embed" only={CARDS} onExpand={() => setFull(true)} />
+        <PitchDeck variant="embed" only={CARDS} onExpand={(i) => { setAt(i); setFull(true) }} />
         {full && createPortal(
           <div className="pitch-root" data-lenis-prevent style={font ? ({ '--font-proxe-sans': font } as React.CSSProperties) : undefined}>
-            <PitchDeck variant="page" only={CARDS} autoStart onClose={() => setFull(false)} />
+            <PitchDeck variant="page" only={CARDS} autoStart startAt={at} onClose={() => setFull(false)} />
           </div>,
           document.body,
         )}

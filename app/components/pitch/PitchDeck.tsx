@@ -614,22 +614,24 @@ function Fit({ children, deps }: { children: React.ReactNode; deps: unknown[] })
  * embed: a homepage section; starts moving when scrolled into view, stays
  *        quiet until someone turns narration on, and shows only `only` cards.
  */
-export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart }: {
+export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart, startAt = 0 }: {
   /** page: /pitch. explainer: /what-is-proxe, same full screen, own analytics label. */
   variant?: "page" | "embed" | "explainer"; only?: string[];
-  /** Embed only: narration, language and "Play the pitch" open the full-screen deck instead. */
-  onExpand?: () => void;
+  /** Embed only: a tap anywhere on the deck (or narration, language, "Play the pitch") opens the full-screen deck at that card. */
+  onExpand?: (at: number) => void;
   /** Page only: X and Escape close an overlay deck instead of going home. */
   onClose?: () => void;
   /** Start at once, narrated (opened by a tap, so sound is allowed). */
   autoStart?: boolean;
+  /** Card to open on, e.g. the one tapped in the homepage embed. */
+  startAt?: number;
 }) {
   const embed = variant === "embed";
   const slides = only ? SLIDES.filter((s) => only.includes(s.key)) : SLIDES;
   const { startDeploy } = useDeployModal();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(!embed);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.max(0, Math.min(slides.length - 1, startAt)));
   const [drag, setDrag] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [card, setCard] = useState({ w: 380, step: 300, narrow: false });
@@ -790,7 +792,8 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     else if (narrate && unlocked && !a.ended) a.play().catch(() => {});
   }, [userPaused, orb, narrate, unlocked]);
   useEffect(() => {
-    if (!embed) { try { if (localStorage.getItem("pitch-narrate") === "off") setNarrate(false); } catch { /* storage blocked */ } }
+    // Opened by a tap means they asked to hear it, so a stored "off" does not apply.
+    if (!embed && !autoStart) { try { if (localStorage.getItem("pitch-narrate") === "off") setNarrate(false); } catch { /* storage blocked */ } }
     try { const l = localStorage.getItem("pitch-lang"); if (l && LANGS.some(([c]) => c === l)) setLang(l); } catch { /* storage blocked */ }
     const unlock = () => setUnlocked(true);
     window.addEventListener("pointerdown", unlock, { once: true });
@@ -801,7 +804,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     if (onExpand) {
       try { localStorage.setItem("pitch-lang", l); } catch { /* storage blocked */ }
       track("button_click", { label: `pitch_lang_${l}`, location: variant });
-      onExpand();
+      onExpand(index);
       return;
     }
     setLang(l);
@@ -813,7 +816,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     track("button_click", { label: `pitch_lang_${l}`, location: variant });
   }
   function toggleNarration() {
-    if (onExpand) { track("button_click", { label: "pitch_expand", location: variant }); onExpand(); return; }
+    if (onExpand) { track("button_click", { label: "pitch_expand", location: variant }); onExpand(index); return; }
     const on = !narrate;
     setNarrate(on);
     setUnlocked(true);
@@ -860,12 +863,25 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     go(index + (d > 0 ? 1 : -1));
   }
 
+  // Embed with onExpand: a tap anywhere on the deck opens it full screen, narrated,
+  // from the card that was tapped. Its own controls (sound, language, arrows) keep their jobs.
+  function onEmbedClick(e: React.MouseEvent) {
+    if (!onExpand || moved.current) return;
+    const t = e.target as HTMLElement;
+    if (t.closest("button, a, input, select, [role=option], [role=listbox]")) return;
+    const art = t.closest("[data-card]") as HTMLElement | null;
+    const at = art ? Number(art.dataset.card) : index;
+    track("button_click", { label: "pitch_expand_tap", location: variant });
+    onExpand(at);
+  }
+
   const pos = index - (card.step > 0 ? drag / card.step : 0);
   const maxRot = card.narrow ? 28 : 38;
 
   return (
     <div className="pitch-root" style={embed ? undefined : { display: "contents" }}>
     <div ref={rootRef}
+      onClick={onExpand ? onEmbedClick : undefined}
       className={embed ? "relative flex h-[660px] w-full select-none flex-col overflow-hidden rounded-[32px] text-white sm:h-[720px]" : "fixed inset-0 z-[60] flex select-none flex-col overflow-hidden text-white"}
       style={{ background: C.page }}>
       <style>{`
@@ -944,7 +960,8 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
               ref={(el) => { cardRefs.current[i] = el; }}
               aria-hidden={!current}
               aria-label={`${i + 1} of ${n}: ${s.label}`}
-              onClick={() => { if (!current && !moved.current) go(i); }}
+              data-card={i}
+              onClick={() => { if (!onExpand && !current && !moved.current) go(i); }}
               onPointerDown={() => { if (current) setHeld(true); }}
               className="absolute left-1/2 top-1/2 flex flex-col overflow-hidden rounded-[28px] px-6 pb-6 pt-5 sm:px-7 sm:pb-7"
               style={{
@@ -960,7 +977,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
                 WebkitBackdropFilter: !s.hero && a < 0.5 ? "blur(22px) saturate(150%)" : undefined,
                 boxShadow: `inset 0 1px 0 rgba(255,255,255,${s.hero ? 0.25 : 0.14}), 0 0 0 1px ${s.hero ? "rgba(255,255,255,0.18)" : C.line}, 0 30px 70px -24px rgba(0,0,0,0.75)`,
                 willChange: "transform",
-                cursor: current ? "grab" : "pointer",
+                cursor: onExpand || !current ? "pointer" : "grab",
               }}
             >
               {s.hero && <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />}
@@ -983,7 +1000,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
                 </div>
               )}
 
-              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
+              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
 
               {/* Side cards sink back, but stay visible as more to come */}
               <div className="pointer-events-none absolute inset-0 rounded-[28px]"
