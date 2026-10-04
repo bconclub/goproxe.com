@@ -20,7 +20,7 @@ export default function PitchWalkthrough() {
         <div className="mb-8 max-w-[640px]">
           <p className="text-[13px] font-medium text-[#a78bfa]">The walkthrough</p>
           <h2 id="walkthrough-title" className="mt-2 text-balance text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[42px]">
-            Brands pay for leads. Then nobody responds.
+            Where leads get lost, and what PROXe does about it.
           </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-white/65">
             Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap the speaker to hear it.
