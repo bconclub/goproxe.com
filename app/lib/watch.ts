@@ -370,6 +370,55 @@ export const WATCH_EPISODES: WatchEpisode[] = [
     ]
   },
   {
+    "slug": "watch-is-it-working",
+    "clip": "17-metrics",
+    "order": 8,
+    "title": "Is it working?",
+    "dek": "Reply rate, response time, recovered leads and bookings. The numbers that show PROXe is working.",
+    "intro": [
+      "Every day, PROXe shows whether follow-up is working: how fast you reply, how many leads you recover, how many book.",
+      "This video walks through the Overview numbers and the Metrics page."
+    ],
+    "shortVersion": [
+      "Reply rate and response time, live on the Overview.",
+      "Recovered leads: people who went quiet and came back after a follow-up.",
+      "The Metrics page shows where leads come from and how they move through."
+    ],
+    "promise": "Proof, every single day.",
+    "duration": 27,
+    "video": "/watch/watch-is-it-working.mp4",
+    "poster": "/watch/watch-is-it-working.jpg",
+    "captions": "/watch/watch-is-it-working.vtt",
+    "chapters": [
+      {
+        "t": 3.1,
+        "title": "Is it working?",
+        "text": "Here's the real question. Is this actually working?"
+      },
+      {
+        "t": 7.2,
+        "title": "The numbers that matter",
+        "text": "Reply rate. Response time. Leads you'd have lost, recovered. Bookings."
+      },
+      {
+        "t": 14,
+        "title": "Go deeper",
+        "text": "Go deeper and see where leads come from and how they move."
+      },
+      {
+        "t": 21.8,
+        "title": "Proof, every day",
+        "text": "Proof, every single day."
+      }
+    ],
+    "transcript": [
+      "Here's the real question. Is this actually working?",
+      "Reply rate. Response time. Leads you'd have lost, recovered. Bookings.",
+      "Go deeper and see where leads come from and how they move.",
+      "Proof, every single day."
+    ]
+  },
+  {
     "slug": "watch-what-to-do-today",
     "clip": "10-tasks",
     "order": 9,
