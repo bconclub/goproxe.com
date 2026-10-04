@@ -700,6 +700,61 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "And every template, with its status, in one place.",
       "A healthy number. Every message delivered."
     ]
+  },
+  {
+    "slug": "watch-your-team",
+    "clip": "13-humans",
+    "order": 14,
+    "title": "Who is on my team?",
+    "dek": "Everyone on your team in one list: who is live, what they can do, and the name customers see.",
+    "intro": [
+      "Humans is where your team lives in PROXe.",
+      "This short shows who is on the team, who is online, and what each person can do."
+    ],
+    "shortVersion": [
+      "See who is live and who was in today.",
+      "Admins invite and manage; viewers log calls and notes.",
+      "Set the name each teammate shows to customers."
+    ],
+    "promise": "Your whole team, on one screen.",
+    "duration": 24,
+    "video": "/watch/watch-your-team.mp4",
+    "poster": "/watch/watch-your-team.jpg",
+    "captions": "/watch/watch-your-team.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Who is working?",
+        "text": "Who's on your team, and who's working right now?"
+      },
+      {
+        "t": 6.1,
+        "title": "Everyone, one list",
+        "text": "Everyone in one list. Who's live, and who was in today."
+      },
+      {
+        "t": 10.8,
+        "title": "Admins and viewers",
+        "text": "Admins run the show. Viewers log calls and notes."
+      },
+      {
+        "t": 15.1,
+        "title": "The name customers see",
+        "text": "Even the name your customers see is yours to set."
+      },
+      {
+        "t": 19,
+        "title": "One screen",
+        "text": "Your whole team, on one screen."
+      }
+    ],
+    "transcript": [
+      "Who's on your team, and who's working right now?",
+      "Everyone in one list. Who's live, and who was in today.",
+      "Admins run the show. Viewers log calls and notes.",
+      "Even the name your customers see is yours to set.",
+      "Your whole team, on one screen."
+    ]
   }
 ]
 
