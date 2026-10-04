@@ -28,7 +28,10 @@ export default function PitchWalkthrough() {
     const prev = [html.style.overflow, document.body.style.overflow]
     html.style.overflow = 'hidden'
     document.body.style.overflow = 'hidden'
-    return () => { html.style.overflow = prev[0]; document.body.style.overflow = prev[1] }
+    // No web agent over the full-screen pitch, same as /pitch itself.
+    const widget = document.getElementById('wc-chat-widget')
+    if (widget) widget.style.visibility = 'hidden'
+    return () => { html.style.overflow = prev[0]; document.body.style.overflow = prev[1]; if (widget) widget.style.visibility = '' }
   }, [full])
 
   return (

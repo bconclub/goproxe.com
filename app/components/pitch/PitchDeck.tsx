@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, Volume2, VolumeX,
+  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, MapPin, CreditCard, Volume2, VolumeX,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
@@ -243,14 +243,13 @@ const SLIDES: Slide[] = [
     key: "how", label: "How it works",
     render: ({ on }) => (
       <>
-        <Headline>Capture. Nurture. Close. Repeat.</Headline>
+        <Headline>The loop is simple.</Headline>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <Stagger on={on} className="space-y-2" step={140}>
             {[
-              [Radar, "Capture", "every message, call and DM, logged and scored"],
-              [MessagesSquare, "Nurture", "replies and follow-ups in the business's own tone"],
-              [CalendarCheck, "Close", "books the demo or visit, reminds, recovers no-shows"],
-              [Repeat2, "Repeat", "learns from every conversation"],
+              [CalendarCheck, "Book the demo", "every lead offered a slot, reminded, no-shows chased"],
+              [MapPin, "Or book the visit", "a walk-in for the store, clinic, showroom or site"],
+              [CreditCard, "Or make the sale", "the product sold right in the chat, with a payment link"],
             ].map(([I, t, d]) => {
               const Icon = I as typeof Phone;
               return (
@@ -330,7 +329,7 @@ const SLIDES: Slide[] = [
     render: ({ on }) => (
       <>
         <Headline>One plan. One price.</Headline>
-        <Body>1,000 managed leads a month. That is under ₹10 a lead, when businesses already spend ₹10 to ₹100 on every lead.</Body>
+        <Body>1,000 managed leads a month. Under ₹10 a lead, and every lead managed, forever.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <p className={`text-[56px] font-bold leading-none tracking-[-0.04em] text-white tabular-nums ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>₹9,999</p>
           <p className="mt-1 text-[14px] text-white/50">per month · 1,000 managed leads · every channel included</p>
@@ -788,6 +787,8 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     setLang(l);
     setNarrate(true);
     setUnlocked(true);
+    // Picking a language is the start button too.
+    setStarted(true);
     try { localStorage.setItem("pitch-lang", l); } catch { /* storage blocked */ }
     track("button_click", { label: `pitch_lang_${l}`, location: variant });
   }
@@ -875,18 +876,12 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
           <a href="/" aria-label="PROXe home"><img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className="h-5 w-auto opacity-90" /></a>
         )}
         <div className="flex items-center gap-2">
-          <LangMenu lang={lang} onPick={pickLang} />
+          <LangMenu lang={lang} onPick={pickLang} highlight={!started} />
           <button onClick={toggleNarration} aria-pressed={narrate} aria-label={narrate ? "Turn narration off" : "Turn narration on"}
             className="flex h-10 items-center gap-2 rounded-full bg-white/[0.07] px-3.5 text-[12.5px] text-white/80 backdrop-blur-md transition-colors hover:text-white">
             {narrate ? <Volume2 size={16} /> : <VolumeX size={16} />}
             <span className="hidden sm:inline">{narrate ? (unlocked ? "Narration on" : "Tap to listen") : embed ? "Listen" : "Narration off"}</span>
           </button>
-          {!embed && (
-            <button onClick={() => { track("button_click", { label: "deploy_proxe", location: "pitch_header" }); startDeploy("pitch_header"); }}
-              className="flex h-10 items-center rounded-full px-3.5 text-[12.5px] font-semibold text-white sm:px-4" style={{ background: C.deep }}>
-              <span className="sm:hidden">Deploy</span><span className="hidden sm:inline">Deploy PROXe</span>
-            </button>
-          )}
           {!embed && (
             onClose ? (
               <button type="button" onClick={onClose} aria-label="Close the pitch" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.07] text-white/70 backdrop-blur-md transition-colors hover:text-white">
@@ -978,13 +973,14 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
         })}
       </div>
 
-      {/* The site chat bubble sits bottom-right; the right gutter keeps Next clear of it. */}
-      <footer className={`relative z-10 flex items-center justify-between gap-4 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:px-8 ${embed ? "" : "pr-[92px] sm:pr-[112px]"}`}>
+      <footer className="relative z-10 flex items-center justify-between gap-3 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:gap-4 sm:px-8">
         <button onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous card"
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-white transition-opacity disabled:opacity-25">
           <ArrowLeft size={18} />
         </button>
-        <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
+        {/* Phones get a counter; the row of dots needs the room Deploy now uses. */}
+        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}</span>
+        <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
           {slides.map((s, i) => (
             <button key={s.key} onClick={() => go(i)} aria-label={`Go to ${s.label}`}
               className="flex h-11 items-center transition-[width] duration-300" style={{ width: i === index ? 26 : 9 }}>
@@ -999,11 +995,19 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
             Deploy PROXe <ArrowRight size={16} />
           </button>
         ) : (
+          <div className="flex shrink-0 items-center gap-2">
+          {!embed && (
+            <button onClick={() => { track("button_click", { label: "deploy_proxe", location: "pitch_footer" }); startDeploy("pitch_footer"); }}
+              className="flex h-11 items-center rounded-full border border-white/15 bg-white/[0.07] px-4 text-[13px] font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/[0.12]">
+              Deploy PROXe
+            </button>
+          )}
           <button onClick={() => go(index + 1)} aria-label="Next card"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white"
             style={{ background: C.deep }}>
             <ArrowRight size={18} />
           </button>
+          </div>
         )}
       </footer>
     </div>
@@ -1011,42 +1015,50 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
   );
 }
 
-// Narration language: a styled menu, not the browser's native dropdown.
-function LangMenu({ lang, onPick }: { lang: string; onPick: (code: string) => void }) {
+// Narration language: a small branded popover under the pill, two columns,
+// every language in view at once. Highlighted until the pitch starts, since
+// picking a language is how it starts.
+function LangMenu({ lang, onPick, highlight }: { lang: string; onPick: (code: string) => void; highlight?: boolean }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
     const away = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
-    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } };
     window.addEventListener("pointerdown", away);
-    window.addEventListener("keydown", esc);
-    return () => { window.removeEventListener("pointerdown", away); window.removeEventListener("keydown", esc); };
+    window.addEventListener("keydown", esc, true);
+    return () => { window.removeEventListener("pointerdown", away); window.removeEventListener("keydown", esc, true); };
   }, [open]);
   const name = LANGS.find(([c]) => c === lang)?.[1] ?? "English";
   return (
     <div ref={box} className="relative">
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open} aria-label={`Narration language: ${name}`}
-        className="flex h-10 items-center gap-1.5 rounded-full bg-white/[0.07] px-3 text-[12.5px] text-white/85 backdrop-blur-md transition-colors hover:text-white">
-        <Globe size={14} className="shrink-0 text-white/60" />
-        <span className="hidden sm:inline">{name}</span>
-        <span className="uppercase sm:hidden">{lang.slice(0, 2)}</span>
+        className={`flex h-10 items-center gap-1.5 rounded-full px-3 text-[12.5px] backdrop-blur-md transition-colors ${highlight && !open ? "pitch-pulse text-white" : "text-white/85 hover:text-white"}`}
+        style={{ background: highlight ? C.deep : "rgba(255,255,255,0.07)" }}>
+        <Globe size={14} className={`shrink-0 ${highlight ? "text-white" : "text-white/60"}`} />
+        <span className="hidden sm:inline">{highlight ? "Pick a language" : name}</span>
+        <span className="sm:hidden">{highlight ? "Language" : lang.slice(0, 2).toUpperCase()}</span>
       </button>
       {open && (
-        <ul role="listbox" aria-label="Narration language"
-          className="absolute right-0 top-12 z-30 w-44 overflow-hidden rounded-2xl p-1.5 shadow-2xl backdrop-blur-xl"
-          style={{ background: "rgba(22,17,43,0.96)", border: `1px solid ${C.line}` }}>
-          {LANGS.map(([c, n]) => (
-            <li key={c} role="option" aria-selected={c === lang}>
-              <button type="button" onClick={() => { onPick(c); setOpen(false); }}
-                className="flex h-10 w-full items-center justify-between rounded-xl px-3 text-left text-[13.5px] text-white/85 transition-colors hover:bg-white/[0.07] hover:text-white"
-                style={c === lang ? { background: "rgba(124,58,237,0.28)", color: "#fff" } : undefined}>
+        // Pointer centred on the pill, whichever way the popover is shifted.
+        <span aria-hidden className="absolute left-1/2 top-[42px] z-40 h-3 w-3 -translate-x-1/2 rotate-45" style={{ background: "rgba(22,17,43,0.97)", borderLeft: `1px solid ${C.line}`, borderTop: `1px solid ${C.line}` }} />
+      )}
+      {open && (
+        <div role="listbox" aria-label="Narration language"
+          className="pitch-in absolute -right-[96px] top-[48px] z-30 w-[244px] rounded-2xl p-2 shadow-2xl backdrop-blur-xl sm:right-0"
+          style={{ background: "rgba(22,17,43,0.97)", border: `1px solid ${C.line}`, animationDuration: "220ms" }}>
+          <p className="px-2 pb-1.5 pt-0.5 text-[11px] text-white/45">Narration plays in</p>
+          <div className="grid grid-cols-2 gap-1">
+            {LANGS.map(([c, n]) => (
+              <button key={c} type="button" role="option" aria-selected={c === lang} onClick={() => { onPick(c); setOpen(false); }}
+                className="flex h-9 items-center justify-between rounded-xl px-2.5 text-left text-[13px] text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
+                style={c === lang ? { background: "rgba(124,58,237,0.32)", color: "#fff" } : undefined}>
                 {n}
-                {c === lang && <Check size={14} style={{ color: C.violet }} />}
+                {c === lang && <Check size={13} style={{ color: C.violet }} />}
               </button>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
