@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   title: 'What is PROXe?',
   description: 'PROXe is your AI for the customer side of your business: it answers every lead in seconds, on every channel, follows up, and books the demo, the visit or the sale.',
   alternates: { canonical: 'https://goproxe.com/what-is-proxe' },
-  openGraph: { images: ['https://goproxe.com/opengraph-image.jpg'] },
+  // The share card comes from ./opengraph-image.tsx and ./twitter-image.tsx.
+  openGraph: { title: 'What is PROXe?', description: 'Never miss a lead, ever again. PROXe answers every lead in seconds, on every channel, follows up, and books the demo, the visit or the sale.', url: 'https://goproxe.com/what-is-proxe', type: 'website', siteName: 'PROXe' },
+  twitter: { card: 'summary_large_image', title: 'What is PROXe?', description: 'Never miss a lead, ever again. PROXe answers every lead in seconds, on every channel, follows up, and books the demo, the visit or the sale.' },
 }
 
 // goproxe.com/what-is-proxe: the pitch without the traction and the round,

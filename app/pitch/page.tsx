@@ -8,7 +8,9 @@ export const metadata: Metadata = {
   title: 'PROXe · The pitch',
   description: 'PROXe is your AI for the customer side of your business. The problem, the product, the plan to the first 100 customers, and our pre-seed round.',
   alternates: { canonical: 'https://goproxe.com/pitch' },
-  openGraph: { images: ['https://goproxe.com/opengraph-image.jpg'] },
+  // The share card comes from ./opengraph-image.tsx and ./twitter-image.tsx.
+  openGraph: { title: 'The PROXe pitch', description: 'PROXe is your AI for the customer side of your business. The problem, the product, the traction and the pre-seed round, narrated in 10 languages.', url: 'https://goproxe.com/pitch', type: 'website', siteName: 'PROXe' },
+  twitter: { card: 'summary_large_image', title: 'The PROXe pitch', description: 'PROXe is your AI for the customer side of your business. The problem, the product, the traction and the pre-seed round, narrated in 10 languages.' },
 }
 
 // goproxe.com/pitch: the investor pitch, one card at a time, narrated.
