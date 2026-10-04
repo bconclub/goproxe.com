@@ -480,14 +480,14 @@ const SLIDES: Slide[] = [
     ),
   },
   {
-    key: "price", label: "Business model",
+    key: "price", label: "The subscription",
     render: ({ on }) => (
       <>
-        <Headline>One plan. One price.</Headline>
-        <Body>1,000 managed leads a month. Under ₹10 a lead, and every lead managed, forever.</Body>
+        <Headline>One subscription. Everything included.</Headline>
+        <Body>1,000 managed leads a month, every channel, the dashboard, and alerts for your team on Slack, Telegram and email.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <p className={`text-[56px] font-bold leading-none tracking-[-0.04em] text-white tabular-nums ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(150) }}>₹9,999</p>
-          <p className="mt-1 text-[14px] text-white/50">per month · 1,000 managed leads · every channel included</p>
+          <p className="mt-1 text-[14px] text-white/50">per month · 1,000 managed leads · under ₹10 a lead</p>
           <Stagger on={on} className="mt-5 grid grid-cols-4 gap-2" step={60}>
             {[
               [<Brand key="w" d={B.whatsapp} color="#25D366" size={20} />, "WhatsApp"],
