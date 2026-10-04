@@ -10,6 +10,8 @@ import HowItWorks from './HowItWorks';
 import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
+import PitchWalkthrough from './pitch/PitchWalkthrough';
+import OnboardingVideos from './pitch/OnboardingVideos';
 import PricingSection from './PricingSection';
 import HeroPhoneCapture from './shared/HeroPhoneCapture';
 import WhatsAppHeaderButton from './shared/WhatsAppHeaderButton';
@@ -1538,12 +1540,19 @@ export default function ProxeLanding() {
       {/* ===== 2. See PROXe in Action ===== */}
       <ChannelDemo />
 
+      {/* ===== Walkthrough: the problem and PROXe's answer, card by card
+             (the /pitch deck without the round) ===== */}
+      <PitchWalkthrough />
+
       {/* ===== 4. Industries — "it works for MY business" lands right after
              seeing it work, while the demo is still fresh ===== */}
       <IndustriesSection />
 
       {/* ===== How It Works: after relevance, before pricing ===== */}
       <HowItWorks />
+
+      {/* ===== Onboarding videos: the real dashboard being set up ===== */}
+      <OnboardingVideos />
 
       {/* ===== 5. Pricing — ask for the sale once relevance is established ===== */}
       <PricingSection />

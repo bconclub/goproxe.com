@@ -2,14 +2,15 @@
   "name": "goproxe",
   "version": "0.3.11",
   "private": true,
-  "description": "PROXe \u2014 The AI Lead Conversion System (goproxe.com)",
+  "description": "PROXe — The AI Lead Conversion System (goproxe.com)",
   "scripts": {
     "dev": "next dev -p 3002",
     "check:copy": "node scripts/check-copy-consistency.cjs",
     "prebuild": "node scripts/check-copy-consistency.cjs",
     "build": "next build",
     "start": "next start -p 3002",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pitch:css": "tailwindcss -c tailwind.pitch.config.js -i app/components/pitch/pitch.src.css -o app/components/pitch/pitch.css --minify"
   },
   "dependencies": {
     "@elevenlabs/client": "^1.17.0",
@@ -18,6 +19,7 @@
     "dodopayments": "^2.43.0",
     "lenis": "^1.3.23",
     "lottie-react": "^2.4.1",
+    "lucide-react": "^0.511.0",
     "motion": "^12.23.24",
     "next": "^15.0.0",
     "ogl": "^1.0.11",
@@ -33,6 +35,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
     "playwright": "^1.60.0",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }
 }

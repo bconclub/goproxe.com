@@ -22,6 +22,9 @@ import { isQuiet, nextOpenLabel, nextOpenTime } from '../../lib/quietHours'
 
 const API_KEY = process.env.ELEVENLABS_API_KEY
 const AGENT_ID = process.env.ELEVENLABS_CALLBACK_AGENT_ID || 'agent_6201kzbayp7zenc8d3v86sa4zwra'
+// Calls asked for from /pitch go to the PROXe Pitch agent: it treats the person
+// as an investor who just read the pitch ("any questions? your name?"), not a lead.
+const PITCH_AGENT_ID = process.env.ELEVENLABS_PITCH_AGENT_ID || 'agent_2201m434mm0zfgrsqexd5510g8ak'
 const PHONE_NUMBER_ID = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_3701m0wakhjte0zr5fyk25yjpe01'
 
 /** Calling voice. Identifier, not a secret; env overrides without a deploy. */
@@ -215,7 +218,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        agent_id: AGENT_ID,
+        agent_id: body.source === 'pitch' ? PITCH_AGENT_ID : AGENT_ID,
         agent_phone_number_id: PHONE_NUMBER_ID,
         to_number: phone,
         // Name + business from the hero's details step. Dynamic variables are

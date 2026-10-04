@@ -85,6 +85,12 @@ export type ProxeEvent =
   | 'onboarding_gate_dismiss'   // "Not now" on the gate, param: video
   | 'onboarding_gate_submit'    // name + mobile given, every video unlocked, param: video
   | 'onboarding_cta_click'      // a CTA on the page, params: label, location
+  // ── Pitch (/pitch and the homepage walkthrough) ─────────────────
+  | 'pitch_view'      // the deck mounted, param: variant (page|embed)
+  | 'pitch_start'     // Play the pitch tapped, param: variant
+  | 'pitch_card'      // a card came to the front, params: variant, card, index
+  | 'pitch_complete'  // reached the last card, params: variant, seconds
+  | 'pitch_exit'      // left the page, params: variant, seconds, max_card, cards
 
 /** GA4 `items[]` is an array of objects, so params cannot be flat-only. */
 type EventItem = Record<string, string | number>
