@@ -11,13 +11,14 @@ import { detectMarket } from '../../lib/market';
  * they should get a call. Otherwise, they'll not get a call. If we have a phone
  * number and the call is not happening, we send a utility WhatsApp."
  *
- *   1. Mobile + "Call me now". The number is saved the moment it is valid, so
- *      anyone who leaves is still a lead (core then sends one WhatsApp).
- *   2. Name slides in; the call goes out with it (Z, 5 Oct 2026: name, brand
- *      and type upfront was too much). The agent asks the business on the call.
+ *   1. One button: "Talk to PROXe", with a phone (Z, 5 Oct 2026: the CTA is
+ *      the main thing; tapping it opens name and number together, inline).
+ *   2. Name + mobile side by side, one call button. The number is saved the
+ *      moment it is valid, so anyone who leaves is still a lead (core then
+ *      sends one WhatsApp). The agent asks the business on the call.
  *   3. Ringing.
  */
-type Step = 'phone' | 'details' | 'calling' | 'ringing';
+type Step = 'cta' | 'form' | 'calling' | 'ringing';
 
 const RING_HINT_MS = 25000;
 
@@ -29,6 +30,10 @@ function indianMobile(raw: string): string | null {
   return /^[6-9]\d{9}$/.test(d) ? d : null;
 }
 
+const PhoneIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+);
+
 const ArrowIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
 );
@@ -36,7 +41,7 @@ const ArrowIcon = () => (
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
-  const [step, setStep] = useState<Step>('phone');
+  const [step, setStep] = useState<Step>('cta');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');
@@ -80,30 +85,29 @@ export default function HeroPhoneCapture() {
     if (n) saveNumber(n);
   };
 
-  const submitPhone = (e: React.FormEvent) => {
+  const open = () => {
+    markStart();
+    track('cta_click', { location: 'hero_talk' });
+    setStep('form');
+    window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 60);
+  };
+
+  const submitDetails = async (e: React.FormEvent) => {
     e.preventDefault();
     const number = validPhone(phone.trim());
+    const cleanName = name.trim().replace(/\s+/g, ' ');
+    if (!cleanName) {
+      setError('Add your name so PROXe knows who it is calling.');
+      track('form_error', { form: 'hero_phone', field: 'name', reason: 'missing' });
+      nameRef.current?.focus();
+      return;
+    }
     if (!number) {
       setError(market === 'inr' ? 'Enter a 10-digit mobile number.' : 'That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: market === 'inr' ? 'invalid_in_mobile' : 'length' });
       return;
     }
     saveNumber(number);
-    setError('');
-    setStep('details');
-    window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 60);
-  };
-
-  const submitDetails = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const number = savedRef.current?.phone || validPhone(phone.trim());
-    const cleanName = name.trim().replace(/\s+/g, ' ');
-    if (!number) { setStep('phone'); return; }
-    if (!cleanName) {
-      setError('Add your name so PROXe knows who it is calling.');
-      track('form_error', { form: 'hero_phone', field: 'name', reason: 'missing' });
-      return;
-    }
     setError('');
     setStep('calling');
     track('callback_submit', { market });
@@ -137,7 +141,7 @@ export default function HeroPhoneCapture() {
             ? 'Enter a 10-digit mobile number.'
             : 'Could not place the call right now. Your number is saved and PROXe will reach you on WhatsApp.'
       );
-      setStep('details');
+      setStep('form');
       return;
     }
     track('callback_dialed', { market });
@@ -162,41 +166,36 @@ export default function HeroPhoneCapture() {
     );
   }
 
-  if (step === 'details' || step === 'calling') {
-    const calling = step === 'calling';
-    const shown = (savedRef.current?.phone || phone).replace(/\D/g, '').slice(-10);
+  if (step === 'cta') {
     return (
       <div className="hq">
-        <form className="hq-row hq-row--name" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Your name">
-          <label className={'hq-field hq-field--name' + (calling ? ' hq-field--calling' : '')}>
-            <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
-              onChange={(e) => { setName(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={60} aria-label="Your name" />
-          </label>
-          <button type="submit" className="hq-go" disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
-            {calling ? <span className="hq-spin" aria-hidden="true" /> : <ArrowIcon />}
-          </button>
-        </form>
-        {error
-          ? <p className="hq-error" role="alert">{error}</p>
-          : <p className="hq-hint">{calling ? 'Connecting. Your phone rings in a few seconds.' : <>PROXe AI calls {market === 'inr' ? '+91 ' : ''}{shown} in 5 seconds. <button type="button" className="hq-change" onClick={() => { setStep('phone'); setError(''); }}>Change</button></>}</p>}
+        <button type="button" className="hq-cta" onClick={open}>
+          <span className="hq-cta-icon"><PhoneIcon /></span>
+          Talk to PROXe
+        </button>
       </div>
     );
   }
 
+  const calling = step === 'calling';
   return (
     <div className="hq">
-      <form className="hq-row" onSubmit={submitPhone} autoComplete="off" noValidate aria-label="Get a call from PROXe">
-        <label className="hq-field hq-field--phone">
+      <form className="hq-row hq-row--both" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Get a call from PROXe">
+        <label className={'hq-field hq-field--name' + (calling ? ' hq-field--calling' : '')}>
+          <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
+            onChange={(e) => { setName(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={60} aria-label="Your name" />
+        </label>
+        <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
           <input id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"
             placeholder={market === 'inr' ? 'Mobile number' : 'Phone number'} value={phone} onChange={onPhone}
-            aria-label="Your mobile number" aria-invalid={!!error} />
+            readOnly={calling} aria-label="Your mobile number" aria-invalid={!!error} />
         </label>
-        <button type="submit" className="hq-go hq-go--label" aria-label="Call me now">Call me now</button>
+        <button type="submit" className="hq-go" disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
+          {calling ? <span className="hq-spin" aria-hidden="true" /> : <PhoneIcon size={20} />}
+        </button>
       </form>
-      {error
-        ? <p className="hq-error" role="alert">{error}</p>
-        : <p className="hq-hint">PROXe AI calls you in 5 seconds. Free, no signup. We follow up on WhatsApp.</p>}
+      {error && <p className="hq-error" role="alert">{error}</p>}
     </div>
   );
 }

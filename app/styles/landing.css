@@ -12428,3 +12428,32 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq-row--name { display: flex; }
   .proxe-root .hq-row--name .hq-field--name { flex: 1 1 auto; }
 }
+
+/* Hero CTA (5 Oct 2026): one "Talk to PROXe" button; tapping it opens name and
+   number together, inline, with one call button. No subtext under it. */
+.proxe-root .hq-cta {
+  display: inline-flex; align-items: center; gap: 12px; height: 58px; margin: 0 auto; padding: 0 28px 0 10px;
+  border: 0; border-radius: 999px; cursor: pointer; background: #fff; color: #140a33;
+  font-family: var(--proxe-font-sans); font-size: 17px; font-weight: 700;
+  box-shadow: 0 10px 34px rgba(10, 5, 40, 0.4); transition: transform .15s ease;
+  animation: hqGlow 2s ease-out infinite;
+}
+.proxe-root .hq:has(.hq-cta) { display: flex; justify-content: center; }
+.proxe-root .hq-cta:hover { transform: translateY(-1px); }
+.proxe-root .hq-cta:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.proxe-root .hq-cta-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #22c55e; color: #fff; }
+.proxe-root .hq:has(.hq-row--both) { max-width: 620px; }
+/* .hq .hq-row.hq-row--both outranks the older step-1 rules (fixed 236px phone field etc.). */
+.proxe-root .hq .hq-row.hq-row--both { display: flex; justify-content: stretch; animation: hqIn .35s cubic-bezier(.22,1,.36,1) both; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field--name { flex: 1 1 0; width: auto; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field--phone { flex: 1.25 1 0; width: auto; animation: none; }
+.proxe-root .hq .hq-row.hq-row--both .hq-go { flex: 0 0 52px; width: 52px; padding: 0; background: #22c55e; color: #fff; }
+@media (max-width: 640px) {
+  .proxe-root .hq .hq-row.hq-row--both { display: grid; grid-template-columns: 1fr 52px; }
+  .proxe-root .hq .hq-row.hq-row--both .hq-field--name { grid-column: 1 / 3; grid-row: 1; }
+  .proxe-root .hq .hq-row.hq-row--both .hq-field--phone { grid-column: 1; grid-row: 2; }
+  .proxe-root .hq .hq-row.hq-row--both .hq-go { grid-column: 2; grid-row: 2; }
+  /* Heading 10% larger on phones: the inline critical CSS sets 9.2vw. */
+  .proxe-root .proxe-hero-title { font-size: 10.1vw; }
+}
+@media (prefers-reduced-motion: reduce) { .proxe-root .hq-cta { animation: none; } }
