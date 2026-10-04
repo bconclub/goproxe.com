@@ -570,6 +570,68 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "PROXe tells you the moment a lead turns hot, books, or asks for a person.",
       "You hear about it the moment it matters."
     ]
+  },
+  {
+    "slug": "watch-where-proxe-answers",
+    "clip": "19-agents",
+    "order": 12,
+    "title": "Where does PROXe answer?",
+    "dek": "Your website, WhatsApp, Instagram and calls. One PROXe answers on all of them.",
+    "intro": [
+      "Customers reach you in different places. PROXe answers in all of them, with the same knowledge and the same voice.",
+      "This video walks through the Agents page, one channel at a time."
+    ],
+    "shortVersion": [
+      "A chat on your website that replies in seconds.",
+      "WhatsApp on your own number.",
+      "Instagram DMs and comments.",
+      "A voice agent that picks up every call."
+    ],
+    "promise": "One PROXe. Every channel.",
+    "duration": 30,
+    "video": "/watch/watch-where-proxe-answers.mp4",
+    "poster": "/watch/watch-where-proxe-answers.jpg",
+    "captions": "/watch/watch-where-proxe-answers.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Everywhere they reach you",
+        "text": "Where does PROXe answer your customers? Everywhere they reach you."
+      },
+      {
+        "t": 7.7,
+        "title": "Your website",
+        "text": "On your website, a chat that replies in seconds."
+      },
+      {
+        "t": 11.9,
+        "title": "WhatsApp",
+        "text": "On WhatsApp, on your own number."
+      },
+      {
+        "t": 15.1,
+        "title": "Instagram",
+        "text": "On Instagram, every DM and comment."
+      },
+      {
+        "t": 20.2,
+        "title": "Calls",
+        "text": "And on calls, with a voice that picks up every time."
+      },
+      {
+        "t": 25.1,
+        "title": "One PROXe",
+        "text": "One PROXe. Every channel."
+      }
+    ],
+    "transcript": [
+      "Where does PROXe answer your customers? Everywhere they reach you.",
+      "On your website, a chat that replies in seconds.",
+      "On WhatsApp, on your own number.",
+      "On Instagram, every DM and comment.",
+      "And on calls, with a voice that picks up every time.",
+      "One PROXe. Every channel."
+    ]
   }
 ]
 
