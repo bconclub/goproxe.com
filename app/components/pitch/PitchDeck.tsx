@@ -1070,7 +1070,18 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     const dy = e.clientY - s.y;
     if (!s.locked && Math.abs(dx) + Math.abs(dy) > 6) {
       s.locked = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
-      if (s.locked === "x") { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); setDragging(true); moved.current = true; }
+      if (s.locked === "x") {
+        // Homepage deck: a swipe is a request to watch it. Open full screen,
+        // narrated, at the card they were swiping to.
+        if (onExpand) {
+          start.current = null;
+          moved.current = true;
+          track("button_click", { label: "pitch_expand_swipe", location: variant });
+          onExpand(dx < 0 ? Math.min(n - 1, index + 1) : Math.max(0, index - 1));
+          return;
+        }
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); setDragging(true); moved.current = true;
+      }
     }
     if (s.locked === "x") {
       const edge = (index === 0 && dx > 0) || (index === n - 1 && dx < 0);
@@ -1090,6 +1101,13 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     go(index + move);
   }
   function onWheel(e: React.WheelEvent) {
+    // Homepage deck: vertical scroll belongs to the page; a sideways swipe opens it full screen.
+    if (onExpand) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 12) return;
+      track("button_click", { label: "pitch_expand_swipe", location: variant });
+      onExpand(e.deltaX > 0 ? Math.min(n - 1, index + 1) : Math.max(0, index - 1));
+      return;
+    }
     const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     const now = performance.now();
     if (Math.abs(d) < 12 || now - wheelLock.current < 420) return;
@@ -1245,7 +1263,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
       </div>
 
       <footer className="relative z-10 flex items-center justify-between gap-3 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:gap-4 sm:px-8">
-        <button onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous card"
+        <button onClick={() => (onExpand ? onExpand(Math.max(0, index - 1)) : go(index - 1))} disabled={index === 0} aria-label="Previous card"
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-white transition-opacity disabled:opacity-25">
           <ArrowLeft size={18} />
         </button>
@@ -1253,7 +1271,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
         <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}{totalSec ? ` · ${clock(totalSec)}` : ""}</span>
         <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
           {slides.map((s, i) => (
-            <button key={s.key} onClick={() => go(i)} aria-label={`Go to ${s.label}`}
+            <button key={s.key} onClick={() => (onExpand ? onExpand(i) : go(i))} aria-label={`Go to ${s.label}`}
               className="flex h-11 items-center transition-[width] duration-300" style={{ width: i === index ? 26 : 9 }}>
               <span className="block h-1.5 w-full rounded-full transition-colors duration-300"
                 style={{ background: i === index ? C.violet : i < index ? "rgba(167,139,250,0.45)" : "rgba(255,255,255,0.16)" }} />
@@ -1274,7 +1292,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
               Deploy PROXe
             </button>
           )}
-          <button onClick={() => go(index + 1)} aria-label="Next card"
+          <button onClick={() => (onExpand ? onExpand(Math.min(n - 1, index + 1)) : go(index + 1))} aria-label="Next card"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white"
             style={{ background: C.deep }}>
             <ArrowRight size={18} />
