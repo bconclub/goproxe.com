@@ -7,17 +7,17 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
 /**
- * Hero call capture: one field, one button, the phone rings.
+ * Hero call capture. Z, 5 Oct 2026: "If they enter their name and details,
+ * they should get a call. Otherwise, they'll not get a call. If we have a phone
+ * number and the call is not happening, we send a utility WhatsApp."
  *
- * Z, 3 Oct 2026 (heavy ads starting): "PROXe AI calls in 5 seconds... really
- * intuitive rather than boxes coming in... take the details and get out."
- * The 15 Sep version asked for name and business in a second card before it
- * saved anything, so anyone who left at that card was lost with no lead and no
- * call. Now the number is the whole ask: the lead is saved and the call is
- * placed the moment it is submitted, both in parallel. The agent asks their
- * name on the call (it does that whenever first_name is "there").
+ *   1. Mobile + "Call me now". The number is saved the moment it is valid, so
+ *      anyone who leaves is still a lead (core then sends one WhatsApp).
+ *   2. Name + brand slide in. Both are needed to place the call, so the agent
+ *      greets them properly and every called lead arrives with details.
+ *   3. Ringing.
  */
-type Status = 'idle' | 'calling' | 'ringing';
+type Step = 'phone' | 'details' | 'calling' | 'ringing';
 
 const RING_HINT_MS = 25000;
 
@@ -29,19 +29,21 @@ function indianMobile(raw: string): string | null {
   return /^[6-9]\d{9}$/.test(d) ? d : null;
 }
 
+const ArrowIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+);
+
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
-  const [status, setStatus] = useState<Status>('idle');
+  const [step, setStep] = useState<Step>('phone');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');
-  const [step, setStep] = useState<1 | 2>(1);
   const startedRef = useRef(false);
   const savedRef = useRef<{ phone: string; eventId: string } | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const busyRef = useRef(false);
 
   useEffect(() => { setMarket(detectMarket() === 'usd' ? 'usd' : 'inr'); }, []);
 
@@ -59,7 +61,7 @@ export default function HeroPhoneCapture() {
     return d.length >= 8 && d.length <= 15 ? raw.trim() : null;
   };
 
-  /** Save the number the moment it is valid, so a visitor who leaves before tapping is still a lead. */
+  /** Save the number the moment it is valid, so a visitor who leaves is still a lead. */
   const saveNumber = (number: string) => {
     if (savedRef.current?.phone === number) return;
     const eventId = trackLead({ source: 'hero_phone' });
@@ -67,79 +69,46 @@ export default function HeroPhoneCapture() {
     void submitLead({ type: 'lead', phone: number, source: 'hero_phone', eventId });
   };
 
-  // While it rings: name + brand are optional, saved onto the same lead.
-  const [detailsSaved, setDetailsSaved] = useState(false);
-  const saveDetails = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanName = name.trim().replace(/\s+/g, ' ');
-    const cleanBusiness = business.trim().replace(/\s+/g, ' ');
-    const number = savedRef.current?.phone;
-    if (!number || (!cleanName && !cleanBusiness)) { setDetailsSaved(true); return; }
-    if (cleanName) storeUserProfile({ ...(getStoredUser('proxe') ?? {}), name: cleanName }, 'proxe');
-    void submitLead({
-      type: 'lead',
-      phone: number,
-      ...(cleanName ? { name: cleanName } : {}),
-      ...(cleanBusiness ? { brandName: cleanBusiness } : {}),
-      source: 'hero_phone',
-      eventId: savedRef.current!.eventId,
-    });
-    setDetailsSaved(true);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     markStart();
-    const v = e.target.value;
-    setPhone(v);
+    setPhone(e.target.value);
     if (error) setError('');
-    const n = market === 'inr' ? indianMobile(v) : null;
+    const n = market === 'inr' ? indianMobile(e.target.value) : null;
     if (n) saveNumber(n);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submitPhone = (e: React.FormEvent) => {
     e.preventDefault();
-    if (busyRef.current) return;
-    const raw = phone.trim();
-    if (!raw) {
-      (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>('#hero-phone')?.focus();
-      return;
-    }
-    const number = validPhone(raw);
+    const number = validPhone(phone.trim());
     if (!number) {
       setError(market === 'inr' ? 'Enter a 10-digit mobile number.' : 'That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: market === 'inr' ? 'invalid_in_mobile' : 'length' });
       return;
     }
-    // "Call me now" dials immediately (Z, 4 Oct 2026: a lead who typed a
-    // number and left at the name step was never called). Name and brand are
-    // asked while it rings, and the agent asks on the call if they skip.
-    busyRef.current = true;
+    saveNumber(number);
     setError('');
-    setStatus('calling');
-    track('callback_submit', { market });
+    setStep('details');
+    window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 60);
+  };
+
+  const submitDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const number = savedRef.current?.phone || validPhone(phone.trim());
     const cleanName = name.trim().replace(/\s+/g, ' ');
     const cleanBusiness = business.trim().replace(/\s+/g, ' ');
-    storeUserProfile({
-      ...(getStoredUser('proxe') ?? {}),
-      phone: number,
-      promptedPhone: true,
-      ...(cleanName ? { name: cleanName } : {}),
-    }, 'proxe');
-
-    // The number was saved when it became valid; this fills in name and business on the
-    // same lead (upsert by phone) while the call is placed in parallel.
-    const fresh = savedRef.current?.phone !== number;
-    if (fresh) savedRef.current = { phone: number, eventId: trackLead({ source: 'hero_phone' }) };
-    if (fresh || cleanName || cleanBusiness) {
-      void submitLead({
-        type: 'lead',
-        phone: number,
-        ...(cleanName ? { name: cleanName } : {}),
-        ...(cleanBusiness ? { brandName: cleanBusiness } : {}),
-        source: 'hero_phone',
-        eventId: savedRef.current!.eventId,
-      });
+    if (!number) { setStep('phone'); return; }
+    if (!cleanName || !cleanBusiness) {
+      setError('Add your name and brand so PROXe knows who it is calling.');
+      track('form_error', { form: 'hero_phone', field: !cleanName ? 'name' : 'brand', reason: 'missing' });
+      return;
     }
+    setError('');
+    setStep('calling');
+    track('callback_submit', { market });
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName }, 'proxe');
+    if (!savedRef.current) savedRef.current = { phone: number, eventId: trackLead({ source: 'hero_phone' }) };
+    // Fills name and brand on the same lead (upsert by phone) while the call is placed.
+    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: cleanBusiness, source: 'hero_phone', eventId: savedRef.current.eventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
@@ -162,83 +131,72 @@ export default function HeroPhoneCapture() {
           ? 'PROXe already called this number today. Check your phone.'
           : reason === 'bad_phone'
             ? 'Enter a 10-digit mobile number.'
-            : 'Could not place the call right now. Your number is saved and PROXe will reach you shortly.'
+            : 'Could not place the call right now. Your number is saved and PROXe will reach you on WhatsApp.'
       );
-      busyRef.current = false;
-      setStatus('idle');
+      setStep('details');
       return;
     }
     track('callback_dialed', { market });
-    setStatus('ringing');
-    setStep(2);
-    window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 80);
+    setStep('ringing');
     window.setTimeout(() => setSettled(true), RING_HINT_MS);
   };
 
-  if (status === 'ringing') {
+  if (step === 'ringing') {
     return (
-      <div className="hq">
-        <div className="hq-ringing" role="status" aria-live="polite">
+      <div className="hq-ringing" role="status" aria-live="polite">
         {!settled ? (
           <>
             <span className="hq-phone" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
             </span>
-            <span><strong>PROXe is calling you now.</strong> Pick up.</span>
+            <span><strong>PROXe is calling {name.trim().split(' ')[0] || 'you'} now.</strong> Pick up.</span>
           </>
         ) : (
           <a href="#voice" className="hq-next">While you talk, see what else PROXe does <span aria-hidden="true">→</span></a>
         )}
-        </div>
-        {!detailsSaved ? (
-          <form className="hq-row hq-row--details hq-row--while" onSubmit={saveDetails} autoComplete="off" noValidate aria-label="Your name and brand">
-            <label className="hq-field hq-field--name">
-              <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
-                onChange={(e) => setName(e.target.value)} maxLength={60} aria-label="Your name" />
-            </label>
-            <label className="hq-field hq-field--biz">
-              <input className="hq-input" placeholder="Brand name" autoComplete="organization" value={business}
-                onChange={(e) => setBusiness(e.target.value)} maxLength={80} aria-label="Your brand name" />
-            </label>
-            <button type="submit" className="hq-go" aria-label="Save name and brand">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-            </button>
-          </form>
-        ) : null}
-        <p className="hq-hint">{detailsSaved ? (name.trim() ? `Thanks, ${name.trim().split(' ')[0]}.` : '') : 'Optional: tell PROXe who it is talking to.'}</p>
       </div>
     );
   }
 
-  const calling = status === 'calling';
+  if (step === 'details' || step === 'calling') {
+    const calling = step === 'calling';
+    const shown = (savedRef.current?.phone || phone).replace(/\D/g, '').slice(-10);
+    return (
+      <div className="hq">
+        <form className="hq-row hq-row--details" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Your name and brand">
+          <label className={'hq-field hq-field--name' + (calling ? ' hq-field--calling' : '')}>
+            <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
+              onChange={(e) => { setName(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={60} aria-label="Your name" />
+          </label>
+          <label className={'hq-field hq-field--biz' + (calling ? ' hq-field--calling' : '')}>
+            <input className="hq-input" placeholder="Brand name" autoComplete="organization" value={business}
+              onChange={(e) => { setBusiness(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={80} aria-label="Your brand name" />
+          </label>
+          <button type="submit" className="hq-go" disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
+            {calling ? <span className="hq-spin" aria-hidden="true" /> : <ArrowIcon />}
+          </button>
+        </form>
+        {error
+          ? <p className="hq-error" role="alert">{error}</p>
+          : <p className="hq-hint">{calling ? 'Connecting. Your phone rings in a few seconds.' : <>PROXe AI calls {market === 'inr' ? '+91 ' : ''}{shown} in 5 seconds. <button type="button" className="hq-change" onClick={() => { setStep('phone'); setError(''); }}>Change</button></>}</p>}
+      </div>
+    );
+  }
+
   return (
     <div className="hq">
-      <form className="hq-row" onSubmit={handleSubmit} autoComplete="off" noValidate aria-label="Get a call from PROXe">
-        <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
+      <form className="hq-row" onSubmit={submitPhone} autoComplete="off" noValidate aria-label="Get a call from PROXe">
+        <label className="hq-field hq-field--phone">
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
-          <input
-            id="hero-phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            className="hq-input"
-            placeholder={market === 'inr' ? 'Mobile number' : 'Phone number'}
-            value={phone}
-            onChange={handleChange}
-            readOnly={calling}
-            aria-label="Your mobile number"
-            aria-invalid={!!error}
-          />
+          <input id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"
+            placeholder={market === 'inr' ? 'Mobile number' : 'Phone number'} value={phone} onChange={onPhone}
+            aria-label="Your mobile number" aria-invalid={!!error} />
         </label>
-        <button type="submit" className={'hq-go' + (!calling ? ' hq-go--label' : '')} disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
-          {calling
-            ? <span className="hq-spin" aria-hidden="true" />
-            : 'Call me now'}
-        </button>
+        <button type="submit" className="hq-go hq-go--label" aria-label="Call me now">Call me now</button>
       </form>
       {error
         ? <p className="hq-error" role="alert">{error}</p>
-        : <p className="hq-hint">{calling ? 'Connecting. Your phone rings in a few seconds.' : 'PROXe AI calls you in 5 seconds. Free, no signup.'}</p>}
+        : <p className="hq-hint">PROXe AI calls you in 5 seconds. Free, no signup. We follow up on WhatsApp.</p>}
     </div>
   );
 }
