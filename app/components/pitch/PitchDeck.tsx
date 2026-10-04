@@ -31,8 +31,8 @@ const LANGS: [string, string][] = [
   ["en", "English"], ["hi-IN", "हिन्दी"], ["ta-IN", "தமிழ்"], ["te-IN", "తెలుగు"], ["kn-IN", "ಕನ್ನಡ"],
   ["ml-IN", "മലയാളം"], ["mr-IN", "मराठी"], ["bn-IN", "বাংলা"], ["gu-IN", "ગુજરાતી"], ["pa-IN", "ਪੰਜਾਬੀ"],
 ];
-// Every clip is evened to one pace; played a touch faster so it moves.
-const RATE = 1.15;
+// The narrator is recorded at her own pace; played as recorded, never sped up.
+const RATE = 1;
 // Seconds per clip, per language (scripts/pitch-narration writes it).
 const clock = (t: number) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 const clipSec = (lang: string, key: string): number => (DURATIONS as Record<string, Record<string, number>>)[lang]?.[key] ?? 0;

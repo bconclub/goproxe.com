@@ -1,12 +1,14 @@
 # Pitch narration
 
-Voice: Sarvam Bulbul v3, speaker `kavya`. Pace 1.15 for English, 1.0 for the
-Indian languages (that matches the existing clips' speaking rate). Clips are
+Voice: ElevenLabs `eleven_v4`, narrator "Tia Mirza" (voice `H4quHNsmPxALMhWFVKW6`),
+every card in all 10 languages. Recorded and played at her own pace. Clips are
 loudness-normalised to -17 LUFS, 48 kHz mono, then served from
-`public/pitch/audio/<lang>/<card>.mp3` (English at the root).
+`public/pitch/audio/<lang>/<card>.mp3` (English at the root). The ElevenLabs key
+lives on the VPS (`/var/www/goproxe/.env.local`).
 
 `narration.json` is the whole deck, every card in every language, re-recorded
-on 2026-10-04 in the one voice. Edit a line there, re-record that card, then
+on 2026-10-05 in the one voice, written to be recited: short lines, a pause
+between beats, each card with its own opening. Edit a line there, re-record that card, then
 rewrite `public/pitch/audio/durations.json` (the deck reads clip lengths from
 it to time each card and stretch its animations to the voice).
 
