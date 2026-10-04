@@ -605,11 +605,12 @@ const SLIDES: Slide[] = [
     key: "founder", label: "Who is building it",
     render: ({ on }) => (
       <>
-        <div className={`flex items-center gap-4 ${on ? "pitch-in" : "opacity-0"}`}>
+        {/* Wraps instead of spilling past the card on narrow phones or large system text. */}
+        <div className={`flex w-full min-w-0 items-center gap-3.5 ${on ? "pitch-in" : "opacity-0"}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/proxe/thanzeel-ashruf.png" alt="Thanzeel Ashruf" className="h-20 w-20 shrink-0 rounded-full object-cover" style={{ boxShadow: `0 0 0 3px ${C.deep}` }} />
-          <div className="min-w-0">
-            <p className="text-[19px] font-semibold text-white">Thanzeel Ashruf</p>
+          <img src="/proxe/thanzeel-ashruf.png" alt="Thanzeel Ashruf" className="h-16 w-16 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" style={{ boxShadow: `0 0 0 3px ${C.deep}` }} />
+          <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">
+            <p className="text-[18px] font-semibold leading-tight text-white sm:text-[19px]">Thanzeel Ashruf</p>
             <p className="text-[12.5px] leading-snug text-white/55">Founder & CEO, PROXe<br />Founder, BCON Club</p>
           </div>
         </div>
@@ -786,7 +787,11 @@ function Fit({ children, deps }: { children: React.ReactNode; deps: unknown[] })
       i.style.zoom = "1";
       i.style.height = "auto";
       const need = i.scrollHeight, have = o.clientHeight;
-      const next = need > have + 1 ? Math.max(0.72, have / need) : 1;
+      // Width too: big system text or a narrow phone must not push content past the card.
+      const needW = i.scrollWidth, haveW = o.clientWidth;
+      const byH = need > have + 1 ? have / need : 1;
+      const byW = needW > haveW + 1 ? haveW / needW : 1;
+      const next = Math.max(0.72, Math.min(byH, byW));
       i.style.zoom = String(next);
       i.style.height = `${have / next}px`;
       setZ(next);
