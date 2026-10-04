@@ -632,6 +632,74 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "And on calls, with a voice that picks up every time.",
       "One PROXe. Every channel."
     ]
+  },
+  {
+    "slug": "watch-whatsapp-health",
+    "clip": "18-whatsapp-health",
+    "order": 13,
+    "title": "Is my WhatsApp healthy?",
+    "dek": "Your WhatsApp number's health, balance and cost on one screen, and what to fix if anything slips.",
+    "intro": [
+      "Meta watches how people respond to your messages. If quality drops, your number can be limited.",
+      "This video shows how PROXe keeps an eye on it for you: status, the reply balance, cost, and your templates."
+    ],
+    "shortVersion": [
+      "Sending, quality and template replies at the top.",
+      "A plain-words list of what to fix.",
+      "The balance: replies for every template sent, day by day.",
+      "Cost by kind of message, and every template's status."
+    ],
+    "promise": "A healthy number, every message delivered.",
+    "duration": 38,
+    "video": "/watch/watch-whatsapp-health.mp4",
+    "poster": "/watch/watch-whatsapp-health.jpg",
+    "captions": "/watch/watch-whatsapp-health.vtt",
+    "chapters": [
+      {
+        "t": 2.9,
+        "title": "Is it healthy?",
+        "text": "Is your WhatsApp number healthy? One look tells you."
+      },
+      {
+        "t": 8.5,
+        "title": "Status at a glance",
+        "text": "Sending, quality and replies, right at the top."
+      },
+      {
+        "t": 14.3,
+        "title": "What to fix",
+        "text": "Something needs attention? PROXe tells you exactly what to fix."
+      },
+      {
+        "t": 19.2,
+        "title": "The balance",
+        "text": "The balance shows what came back for every template you sent."
+      },
+      {
+        "t": 23.5,
+        "title": "What Meta billed",
+        "text": "What Meta billed, line by line. No surprises."
+      },
+      {
+        "t": 27.3,
+        "title": "Every template",
+        "text": "And every template, with its status, in one place."
+      },
+      {
+        "t": 32.7,
+        "title": "Every message delivered",
+        "text": "A healthy number. Every message delivered."
+      }
+    ],
+    "transcript": [
+      "Is your WhatsApp number healthy? One look tells you.",
+      "Sending, quality and replies, right at the top.",
+      "Something needs attention? PROXe tells you exactly what to fix.",
+      "The balance shows what came back for every template you sent.",
+      "What Meta billed, line by line. No surprises.",
+      "And every template, with its status, in one place.",
+      "A healthy number. Every message delivered."
+    ]
   }
 ]
 
