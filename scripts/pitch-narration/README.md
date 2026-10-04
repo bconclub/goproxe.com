@@ -1,6 +1,6 @@
 # Pitch narration
 
-Voice: ElevenLabs `eleven_v4`, narrator "Tia Mirza" (voice `H4quHNsmPxALMhWFVKW6`),
+Voice: ElevenLabs `eleven_v4`, narrator "Ziina", confident and clear (voice `FaqthkZu1EWxXxUFbAfb`),
 every card in all 10 languages. Recorded and played at her own pace. Clips are
 loudness-normalised to -17 LUFS, 48 kHz mono, then served from
 `public/pitch/audio/<lang>/<card>.mp3` (English at the root). The ElevenLabs key

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, HeartPulse, Volume2, VolumeX,
+  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, HeartPulse, Building2, Volume2, VolumeX,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
@@ -134,6 +134,14 @@ function GapFix({ on }: { on: boolean }) {
     </div>
   );
 }
+
+// Brands live on PROXe. Logo files go in public/brands/ and their path in `logo`.
+const LIVE_BRANDS: { name: string; mark: string; tint: string; what: string; logo?: string; chip?: boolean; wordmark?: boolean }[] = [
+  { name: "Hubli Super Speciality Hospital", mark: "HS", tint: "#0e7490", what: "Kannada voice agents and complete patient management", logo: "/brands/hubli-super-speciality-hospital.png", chip: true, wordmark: true },
+  { name: "Lokazen", mark: "L", tint: "#7c3aed", what: "Real estate end to end: matching, and deals closed on messages", logo: "/brands/lokazen-mark.svg" },
+  { name: "Windchasers", mark: "W", tint: "#2563eb", what: "Every lead, on every channel", logo: "/brands/windchasers.png", wordmark: true },
+  { name: "Axlrate", mark: "A", tint: "#db2777", what: "Sales research, its leads and conversations on PROXe", logo: "/brands/axlrate.png", wordmark: true },
+];
 
 // ── the cards ──
 
@@ -374,14 +382,14 @@ const SLIDES: Slide[] = [
     key: "built", label: "Built in the last month",
     render: ({ on }) => (
       <>
-        <Headline>What we built in the last 30 days.</Headline>
-        <Body>Live with brands today, not on a roadmap.</Body>
+        <Headline>What we've built. Live today.</Headline>
+        <Body>Running for real brands, not on a roadmap.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <Stagger on={on} className="space-y-2" step={700}>
             {[
-              [Phone, "Kannada voice agents", "for HSH: they call and speak with patients in Kannada"],
-              [HeartPulse, "Complete patient care", "for HSH: enquiry, appointment, reminders, follow-up"],
-              [MessagesSquare, "Closures on chat", "deals closed end to end, inside the conversation"],
+              [Phone, "Kannada voice agents", "Hubli Super Speciality Hospital: they call and speak with patients in Kannada"],
+              [HeartPulse, "Complete patient management", "Hubli Super Speciality Hospital: the whole patient journey, run on PROXe"],
+              [Building2, "Real estate, end to end", "Lokazen: property matching, and onboarding deals up to ₹10,000 closed on messages"],
             ].map(([I, t, d]) => {
               const Icon = I as typeof Phone;
               return (
@@ -394,6 +402,32 @@ const SLIDES: Slide[] = [
                 </div>
               );
             })}
+          </Stagger>
+        </div>
+      </>
+    ),
+  },
+  {
+    key: "live", label: "Live on PROXe",
+    render: ({ on }) => (
+      <>
+        <Headline>These brands run on PROXe today.</Headline>
+        <div className="flex flex-1 flex-col justify-center pt-4">
+          <Stagger on={on} className="grid grid-cols-2 gap-2" step={600}>
+            {LIVE_BRANDS.map((b) => (
+              <div key={b.name} className="flex h-full flex-col gap-2 rounded-2xl bg-white/[0.05] p-3">
+                {b.logo ? (
+                  <span className={`flex h-9 items-center self-start ${b.chip ? "rounded-lg bg-white px-2" : ""}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={b.logo} alt={b.name} className={`${b.wordmark ? "h-7 max-w-[120px]" : "h-8"} w-auto object-contain`} />
+                  </span>
+                ) : (
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl text-[13px] font-bold text-white" style={{ background: b.tint }}>{b.mark}</span>
+                )}
+                <span className="text-[13px] font-semibold leading-tight text-white">{b.name}</span>
+                <span className="text-[11px] leading-snug text-white/55">{b.what}</span>
+              </div>
+            ))}
           </Stagger>
         </div>
       </>
@@ -576,7 +610,7 @@ const SLIDES: Slide[] = [
           <img src="/proxe/thanzeel-ashruf.png" alt="Thanzeel Ashruf" className="h-20 w-20 shrink-0 rounded-full object-cover" style={{ boxShadow: `0 0 0 3px ${C.deep}` }} />
           <div className="min-w-0">
             <p className="text-[19px] font-semibold text-white">Thanzeel Ashruf</p>
-            <p className="text-[12.5px] text-white/55">Founder & CEO, PROXe · Founder, BCON Club</p>
+            <p className="text-[12.5px] leading-snug text-white/55">Founder & CEO, PROXe<br />Founder, BCON Club</p>
           </div>
         </div>
         <div className="flex flex-1 flex-col justify-center pt-5">
