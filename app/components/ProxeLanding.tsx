@@ -6,7 +6,6 @@ import { FiGlobe, FiMail, FiMessageSquare, FiPhone, FiRefreshCw, FiDatabase, FiS
 import { SiInstagram, SiMessenger, SiWhatsapp } from 'react-icons/si';
 import VapiOrb from './VapiOrb';
 import ChannelDemo from './ChannelDemo';
-import HowItWorks from './HowItWorks';
 import DashboardSection from './DashboardSection';
 import CapabilitiesSection from './CapabilitiesSection';
 import IndustriesSection from './IndustriesSection';
@@ -1547,9 +1546,6 @@ export default function ProxeLanding() {
       {/* ===== 4. Industries — "it works for MY business" lands right after
              seeing it work, while the demo is still fresh ===== */}
       <IndustriesSection />
-
-      {/* ===== How It Works: after relevance, before pricing ===== */}
-      <HowItWorks />
 
       {/* ===== Onboarding videos: the real dashboard being set up ===== */}
       <OnboardingVideos />

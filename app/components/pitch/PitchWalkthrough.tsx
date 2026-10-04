@@ -1,6 +1,8 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import './pitch.css'
 
 // Loaded after the page: the homepage stays fast, the deck arrives when needed.
@@ -10,12 +12,27 @@ const PitchDeck = dynamic(() => import('./PitchDeck').then((m) => m.PitchDeck), 
 })
 
 // The product story from the pitch, without the round and the plan.
-const CARDS = ['problem', 'gaps', 'who', 'solution', 'how', 'dashboard', 'memory', 'price', 'founder']
+// Opens on the welcome card; the rest plays full screen once they ask for it.
+const CARDS = ['cover', 'problem', 'gaps', 'who', 'solution', 'how', 'dashboard', 'memory', 'price', 'founder']
 
 /** Homepage walkthrough: what goes wrong, and what PROXe does about it, in a few swipes. */
 export default function PitchWalkthrough() {
+  const [full, setFull] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  // The portal sits outside the homepage root, so carry its font over.
+  const font = full && sectionRef.current ? getComputedStyle(sectionRef.current).getPropertyValue('--font-proxe-sans') : ''
+  // The page behind stays put while the full-screen deck is open.
+  useEffect(() => {
+    if (!full) return
+    const html = document.documentElement
+    const prev = [html.style.overflow, document.body.style.overflow]
+    html.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    return () => { html.style.overflow = prev[0]; document.body.style.overflow = prev[1] }
+  }, [full])
+
   return (
-    <section id="walkthrough" className="pitch-root" aria-labelledby="walkthrough-title">
+    <section ref={sectionRef} id="walkthrough" className="pitch-root" aria-labelledby="walkthrough-title">
       <div className="mx-auto w-full max-w-[1120px] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mb-8 max-w-[640px]">
           <p className="text-[13px] font-medium text-[#a78bfa]">The walkthrough</p>
@@ -23,10 +40,16 @@ export default function PitchWalkthrough() {
             Where leads get lost, and what PROXe does about it.
           </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-white/65">
-            Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap the speaker to hear it.
+            Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap the speaker to play it, narrated, full screen.
           </p>
         </div>
-        <PitchDeck variant="embed" only={CARDS} />
+        <PitchDeck variant="embed" only={CARDS} onExpand={() => setFull(true)} />
+        {full && createPortal(
+          <div className="pitch-root" data-lenis-prevent style={font ? ({ '--font-proxe-sans': font } as React.CSSProperties) : undefined}>
+            <PitchDeck variant="page" only={CARDS} autoStart onClose={() => setFull(false)} />
+          </div>,
+          document.body,
+        )}
       </div>
     </section>
   )

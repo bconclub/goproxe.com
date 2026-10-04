@@ -116,7 +116,7 @@ function GapFix({ on }: { on: boolean }) {
             {/* PROXe's answer slides in under each gap */}
             <div className="flex items-center gap-2 px-3.5 py-1.5 text-[11.5px] font-medium"
               style={{
-                background: "rgba(124,58,237,0.22)", color: "#ddd6fe",
+                background: "rgba(34,197,94,0.16)", color: "#86efac",
                 transform: on ? "none" : "translateX(-100%)", transition: `transform 600ms ${EASE} ${900 + i * 260}ms`,
               }}>
               <Check size={12} /> PROXe {r.fix}
@@ -596,7 +596,15 @@ function Fit({ children, deps }: { children: React.ReactNode; deps: unknown[] })
  * embed: a homepage section; starts moving when scrolled into view, stays
  *        quiet until someone turns narration on, and shows only `only` cards.
  */
-export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embed"; only?: string[] }) {
+export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart }: {
+  variant?: "page" | "embed"; only?: string[];
+  /** Embed only: narration, language and "Play the pitch" open the full-screen deck instead. */
+  onExpand?: () => void;
+  /** Page only: X and Escape close an overlay deck instead of going home. */
+  onClose?: () => void;
+  /** Start at once, narrated (opened by a tap, so sound is allowed). */
+  autoStart?: boolean;
+}) {
   const embed = variant === "embed";
   const slides = only ? SLIDES.filter((s) => only.includes(s.key)) : SLIDES;
   const { startDeploy } = useDeployModal();
@@ -612,11 +620,11 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
   const [userPaused, setUserPaused] = useState(false);
   const [orb, setOrb] = useState(false);
   // Nothing moves or speaks until the viewer starts the pitch (or moves on).
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(!!autoStart);
   // Narration: a short spoken explainer per card. On unless muted; sound
   // starts on the first tap or key, since browsers block it before that.
   const [narrate, setNarrate] = useState(!embed);
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(!!autoStart);
   const [lang, setLang] = useState("en");
   const audio = useRef<HTMLAudioElement | null>(null);
   const clipMs = useRef(0);
@@ -661,10 +669,11 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
       if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); go(index + 1); }
       if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(index - 1); }
       if (e.key === " ") { e.preventDefault(); setUserPaused((p) => !p); }
+      if (e.key === "Escape" && onClose) { e.preventDefault(); onClose(); }
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [go, index, embed]);
+  }, [go, index, embed, onClose]);
 
   useEffect(() => {
     // Only the plan and round cards need live numbers.
@@ -677,7 +686,8 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
     const io = new IntersectionObserver(([e]) => {
       const vis = !!e && e.intersectionRatio >= 0.5;
       setInView(vis);
-      if (vis) setStarted(true);
+      // With onExpand the embed waits on its welcome card; the full deck does the playing.
+      if (vis && !onExpand) setStarted(true);
       if (!vis) audio.current?.pause();
     }, { threshold: [0, 0.5, 1] });
     io.observe(rootRef.current);
@@ -769,6 +779,12 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
     return () => { window.removeEventListener("pointerdown", unlock); window.removeEventListener("keydown", unlock); audio.current?.pause(); };
   }, []);
   function pickLang(l: string) {
+    if (onExpand) {
+      try { localStorage.setItem("pitch-lang", l); } catch { /* storage blocked */ }
+      track("button_click", { label: `pitch_lang_${l}`, location: variant });
+      onExpand();
+      return;
+    }
     setLang(l);
     setNarrate(true);
     setUnlocked(true);
@@ -776,6 +792,7 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
     track("button_click", { label: `pitch_lang_${l}`, location: variant });
   }
   function toggleNarration() {
+    if (onExpand) { track("button_click", { label: "pitch_expand", location: variant }); onExpand(); return; }
     const on = !narrate;
     setNarrate(on);
     setUnlocked(true);
@@ -858,14 +875,7 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
           <a href="/" aria-label="PROXe home"><img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className="h-5 w-auto opacity-90" /></a>
         )}
         <div className="flex items-center gap-2">
-          <label className="relative flex h-10 items-center rounded-full bg-white/[0.07] pl-3 pr-2 text-[12.5px] text-white/80 backdrop-blur-md">
-            <span className="sr-only">Narration language</span>
-            <Globe size={14} className="mr-1.5 shrink-0 text-white/60" />
-            <select value={lang} onChange={(e) => pickLang(e.target.value)}
-              className="cursor-pointer appearance-none bg-transparent pr-1 text-[12.5px] text-white/85 outline-none">
-              {LANGS.map(([c, name]) => <option key={c} value={c} style={{ background: "#16112b", color: "#fff" }}>{name}</option>)}
-            </select>
-          </label>
+          <LangMenu lang={lang} onPick={pickLang} />
           <button onClick={toggleNarration} aria-pressed={narrate} aria-label={narrate ? "Turn narration off" : "Turn narration on"}
             className="flex h-10 items-center gap-2 rounded-full bg-white/[0.07] px-3.5 text-[12.5px] text-white/80 backdrop-blur-md transition-colors hover:text-white">
             {narrate ? <Volume2 size={16} /> : <VolumeX size={16} />}
@@ -873,14 +883,20 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
           </button>
           {!embed && (
             <button onClick={() => { track("button_click", { label: "deploy_proxe", location: "pitch_header" }); startDeploy("pitch_header"); }}
-              className="hidden h-10 items-center rounded-full px-4 text-[12.5px] font-semibold text-white sm:flex" style={{ background: C.deep }}>
-              Deploy PROXe
+              className="flex h-10 items-center rounded-full px-3.5 text-[12.5px] font-semibold text-white sm:px-4" style={{ background: C.deep }}>
+              <span className="sm:hidden">Deploy</span><span className="hidden sm:inline">Deploy PROXe</span>
             </button>
           )}
           {!embed && (
-            <a href="/" aria-label="Close the pitch" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.07] text-white/70 backdrop-blur-md transition-colors hover:text-white">
-              <X size={17} />
-            </a>
+            onClose ? (
+              <button type="button" onClick={onClose} aria-label="Close the pitch" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.07] text-white/70 backdrop-blur-md transition-colors hover:text-white">
+                <X size={17} />
+              </button>
+            ) : (
+              <a href="/" aria-label="Close the pitch" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.07] text-white/70 backdrop-blur-md transition-colors hover:text-white">
+                <X size={17} />
+              </a>
+            )
           )}
         </div>
       </header>
@@ -952,7 +968,7 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
                 </div>
               )}
 
-              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, start: () => { setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
+              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
 
               {/* Side cards sink back, but stay visible as more to come */}
               <div className="pointer-events-none absolute inset-0 rounded-[28px]"
@@ -962,7 +978,8 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
         })}
       </div>
 
-      <footer className="relative z-10 flex items-center justify-between gap-4 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:px-8">
+      {/* The site chat bubble sits bottom-right; the right gutter keeps Next clear of it. */}
+      <footer className={`relative z-10 flex items-center justify-between gap-4 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:px-8 ${embed ? "" : "pr-[92px] sm:pr-[112px]"}`}>
         <button onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous card"
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-white transition-opacity disabled:opacity-25">
           <ArrowLeft size={18} />
@@ -990,6 +1007,47 @@ export function PitchDeck({ variant = "page", only }: { variant?: "page" | "embe
         )}
       </footer>
     </div>
+    </div>
+  );
+}
+
+// Narration language: a styled menu, not the browser's native dropdown.
+function LangMenu({ lang, onPick }: { lang: string; onPick: (code: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("pointerdown", away);
+    window.addEventListener("keydown", esc);
+    return () => { window.removeEventListener("pointerdown", away); window.removeEventListener("keydown", esc); };
+  }, [open]);
+  const name = LANGS.find(([c]) => c === lang)?.[1] ?? "English";
+  return (
+    <div ref={box} className="relative">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open} aria-label={`Narration language: ${name}`}
+        className="flex h-10 items-center gap-1.5 rounded-full bg-white/[0.07] px-3 text-[12.5px] text-white/85 backdrop-blur-md transition-colors hover:text-white">
+        <Globe size={14} className="shrink-0 text-white/60" />
+        <span className="hidden sm:inline">{name}</span>
+        <span className="uppercase sm:hidden">{lang.slice(0, 2)}</span>
+      </button>
+      {open && (
+        <ul role="listbox" aria-label="Narration language"
+          className="absolute right-0 top-12 z-30 w-44 overflow-hidden rounded-2xl p-1.5 shadow-2xl backdrop-blur-xl"
+          style={{ background: "rgba(22,17,43,0.96)", border: `1px solid ${C.line}` }}>
+          {LANGS.map(([c, n]) => (
+            <li key={c} role="option" aria-selected={c === lang}>
+              <button type="button" onClick={() => { onPick(c); setOpen(false); }}
+                className="flex h-10 w-full items-center justify-between rounded-xl px-3 text-left text-[13.5px] text-white/85 transition-colors hover:bg-white/[0.07] hover:text-white"
+                style={c === lang ? { background: "rgba(124,58,237,0.28)", color: "#fff" } : undefined}>
+                {n}
+                {c === lang && <Check size={14} style={{ color: C.violet }} />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
