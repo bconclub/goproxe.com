@@ -2,51 +2,71 @@
   "en-IN": {
     "founder": "This is Thanzeel, our founder. Seven years in marketing, across retail, hospitality, real estate and healthcare. And honestly, we had this exact problem, in our own businesses and for our clients. We've seen it up close, and we're on a mission to solve it.",
     "how": "The loop is simple. Book the demo, or book the visit, or make the sale, right in the chat.",
-    "price": "The model is simple. 9,999 rupees a month, for 1,000 managed leads. That's under 10 rupees a lead, and every lead managed, forever."
+    "price": "The model is simple. 9,999 rupees a month, for 1,000 managed leads. That's under 10 rupees a lead, and every lead managed, forever.",
+    "stack": "Most businesses run on ten different tools. One for WhatsApp, one for chat, one for the CRM, one for support, and none of them talk to each other. Proxy replaces the pile. One system, and it plugs into the rest of your stack.",
+    "team": "And Proxy lives where your team lives. It talks to customers on WhatsApp and Instagram, and to your team on Slack, Telegram and email. When a hot lead comes in, your team knows in seconds."
   },
   "hi-IN": {
-    "founder": "ये हैं थंज़ील, हमारे founder. मार्केटिंग में सात साल, retail, hospitality, real estate और healthcare में. और सच कहें तो, यही problem हमारे साथ भी थी, हमारे अपने businesses में और हमारे clients के साथ भी. हमने इसे बहुत करीब से देखा है, और अब हम इसे solve करने के mission पर हैं.",
+    "founder": "ये हैं तन्ज़ील, हमारे founder. मार्केटिंग में सात साल, retail, hospitality, real estate और healthcare में. और सच कहें तो, यही problem हमारे साथ भी थी, हमारे अपने businesses में और हमारे clients के साथ भी. हमने इसे बहुत करीब से देखा है, और अब हम इसे solve करने के mission पर हैं.",
     "how": "Loop बहुत simple है. Demo book करो, या visit book करो, या chat में ही sale कर लो.",
-    "price": "Model बहुत simple है. महीने के 9,999 रुपये, 1,000 managed leads के लिए. यानी एक lead के 10 रुपये से भी कम, और हर lead हमेशा के लिए managed."
+    "price": "Model बहुत simple है. महीने के 9,999 रुपये, 1,000 managed leads के लिए. यानी एक lead के 10 रुपये से भी कम, और हर lead हमेशा के लिए managed.",
+    "stack": "ज़्यादातर businesses दस अलग-अलग tools पर चलते हैं. एक WhatsApp के लिए, एक chat के लिए, एक CRM के लिए, एक support के लिए, और इनमें से कोई भी एक-दूसरे से बात नहीं करता. Proxy ये पूरा ढेर हटा देता है. एक system, जो आपके बाकी stack से जुड़ जाता है.",
+    "team": "और Proxy वहीं रहता है जहाँ आपकी team रहती है. Customers से WhatsApp और Instagram पर बात करता है, और आपकी team से Slack, Telegram और email पर. जैसे ही कोई hot lead आती है, आपकी team को seconds में पता चल जाता है."
   },
   "ta-IN": {
     "founder": "இவர் தன்ஸீல், எங்கள் founder. Marketing-ல ஏழு வருஷம், retail, hospitality, real estate, healthcare-ல. உண்மையா சொல்லணும்னா, இதே problem எங்களுக்கும் இருந்தது, எங்க சொந்த businesses-லயும், எங்க clients கிட்டயும். இதை நாங்க ரொம்ப நெருக்கமா பார்த்திருக்கோம், இதை solve பண்றது தான் எங்க mission.",
     "how": "Loop ரொம்ப simple. Demo book பண்ணுங்க, இல்லனா visit book பண்ணுங்க, இல்லனா chat-லயே sale பண்ணுங்க.",
-    "price": "Model ரொம்ப simple. மாசம் 9,999 ரூபாய், 1,000 managed leads-க்கு. ஒரு lead-க்கு 10 ரூபாய்க்கும் குறைவு, ஒவ்வொரு lead-உம் எப்பவுமே managed."
+    "price": "Model ரொம்ப simple. மாசம் 9,999 ரூபாய், 1,000 managed leads-க்கு. ஒரு lead-க்கு 10 ரூபாய்க்கும் குறைவு, ஒவ்வொரு lead-உம் எப்பவுமே managed.",
+    "stack": "பெரும்பாலான businesses பத்து வெவ்வேறு tools-ல ஓடுது. WhatsApp-க்கு ஒண்ணு, chat-க்கு ஒண்ணு, CRM-க்கு ஒண்ணு, support-க்கு ஒண்ணு, இதுல எதுவுமே ஒண்ணோட ஒண்ணு பேசாது. Proxy இந்த குவியலையே மாத்திடும். ஒரே system, உங்க மீதி stack-ஓட இணைஞ்சுடும்.",
+    "team": "Proxy உங்க team இருக்கற இடத்துலயே இருக்கும். Customers கிட்ட WhatsApp, Instagram-ல பேசும், உங்க team கிட்ட Slack, Telegram, email-ல பேசும். ஒரு hot lead வந்தா, உங்க team-க்கு seconds-ல தெரிஞ்சுடும்."
   },
   "te-IN": {
     "founder": "ఈయన తన్జీల్, మా founder. Marketing లో ఏడు సంవత్సరాలు, retail, hospitality, real estate, healthcare లో. నిజం చెప్పాలంటే, ఇదే problem మాకూ ఉండేది, మా సొంత businesses లోనూ, మా clients దగ్గరా. దీన్ని మేము చాలా దగ్గరగా చూశాం, దీన్ని solve చేయడమే మా mission.",
     "how": "Loop చాలా simple. Demo book చేయండి, లేదా visit book చేయండి, లేదా chat లోనే sale చేయండి.",
-    "price": "Model చాలా simple. నెలకు 9,999 రూపాయలు, 1,000 managed leads కోసం. అంటే ఒక lead కి 10 రూపాయల కంటే తక్కువ, ప్రతి lead ఎప్పటికీ managed."
+    "price": "Model చాలా simple. నెలకు 9,999 రూపాయలు, 1,000 managed leads కోసం. అంటే ఒక lead కి 10 రూపాయల కంటే తక్కువ, ప్రతి lead ఎప్పటికీ managed.",
+    "stack": "చాలా businesses పది వేర్వేరు tools మీద నడుస్తాయి. WhatsApp కి ఒకటి, chat కి ఒకటి, CRM కి ఒకటి, support కి ఒకటి, వీటిలో ఏదీ ఒకదానితో ఒకటి మాట్లాడదు. Proxy ఈ కుప్పనంతా తీసేస్తుంది. ఒకే system, మీ మిగతా stack తో కలిసిపోతుంది.",
+    "team": "Proxy మీ team ఎక్కడ ఉంటే అక్కడే ఉంటుంది. Customers తో WhatsApp, Instagram లో మాట్లాడుతుంది, మీ team తో Slack, Telegram, email లో. ఒక hot lead రాగానే, మీ team కి seconds లో తెలిసిపోతుంది."
   },
   "kn-IN": {
     "founder": "ಇವರು ತನ್ಜೀಲ್, ನಮ್ಮ founder. Marketing ನಲ್ಲಿ ಏಳು ವರ್ಷ, retail, hospitality, real estate, healthcare ನಲ್ಲಿ. ನಿಜ ಹೇಳಬೇಕಂದ್ರೆ, ಇದೇ problem ನಮಗೂ ಇತ್ತು, ನಮ್ಮ ಸ್ವಂತ businesses ನಲ್ಲೂ, ನಮ್ಮ clients ಹತ್ರನೂ. ಇದನ್ನ ನಾವು ತುಂಬಾ ಹತ್ತಿರದಿಂದ ನೋಡಿದ್ದೀವಿ, ಇದನ್ನ solve ಮಾಡೋದೇ ನಮ್ಮ mission.",
     "how": "Loop ತುಂಬಾ simple. Demo book ಮಾಡಿ, ಅಥವಾ visit book ಮಾಡಿ, ಅಥವಾ chat ನಲ್ಲೇ sale ಮಾಡಿ.",
-    "price": "Model ತುಂಬಾ simple. ತಿಂಗಳಿಗೆ 9,999 ರೂಪಾಯಿ, 1,000 managed leads ಗೆ. ಅಂದ್ರೆ ಒಂದು lead ಗೆ 10 ರೂಪಾಯಿಗಿಂತ ಕಡಿಮೆ, ಪ್ರತಿ lead ಯಾವಾಗಲೂ managed."
+    "price": "Model ತುಂಬಾ simple. ತಿಂಗಳಿಗೆ 9,999 ರೂಪಾಯಿ, 1,000 managed leads ಗೆ. ಅಂದ್ರೆ ಒಂದು lead ಗೆ 10 ರೂಪಾಯಿಗಿಂತ ಕಡಿಮೆ, ಪ್ರತಿ lead ಯಾವಾಗಲೂ managed.",
+    "stack": "ಹೆಚ್ಚಿನ businesses ಹತ್ತು ಬೇರೆ ಬೇರೆ tools ಮೇಲೆ ನಡೆಯುತ್ತವೆ. WhatsApp ಗೆ ಒಂದು, chat ಗೆ ಒಂದು, CRM ಗೆ ಒಂದು, support ಗೆ ಒಂದು, ಇವುಗಳಲ್ಲಿ ಯಾವುದೂ ಒಂದಕ್ಕೊಂದು ಮಾತಾಡಲ್ಲ. Proxy ಈ ರಾಶಿಯನ್ನೇ ತೆಗೆದುಹಾಕುತ್ತೆ. ಒಂದೇ system, ನಿಮ್ಮ ಉಳಿದ stack ಜೊತೆ ಸೇರಿಕೊಳ್ಳುತ್ತೆ.",
+    "team": "Proxy ನಿಮ್ಮ team ಎಲ್ಲಿದೆಯೋ ಅಲ್ಲೇ ಇರುತ್ತೆ. Customers ಜೊತೆ WhatsApp, Instagram ನಲ್ಲಿ ಮಾತಾಡುತ್ತೆ, ನಿಮ್ಮ team ಜೊತೆ Slack, Telegram, email ನಲ್ಲಿ. ಒಂದು hot lead ಬಂದ ತಕ್ಷಣ, ನಿಮ್ಮ team ಗೆ seconds ನಲ್ಲಿ ಗೊತ್ತಾಗುತ್ತೆ."
   },
   "ml-IN": {
     "founder": "ഇത് തൻസീൽ, ഞങ്ങളുടെ founder. Marketing-ൽ ഏഴ് വർഷം, retail, hospitality, real estate, healthcare-ൽ. സത്യം പറഞ്ഞാൽ, ഇതേ problem ഞങ്ങൾക്കും ഉണ്ടായിരുന്നു, ഞങ്ങളുടെ സ്വന്തം businesses-ലും, ഞങ്ങളുടെ clients-ന്റെ അടുത്തും. ഇത് ഞങ്ങൾ വളരെ അടുത്ത് കണ്ടതാണ്, ഇത് solve ചെയ്യലാണ് ഞങ്ങളുടെ mission.",
     "how": "Loop വളരെ simple ആണ്. Demo book ചെയ്യാം, അല്ലെങ്കിൽ visit book ചെയ്യാം, അല്ലെങ്കിൽ chat-ൽ തന്നെ sale ചെയ്യാം.",
-    "price": "Model വളരെ simple ആണ്. മാസം 9,999 രൂപ, 1,000 managed leads-ന്. അതായത് ഒരു lead-ന് 10 രൂപയിൽ താഴെ, ഓരോ lead-ഉം എന്നും managed."
+    "price": "Model വളരെ simple ആണ്. മാസം 9,999 രൂപ, 1,000 managed leads-ന്. അതായത് ഒരു lead-ന് 10 രൂപയിൽ താഴെ, ഓരോ lead-ഉം എന്നും managed.",
+    "stack": "മിക്ക businesses-ഉം പത്ത് വ്യത്യസ്ത tools-ലാണ് ഓടുന്നത്. WhatsApp-ന് ഒന്ന്, chat-ന് ഒന്ന്, CRM-ന് ഒന്ന്, support-ന് ഒന്ന്, ഇവയൊന്നും പരസ്പരം സംസാരിക്കുന്നില്ല. Proxy ഈ കൂമ്പാരം മുഴുവൻ മാറ്റുന്നു. ഒരൊറ്റ system, നിങ്ങളുടെ ബാക്കി stack-മായി ചേരുന്നു.",
+    "team": "Proxy നിങ്ങളുടെ team ഉള്ളിടത്ത് തന്നെ ഉണ്ട്. Customers-നോട് WhatsApp-ലും Instagram-ലും സംസാരിക്കും, നിങ്ങളുടെ team-നോട് Slack-ലും Telegram-ലും email-ലും. ഒരു hot lead വന്നാൽ, നിങ്ങളുടെ team seconds-നുള്ളിൽ അറിയും."
   },
   "mr-IN": {
-    "founder": "हे आहेत थंझील, आमचे founder. Marketing मध्ये सात वर्षं, retail, hospitality, real estate आणि healthcare मध्ये. खरं सांगायचं तर, हीच problem आमच्याकडेही होती, आमच्या स्वतःच्या businesses मध्ये आणि आमच्या clients कडेही. आम्ही हे अगदी जवळून पाहिलंय, आणि हे solve करणं हेच आमचं mission आहे.",
+    "founder": "हे आहेत तन्झील, आमचे founder. Marketing मध्ये सात वर्षं, retail, hospitality, real estate आणि healthcare मध्ये. खरं सांगायचं तर, हीच problem आमच्याकडेही होती, आमच्या स्वतःच्या businesses मध्ये आणि आमच्या clients कडेही. आम्ही हे अगदी जवळून पाहिलंय, आणि हे solve करणं हेच आमचं mission आहे.",
     "how": "Loop अगदी simple आहे. Demo book करा, किंवा visit book करा, किंवा chat मध्येच sale करा.",
-    "price": "Model अगदी simple आहे. महिन्याला 9,999 रुपये, 1,000 managed leads साठी. म्हणजे एका lead ला 10 रुपयांपेक्षा कमी, आणि प्रत्येक lead कायम managed."
+    "price": "Model अगदी simple आहे. महिन्याला 9,999 रुपये, 1,000 managed leads साठी. म्हणजे एका lead ला 10 रुपयांपेक्षा कमी, आणि प्रत्येक lead कायम managed.",
+    "stack": "बहुतेक businesses दहा वेगवेगळ्या tools वर चालतात. WhatsApp साठी एक, chat साठी एक, CRM साठी एक, support साठी एक, आणि यातलं कोणीच एकमेकांशी बोलत नाही. Proxy हा सगळा ढीग काढून टाकतो. एकच system, जो तुमच्या बाकीच्या stack शी जोडला जातो.",
+    "team": "Proxy तिथेच राहतो जिथे तुमची team राहते. Customers शी WhatsApp आणि Instagram वर बोलतो, आणि तुमच्या team शी Slack, Telegram आणि email वर. एखादी hot lead आली की, तुमच्या team ला seconds मध्ये कळतं."
   },
   "bn-IN": {
-    "founder": "ইনি থানজীল, আমাদের founder. Marketing-এ সাত বছর, retail, hospitality, real estate আর healthcare-এ. সত্যি বলতে, ঠিক এই problem আমাদেরও ছিল, আমাদের নিজেদের businesses-এ আর আমাদের clients-দের কাছেও. আমরা এটা খুব কাছ থেকে দেখেছি, আর এটা solve করাই আমাদের mission.",
+    "founder": "ইনি তানজীল, আমাদের founder. Marketing-এ সাত বছর, retail, hospitality, real estate আর healthcare-এ. সত্যি বলতে, ঠিক এই problem আমাদেরও ছিল, আমাদের নিজেদের businesses-এ আর আমাদের clients-দের কাছেও. আমরা এটা খুব কাছ থেকে দেখেছি, আর এটা solve করাই আমাদের mission.",
     "how": "Loop খুব simple. Demo book করুন, অথবা visit book করুন, অথবা chat-এই sale করুন.",
-    "price": "Model খুব simple. মাসে 9,999 টাকা, 1,000 managed leads-এর জন্য. মানে একটা lead-এ 10 টাকারও কম, আর প্রতিটা lead চিরকাল managed."
+    "price": "Model খুব simple. মাসে 9,999 টাকা, 1,000 managed leads-এর জন্য. মানে একটা lead-এ 10 টাকারও কম, আর প্রতিটা lead চিরকাল managed.",
+    "stack": "বেশিরভাগ businesses দশটা আলাদা tools-এ চলে. WhatsApp-এর জন্য একটা, chat-এর জন্য একটা, CRM-এর জন্য একটা, support-এর জন্য একটা, আর এদের কেউই একে অপরের সাথে কথা বলে না. Proxy এই পুরো স্তূপটাই সরিয়ে দেয়. একটাই system, যা আপনার বাকি stack-এর সাথে জুড়ে যায়.",
+    "team": "Proxy সেখানেই থাকে যেখানে আপনার team থাকে. Customers-দের সাথে WhatsApp আর Instagram-এ কথা বলে, আর আপনার team-এর সাথে Slack, Telegram আর email-এ. একটা hot lead এলেই, আপনার team seconds-এর মধ্যে জেনে যায়."
   },
   "gu-IN": {
-    "founder": "આ છે થન્ઝીલ, અમારા founder. Marketing માં સાત વર્ષ, retail, hospitality, real estate અને healthcare માં. સાચું કહું તો, આ જ problem અમને પણ હતી, અમારા પોતાના businesses માં અને અમારા clients પાસે પણ. અમે આ ખૂબ નજીકથી જોયું છે, અને આ solve કરવું એ જ અમારું mission છે.",
+    "founder": "આ છે તન્ઝીલ, અમારા founder. Marketing માં સાત વર્ષ, retail, hospitality, real estate અને healthcare માં. સાચું કહું તો, આ જ problem અમને પણ હતી, અમારા પોતાના businesses માં અને અમારા clients પાસે પણ. અમે આ ખૂબ નજીકથી જોયું છે, અને આ solve કરવું એ જ અમારું mission છે.",
     "how": "Loop એકદમ simple છે. Demo book કરો, અથવા visit book કરો, અથવા chat માં જ sale કરો.",
-    "price": "Model એકદમ simple છે. મહિને 9,999 રૂપિયા, 1,000 managed leads માટે. એટલે કે એક lead ના 10 રૂપિયાથી પણ ઓછા, અને દરેક lead હંમેશા managed."
+    "price": "Model એકદમ simple છે. મહિને 9,999 રૂપિયા, 1,000 managed leads માટે. એટલે કે એક lead ના 10 રૂપિયાથી પણ ઓછા, અને દરેક lead હંમેશા managed.",
+    "stack": "મોટાભાગના businesses દસ અલગ અલગ tools પર ચાલે છે. WhatsApp માટે એક, chat માટે એક, CRM માટે એક, support માટે એક, અને એમાંથી કોઈ એકબીજા સાથે વાત નથી કરતું. Proxy આ આખો ઢગલો હટાવી દે છે. એક જ system, જે તમારા બાકીના stack સાથે જોડાઈ જાય છે.",
+    "team": "Proxy ત્યાં જ રહે છે જ્યાં તમારી team રહે છે. Customers સાથે WhatsApp અને Instagram પર વાત કરે છે, અને તમારી team સાથે Slack, Telegram અને email પર. કોઈ hot lead આવે કે તરત, તમારી team ને seconds માં ખબર પડી જાય છે."
   },
   "pa-IN": {
-    "founder": "ਇਹ ਨੇ ਥੰਜ਼ੀਲ, ਸਾਡੇ founder. Marketing ਵਿੱਚ ਸੱਤ ਸਾਲ, retail, hospitality, real estate ਅਤੇ healthcare ਵਿੱਚ. ਸੱਚ ਕਹੀਏ ਤਾਂ, ਇਹੀ problem ਸਾਡੇ ਨਾਲ ਵੀ ਸੀ, ਸਾਡੇ ਆਪਣੇ businesses ਵਿੱਚ ਅਤੇ ਸਾਡੇ clients ਨਾਲ ਵੀ. ਅਸੀਂ ਇਹਨੂੰ ਬਹੁਤ ਨੇੜੇ ਤੋਂ ਦੇਖਿਆ ਹੈ, ਅਤੇ ਇਹਨੂੰ solve ਕਰਨਾ ਹੀ ਸਾਡਾ mission ਹੈ.",
+    "founder": "ਇਹ ਨੇ ਤਨਜ਼ੀਲ, ਸਾਡੇ founder. Marketing ਵਿੱਚ ਸੱਤ ਸਾਲ, retail, hospitality, real estate ਅਤੇ healthcare ਵਿੱਚ. ਸੱਚ ਕਹੀਏ ਤਾਂ, ਇਹੀ problem ਸਾਡੇ ਨਾਲ ਵੀ ਸੀ, ਸਾਡੇ ਆਪਣੇ businesses ਵਿੱਚ ਅਤੇ ਸਾਡੇ clients ਨਾਲ ਵੀ. ਅਸੀਂ ਇਹਨੂੰ ਬਹੁਤ ਨੇੜੇ ਤੋਂ ਦੇਖਿਆ ਹੈ, ਅਤੇ ਇਹਨੂੰ solve ਕਰਨਾ ਹੀ ਸਾਡਾ mission ਹੈ.",
     "how": "Loop ਬਹੁਤ simple ਹੈ. Demo book ਕਰੋ, ਜਾਂ visit book ਕਰੋ, ਜਾਂ chat ਵਿੱਚ ਹੀ sale ਕਰੋ.",
-    "price": "Model ਬਹੁਤ simple ਹੈ. ਮਹੀਨੇ ਦੇ 9,999 ਰੁਪਏ, 1,000 managed leads ਲਈ. ਮਤਲਬ ਇੱਕ lead ਦੇ 10 ਰੁਪਏ ਤੋਂ ਵੀ ਘੱਟ, ਅਤੇ ਹਰ lead ਹਮੇਸ਼ਾ ਲਈ managed."
+    "price": "Model ਬਹੁਤ simple ਹੈ. ਮਹੀਨੇ ਦੇ 9,999 ਰੁਪਏ, 1,000 managed leads ਲਈ. ਮਤਲਬ ਇੱਕ lead ਦੇ 10 ਰੁਪਏ ਤੋਂ ਵੀ ਘੱਟ, ਅਤੇ ਹਰ lead ਹਮੇਸ਼ਾ ਲਈ managed.",
+    "stack": "ਜ਼ਿਆਦਾਤਰ businesses ਦਸ ਵੱਖ-ਵੱਖ tools ਤੇ ਚੱਲਦੇ ਹਨ. WhatsApp ਲਈ ਇੱਕ, chat ਲਈ ਇੱਕ, CRM ਲਈ ਇੱਕ, support ਲਈ ਇੱਕ, ਅਤੇ ਇਹਨਾਂ ਵਿੱਚੋਂ ਕੋਈ ਵੀ ਇੱਕ ਦੂਜੇ ਨਾਲ ਗੱਲ ਨਹੀਂ ਕਰਦਾ. Proxy ਇਹ ਸਾਰਾ ਢੇਰ ਹਟਾ ਦਿੰਦਾ ਹੈ. ਇੱਕੋ system, ਜੋ ਤੁਹਾਡੇ ਬਾਕੀ stack ਨਾਲ ਜੁੜ ਜਾਂਦਾ ਹੈ.",
+    "team": "Proxy ਉੱਥੇ ਹੀ ਰਹਿੰਦਾ ਹੈ ਜਿੱਥੇ ਤੁਹਾਡੀ team ਰਹਿੰਦੀ ਹੈ. Customers ਨਾਲ WhatsApp ਅਤੇ Instagram ਤੇ ਗੱਲ ਕਰਦਾ ਹੈ, ਅਤੇ ਤੁਹਾਡੀ team ਨਾਲ Slack, Telegram ਅਤੇ email ਤੇ. ਜਿਵੇਂ ਹੀ ਕੋਈ hot lead ਆਉਂਦੀ ਹੈ, ਤੁਹਾਡੀ team ਨੂੰ seconds ਵਿੱਚ ਪਤਾ ਲੱਗ ਜਾਂਦਾ ਹੈ."
   }
 }

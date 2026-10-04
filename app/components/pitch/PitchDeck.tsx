@@ -204,6 +204,18 @@ const SLIDES: Slide[] = [
     ),
   },
   {
+    key: "stack", label: "The tool pile",
+    render: ({ on }) => (
+      <>
+        <Headline>Not ten tools. Just PROXe.</Headline>
+        <Body>WhatsApp on one tool, chat on another, the CRM on a third. None of them talk to each other.</Body>
+        <div className="flex flex-1 items-center justify-center pt-3">
+          <ToolPile on={on} />
+        </div>
+      </>
+    ),
+  },
+  {
     key: "who", label: "Who feels it",
     render: ({ on }) => (
       <>
@@ -284,6 +296,32 @@ const SLIDES: Slide[] = [
               <span key={x} className="flex items-center gap-1.5 rounded-full bg-white/[0.07] px-2.5 py-1 text-[11.5px] text-white/80">
                 <Check size={12} style={{ color: C.violet }} />{x}
               </span>
+            ))}
+          </Stagger>
+        </div>
+      </>
+    ),
+  },
+  {
+    key: "team", label: "Where your team lives",
+    render: ({ on }) => (
+      <>
+        <Headline>It lives where your team lives.</Headline>
+        <Body>Customers on WhatsApp and Instagram. Your team on Slack, Telegram and email.</Body>
+        <div className="flex flex-1 flex-col justify-center pt-4">
+          <Stagger on={on} className="space-y-2.5" step={420}>
+            {[
+              [<Brand key="s" d={B.slack} color="#E01E5A" size={18} />, "Slack · #sales", "Hot lead: Ananya, 2BHK, wants a site visit Saturday. Score 92. Call now."],
+              [<Brand key="t" d={B.telegram} color="#26A5E4" size={18} />, "Telegram", "3 demos booked for tomorrow. 1 no-show recovered."],
+              [<Brand key="g" d={B.gmail} color="#EA4335" size={17} />, "Email · 8:00 am", "Yesterday: 41 new leads, 6 hot, 2 visits booked, 1 sale."],
+            ].map(([icon, where, msg]) => (
+              <div key={where as string} className="flex gap-3 rounded-2xl bg-white/[0.05] px-3.5 py-3">
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/[0.08]">{icon as React.ReactNode}</span>
+                <span className="min-w-0">
+                  <span className="block text-[11.5px] text-white/45">{where as string} · <span className="text-[#c4b5fd]">PROXe</span></span>
+                  <span className="block text-[13px] leading-snug text-white/90">{msg as string}</span>
+                </span>
+              </div>
             ))}
           </Stagger>
         </div>
@@ -481,6 +519,16 @@ const SLIDES: Slide[] = [
     ),
   },
   {
+    key: "talk", hero: true, label: "Talk to PROXe",
+    render: ({ setOrb }) => (
+      <div className="flex h-full flex-col">
+        <p className="text-[13px] font-medium text-white/70">You just read the pitch.</p>
+        <h2 className="mt-1 text-[30px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">Now talk to PROXe.</h2>
+        <div className="min-h-0 flex-1"><TalkToProxe onActive={setOrb} /></div>
+      </div>
+    ),
+  },
+  {
     key: "watch", hero: true, label: "Watch how it works",
     render: () => (
       <div className="flex h-full flex-col">
@@ -496,16 +544,6 @@ const SLIDES: Slide[] = [
           </span>
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7c3aed] text-white"><Play size={18} className="translate-x-[1px]" /></span>
         </a>
-      </div>
-    ),
-  },
-  {
-    key: "talk", hero: true, label: "Talk to PROXe",
-    render: ({ setOrb }) => (
-      <div className="flex h-full flex-col">
-        <p className="text-[13px] font-medium text-white/70">You just read the pitch.</p>
-        <h2 className="mt-1 text-[30px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">Now talk to PROXe.</h2>
-        <div className="min-h-0 flex-1"><TalkToProxe onActive={setOrb} /></div>
       </div>
     ),
   },
@@ -537,6 +575,46 @@ function Joint({ on, delay, leak = false }: { on: boolean; delay: number; leak?:
 }
 
 /** PROXe in the middle, every channel around it. */
+/** Ten tools in a pile; after a beat they fold into one PROXe. */
+function ToolPile({ on }: { on: boolean }) {
+  const [merged, setMerged] = useState(false);
+  useEffect(() => {
+    if (!on) { setMerged(false); return; }
+    const t = setTimeout(() => setMerged(true), 2600);
+    return () => clearTimeout(t);
+  }, [on]);
+  // [name, x%, y%, rotation]
+  const tools: [string, number, number, number][] = [
+    ["Zoho CRM", 8, 6, -8], ["Interakt", 56, 2, 6], ["Wati", 30, 22, -4], ["AiSensy", 66, 26, 9],
+    ["Intercom", 4, 40, 5], ["tawk.to", 44, 44, -7], ["HubSpot", 70, 52, 4], ["Freshdesk", 14, 66, -5],
+    ["Google Sheets", 46, 72, 7], ["Calendly", 6, 86, 3],
+  ];
+  return (
+    <div className="relative h-[230px] w-full">
+      {tools.map(([name, x, y, r], i) => (
+        <span key={name}
+          className="absolute whitespace-nowrap rounded-xl border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[12.5px] text-white/75"
+          style={{
+            left: merged ? "50%" : `${x}%`, top: merged ? "50%" : `${y}%`,
+            transform: merged ? "translate(-50%,-50%) scale(0.4)" : `rotate(${r}deg)`,
+            opacity: on ? (merged ? 0 : 1) : 0,
+            transition: `left 700ms ${EASE} ${i * 30}ms, top 700ms ${EASE} ${i * 30}ms, transform 700ms ${EASE} ${i * 30}ms, opacity ${merged ? 500 : 400}ms ease ${merged ? 250 + i * 30 : 80 + i * 90}ms`,
+          }}>
+          {name}
+        </span>
+      ))}
+      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2"
+        style={{ opacity: merged ? 1 : 0, transform: `translate(-50%,-50%) scale(${merged ? 1 : 0.7})`, transition: `opacity 500ms ease 650ms, transform 600ms ${EASE} 650ms` }}>
+        <span className="pitch-pulse flex items-center rounded-2xl px-6 py-4" style={{ background: GRAINIENT }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className="h-6 w-auto" />
+        </span>
+        <span className="text-center text-[12px] text-white/55">One system. Plugs into Slack, Telegram, email, your calendar and payments.</span>
+      </div>
+    </div>
+  );
+}
+
 function Hub({ on }: { on: boolean }) {
   const items: { node: React.ReactNode; label: string }[] = [
     { node: <Brand d={B.whatsapp} color="#25D366" size={20} />, label: "WhatsApp" },
