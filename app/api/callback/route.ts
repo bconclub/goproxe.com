@@ -139,7 +139,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
 
-  let body: { phone?: string; market?: string; name?: string; business?: string; source?: string }
+  let body: { phone?: string; market?: string; name?: string; business?: string; businessType?: string; source?: string }
   try {
     body = await request.json()
   } catch {
@@ -149,6 +149,10 @@ export async function POST(request: Request) {
   const phone = toE164(body.phone ?? '', body.market === 'usd' ? 'usd' : 'inr')
   const callerName = String(body.name ?? '').trim().replace(/\s+/g, ' ').slice(0, 60)
   const callerBusiness = String(body.business ?? '').trim().replace(/\s+/g, ' ').slice(0, 80)
+  // Job seekers are not sales leads: never dial them (Z, 5 Oct 2026).
+  if (String(body.businessType ?? '') === 'job_seeker') {
+    return NextResponse.json({ ok: false, reason: 'not_a_lead' }, { status: 400 })
+  }
   if (!phone) {
     return NextResponse.json({ ok: false, reason: 'bad_phone' }, { status: 400 })
   }

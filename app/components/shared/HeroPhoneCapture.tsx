@@ -5,6 +5,7 @@ import { track, trackLead } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
+import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE } from '../../lib/businessTypes';
 
 /**
  * Hero call capture. Z, 5 Oct 2026: "If they enter their name and details,
@@ -17,7 +18,7 @@ import { detectMarket } from '../../lib/market';
  *      greets them properly and every called lead arrives with details.
  *   3. Ringing.
  */
-type Step = 'phone' | 'details' | 'calling' | 'ringing';
+type Step = 'phone' | 'details' | 'calling' | 'ringing' | 'job_seeker';
 
 const RING_HINT_MS = 25000;
 
@@ -37,6 +38,7 @@ export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
+  const [bizType, setBizType] = useState('');
   const [step, setStep] = useState<Step>('phone');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
@@ -97,9 +99,16 @@ export default function HeroPhoneCapture() {
     const cleanName = name.trim().replace(/\s+/g, ' ');
     const cleanBusiness = business.trim().replace(/\s+/g, ' ');
     if (!number) { setStep('phone'); return; }
-    if (!cleanName || !cleanBusiness) {
-      setError('Add your name and brand so PROXe knows who it is calling.');
-      track('form_error', { form: 'hero_phone', field: !cleanName ? 'name' : 'brand', reason: 'missing' });
+    if (!cleanName || !bizType || (bizType !== 'job_seeker' && !cleanBusiness)) {
+      setError('Add your name, brand and business type so PROXe knows who it is calling.');
+      track('form_error', { form: 'hero_phone', field: !cleanName ? 'name' : !bizType ? 'business_type' : 'brand', reason: 'missing' });
+      return;
+    }
+    // Job seekers: recorded and closed, never called (Z, 5 Oct 2026).
+    if (bizType === 'job_seeker') {
+      void submitLead({ type: 'lead', phone: number, name: cleanName, businessType: 'job_seeker', source: 'hero_phone', eventId: savedRef.current?.eventId });
+      setError('');
+      setStep('job_seeker');
       return;
     }
     setError('');
@@ -108,14 +117,14 @@ export default function HeroPhoneCapture() {
     storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName }, 'proxe');
     if (!savedRef.current) savedRef.current = { phone: number, eventId: trackLead({ source: 'hero_phone' }) };
     // Fills name and brand on the same lead (upsert by phone) while the call is placed.
-    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: cleanBusiness, source: 'hero_phone', eventId: savedRef.current.eventId });
+    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: cleanBusiness, businessType: bizType, source: 'hero_phone', eventId: savedRef.current.eventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
     const res = await fetch('/api/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: number, name: cleanName, business: cleanBusiness, market, source: 'hero_phone' }),
+      body: JSON.stringify({ phone: number, name: cleanName, business: cleanBusiness, businessType: bizType, market, source: 'hero_phone' }),
       signal: ac.signal,
     })
       .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
@@ -158,6 +167,10 @@ export default function HeroPhoneCapture() {
     );
   }
 
+  if (step === 'job_seeker') {
+    return <div className="hq"><p className="hq-hint hq-hint--note" role="status">{JOB_SEEKER_MESSAGE}</p></div>;
+  }
+
   if (step === 'details' || step === 'calling') {
     const calling = step === 'calling';
     const shown = (savedRef.current?.phone || phone).replace(/\D/g, '').slice(-10);
@@ -171,6 +184,13 @@ export default function HeroPhoneCapture() {
           <label className={'hq-field hq-field--biz' + (calling ? ' hq-field--calling' : '')}>
             <input className="hq-input" placeholder="Brand name" autoComplete="organization" value={business}
               onChange={(e) => { setBusiness(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={80} aria-label="Your brand name" />
+          </label>
+          <label className={'hq-field hq-field--type' + (calling ? ' hq-field--calling' : '')}>
+            <select className="hq-input hq-select" value={bizType} disabled={calling} aria-label="Your business type"
+              onChange={(e) => { setBizType(e.target.value); if (error) setError(''); }}>
+              <option value="" disabled>Business type</option>
+              {BUSINESS_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
           </label>
           <button type="submit" className="hq-go" disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
             {calling ? <span className="hq-spin" aria-hidden="true" /> : <ArrowIcon />}

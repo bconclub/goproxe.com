@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { submitLead } from '../../lib/leads'
 import { track, trackLead, newEventId } from '../../lib/analytics'
+import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE } from '../../lib/businessTypes'
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
 
 /**
@@ -59,6 +60,8 @@ export default function WhatsAppGate({
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [brand, setBrand] = useState('')
+  const [bizType, setBizType] = useState('')
+  const [jobSeeker, setJobSeeker] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const nameRef = useRef<HTMLInputElement>(null)
@@ -93,8 +96,15 @@ export default function WhatsAppGate({
     const cleanName = name.trim()
     if (!cleanName) { setErr('Your name, so we know who we are talking to.'); return }
     const cleanBrand = brand.trim().replace(/\s+/g, ' ')
-    if (!cleanBrand) { setErr('Your business, so PROXe knows what it is talking about.'); return }
+    if (!cleanBrand && bizType !== 'job_seeker') { setErr('Your business, so PROXe knows what it is talking about.'); return }
+    if (!bizType) { setErr('Pick your business type.'); return }
     if (digits.length < 10) { setErr('A 10-digit mobile number, please.'); return }
+    // Job seekers are recorded and closed; no sales chat is opened.
+    if (bizType === 'job_seeker') {
+      void submitLead({ type: 'lead', name: cleanName, phone: digits, businessType: 'job_seeker', source: 'whatsapp_gate' })
+      setJobSeeker(true)
+      return
+    }
     setBusy(true)
 
     // Opened FIRST, on the gesture, so no popup blocker eats it. The capture
@@ -112,7 +122,7 @@ export default function WhatsAppGate({
     } catch { /* analytics must never block the chat */ }
 
     // Attribution rides along inside submitLead (UTMs, referrer, landing page).
-    void submitLead({ type: 'lead', name: cleanName, phone: digits, brandName: cleanBrand, source: 'whatsapp_gate', eventId })
+    void submitLead({ type: 'lead', name: cleanName, phone: digits, brandName: cleanBrand, businessType: bizType, source: 'whatsapp_gate', eventId })
       .finally(() => {
         setBusy(false)
         onClose()
@@ -161,6 +171,17 @@ export default function WhatsAppGate({
           autoComplete="organization"
         />
 
+        <label className="wag-label" htmlFor="wag-type">Business type</label>
+        <select
+          id="wag-type"
+          className="wag-input"
+          value={bizType}
+          onChange={(e) => { setBizType(e.target.value); setErr(null); setJobSeeker(false) }}
+        >
+          <option value="" disabled>Choose one</option>
+          {BUSINESS_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+        </select>
+
         <label className="wag-label" htmlFor="wag-phone">Mobile number</label>
         <div className="wag-phone">
           <span className="wag-cc">+91</span>
@@ -177,6 +198,7 @@ export default function WhatsAppGate({
         </div>
 
         {err && <p className="wag-err" role="alert">{err}</p>}
+        {jobSeeker && <p className="wag-err" role="status">{JOB_SEEKER_MESSAGE}</p>}
 
         <button className="wag-go" onClick={start} disabled={busy}>
           {busy ? 'Opening WhatsApp…' : 'Open WhatsApp'}

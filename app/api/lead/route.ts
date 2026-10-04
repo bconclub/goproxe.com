@@ -39,6 +39,7 @@ interface LeadPayload {
   email?: string
   phone?: string
   brandName?: string
+  businessType?: string
   websiteUrl?: string
   source?: string
   bookingLabel?: string

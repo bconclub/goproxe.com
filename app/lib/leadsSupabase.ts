@@ -29,6 +29,8 @@ export interface SupabaseLeadInput {
   email?: string
   phone?: string
   brandName?: string
+  /** coaching | clinic_hospital | real_estate | other | job_seeker */
+  businessType?: string
   websiteUrl?: string
   source?: string
   bookingLabel?: string
@@ -74,6 +76,10 @@ function buildContext(input: SupabaseLeadInput) {
   if (brandName) web.brand_name = brandName
   const websiteUrl = trimOrNull(input.websiteUrl)
   if (websiteUrl) web.website_url = websiteUrl
+  // Business type is its own field: brand_name keeps the real brand name.
+  const businessType = trimOrNull(input.businessType)
+  if (businessType) web.business_type = businessType
+  if (businessType === 'job_seeker') web.disqualification_reason = 'job_seeker'
 
   const attribution: Record<string, unknown> = {}
   if (input.channel) attribution.channel = input.channel
@@ -82,6 +88,17 @@ function buildContext(input: SupabaseLeadInput) {
   if (input.utmCampaign) attribution.utm_campaign = input.utmCampaign
   if (input.referrer) attribution.referrer = input.referrer
   if (input.landingPage) attribution.landing_page = input.landingPage
+  // utm_content / utm_term / utm_id / fbclid only lived inside landing_page;
+  // pull them out so reports can group by ad and creative.
+  if (input.landingPage) {
+    try {
+      const q = new URL(input.landingPage, 'https://goproxe.com').searchParams
+      for (const k of ['utm_content', 'utm_term', 'utm_id', 'fbclid']) {
+        const v = q.get(k)
+        if (v) attribution[k] = v.slice(0, 300)
+      }
+    } catch { /* unparseable landing page: keep what we have */ }
+  }
   if (Object.keys(attribution).length > 0) web.attribution = attribution
 
   return { web }
@@ -130,6 +147,8 @@ export async function upsertProxeLead(input: SupabaseLeadInput): Promise<Supabas
       if (name) updates.customer_name = name
       if (email) updates.email = email
       if (phone) updates.phone = phone
+      // Job seekers are not sales leads: closed, never called or messaged.
+      if (ctx.web.business_type === 'job_seeker') updates.lead_stage = 'Closed Lost'
 
       const { error: updateError } = await supabase
         .from('all_leads')
@@ -155,6 +174,7 @@ export async function upsertProxeLead(input: SupabaseLeadInput): Promise<Supabas
         last_interaction_at: new Date().toISOString(),
         brand: BRAND,
         unified_context: ctx,
+        ...(ctx.web.business_type === 'job_seeker' ? { lead_stage: 'Closed Lost' } : {}),
       })
       .select('id')
       .single()

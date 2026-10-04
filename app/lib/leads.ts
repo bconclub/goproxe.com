@@ -18,6 +18,8 @@ export interface LeadInput {
   email?: string
   phone?: string
   brandName?: string
+  /** coaching | clinic_hospital | real_estate | other | job_seeker */
+  businessType?: string
   websiteUrl?: string
   source?: string
   bookingLabel?: string
