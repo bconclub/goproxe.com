@@ -152,9 +152,26 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
    * have a contactable human. Firing it again on step 2 would report two
    * leads for one person and halve the apparent cost per lead.
    */
+  // A failed check must be visible: on a phone the field with the problem can sit
+  // below the fold, and "Continue" then looks dead (seen in Clarity, 5 Oct 2026).
+  const showFirstError = (fields: string[]) => {
+    window.setTimeout(() => {
+      for (const id of fields) {
+        const el = document.getElementById(id);
+        if (el && el.getAttribute('aria-invalid') !== 'false' && el.className.includes(styles.inputError)) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          (el as HTMLInputElement).focus({ preventScroll: true });
+          return;
+        }
+      }
+    }, 0);
+  };
+  // Saving must never hold the button: give up waiting after 5s (the request still goes).
+  const within = <T,>(p: Promise<T>, ms = 5000) => Promise.race([p, new Promise<T | false>((r) => window.setTimeout(() => r(false), ms))]);
+
   const handleStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep1()) return;
+    if (!validateStep1()) { showFirstError(['name', 'phoneNumber', 'businessType']); return; }
 
     // Job seekers are recorded and closed, never sent to onboarding or sales.
     if (formData.businessType === 'job_seeker') {
@@ -181,14 +198,14 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       });
       // Never blocks the step change: submitLead resolves false on failure,
       // and a lead we could not persist must not trap someone on step 1.
-      await submitLead({
+      await within(submitLead({
         type: 'lead',
         name: partial.name,
         phone: partial.phone,
         businessType: formData.businessType,
         source: isSales ? `${source}_sales` : 'deploy_modal',
         eventId: leadEventId,
-      });
+      }));
     }
 
     setIsSubmitting(false);
@@ -203,7 +220,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep2()) return;
+    if (!validateStep2()) { showFirstError(['email', 'brandName', 'websiteUrl']); return; }
 
     setIsSubmitting(true);
 

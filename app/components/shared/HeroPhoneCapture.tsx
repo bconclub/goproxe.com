@@ -46,7 +46,8 @@ const ArrowIcon = () => (
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
-  const [step, setStep] = useState<Step>('cta');
+  // Form on load: a 'Talk to PROXe' button in front of it took ad leads to zero (5 Oct 2026).
+  const [step, setStep] = useState<Step>('form');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');

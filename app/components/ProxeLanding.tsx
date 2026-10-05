@@ -1440,7 +1440,7 @@ export default function ProxeLanding() {
       <section className="proxe-hero" id="product">
         <div className="proxe-container proxe-hero-inner">
           <div className="proxe-hero-eyebrow">AI Lead Conversion</div>
-          <h1 className="proxe-hero-title">
+          <h1 className="proxe-hero-title" style={{ cursor: "pointer" }} onClick={() => { const el = document.querySelector<HTMLInputElement>(".hq-field--name input, #hero-phone"); if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus({ preventScroll: true }); } }}>
             <span className="proxe-hero-line">
               <span className="proxe-hero-seg">Never Miss</span>
               {' '}
