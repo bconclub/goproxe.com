@@ -1405,7 +1405,7 @@ function LangMenu({ lang, onPick, highlight }: { lang: string; onPick: (code: st
   }, [open]);
   const name = LANGS.find(([c]) => c === lang)?.[1] ?? "English";
   return (
-    <div ref={box} className="sm:relative">
+    <div ref={box}>
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open} aria-label={`Narration language: ${name}`}
         className={`flex h-10 items-center gap-1.5 rounded-full px-3 text-[12.5px] backdrop-blur-md transition-colors ${highlight && !open ? "pitch-pulse text-white" : "text-white/85 hover:text-white"}`}
         style={{ background: highlight ? C.deep : "rgba(255,255,255,0.07)" }}>
@@ -1414,37 +1414,17 @@ function LangMenu({ lang, onPick, highlight }: { lang: string; onPick: (code: st
         <span className="sm:hidden">{highlight ? "Language" : lang.slice(0, 2).toUpperCase()}</span>
       </button>
       {open && (
-        // Pointer centred on the pill, whichever way the popover is shifted.
-        <span aria-hidden className="absolute left-1/2 top-[42px] z-40 hidden h-3 w-3 -translate-x-1/2 rotate-45 sm:block" style={{ background: "rgba(22,17,43,0.97)", borderLeft: `1px solid ${C.line}`, borderTop: `1px solid ${C.line}` }} />
-      )}
-      {open && (
-        // Phones: one row of chips hovering just under the header, above the
-        // card, scrolling sideways with faded edges. Never covers the card.
-        <div role="listbox" aria-label="Narration language" className="pitch-in absolute inset-x-0 top-full z-30 mt-2 sm:hidden" style={{ animationDuration: "220ms" }}>
-          <div className="flex gap-1.5 overflow-x-auto px-5 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        // One row of chips hovering just under the header, above the cards
+        // (right-aligned on desktop, scrolling sideways with faded edges on
+        // phones). Never a dropdown over the card.
+        <div role="listbox" aria-label="Narration language" className="pitch-in absolute inset-x-0 top-full z-30 mt-2" style={{ animationDuration: "220ms" }}>
+          <div className="flex gap-1.5 overflow-x-auto px-5 py-1 [scrollbar-width:none] sm:justify-end sm:px-8 [&::-webkit-scrollbar]:hidden"
             style={{ maskImage: "linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 20px), transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 20px), transparent)" }}>
             {LANGS.map(([c, n]) => (
               <button key={c} type="button" role="option" aria-selected={c === lang} onClick={() => { onPick(c); setOpen(false); }}
                 className="flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] text-white/90 shadow-lg backdrop-blur-xl"
                 style={{ background: c === lang ? C.deep : "rgba(22,17,43,0.94)", border: `1px solid ${c === lang ? C.deep : C.line}` }}>
                 {c === lang && <Check size={13} />}{n}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-      {open && (
-        <div role="listbox" aria-label="Narration language"
-          className="pitch-in absolute right-0 top-[48px] z-30 hidden w-[244px] rounded-2xl p-2 shadow-2xl backdrop-blur-xl sm:block"
-          style={{ background: "rgba(22,17,43,0.97)", border: `1px solid ${C.line}`, animationDuration: "220ms" }}>
-          <p className="px-2 pb-1.5 pt-0.5 text-[11px] text-white/45">Narration plays in</p>
-          <div className="grid grid-cols-2 gap-1">
-            {LANGS.map(([c, n]) => (
-              <button key={c} type="button" role="option" aria-selected={c === lang} onClick={() => { onPick(c); setOpen(false); }}
-                className="flex h-9 items-center justify-between rounded-xl px-2.5 text-left text-[13px] text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
-                style={c === lang ? { background: "rgba(124,58,237,0.32)", color: "#fff" } : undefined}>
-                {n}
-                {c === lang && <Check size={13} style={{ color: C.violet }} />}
               </button>
             ))}
           </div>
