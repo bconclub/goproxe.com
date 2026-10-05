@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { PitchDeck } from '../components/pitch/PitchDeck'
-import { EXPLAINER_CARDS } from '../components/pitch/cards'
+import { CORE_EXPLAINER, EXTRAS_EXPLAINER } from '../components/pitch/cards'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function WhatIsProxePage() {
   return (
     <div className={inter.variable} style={{ fontFamily: 'var(--font-proxe-sans), system-ui, sans-serif' }}>
-      <PitchDeck variant="explainer" only={EXPLAINER_CARDS} />
+      <PitchDeck variant="explainer" only={CORE_EXPLAINER} extras={EXTRAS_EXPLAINER} />
     </div>
   )
 }

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import './pitch.css'
-import { PRODUCT_CARDS } from './cards'
+import { CORE_EXPLAINER, EXTRAS_EXPLAINER } from './cards'
 
 // Loaded after the page: the homepage stays fast, the deck arrives when needed.
 const PitchDeck = dynamic(() => import('./PitchDeck').then((m) => m.PitchDeck), {
@@ -13,7 +13,7 @@ const PitchDeck = dynamic(() => import('./PitchDeck').then((m) => m.PitchDeck), 
 })
 
 // Opens on the welcome card; the rest plays full screen once they ask for it.
-const CARDS = PRODUCT_CARDS
+const CARDS = CORE_EXPLAINER
 
 /** Homepage walkthrough: what goes wrong, and what PROXe does about it, in a few swipes. */
 export default function PitchWalkthrough() {
@@ -48,10 +48,10 @@ export default function PitchWalkthrough() {
             Tap any card to hear it, narrated, full screen.
           </p>
         </div>
-        <PitchDeck variant="embed" only={CARDS} onExpand={(i) => { setAt(i); setFull(true) }} />
+        <PitchDeck variant="embed" only={CARDS} extras={EXTRAS_EXPLAINER} onExpand={(i) => { setAt(i); setFull(true) }} />
         {full && createPortal(
           <div className="pitch-root" data-lenis-prevent style={font ? ({ '--font-proxe-sans': font } as React.CSSProperties) : undefined}>
-            <PitchDeck variant="page" only={CARDS} autoStart startAt={at} onClose={() => setFull(false)} />
+            <PitchDeck variant="page" only={CARDS} extras={EXTRAS_EXPLAINER} autoStart startAt={at} onClose={() => setFull(false)} />
           </div>,
           document.body,
         )}

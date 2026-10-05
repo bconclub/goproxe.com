@@ -141,10 +141,10 @@ function GapFix({ on }: { on: boolean }) {
 // vanish on white. `color` tints that brand's own use-case card. Icons live in
 // public/brands/icons/, trimmed and square; add a brand by adding a row here.
 const BRANDS = {
-  hsh: { name: "HSH Hospital", about: "One of the top speciality hospitals in Hubli", tag: "Healthcare", icon: "/brands/icons/hubli-super-speciality-hospital.png", tile: "white", color: "#38bdf8" },
+  hsh: { name: "HS Hospital", about: "One of the top speciality hospitals in Hubli", tag: "Healthcare", icon: "/brands/icons/hubli-super-speciality-hospital.png", tile: "white", color: "#38bdf8" },
   lokazen: { name: "Lokazen", about: "AI-based commercial real estate matching, Bangalore", tag: "Real estate", icon: "/brands/icons/lokazen.svg", tile: "none", color: "#fb923c" },
   windchasers: { name: "Windchasers", about: "India's premier pilot training academy", tag: "Aviation academy", icon: "/brands/icons/windchasers.png", tile: "dark", color: "#d4a94e" },
-  bcon: { name: "BCON Club", about: "Brand growth agency", tag: "Growth agency", icon: "/brands/icons/bcon-club.png", tile: "none", color: "#cbfa0a" },
+  bcon: { name: "BCON", about: "Brand growth agency", tag: "Growth agency", icon: "/brands/icons/bcon-club.png", tile: "none", color: "#cbfa0a" },
   khadivasthra: { name: "Khadivasthra", about: "Handlooms and Indian handicrafts", tag: "E-commerce", icon: "/brands/icons/khadivasthra.png", tile: "none", color: "#f59e0b" },
   axlrate: { name: "Axlrate", about: "Sales research and innovation", tag: "Sales research", icon: "/brands/icons/axlrate.png", tile: "white", color: "#2dd4bf" },
 } as const;
@@ -166,11 +166,11 @@ function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
 // stats: last 90 days from the brand's PROXe database (snapshot 5 Oct 2026); only where real numbers exist.
 const BUILT: { brand: BrandKey; title: string; what: string; stats?: [string, string][] }[] = [
   { brand: "hsh", title: "Kannada voice and complete patient management", what: "One agent on chat and calls, and the whole patient journey on PROXe" },
-  { brand: "lokazen", title: "Brand and property onboarding, on WhatsApp", what: "Brands and property owners onboarded end to end on WhatsApp, auto-matched, with fees from ₹1,000 to ₹10,000 paid on chat",
+  { brand: "lokazen", title: "Brand and property onboarding, on WhatsApp", what: "Brands and property owners onboarded end to end on WhatsApp, and auto-matched",
     stats: [["621", "leads"], ["56", "meetings booked"], ["76", "opportunities"], ["8s", "median reply"]] },
   { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%",
     stats: [["3,823", "leads"], ["763", "opportunities"], ["100%", "answered"], ["7s", "median reply"]] },
-  { brand: "bcon", title: "Instagram comment and DM automation", what: "Replies, follow-ups and lead management, run by PROXe" },
+  { brand: "bcon", title: "Instagram comment and DM automation, and lead management", what: "Every comment and DM answered, followed up and managed as a lead, by PROXe" },
   { brand: "khadivasthra", title: "Complete e-commerce", what: "Cart recovery, and catalogs across Google Merchant and Instagram" },
 ];
 
@@ -186,7 +186,9 @@ const NUMBERS: [string, string][] = [
 
 // ── the cards ──
 
-type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void }) => React.ReactNode };
+/** On-demand cards: not in the main run, opened from the bubbles on "Talk to PROXe". */
+export type ExtraGroup = { key: string; label: string; cards: string[] };
+type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void; extras: ExtraGroup[]; openExtra: (key: string) => void }) => React.ReactNode };
 
 const SLIDES: Slide[] = [
   {
@@ -445,7 +447,7 @@ const SLIDES: Slide[] = [
                 <Stagger on={on} className="mt-1.5 grid grid-cols-4 gap-1.5" step={350}>
                   {r.stats.map(([n, l]) => (
                     <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
-                      <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] text-white tabular-nums">{n}</span>
+                      <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] tabular-nums" style={{ color: b.color }}>{n}</span>
                       <span className="mt-1 block text-[10.5px] leading-tight text-white/55">{l}</span>
                     </div>
                   ))}
@@ -717,10 +719,21 @@ const SLIDES: Slide[] = [
   },
   {
     key: "talk", hero: true, label: "Talk to PROXe",
-    render: ({ setOrb }) => (
+    render: ({ setOrb, extras, openExtra }) => (
       <div className="flex h-full flex-col">
-        <p className="text-[13px] font-medium text-white/70">You just read the pitch.</p>
+        <p className="text-[13px] font-medium text-white/70">That&apos;s PROXe.</p>
         <h2 className="mt-1 text-[30px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">Now talk to PROXe.</h2>
+        {extras.length > 0 && (
+          // Everything else is on demand: each bubble plays its cards, then comes back here.
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {extras.map((g) => (
+              <button key={g.key} type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openExtra(g.key); }}
+                className="rounded-full border border-white/25 bg-white/[0.1] px-3 py-1.5 text-[12.5px] font-medium text-white backdrop-blur-md transition-colors hover:bg-white/[0.2]">
+                {g.label} <span aria-hidden>→</span>
+              </button>
+            ))}
+          </div>
+        )}
         <div className="min-h-0 flex-1"><TalkToProxe onActive={setOrb} /></div>
       </div>
     ),
@@ -895,9 +908,11 @@ function Fit({ children, deps }: { children: React.ReactNode; deps: unknown[] })
  * embed: a homepage section; starts moving when scrolled into view, stays
  *        quiet until someone turns narration on, and shows only `only` cards.
  */
-export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart, startAt = 0 }: {
+export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClose, autoStart, startAt = 0 }: {
   /** page: /pitch. explainer: /what-is-proxe, same full screen, own analytics label. */
   variant?: "page" | "embed" | "explainer"; only?: string[];
+  /** On-demand groups, played from the bubbles on the last card and not in the main run. */
+  extras?: ExtraGroup[];
   /** Embed only: a tap anywhere on the deck (or narration, language, "Play the pitch") opens the full-screen deck at that card. */
   onExpand?: (at: number) => void;
   /** Page only: X and Escape close an overlay deck instead of going home. */
@@ -908,7 +923,20 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
   startAt?: number;
 }) {
   const embed = variant === "embed";
-  const slides = only ? SLIDES.filter((s) => only.includes(s.key)) : SLIDES;
+  // The main run, in the page's own order; on-demand cards follow it.
+  const pick = (k: string) => SLIDES.find((x) => x.key === k);
+  const core = only ? only.map(pick).filter((x): x is Slide => !!x) : SLIDES;
+  const extraCards = extras.flatMap((g) => g.cards.map((k) => ({ group: g.key, slide: pick(k) }))).filter((x): x is { group: string; slide: Slide } => !!x.slide);
+  const slides = [...core, ...extraCards.map((x) => x.slide)];
+  const coreN = core.length;
+  const groupAt = (i: number) => (i >= coreN ? extraCards[i - coreN]?.group ?? null : null);
+  const talkIdx = Math.max(0, core.findIndex((x) => x.key === "talk") >= 0 ? core.findIndex((x) => x.key === "talk") : coreN - 1);
+  // After a card: the next core card; inside a group, the group's next card, then back to Talk.
+  const nextAfter = (i: number) => {
+    if (i < coreN) return i === talkIdx ? i : Math.min(coreN - 1, i + 1);
+    const g = groupAt(i);
+    return i + 1 < slides.length && groupAt(i + 1) === g ? i + 1 : talkIdx;
+  };
   const { startDeploy } = useDeployModal();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(!embed);
@@ -1015,7 +1043,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     if (!started) return;
     if (index > seen.current.max) seen.current.max = index;
     track("pitch_card", { variant, card: slides[index]!.key, index: index + 1 });
-    if (index === n - 1) track("pitch_complete", { variant, seconds: Math.round((Date.now() - seen.current.t0) / 1000) });
+    if (index === talkIdx) track("pitch_complete", { variant, seconds: Math.round((Date.now() - seen.current.t0) / 1000) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, started]);
 
@@ -1047,7 +1075,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
       el.style.setProperty("--pitch-s", stretch.toFixed(2));
     });
     let total = 0;
-    slides.forEach((s, i) => {
+    slides.slice(0, coreN).forEach((s, i) => {
       const clip = voiced ? clipSec(lang, s.key) / RATE : 0;
       total += clip ? clip + 0.35 : readMs(i) / 1000;
     });
@@ -1058,7 +1086,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
   }, [narrate, unlocked, lang, n, index]);
 
   // ── reading timer: each card gets the time it takes to read, then moves on ──
-  const paused = !started || !inView || held || userPaused || orb || dragging || index === n - 1;
+  const paused = !started || !inView || held || userPaused || orb || dragging || index === talkIdx;
   // The loop reads `paused` through a ref so pausing keeps the elapsed time.
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -1080,7 +1108,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
       const left = Math.max(0, total - elapsed);
       if (barRef.current) barRef.current.style.transform = `scaleX(${Math.min(1, elapsed / total)})`;
       if (secRef.current) secRef.current.textContent = stop ? "Paused" : `${Math.ceil(left / 1000)}s`;
-      if (elapsed >= total) { go(index + 1); return; }
+      if (elapsed >= total) { go(nextAfter(index)); return; }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -1337,7 +1365,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
                 </div>
               )}
 
-              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
+              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, extras, openExtra: (k) => { const at = coreN + extraCards.findIndex((x) => x.group === k); track("button_click", { label: `pitch_extra_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
 
               {/* Side cards sink back, but stay visible as more to come */}
               <div className="pointer-events-none absolute inset-0 rounded-[28px]"
@@ -1353,9 +1381,9 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
           <ArrowLeft size={18} />
         </button>
         {/* Phones get a counter; the row of dots needs the room Deploy now uses. */}
-        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}{totalSec ? ` · ${clock(totalSec)}` : ""}</span>
+        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{groupAt(index) ? extras.find((g) => g.key === groupAt(index))?.label : `${index + 1} / ${coreN}${totalSec ? ` · ${clock(totalSec)}` : ""}`}</span>
         <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
-          {slides.map((s, i) => (
+          {slides.slice(0, coreN).map((s, i) => (
             <button key={s.key} onClick={() => (onExpand ? onExpand(i) : go(i))} aria-label={`Go to ${s.key === "cover" && variant !== "page" ? "What is PROXe?" : s.label}`}
               className="flex h-11 items-center transition-[width] duration-300" style={{ width: i === index ? 26 : 9 }}>
               <span className="block h-1.5 w-full rounded-full transition-colors duration-300"
@@ -1364,7 +1392,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
           ))}
           {totalSec > 0 && <span className="ml-2 font-mono text-[11px] text-white/40" title="Total length">{clock(totalSec)}</span>}
         </div>
-        {index === n - 1 ? (
+        {index === talkIdx ? (
           <button onClick={() => { track("button_click", { label: "deploy_proxe", location: `${variant}_end` }); startDeploy(`pitch_${variant}_end`); }}
             className="flex h-11 shrink-0 items-center gap-2 rounded-full px-5 text-[13.5px] font-semibold text-white" style={{ background: C.deep }}>
             Deploy PROXe <ArrowRight size={16} />
@@ -1377,7 +1405,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
               Deploy PROXe
             </button>
           )}
-          <button onClick={() => (onExpand ? onExpand(Math.min(n - 1, index + 1)) : go(index + 1))} aria-label="Next card"
+          <button onClick={() => (onExpand ? onExpand(Math.min(n - 1, index + 1)) : go(nextAfter(index)))} aria-label="Next card"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white"
             style={{ background: C.deep }}>
             <ArrowRight size={18} />
