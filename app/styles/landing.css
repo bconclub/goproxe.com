@@ -12462,3 +12462,17 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .proxe-hero-title { font-size: 10.1vw; }
 }
 @media (prefers-reduced-motion: reduce) { .proxe-root .hq-cta { animation: none; } }
+
+/* Hero business type (5 Oct 2026): one tap after name + number, so only real
+   businesses are called and reported to Meta as a Lead. */
+.proxe-root .hq-ask { margin: 0 0 10px; text-align: center; color: #fff; font-size: 16px; font-weight: 600; }
+.proxe-root .hq-types { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; animation: hqIn .35s cubic-bezier(.22,1,.36,1) both; }
+.proxe-root .hq-type {
+  height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.7); background: rgba(9, 5, 34, 0.48); color: #fff;
+  font-family: var(--proxe-font-sans); font-size: 15px; font-weight: 600; transition: background .15s ease, color .15s ease;
+}
+.proxe-root .hq-type:hover, .proxe-root .hq-type:focus-visible { background: #fff; color: #140a33; outline: none; }
+.proxe-root .hq-type--job { border-style: dashed; font-weight: 500; color: rgba(255, 255, 255, 0.8); }
+.proxe-root .hq-note { margin: 0; text-align: center; color: rgba(255, 255, 255, 0.85); font-size: 15px; line-height: 1.5; }
+@media (max-width: 640px) { .proxe-root .hq-type { height: 42px; padding: 0 14px; font-size: 14px; } }

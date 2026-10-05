@@ -5,6 +5,7 @@ import { track, trackLead, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
+import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE, type BusinessType } from '../../lib/businessTypes';
 
 /**
  * Hero call capture. Z, 5 Oct 2026: "If they enter their name and details,
@@ -15,10 +16,14 @@ import { detectMarket } from '../../lib/market';
  *      the main thing; tapping it opens name and number together, inline).
  *   2. Name + mobile side by side, one call button. The number is saved the
  *      moment it is valid, so anyone who leaves is still a lead (core then
- *      sends one WhatsApp). The agent asks the business on the call.
- *   3. Ringing.
+ *      sends one WhatsApp).
+ *   3. One tap: what business? (Z's ads thread, 5 Oct 2026: Meta optimises on
+ *      Lead, so only a real business is reported as one.) A business type
+ *      places the call and fires Lead; "Looking for a job" is saved closed,
+ *      gets a polite note, no call, no Lead.
+ *   4. Ringing.
  */
-type Step = 'cta' | 'form' | 'calling' | 'ringing';
+type Step = 'cta' | 'form' | 'type' | 'calling' | 'ringing' | 'closed';
 
 const RING_HINT_MS = 25000;
 
@@ -109,6 +114,20 @@ export default function HeroPhoneCapture() {
     }
     saveNumber(number);
     setError('');
+    setStep('type');
+  };
+
+  const pickType = async (type: BusinessType) => {
+    const number = savedRef.current?.phone || validPhone(phone.trim());
+    const cleanName = name.trim().replace(/\s+/g, ' ');
+    if (!number || !cleanName) { setStep('form'); return; }
+    track('button_click', { label: `hero_business_${type}`, location: 'hero' });
+    if (type === 'job_seeker') {
+      // Saved, closed, never called, never a Lead.
+      void submitLead({ type: 'lead', phone: number, name: cleanName, businessType: 'job_seeker', source: 'hero_phone' });
+      setStep('closed');
+      return;
+    }
     setStep('calling');
     track('callback_submit', { market });
     storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName }, 'proxe');
@@ -116,14 +135,14 @@ export default function HeroPhoneCapture() {
     const leadEventId = trackLead({ source: 'hero_phone', hasBrand: true });
     savedRef.current = { phone: number, eventId: leadEventId };
     // Fills name and brand on the same lead (upsert by phone) while the call is placed.
-    void submitLead({ type: 'lead', phone: number, name: cleanName, source: 'hero_phone', eventId: leadEventId });
+    void submitLead({ type: 'lead', phone: number, name: cleanName, businessType: type, source: 'hero_phone', eventId: leadEventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
     const res = await fetch('/api/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: number, name: cleanName, market, source: 'hero_phone' }),
+      body: JSON.stringify({ phone: number, name: cleanName, businessType: type, market, source: 'hero_phone' }),
       signal: ac.signal,
     })
       .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
@@ -162,6 +181,26 @@ export default function HeroPhoneCapture() {
         ) : (
           <a href="#voice" className="hq-next">While you talk, see what else PROXe does <span aria-hidden="true">→</span></a>
         )}
+      </div>
+    );
+  }
+
+  if (step === 'closed') {
+    return <div className="hq"><p className="hq-note" role="status">{JOB_SEEKER_MESSAGE}</p></div>;
+  }
+
+  if (step === 'type') {
+    return (
+      <div className="hq">
+        <p className="hq-ask">What&apos;s your business?</p>
+        <div className="hq-types" role="group" aria-label="Your business type">
+          {BUSINESS_TYPES.map((b) => (
+            <button key={b.value} type="button" className={'hq-type' + (b.value === 'job_seeker' ? ' hq-type--job' : '')} onClick={() => void pickType(b.value)}>
+              {b.label}
+            </button>
+          ))}
+        </div>
+        {error && <p className="hq-error" role="alert">{error}</p>}
       </div>
     );
   }
