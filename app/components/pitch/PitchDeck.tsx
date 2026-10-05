@@ -434,11 +434,11 @@ const SLIDES: Slide[] = [
             <img src={`/pitch/edge/${r.brand}.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover"
               style={{ transform: on ? "scale(1.06)" : "scale(1.14)", transition: `transform 9s ${EASE}` }} />
             <div aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 35%, rgba(12,9,24,0.85)), linear-gradient(90deg, color-mix(in srgb, ${b.color} 30%, transparent), transparent 60%)` }} />
-            <div className={`absolute bottom-3 left-3 flex items-center gap-2.5 ${on ? "pitch-in" : "opacity-0"}`}>
-              <span className="rounded-full p-[2px]" style={{ background: b.color }}><BrandIcon brand={r.brand} size={38} /></span>
+            <div className={`absolute flex items-center gap-3 rounded-2xl bg-black/45 p-2 pr-3 backdrop-blur-md ${on ? "pitch-in" : "opacity-0"}`} style={{ left: 10, right: 10, bottom: 10, top: "auto" }}>
+              <span className="flex shrink-0 items-center justify-center rounded-full p-[3px]" style={{ background: b.color }}><BrandIcon brand={r.brand} size={48} /></span>
               <span className="min-w-0">
-                <span className="block text-[15px] font-semibold leading-tight text-white">{b.name}</span>
-                <span className="block text-[11.5px] leading-snug text-white/70">{b.about}</span>
+                <span className="block text-[16px] font-semibold leading-tight text-white">{b.name}</span>
+                <span className="block text-[12px] leading-snug text-white/75">{b.about}</span>
               </span>
             </div>
           </div>

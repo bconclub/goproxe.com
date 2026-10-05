@@ -12506,3 +12506,11 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq .hq-row.hq-row--both .hq-field { height: 46px; }
   .proxe-root .hq .hq-row.hq-row--both .hq-go { width: 46px; height: 46px; }
 }
+
+/* Name and brand are the same size everywhere (5 Oct 2026): phones put them side by side
+   at exactly half each, mobile + call underneath. */
+.proxe-root .hq .hq-row.hq-row--both .hq-field--name,
+.proxe-root .hq .hq-row.hq-row--both .hq-field--brand { flex: 1 1 0; }
+@media (max-width: 640px) {
+  .proxe-root .hq .hq-row.hq-row--both { grid-template-columns: calc(50% - 3px) 1fr 46px; }
+}

@@ -2,7 +2,7 @@
  "bn-IN": {
   "built": 34.56,
   "built-bcon": 8.64,
-  "built-hsh": 10.56,
+  "built-hsh": 10.16,
   "built-khadivasthra": 8.88,
   "built-lokazen": 11.36,
   "built-windchasers": 11.52,
@@ -31,7 +31,7 @@
  "en": {
   "built": 33.84,
   "built-bcon": 8.72,
-  "built-hsh": 10.56,
+  "built-hsh": 10.0,
   "built-khadivasthra": 9.36,
   "built-lokazen": 12.08,
   "built-windchasers": 12.24,
@@ -60,7 +60,7 @@
  "gu-IN": {
   "built": 34.48,
   "built-bcon": 9.12,
-  "built-hsh": 10.64,
+  "built-hsh": 10.4,
   "built-khadivasthra": 9.6,
   "built-lokazen": 11.28,
   "built-windchasers": 11.68,
@@ -89,7 +89,7 @@
  "hi-IN": {
   "built": 34.96,
   "built-bcon": 9.52,
-  "built-hsh": 10.56,
+  "built-hsh": 10.24,
   "built-khadivasthra": 9.68,
   "built-lokazen": 11.28,
   "built-windchasers": 12.4,
@@ -118,7 +118,7 @@
  "kn-IN": {
   "built": 36.88,
   "built-bcon": 8.96,
-  "built-hsh": 11.12,
+  "built-hsh": 10.96,
   "built-khadivasthra": 9.92,
   "built-lokazen": 12.24,
   "built-windchasers": 12.48,
@@ -147,7 +147,7 @@
  "ml-IN": {
   "built": 34.32,
   "built-bcon": 5.04,
-  "built-hsh": 11.04,
+  "built-hsh": 10.8,
   "built-khadivasthra": 9.36,
   "built-lokazen": 11.84,
   "built-windchasers": 12.48,
@@ -176,7 +176,7 @@
  "mr-IN": {
   "built": 35.52,
   "built-bcon": 9.12,
-  "built-hsh": 11.36,
+  "built-hsh": 10.88,
   "built-khadivasthra": 9.52,
   "built-lokazen": 11.36,
   "built-windchasers": 12.88,
@@ -205,7 +205,7 @@
  "pa-IN": {
   "built": 35.28,
   "built-bcon": 8.64,
-  "built-hsh": 10.8,
+  "built-hsh": 10.72,
   "built-khadivasthra": 9.44,
   "built-lokazen": 11.44,
   "built-windchasers": 12.64,
@@ -234,7 +234,7 @@
  "ta-IN": {
   "built": 34.24,
   "built-bcon": 9.04,
-  "built-hsh": 11.6,
+  "built-hsh": 12.0,
   "built-khadivasthra": 9.52,
   "built-lokazen": 11.84,
   "built-windchasers": 12.72,
@@ -263,7 +263,7 @@
  "te-IN": {
   "built": 35.12,
   "built-bcon": 9.2,
-  "built-hsh": 10.96,
+  "built-hsh": 10.8,
   "built-khadivasthra": 8.88,
   "built-lokazen": 11.6,
   "built-windchasers": 13.12,

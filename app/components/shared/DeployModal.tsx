@@ -6,7 +6,6 @@ import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
 import { track, trackLead, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
-import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE } from '../../lib/businessTypes';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
 // The real self-serve setup (reads the website, builds the knowledge base).
@@ -41,10 +40,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     email: '',
     phoneNumber: '',
     brandName: '',
-    businessType: '',
     websiteUrl: '',
   });
-  const [jobSeeker, setJobSeeker] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   /**
@@ -86,7 +83,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
           email: existingUser.email || '',
           phoneNumber: cleanPhoneNumber(existingUser.phone),
           brandName: existingUser.brandName || '',
-          businessType: '',
           websiteUrl: existingUser.websiteUrl || '',
         });
       }
@@ -128,7 +124,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
-    if (!formData.businessType) newErrors.businessType = 'Pick your business type';
+    if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -171,19 +167,14 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const handleStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep1()) { showFirstError(['name', 'phoneNumber', 'businessType']); return; }
+    if (!validateStep1()) { showFirstError(['brandName', 'name', 'phoneNumber']); return; }
 
-    // Job seekers are recorded and closed, never sent to onboarding or sales.
-    if (formData.businessType === 'job_seeker') {
-      void submitLead({ type: 'lead', name: formData.name.trim(), phone: formData.phoneNumber.trim(), businessType: 'job_seeker', source: isSales ? `${source}_sales` : 'deploy_modal' });
-      setJobSeeker(true);
-      return;
-    }
     setIsSubmitting(true);
 
     const partial = {
       name: formData.name.trim(),
       phone: formData.phoneNumber.trim(),
+      brandName: formData.brandName.trim(),
       promptedName: true,
       promptedPhone: true,
     };
@@ -193,7 +184,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       savedStep1.current = true;
       const leadEventId = trackLead({
         source: 'deploy_modal',
-        hasBrand: false,
+        hasBrand: true,
         hasWebsite: false,
       });
       // Never blocks the step change: submitLead resolves false on failure,
@@ -202,7 +193,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
         type: 'lead',
         name: partial.name,
         phone: partial.phone,
-        businessType: formData.businessType,
+        brandName: partial.brandName,
         source: isSales ? `${source}_sales` : 'deploy_modal',
         eventId: leadEventId,
       }));
@@ -220,7 +211,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep2()) { showFirstError(['email', 'brandName', 'websiteUrl']); return; }
+    if (!validateStep2()) { showFirstError(['email', 'websiteUrl']); return; }
 
     setIsSubmitting(true);
 
@@ -338,10 +329,10 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
               <p className={styles.modalSubtitle}>
                 {step === 1
-                  ? 'Start with your name and phone. Next, tell us about your brand.'
+                  ? 'Your brand, your name and your phone. That is all we need to start.'
                   : isSales
                     ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
-                    : 'Next: your brand name and website. No payment required.'}
+                    : 'Next: your website. No payment required.'}
               </p>
               <div className={styles.stepRow} aria-hidden>
                 <span className={`${styles.stepDot} ${styles.stepDotActive}`} />
@@ -351,6 +342,20 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
             </div>
 
             <form onSubmit={step === 1 ? handleStep1 : handleSubmit} className={styles.form}>
+              <div className={styles.formGroup} hidden={step !== 1}>
+                <label htmlFor="brandName" className={styles.label}>
+                  Brand name <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="text" id="brandName" name="brandName"
+                  value={formData.brandName} onChange={handleChange}
+                  className={`${styles.input} ${errors.brandName ? styles.inputError : ''}`}
+                  placeholder="Enter your brand name"
+                  autoComplete="organization"
+                />
+                {errors.brandName && <span className={styles.errorText}>{errors.brandName}</span>}
+              </div>
+
               <div className={styles.formGroup} hidden={step !== 1}>
                 <label htmlFor="name" className={styles.label}>
                   Name <span className={styles.required}>*</span>
@@ -365,7 +370,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.name && <span className={styles.errorText}>{errors.name}</span>}
               </div>
 
-              {/* Step 1: name + phone. `hidden` rather than unmounting, so
+              {/* Step 1: brand + name + phone. `hidden` rather than unmounting, so
                   typed values survive a step change and browser autofill
                   still sees the whole form as one unit. */}
               <div className={styles.formGroup} hidden={step !== 1}>
@@ -382,22 +387,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.phoneNumber && <span className={styles.errorText}>{errors.phoneNumber}</span>}
               </div>
 
-              <div className={styles.formGroup} hidden={step !== 1}>
-                <label htmlFor="businessType" className={styles.label}>
-                  Business type <span className={styles.required}>*</span>
-                </label>
-                <select
-                  id="businessType" name="businessType"
-                  value={formData.businessType} onChange={handleChange}
-                  className={`${styles.input} ${errors.businessType ? styles.inputError : ''}`}
-                >
-                  <option value="" disabled>Choose one</option>
-                  {BUSINESS_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-                </select>
-                {errors.businessType && <span className={styles.errorText}>{errors.businessType}</span>}
-                {jobSeeker && <span className={styles.errorText} role="status">{JOB_SEEKER_MESSAGE}</span>}
-              </div>
-
               <div className={styles.formGroup} hidden={step !== 2}>
                 <label htmlFor="email" className={styles.label}>
                   Email <span className={styles.optionalHint}>optional</span>
@@ -410,20 +399,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                   autoComplete="email"
                 />
                 {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-              </div>
-
-              <div className={styles.formGroup} hidden={step !== 2}>
-                <label htmlFor="brandName" className={styles.label}>
-                  Brand name <span className={styles.optionalHint}>optional</span>
-                </label>
-                <input
-                  type="text" id="brandName" name="brandName"
-                  value={formData.brandName} onChange={handleChange}
-                  className={`${styles.input} ${errors.brandName ? styles.inputError : ''}`}
-                  placeholder="Your company / brand"
-                  autoComplete="organization"
-                />
-                {errors.brandName && <span className={styles.errorText}>{errors.brandName}</span>}
               </div>
 
               <div className={styles.formGroup} hidden={step !== 2}>
