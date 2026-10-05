@@ -143,6 +143,26 @@ const LIVE_BRANDS: { name: string; mark: string; tint: string; what: string; log
   { name: "Axlrate", mark: "A", tint: "#db2777", what: "Sales research, its leads and conversations on PROXe", logo: "/brands/axlrate.png", wordmark: true },
 ];
 
+// What's live, each row with the brand it runs for.
+const BUILT = [
+  { brand: "Hubli Super Speciality Hospital", logo: "/brands/hubli-super-speciality-hospital.png", chip: true,
+    title: "Complete patient management", what: "Hubli Super Speciality Hospital, run end to end on PROXe" },
+  { brand: "Hubli Super Speciality Hospital", logo: "/brands/hubli-super-speciality-hospital.png", chip: true,
+    title: "One agent, on chat and voice, in Kannada", what: "Patients talk to it on WhatsApp or on a call" },
+  { brand: "Lokazen", logo: "/brands/lokazen-mark.svg", chip: false,
+    title: "Auto-match, then close on chat", what: "Lokazen: brands matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes" },
+];
+
+// Last 30 days across live brands, from their PROXe dashboards (snapshot 5 Oct 2026).
+const NUMBERS: [string, string][] = [
+  ["1,106", "leads handled"],
+  ["99%", "of customer messages answered"],
+  ["7s", "median reply time"],
+  ["140", "opportunities created"],
+  ["34", "calls and visits booked"],
+  ["80%", "of WhatsApp messages read"],
+];
+
 // ── the cards ──
 
 type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void }) => React.ReactNode };
@@ -386,22 +406,18 @@ const SLIDES: Slide[] = [
         <Body>Running for real brands, not on a roadmap.</Body>
         <div className="flex flex-1 flex-col justify-center pt-4">
           <Stagger on={on} className="space-y-2" step={700}>
-            {[
-              [Phone, "Kannada voice agents", "Hubli Super Speciality Hospital: they call and speak with patients in Kannada"],
-              [HeartPulse, "Complete patient management", "Hubli Super Speciality Hospital: the whole patient journey, run on PROXe"],
-              [Building2, "Real estate, end to end", "Lokazen: property matching, and onboarding deals up to ₹10,000 closed on messages"],
-            ].map(([I, t, d]) => {
-              const Icon = I as typeof Phone;
-              return (
-                <div key={t as string} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3.5 py-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white" style={{ background: C.deep }}><Icon size={17} /></span>
-                  <span>
-                    <span className="block text-[14.5px] font-medium text-white">{t as string}</span>
-                    <span className="text-[12px] text-white/55">{d as string}</span>
-                  </span>
-                </div>
-              );
-            })}
+            {BUILT.map((r) => (
+              <div key={r.title} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3.5 py-3">
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl ${r.chip ? "bg-white p-1" : "bg-white/[0.08] p-1.5"}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={r.logo} alt={r.brand} className="h-full w-full object-contain" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[14.5px] font-medium leading-snug text-white">{r.title}</span>
+                  <span className="text-[12px] leading-snug text-white/55">{r.what}</span>
+                </span>
+              </div>
+            ))}
           </Stagger>
         </div>
       </>
@@ -434,11 +450,30 @@ const SLIDES: Slide[] = [
     ),
   },
   {
+    key: "numbers", label: "By the numbers",
+    render: ({ on }) => (
+      <>
+        <Headline>Last 30 days, across live brands.</Headline>
+        <Body>Straight from their PROXe dashboards.</Body>
+        <div className="flex flex-1 items-center pt-4">
+          <Stagger on={on} className="grid w-full grid-cols-2 gap-2" step={650}>
+            {NUMBERS.map(([n, l]) => (
+              <div key={l} className="flex h-full flex-col justify-center rounded-2xl bg-white/[0.05] px-3.5 py-3">
+                <span className="text-[30px] font-bold leading-none tracking-[-0.03em] text-white tabular-nums">{n}</span>
+                <span className="mt-1.5 text-[11.5px] leading-snug text-white/60">{l}</span>
+              </div>
+            ))}
+          </Stagger>
+        </div>
+      </>
+    ),
+  },
+  {
     key: "proof", label: "What changed",
     render: ({ on }) => (
       <>
         <Headline>Zero to 8+.</Headline>
-        <Body>A brand with zero conversions this time last year. This year, 8+ closures at ₹2.5 lakh each, from managing leads better.</Body>
+        <Body>A premium coaching business. This time last year, same ad spend: zero conversions. This year: 8+ closures at ₹2.5 lakh each. The only difference: every lead handled by PROXe.</Body>
         <div className="flex flex-1 items-end justify-center gap-6 pb-2 pt-6">
           {[["Last year", 0, "0"], ["This year", 1, "8+"]].map(([label, full, v], i) => (
             <div key={label as string} className="flex w-28 flex-col items-center gap-2">
