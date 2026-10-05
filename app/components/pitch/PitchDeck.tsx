@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, HeartPulse, Building2, Volume2, VolumeX,
+  ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, Volume2, VolumeX,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
@@ -135,22 +135,37 @@ function GapFix({ on }: { on: boolean }) {
   );
 }
 
-// Brands live on PROXe. Logo files go in public/brands/ and their path in `logo`.
-const LIVE_BRANDS: { name: string; mark: string; tint: string; what: string; logo?: string; chip?: boolean; wordmark?: boolean }[] = [
-  { name: "Hubli Super Speciality Hospital", mark: "HS", tint: "#0e7490", what: "Kannada voice agents and complete patient management", logo: "/brands/hubli-super-speciality-hospital.png", chip: true, wordmark: true },
-  { name: "Lokazen", mark: "L", tint: "#7c3aed", what: "Real estate end to end: matching, and deals closed on messages", logo: "/brands/lokazen-mark.svg" },
-  { name: "Windchasers", mark: "W", tint: "#2563eb", what: "Every lead, on every channel", logo: "/brands/windchasers.png", wordmark: true },
-  { name: "Axlrate", mark: "A", tint: "#db2777", what: "Sales research, its leads and conversations on PROXe", logo: "/brands/axlrate.png", wordmark: true },
-];
+// Brands on PROXe. Every brand shows the same way: its icon, in a white circle,
+// with its name as text (Z, 5 Oct 2026: one rule for every logo). Icons live in
+// public/brands/icons/, trimmed and square; add a brand by adding a row here.
+const BRANDS = {
+  hsh: { name: "Hubli Super Speciality Hospital", icon: "/brands/icons/hubli-super-speciality-hospital.png", tag: "Healthcare" },
+  lokazen: { name: "Lokazen", icon: "/brands/icons/lokazen.svg", tag: "Real estate" },
+  windchasers: { name: "Windchasers", icon: "/brands/icons/windchasers.png", tag: "Aviation academy" },
+  bcon: { name: "BCON Club", icon: "/brands/icons/bcon-club.png", tag: "Growth agency" },
+  khadivasthra: { name: "Khadivasthra", icon: "/brands/icons/khadivasthra.png", tag: "E-commerce" },
+  axlrate: { name: "Axlrate", icon: "/brands/icons/axlrate.png", tag: "Sales research" },
+} as const;
+type BrandKey = keyof typeof BRANDS;
+const LIVE_BRANDS: BrandKey[] = ["hsh", "lokazen", "windchasers", "bcon", "khadivasthra", "axlrate"];
 
-// What's live, each row with the brand it runs for.
-const BUILT = [
-  { brand: "Hubli Super Speciality Hospital", logo: "/brands/hubli-super-speciality-hospital.png", chip: true,
-    title: "Complete patient management", what: "Hubli Super Speciality Hospital, run end to end on PROXe" },
-  { brand: "Hubli Super Speciality Hospital", logo: "/brands/hubli-super-speciality-hospital.png", chip: true,
-    title: "One agent, on chat and voice, in Kannada", what: "Patients talk to it on WhatsApp or on a call" },
-  { brand: "Lokazen", logo: "/brands/lokazen-mark.svg", chip: false,
-    title: "Auto-match, then close on chat", what: "Lokazen: brands matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes" },
+function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
+  const b = BRANDS[brand];
+  return (
+    <span className="flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white" style={{ width: size, height: size, padding: size * 0.14 }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={b.icon} alt={b.name} className="h-full w-full object-contain" />
+    </span>
+  );
+}
+
+// Edge solutions built on PROXe, each with the brand it runs for.
+const BUILT: { brand: BrandKey; title: string; what: string }[] = [
+  { brand: "hsh", title: "Kannada voice and complete patient management", what: "One agent on chat and calls, and the whole patient journey on PROXe" },
+  { brand: "lokazen", title: "Real estate, end to end", what: "Brands auto-matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes" },
+  { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%" },
+  { brand: "bcon", title: "Instagram comment and DM automation", what: "Replies, follow-ups and lead management, run by PROXe" },
+  { brand: "khadivasthra", title: "Complete e-commerce", what: "Cart recovery, and catalogs across Google Merchant and Instagram" },
 ];
 
 // Last 30 days across live brands, from their PROXe dashboards (snapshot 5 Oct 2026).
@@ -399,22 +414,19 @@ const SLIDES: Slide[] = [
     ),
   },
   {
-    key: "built", label: "Built in the last month",
+    key: "built", label: "Edge solutions",
     render: ({ on }) => (
       <>
-        <Headline>What we've built. Live today.</Headline>
-        <Body>Running for real brands, not on a roadmap.</Body>
+        <Headline>Edge solutions, built on PROXe.</Headline>
         <div className="flex flex-1 flex-col justify-center pt-4">
-          <Stagger on={on} className="space-y-2" step={700}>
+          <Stagger on={on} className="space-y-1.5" step={700}>
             {BUILT.map((r) => (
-              <div key={r.title} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3.5 py-3">
-                <span className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl ${r.chip ? "bg-white p-1" : "bg-white/[0.08] p-1.5"}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={r.logo} alt={r.brand} className="h-full w-full object-contain" />
-                </span>
+              <div key={r.title} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3 py-2.5">
+                <BrandIcon brand={r.brand} size={38} />
                 <span className="min-w-0">
-                  <span className="block text-[14.5px] font-medium leading-snug text-white">{r.title}</span>
-                  <span className="text-[12px] leading-snug text-white/55">{r.what}</span>
+                  <span className="block text-[11px] font-medium text-[#c4b5fd]">{BRANDS[r.brand].name}</span>
+                  <span className="block text-[13.5px] font-medium leading-snug text-white">{r.title}</span>
+                  <span className="block text-[11.5px] leading-snug text-white/55">{r.what}</span>
                 </span>
               </div>
             ))}
@@ -429,19 +441,14 @@ const SLIDES: Slide[] = [
       <>
         <Headline>These brands run on PROXe today.</Headline>
         <div className="flex flex-1 flex-col justify-center pt-4">
-          <Stagger on={on} className="grid grid-cols-2 gap-2" step={600}>
-            {LIVE_BRANDS.map((b) => (
-              <div key={b.name} className="flex h-full flex-col gap-2 rounded-2xl bg-white/[0.05] p-3">
-                {b.logo ? (
-                  <span className={`flex h-9 items-center self-start ${b.chip ? "rounded-lg bg-white px-2" : ""}`}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={b.logo} alt={b.name} className={`${b.wordmark ? "h-7 max-w-[120px]" : "h-8"} w-auto object-contain`} />
-                  </span>
-                ) : (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-xl text-[13px] font-bold text-white" style={{ background: b.tint }}>{b.mark}</span>
-                )}
-                <span className="text-[13px] font-semibold leading-tight text-white">{b.name}</span>
-                <span className="text-[11px] leading-snug text-white/55">{b.what}</span>
+          <Stagger on={on} className="grid grid-cols-2 gap-2" step={450}>
+            {LIVE_BRANDS.map((k) => (
+              <div key={k} className="flex h-full items-center gap-2.5 rounded-2xl bg-white/[0.05] p-3">
+                <BrandIcon brand={k} size={40} />
+                <span className="min-w-0">
+                  <span className="block text-[13px] font-semibold leading-tight text-white">{BRANDS[k].name}</span>
+                  <span className="text-[11px] text-white/55">{BRANDS[k].tag}</span>
+                </span>
               </div>
             ))}
           </Stagger>
