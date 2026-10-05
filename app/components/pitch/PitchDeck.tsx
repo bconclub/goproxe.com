@@ -135,24 +135,27 @@ function GapFix({ on }: { on: boolean }) {
   );
 }
 
-// Brands on PROXe. Every brand shows the same way: its icon, in a white circle,
-// with its name as text (Z, 5 Oct 2026: one rule for every logo). Icons live in
+// Brands on PROXe. Each is introduced the way Z says it (5 Oct 2026), and each
+// logo sits on the tile it reads best on: "none" for logos that are already a
+// coloured disc, "white" for dark marks, "dark" for light or thin marks that
+// vanish on white. `color` tints that brand's own use-case card. Icons live in
 // public/brands/icons/, trimmed and square; add a brand by adding a row here.
 const BRANDS = {
-  hsh: { name: "Hubli Super Speciality Hospital", icon: "/brands/icons/hubli-super-speciality-hospital.png", tag: "Healthcare" },
-  lokazen: { name: "Lokazen", icon: "/brands/icons/lokazen.svg", tag: "Real estate" },
-  windchasers: { name: "Windchasers", icon: "/brands/icons/windchasers.png", tag: "Aviation academy" },
-  bcon: { name: "BCON Club", icon: "/brands/icons/bcon-club.png", tag: "Growth agency" },
-  khadivasthra: { name: "Khadivasthra", icon: "/brands/icons/khadivasthra.png", tag: "E-commerce" },
-  axlrate: { name: "Axlrate", icon: "/brands/icons/axlrate.png", tag: "Sales research" },
+  hsh: { name: "HSH Hospital", about: "One of the top speciality hospitals in Hubli", tag: "Healthcare", icon: "/brands/icons/hubli-super-speciality-hospital.png", tile: "white", color: "#38bdf8" },
+  lokazen: { name: "Lokazen", about: "AI-based commercial real estate matching, Bangalore", tag: "Real estate", icon: "/brands/icons/lokazen.svg", tile: "none", color: "#fb923c" },
+  windchasers: { name: "Windchasers", about: "India's premier pilot training academy", tag: "Aviation academy", icon: "/brands/icons/windchasers.png", tile: "dark", color: "#d4a94e" },
+  bcon: { name: "BCON Club", about: "Brand growth agency", tag: "Growth agency", icon: "/brands/icons/bcon-club.png", tile: "none", color: "#cbfa0a" },
+  khadivasthra: { name: "Khadivasthra", about: "Handlooms and Indian handicrafts", tag: "E-commerce", icon: "/brands/icons/khadivasthra.png", tile: "none", color: "#f59e0b" },
+  axlrate: { name: "Axlrate", about: "Sales research and innovation", tag: "Sales research", icon: "/brands/icons/axlrate.png", tile: "white", color: "#2dd4bf" },
 } as const;
 type BrandKey = keyof typeof BRANDS;
 const LIVE_BRANDS: BrandKey[] = ["hsh", "lokazen", "windchasers", "bcon", "khadivasthra", "axlrate"];
 
 function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
   const b = BRANDS[brand];
+  const tile = b.tile === "white" ? { background: "#fff", padding: size * 0.14 } : b.tile === "dark" ? { background: "#0b1f3a", padding: size * 0.14 } : { padding: 0 };
   return (
-    <span className="flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white" style={{ width: size, height: size, padding: size * 0.14 }}>
+    <span className="flex shrink-0 items-center justify-center overflow-hidden rounded-full" style={{ width: size, height: size, ...tile }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={b.icon} alt={b.name} className="h-full w-full object-contain" />
     </span>
@@ -413,28 +416,32 @@ const SLIDES: Slide[] = [
       </>
     ),
   },
-  {
-    key: "built", label: "Edge solutions",
-    render: ({ on }) => (
-      <>
-        <Headline>Edge solutions, built on PROXe.</Headline>
-        <div className="flex flex-1 flex-col justify-center pt-4">
-          <Stagger on={on} className="space-y-1.5" step={700}>
-            {BUILT.map((r) => (
-              <div key={r.title} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] px-3 py-2.5">
-                <BrandIcon brand={r.brand} size={38} />
-                <span className="min-w-0">
-                  <span className="block text-[11px] font-medium text-[#c4b5fd]">{BRANDS[r.brand].name}</span>
-                  <span className="block text-[13.5px] font-medium leading-snug text-white">{r.title}</span>
-                  <span className="block text-[11.5px] leading-snug text-white/55">{r.what}</span>
-                </span>
-              </div>
-            ))}
-          </Stagger>
+  // One card per edge solution, each wearing its brand's colour.
+  ...BUILT.map((r, i): Slide => ({
+    key: `built-${r.brand}`, label: `Edge solutions · ${i + 1} of ${BUILT.length}`,
+    render: ({ on }) => {
+      const b = BRANDS[r.brand];
+      return (
+        <div className="relative flex h-full flex-col">
+          <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: b.color, opacity: on ? 0.38 : 0, transition: `opacity 900ms ${EASE}` }} />
+          <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 rounded-full blur-3xl" style={{ background: b.color, opacity: on ? 0.16 : 0, transition: `opacity 1200ms ${EASE} 200ms` }} />
+          <div className={`relative flex items-center gap-3.5 ${on ? "pitch-in" : "opacity-0"}`}>
+            <BrandIcon brand={r.brand} size={60} />
+            <span className="min-w-0">
+              <span className="block text-[18px] font-semibold leading-tight text-white">{b.name}</span>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-white/60">{b.about}</span>
+            </span>
+          </div>
+          <div className="relative flex flex-1 flex-col justify-center pt-5">
+            <p className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe</p>
+            <h2 className={`mt-1.5 text-balance text-[27px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[31px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
+            <p className={`mt-3 text-[15px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
+          </div>
+          <div className="relative mt-4 h-1 origin-left rounded-full" style={{ background: `linear-gradient(90deg, ${b.color}, transparent)`, transform: on ? "scaleX(1)" : "scaleX(0)", transition: `transform 1200ms ${EASE} 500ms` }} />
         </div>
-      </>
-    ),
-  },
+      );
+    },
+  })),
   {
     key: "live", label: "Live on PROXe",
     render: ({ on }) => (
@@ -447,7 +454,7 @@ const SLIDES: Slide[] = [
                 <BrandIcon brand={k} size={40} />
                 <span className="min-w-0">
                   <span className="block text-[13px] font-semibold leading-tight text-white">{BRANDS[k].name}</span>
-                  <span className="text-[11px] text-white/55">{BRANDS[k].tag}</span>
+                  <span className="text-[11px] leading-snug text-white/55">{BRANDS[k].about}</span>
                 </span>
               </div>
             ))}
@@ -463,14 +470,20 @@ const SLIDES: Slide[] = [
         <Headline>Last 30 days, across live brands.</Headline>
         <Body>Straight from their PROXe dashboards.</Body>
         <div className="flex flex-1 items-center pt-4">
-          <Stagger on={on} className="grid w-full grid-cols-2 gap-2" step={650}>
-            {NUMBERS.map(([n, l]) => (
-              <div key={l} className="flex h-full flex-col justify-center rounded-2xl bg-white/[0.05] px-3.5 py-3">
-                <span className="text-[30px] font-bold leading-none tracking-[-0.03em] text-white tabular-nums">{n}</span>
-                <span className="mt-1.5 text-[11.5px] leading-snug text-white/60">{l}</span>
-              </div>
-            ))}
-          </Stagger>
+          <div className="grid w-full grid-cols-2 gap-2">
+            {NUMBERS.map(([n, l], i) => {
+              // A bento: the headline figure runs the full width, each tile its own tint.
+              const tint = ["#a78bfa", "#22c55e", "#38bdf8", "#f59e0b", "#f472b6", "#2dd4bf"][i % 6]!;
+              const wide = i === 0 || (NUMBERS.length % 2 === 0 && i === NUMBERS.length - 1);
+              return (
+                <div key={l} className={`flex h-full flex-col justify-center rounded-2xl px-3.5 py-3 ${wide ? "col-span-2" : ""} ${on ? "pitch-in" : "opacity-0"}`}
+                  style={{ animationDelay: D(120 + i * 650), background: `linear-gradient(150deg, ${tint}33, ${tint}0d 70%)`, boxShadow: `inset 0 0 0 1px ${tint}40, inset 0 1px 0 rgba(255,255,255,0.12)`, backdropFilter: "blur(8px)" }}>
+                  <span className={`${i === 0 ? "text-[38px]" : "text-[28px]"} font-bold leading-none tracking-[-0.03em] text-white tabular-nums`}>{n}</span>
+                  <span className="mt-1.5 text-[11.5px] leading-snug" style={{ color: `${tint}` }}>{l}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </>
     ),

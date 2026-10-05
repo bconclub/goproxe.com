@@ -20,7 +20,12 @@
   "team": 9.52,
   "traction": 11.92,
   "watch": 5.28,
-  "who": 10.16
+  "who": 10.16,
+  "built-hsh": 14,
+  "built-lokazen": 12.88,
+  "built-windchasers": 11.52,
+  "built-bcon": 10,
+  "built-khadivasthra": 10
  },
  "en": {
   "built": 33.84,
@@ -43,7 +48,12 @@
   "team": 9.12,
   "traction": 11.36,
   "watch": 5.76,
-  "who": 10.08
+  "who": 10.08,
+  "built-hsh": 14,
+  "built-lokazen": 13.44,
+  "built-windchasers": 12.24,
+  "built-bcon": 9.6,
+  "built-khadivasthra": 9.6
  },
  "gu-IN": {
   "built": 34.48,
@@ -54,7 +64,7 @@
   "how": 17.2,
   "insight": 12.56,
   "live": 10.96,
-  "memory": 12.0,
+  "memory": 12,
   "numbers": 18.32,
   "price": 17.44,
   "problem": 15.28,
@@ -66,7 +76,12 @@
   "team": 10.16,
   "traction": 12.56,
   "watch": 5.44,
-  "who": 10.16
+  "who": 10.16,
+  "built-hsh": 14.56,
+  "built-lokazen": 13.44,
+  "built-windchasers": 11.68,
+  "built-bcon": 10.16,
+  "built-khadivasthra": 10.32
  },
  "hi-IN": {
   "built": 34.96,
@@ -89,30 +104,40 @@
   "team": 10.16,
   "traction": 12.88,
   "watch": 5.84,
-  "who": 10.8
+  "who": 10.8,
+  "built-hsh": 14.4,
+  "built-lokazen": 13.52,
+  "built-windchasers": 12.4,
+  "built-bcon": 10.48,
+  "built-khadivasthra": 9.92
  },
  "kn-IN": {
   "built": 36.88,
   "cover": 11.6,
-  "dashboard": 8.0,
+  "dashboard": 8,
   "founder": 16.88,
   "gaps": 11.68,
   "how": 16.88,
-  "insight": 14.0,
+  "insight": 14,
   "live": 10.88,
   "memory": 10.96,
   "numbers": 20.16,
   "price": 18.56,
   "problem": 14.32,
   "proof": 19.04,
-  "round": 8.0,
+  "round": 8,
   "solution": 15.36,
   "stack": 11.84,
   "talk": 10.08,
   "team": 10.72,
   "traction": 12.64,
   "watch": 6.16,
-  "who": 10.4
+  "who": 10.4,
+  "built-hsh": 14.8,
+  "built-lokazen": 14.32,
+  "built-windchasers": 12.48,
+  "built-bcon": 9.92,
+  "built-khadivasthra": 10.72
  },
  "ml-IN": {
   "built": 34.32,
@@ -135,7 +160,12 @@
   "team": 9.04,
   "traction": 12.4,
   "watch": 6.08,
-  "who": 10.56
+  "who": 10.56,
+  "built-hsh": 15.12,
+  "built-lokazen": 14.08,
+  "built-windchasers": 12.48,
+  "built-bcon": 5.92,
+  "built-khadivasthra": 10
  },
  "mr-IN": {
   "built": 35.52,
@@ -158,7 +188,12 @@
   "team": 10.16,
   "traction": 12.24,
   "watch": 5.44,
-  "who": 10.08
+  "who": 10.08,
+  "built-hsh": 14.72,
+  "built-lokazen": 13.84,
+  "built-windchasers": 12.88,
+  "built-bcon": 10.08,
+  "built-khadivasthra": 10
  },
  "pa-IN": {
   "built": 35.28,
@@ -181,7 +216,12 @@
   "team": 11.52,
   "traction": 12.88,
   "watch": 5.68,
-  "who": 10.16
+  "who": 10.16,
+  "built-hsh": 14.16,
+  "built-lokazen": 12.8,
+  "built-windchasers": 12.64,
+  "built-bcon": 9.84,
+  "built-khadivasthra": 10
  },
  "ta-IN": {
   "built": 34.24,
@@ -204,13 +244,18 @@
   "team": 9.04,
   "traction": 11.84,
   "watch": 5.84,
-  "who": 9.68
+  "who": 9.68,
+  "built-hsh": 15.44,
+  "built-lokazen": 14,
+  "built-windchasers": 12.72,
+  "built-bcon": 10.56,
+  "built-khadivasthra": 9.68
  },
  "te-IN": {
   "built": 35.12,
   "cover": 11.52,
   "dashboard": 7.68,
-  "founder": 16.0,
+  "founder": 16,
   "gaps": 12.48,
   "how": 16.8,
   "insight": 12.48,
@@ -227,6 +272,11 @@
   "team": 9.68,
   "traction": 11.92,
   "watch": 5.36,
-  "who": 10.32
+  "who": 10.32,
+  "built-hsh": 14.72,
+  "built-lokazen": 13.52,
+  "built-windchasers": 13.12,
+  "built-bcon": 10.24,
+  "built-khadivasthra": 9.44
  }
 }
