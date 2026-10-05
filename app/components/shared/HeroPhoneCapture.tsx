@@ -5,7 +5,6 @@ import { track, trackLead, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
-import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE, type BusinessType } from '../../lib/businessTypes';
 
 /**
  * Hero call capture. Z, 5 Oct 2026: "If they enter their name and details,
@@ -14,18 +13,15 @@ import { BUSINESS_TYPES, JOB_SEEKER_MESSAGE, type BusinessType } from '../../lib
  *
  *   1. One button: "Talk to PROXe", with a phone (Z, 5 Oct 2026: the CTA is
  *      the main thing; tapping it opens name and number together, inline).
- *   2. Name, brand and mobile, one call button (5 Oct 2026: everything the
- *      agent needs is collected before the call; nothing can be added once
- *      it is running). The number is saved the
- *      moment it is valid, so anyone who leaves is still a lead (core then
- *      sends one WhatsApp).
- *   3. One tap: what business? (Z's ads thread, 5 Oct 2026: Meta optimises on
- *      Lead, so only a real business is reported as one.) A business type
- *      places the call and fires Lead; "Looking for a job" is saved closed,
- *      gets a polite note, no call, no Lead.
+ *   2. Name and brand name, side by side, same size, then an arrow.
+ *   3. Mobile number, then the call button: the call starts at once (Z, 6 Oct
+ *      2026: one thing at a time, the three-field row was hard to use; the
+ *      business-type step is gone). The number is saved the moment it is
+ *      valid, so anyone who leaves is still a lead (core then sends one
+ *      WhatsApp). Lead fires once, when the call is asked for.
  *   4. Ringing.
  */
-type Step = 'cta' | 'form' | 'type' | 'calling' | 'ringing' | 'closed';
+type Step = 'cta' | 'form' | 'phone' | 'calling' | 'ringing';
 
 const RING_HINT_MS = 25000;
 
@@ -59,6 +55,8 @@ export default function HeroPhoneCapture() {
   const startedRef = useRef(false);
   const savedRef = useRef<{ phone: string; eventId: string } | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+  const brandRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setMarket(detectMarket() === 'usd' ? 'usd' : 'inr'); }, []);
 
@@ -103,9 +101,8 @@ export default function HeroPhoneCapture() {
     window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 60);
   };
 
-  const submitDetails = async (e: React.FormEvent) => {
+  const submitDetails = (e: React.FormEvent) => {
     e.preventDefault();
-    const number = validPhone(phone.trim());
     const cleanName = name.trim().replace(/\s+/g, ' ');
     if (!cleanName) {
       setError('Add your name so PROXe knows who it is calling.');
@@ -116,44 +113,41 @@ export default function HeroPhoneCapture() {
     if (!brand.trim()) {
       setError('Add your brand name so PROXe knows what to talk about.');
       track('form_error', { form: 'hero_phone', field: 'brand', reason: 'missing' });
+      brandRef.current?.focus();
       return;
     }
+    setError('');
+    track('button_click', { label: 'hero_details_next', location: 'hero' });
+    setStep('phone');
+    window.setTimeout(() => phoneRef.current?.focus({ preventScroll: true }), 60);
+  };
+
+  const submitPhone = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const number = validPhone(phone.trim());
+    const cleanName = name.trim().replace(/\s+/g, ' ');
+    if (!cleanName || !brand.trim()) { setStep('form'); return; }
     if (!number) {
       setError(market === 'inr' ? 'Enter a 10-digit mobile number.' : 'That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: market === 'inr' ? 'invalid_in_mobile' : 'length' });
+      phoneRef.current?.focus();
       return;
     }
-    saveNumber(number);
     setError('');
-    setStep('type');
-  };
-
-  const pickType = async (type: BusinessType) => {
-    const number = savedRef.current?.phone || validPhone(phone.trim());
-    const cleanName = name.trim().replace(/\s+/g, ' ');
-    if (!number || !cleanName) { setStep('form'); return; }
-    track('button_click', { label: `hero_business_${type}`, location: 'hero' });
-    if (type === 'job_seeker') {
-      // Saved, closed, never called, never a Lead.
-      void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: brand.trim(), businessType: 'job_seeker', source: 'hero_phone' });
-      setStep('closed');
-      return;
-    }
     setStep('calling');
     track('callback_submit', { market });
-    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName }, 'proxe');
-    // The one Meta Lead conversion for this visitor: a named person who asked for the call.
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName, brandName: brand.trim() }, 'proxe');
+    // The one Meta Lead conversion for this visitor: a named person, with a brand, who asked for the call.
     const leadEventId = trackLead({ source: 'hero_phone', hasBrand: true });
     savedRef.current = { phone: number, eventId: leadEventId };
-    // Fills name and brand on the same lead (upsert by phone) while the call is placed.
-    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: brand.trim(), businessType: type, source: 'hero_phone', eventId: leadEventId });
+    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: brand.trim(), source: 'hero_phone', eventId: leadEventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
     const res = await fetch('/api/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: number, name: cleanName, business: brand.trim(), businessType: type, market, source: 'hero_phone' }),
+      body: JSON.stringify({ phone: number, name: cleanName, business: brand.trim(), market, source: 'hero_phone' }),
       signal: ac.signal,
     })
       .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
@@ -171,7 +165,7 @@ export default function HeroPhoneCapture() {
             ? 'Enter a 10-digit mobile number.'
             : 'Could not place the call right now. Your number is saved and PROXe will reach you on WhatsApp.'
       );
-      setStep('form');
+      setStep('phone');
       return;
     }
     track('callback_dialed', { market });
@@ -196,26 +190,6 @@ export default function HeroPhoneCapture() {
     );
   }
 
-  if (step === 'closed') {
-    return <div className="hq"><p className="hq-note" role="status">{JOB_SEEKER_MESSAGE}</p></div>;
-  }
-
-  if (step === 'type') {
-    return (
-      <div className="hq">
-        <p className="hq-ask">What&apos;s your business?</p>
-        <div className="hq-types" role="group" aria-label="Your business type">
-          {BUSINESS_TYPES.map((b) => (
-            <button key={b.value} type="button" className={'hq-type' + (b.value === 'job_seeker' ? ' hq-type--job' : '')} onClick={() => void pickType(b.value)}>
-              {b.label}
-            </button>
-          ))}
-        </div>
-        {error && <p className="hq-error" role="alert">{error}</p>}
-      </div>
-    );
-  }
-
   if (step === 'cta') {
     return (
       <div className="hq">
@@ -227,21 +201,34 @@ export default function HeroPhoneCapture() {
     );
   }
 
+  if (step === 'form') {
+    return (
+      <div className="hq">
+        <form className="hq-row hq-row--pair" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Your name and brand">
+          <label className="hq-field hq-field--name">
+            <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
+              onChange={(e) => { markStart(); setName(e.target.value); if (error) setError(''); }} maxLength={60} aria-label="Your name" />
+          </label>
+          <label className="hq-field hq-field--brand">
+            <input ref={brandRef} className="hq-input" placeholder="Brand name" autoComplete="organization" value={brand}
+              onChange={(e) => { setBrand(e.target.value); if (error) setError(''); }} maxLength={80} aria-label="Your brand name" />
+          </label>
+          <button type="submit" className="hq-go" aria-label="Next">
+            <ArrowIcon />
+          </button>
+        </form>
+        {error && <p className="hq-error" role="alert">{error}</p>}
+      </div>
+    );
+  }
+
   const calling = step === 'calling';
   return (
     <div className="hq">
-      <form className="hq-row hq-row--both" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Get a call from PROXe">
-        <label className={'hq-field hq-field--name' + (calling ? ' hq-field--calling' : '')}>
-          <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
-            onChange={(e) => { setName(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={60} aria-label="Your name" />
-        </label>
-        <label className={'hq-field hq-field--brand' + (calling ? ' hq-field--calling' : '')}>
-          <input className="hq-input" placeholder="Enter your brand name" autoComplete="organization" value={brand}
-            onChange={(e) => { setBrand(e.target.value); if (error) setError(''); }} readOnly={calling} maxLength={80} aria-label="Your brand or business name" />
-        </label>
+      <form className="hq-row hq-row--solo" onSubmit={submitPhone} autoComplete="off" noValidate aria-label="Get a call from PROXe">
         <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
-          <input id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"
+          <input ref={phoneRef} id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"
             placeholder={market === 'inr' ? 'Mobile number' : 'Phone number'} value={phone} onChange={onPhone}
             readOnly={calling} aria-label="Your mobile number" aria-invalid={!!error} />
         </label>

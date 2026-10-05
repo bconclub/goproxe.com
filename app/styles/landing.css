@@ -12514,3 +12514,19 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
 @media (max-width: 640px) {
   .proxe-root .hq .hq-row.hq-row--both { grid-template-columns: calc(50% - 3px) 1fr 46px; }
 }
+
+/* Hero in steps (6 Oct 2026): name + brand + arrow, then mobile + call.
+   Name and brand are always the same width. */
+.proxe-root .hq:has(.hq-row--pair), .proxe-root .hq:has(.hq-row--solo) { max-width: 460px; }
+.proxe-root .hq .hq-row.hq-row--pair, .proxe-root .hq .hq-row.hq-row--solo { display: flex; gap: 8px; justify-content: stretch; animation: hqIn .35s cubic-bezier(.22,1,.36,1) both; }
+.proxe-root .hq .hq-row--pair .hq-field, .proxe-root .hq .hq-row--solo .hq-field { flex: 1 1 0; width: auto; height: 50px; }
+.proxe-root .hq .hq-row--pair .hq-input { padding-left: 14px; letter-spacing: 0; font-size: 15px; }
+.proxe-root .hq .hq-row--solo .hq-input { font-size: 16px; }
+.proxe-root .hq .hq-row--pair .hq-go, .proxe-root .hq .hq-row--solo .hq-go { flex: 0 0 50px; width: 50px; height: 50px; padding: 0; background: #22c55e; color: #fff; }
+@media (max-width: 640px) {
+  .proxe-root .hq:has(.hq-row--pair), .proxe-root .hq:has(.hq-row--solo) { max-width: 360px; }
+  .proxe-root .hq .hq-row.hq-row--pair, .proxe-root .hq .hq-row.hq-row--solo { gap: 6px; }
+  .proxe-root .hq .hq-row--pair .hq-field, .proxe-root .hq .hq-row--solo .hq-field { height: 48px; }
+  .proxe-root .hq .hq-row--pair .hq-input { padding-left: 12px; }
+  .proxe-root .hq .hq-row--pair .hq-go, .proxe-root .hq .hq-row--solo .hq-go { flex-basis: 48px; width: 48px; height: 48px; }
+}

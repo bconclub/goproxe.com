@@ -146,11 +146,11 @@ export async function POST(request: Request) {
   // 10th-digit save, no name) and a self-declared job seeker are not leads:
   // reporting them taught the ads to find people who type a number and leave
   // (Z, 5 Oct 2026). They are still saved; they just are not conversions.
-  // Hero leads count only once they name a real business type (Z's ads thread,
-  // 5 Oct 2026): name alone let fruit vendors and watchmen through as Leads.
+  // Hero leads count only with a name AND a brand name (6 Oct 2026: the
+  // business-type step is gone; a name alone let fruit vendors and watchmen through).
   const notAConversion =
     body.businessType === 'job_seeker' ||
-    (body.source === 'hero_phone' && (!String(body.name || '').trim() || !body.businessType))
+    (body.source === 'hero_phone' && (!String(body.name || '').trim() || !String(body.brandName || '').trim()))
   if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
