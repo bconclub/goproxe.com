@@ -4,3 +4,6 @@ export const PRODUCT_CARDS = ['cover', 'problem', 'gaps', 'stack', 'who', 'solut
 
 // /what-is-proxe ends with Talk to PROXe, then the dashboard tour, last.
 export const EXPLAINER_CARDS = [...PRODUCT_CARDS, 'talk', 'watch']
+
+// /pitch: the same cards as everywhere, plus only the pitch extras (traction, the round) after the price.
+export const PITCH_CARDS = [...PRODUCT_CARDS.slice(0, PRODUCT_CARDS.indexOf('price') + 1), 'traction', 'round', ...PRODUCT_CARDS.slice(PRODUCT_CARDS.indexOf('price') + 1), 'talk', 'watch']

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { PitchDeck } from '../components/pitch/PitchDeck'
+import { PITCH_CARDS } from '../components/pitch/cards'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function PitchPage() {
   return (
     <div className={inter.variable} style={{ fontFamily: 'var(--font-proxe-sans), system-ui, sans-serif' }}>
-      <PitchDeck variant="page" />
+      <PitchDeck variant="page" only={PITCH_CARDS} />
     </div>
   )
 }

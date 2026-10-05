@@ -163,22 +163,25 @@ function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
 }
 
 // Edge solutions built on PROXe, each with the brand it runs for.
-const BUILT: { brand: BrandKey; title: string; what: string }[] = [
+// stats: last 90 days from the brand's PROXe database (snapshot 5 Oct 2026); only where real numbers exist.
+const BUILT: { brand: BrandKey; title: string; what: string; stats?: [string, string][] }[] = [
   { brand: "hsh", title: "Kannada voice and complete patient management", what: "One agent on chat and calls, and the whole patient journey on PROXe" },
-  { brand: "lokazen", title: "Real estate, end to end", what: "Brands auto-matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes" },
-  { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%" },
+  { brand: "lokazen", title: "Real estate, end to end", what: "Brands auto-matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes",
+    stats: [["621", "leads"], ["56", "meetings booked"], ["76", "opportunities"], ["8s", "median reply"]] },
+  { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%",
+    stats: [["3,823", "leads"], ["763", "opportunities"], ["100%", "answered"], ["7s", "median reply"]] },
   { brand: "bcon", title: "Instagram comment and DM automation", what: "Replies, follow-ups and lead management, run by PROXe" },
   { brand: "khadivasthra", title: "Complete e-commerce", what: "Cart recovery, and catalogs across Google Merchant and Instagram" },
 ];
 
-// Last 30 days across live brands, from their PROXe dashboards (snapshot 5 Oct 2026).
+// Last 90 days across brands, from their PROXe databases (snapshot 5 Oct 2026).
 const NUMBERS: [string, string][] = [
-  ["1,106", "leads handled"],
-  ["99%", "of customer messages answered"],
+  ["4,604", "leads handled"],
+  ["34,201", "messages"],
+  ["~100%", "of customer messages answered"],
   ["7s", "median reply time"],
-  ["140", "opportunities created"],
-  ["34", "calls and visits booked"],
-  ["80%", "of WhatsApp messages read"],
+  ["861", "opportunities created"],
+  ["99", "calls and visits booked"],
 ];
 
 // ── the cards ──
@@ -436,6 +439,19 @@ const SLIDES: Slide[] = [
             <p className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe</p>
             <h2 className={`mt-1.5 text-balance text-[27px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[31px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
             <p className={`mt-3 text-[15px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
+            {r.stats && (
+              <>
+                <p className={`mt-4 text-[11px] font-medium uppercase tracking-[0.08em] text-white/45 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(1400) }}>Last 90 days</p>
+                <Stagger on={on} className="mt-1.5 grid grid-cols-4 gap-1.5" step={350}>
+                  {r.stats.map(([n, l]) => (
+                    <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
+                      <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] text-white tabular-nums">{n}</span>
+                      <span className="mt-1 block text-[10.5px] leading-tight text-white/55">{l}</span>
+                    </div>
+                  ))}
+                </Stagger>
+              </>
+            )}
           </div>
           <div className="relative mt-4 h-1 origin-left rounded-full" style={{ background: `linear-gradient(90deg, ${b.color}, transparent)`, transform: on ? "scaleX(1)" : "scaleX(0)", transition: `transform 1200ms ${EASE} 500ms` }} />
         </div>
@@ -467,7 +483,7 @@ const SLIDES: Slide[] = [
     key: "numbers", label: "By the numbers",
     render: ({ on }) => (
       <>
-        <Headline>Last 30 days, across live brands.</Headline>
+        <Headline>The last 90 days, across our brands.</Headline>
         <Body>Straight from their PROXe dashboards.</Body>
         <div className="flex flex-1 items-center pt-4">
           <div className="grid w-full grid-cols-2 gap-2">
