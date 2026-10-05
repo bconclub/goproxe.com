@@ -27,7 +27,7 @@ export const WATCH_EPISODES: WatchEpisode[] = [
     "clip": "13-brain",
     "order": 1,
     "title": "Just ask Brain",
-    "dek": "Ask for an update from the home page. Brain opens the lead, with every chat and call.",
+    "dek": "Ask Brain anything from the dashboard. It answers from your live leads and chats, and opens the lead you ask for.",
     "intro": [
       "Brain was in every conversation your team had.",
       "Ask it for an update and it takes you straight to the lead."
@@ -37,7 +37,7 @@ export const WATCH_EPISODES: WatchEpisode[] = [
       "Ask what happened yesterday: leads, bookings, who went quiet.",
       "Ask who's hot: ranked leads, each with its story."
     ],
-    "promise": "Ask for an update from the home page, and Brain opens the lead for you.",
+    "promise": "Learning. Assisting. Improving.",
     "duration": 71,
     "video": "/watch/watch-just-ask-brain.mp4",
     "poster": "/watch/watch-just-ask-brain.jpg",
