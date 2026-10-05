@@ -210,7 +210,7 @@ const SLIDES: Slide[] = [
         <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className={`h-9 w-auto self-start ${on ? "pitch-in" : ""}`} />
         <div className="flex flex-1 flex-col justify-center">
           <h1 className={`text-balance text-[34px] font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-[40px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(150) }}>
-            Your AI for the customer side of your business.
+            AI for the customer side of your business.
           </h1>
           <p className={`mt-4 text-[16px] text-white/75 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(300) }}>
             Never miss a lead ever again.

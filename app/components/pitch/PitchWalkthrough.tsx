@@ -42,7 +42,7 @@ export default function PitchWalkthrough() {
         <div className="mb-8 max-w-[640px]">
           <p className="text-[13px] font-medium text-[#a78bfa]">What is PROXe?</p>
           <h2 id="walkthrough-title" className="mt-2 text-balance text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[42px]">
-            Your AI for the customer side of your business.
+            AI for the customer side of your business.
           </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-white/65">
             Tap any card to hear it, narrated, full screen.
