@@ -1,24 +1,19 @@
-// Core runs are short (Z, 5 Oct 2026: four minutes loses everyone). Everything
-// else is on demand from the bubbles on the last card, "Talk to PROXe".
+// Every card plays in order, as before the core/bubbles experiment (Z, 5 Oct 2026:
+// bring the older slides back). /pitch has everything; the homepage and
+// /what-is-proxe have everything except the pitch-only cards (traction, round).
 
-// Homepage and /what-is-proxe: about 1:40.
-export const CORE_EXPLAINER = ['cover', 'problem', 'gaps', 'solution', 'how', 'proof', 'price', 'talk']
+export const PRODUCT_CARDS = ['cover', 'problem', 'gaps', 'stack', 'who', 'solution', 'how', 'dashboard', 'team', 'memory', 'built-hsh', 'built-lokazen', 'built-windchasers', 'built-bcon', 'built-khadivasthra', 'live', 'numbers', 'proof', 'insight', 'price', 'founder']
 
-// /pitch: about 2:00, with traction, the round and the founder.
-export const CORE_PITCH = ['cover', 'problem', 'solution', 'how', 'proof', 'price', 'traction', 'round', 'founder', 'talk']
+// Homepage and /what-is-proxe.
+export const CORE_EXPLAINER = [...PRODUCT_CARDS, 'talk', 'watch']
+
+// /pitch: the same cards, plus traction and the round after the price.
+export const CORE_PITCH = [...PRODUCT_CARDS.slice(0, PRODUCT_CARDS.indexOf('price') + 1), 'traction', 'round', ...PRODUCT_CARDS.slice(PRODUCT_CARDS.indexOf('price') + 1), 'talk', 'watch']
 
 type Group = { key: string; label: string; cards: string[] }
-const EDGE: Group = { key: 'edge', label: 'Edge cases', cards: ['built-hsh', 'built-lokazen', 'built-windchasers', 'built-bcon', 'built-khadivasthra'] }
-const BRANDS: Group = { key: 'brands', label: 'Brands on PROXe', cards: ['live'] }
-const NUMBERS: Group = { key: 'numbers', label: 'The numbers', cards: ['numbers', 'insight'] }
-const DEEP: Group = { key: 'deep', label: 'More on how it works', cards: ['stack', 'who', 'dashboard', 'team', 'memory'] }
-const FOUNDER: Group = { key: 'founder', label: 'Who is building it', cards: ['founder'] }
-const TOUR: Group = { key: 'tour', label: 'Dashboard tour', cards: ['watch'] }
+// No on-demand bubbles: everything is in the main run again.
+export const EXTRAS_EXPLAINER: Group[] = []
+export const EXTRAS_PITCH: Group[] = []
 
-export const EXTRAS_EXPLAINER: Group[] = [EDGE, BRANDS, NUMBERS, DEEP, FOUNDER, TOUR]
-export const EXTRAS_PITCH: Group[] = [EDGE, BRANDS, NUMBERS, DEEP, TOUR]
-
-// Kept for anything still importing the old lists.
-export const PRODUCT_CARDS = CORE_EXPLAINER
 export const EXPLAINER_CARDS = CORE_EXPLAINER
 export const PITCH_CARDS = CORE_PITCH
