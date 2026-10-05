@@ -40,12 +40,12 @@ export default function PitchWalkthrough() {
     <section ref={sectionRef} id="walkthrough" className="pitch-root" aria-labelledby="walkthrough-title">
       <div className="mx-auto w-full max-w-[1120px] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mb-8 max-w-[640px]">
-          <p className="text-[13px] font-medium text-[#a78bfa]">The walkthrough</p>
+          <p className="text-[13px] font-medium text-[#a78bfa]">What is PROXe?</p>
           <h2 id="walkthrough-title" className="mt-2 text-balance text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[42px]">
-            Where leads get lost, and what PROXe does about it.
+            Your AI for the customer side of your business.
           </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-white/65">
-            Swipe through what goes wrong between an ad and a customer, and what PROXe does about it. Tap any card to play it, narrated, full screen.
+            Tap any card to hear it, narrated, full screen.
           </p>
         </div>
         <PitchDeck variant="embed" only={CARDS} onExpand={(i) => { setAt(i); setFull(true) }} />
