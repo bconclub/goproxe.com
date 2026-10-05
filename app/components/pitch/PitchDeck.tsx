@@ -642,8 +642,16 @@ const SLIDES: Slide[] = [
       <>
         {/* Wraps instead of spilling past the card on narrow phones or large system text. */}
         <div className={`flex w-full min-w-0 items-center gap-3.5 ${on ? "pitch-in" : "opacity-0"}`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/proxe/thanzeel-ashruf.png" alt="Thanzeel Ashruf" className="h-16 w-16 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" style={{ boxShadow: `0 0 0 3px ${C.deep}` }} />
+          {/* Ring as its own circle (a box-shadow on the img drew unevenly round
+              the face): gradient ring, a thin card-coloured gap, then the photo,
+              all concentric. Face sits slightly above centre. */}
+          <span className="relative block h-16 w-16 shrink-0 rounded-full p-[3px] sm:h-20 sm:w-20"
+            style={{ background: `linear-gradient(140deg, ${C.violet}, ${C.deep})` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/proxe/thanzeel-ashruf.png" alt="Thanzeel Ashruf"
+              className="block h-full w-full rounded-full object-cover"
+              style={{ objectPosition: '50% 32%', border: `2px solid ${C.card}` }} />
+          </span>
           <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">
             <p className="text-[18px] font-semibold leading-tight text-white sm:text-[19px]">Thanzeel Ashruf</p>
             <p className="text-[12.5px] leading-snug text-white/55">Founder & CEO, PROXe<br />Founder, BCON Club</p>
