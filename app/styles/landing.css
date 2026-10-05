@@ -12490,3 +12490,19 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq .hq-row.hq-row--both .hq-go { grid-column: 3; grid-row: 2; }
   .proxe-root .hq .hq-row.hq-row--both .hq-field--brand .hq-input { padding-left: 12px; }
 }
+
+/* Hero, compact (Z, 5 Oct 2026: "doesn't have to be this wide"). Name, brand
+   and mobile sized to what they hold; the whole block about 560px. */
+.proxe-root .hq:has(.hq-row--both) { max-width: 560px; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field { height: 48px; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field--name { flex: 0.9 1 0; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field--brand { flex: 1 1 0; }
+.proxe-root .hq .hq-row.hq-row--both .hq-field--phone { flex: 1.15 1 0; }
+.proxe-root .hq .hq-row.hq-row--both .hq-go { flex: 0 0 48px; width: 48px; height: 48px; }
+.proxe-root .hq .hq-row.hq-row--both .hq-input { font-size: 15px; }
+@media (max-width: 640px) {
+  .proxe-root .hq:has(.hq-row--both) { max-width: 340px; }
+  .proxe-root .hq .hq-row.hq-row--both { grid-template-columns: 1fr 1fr 46px; }
+  .proxe-root .hq .hq-row.hq-row--both .hq-field { height: 46px; }
+  .proxe-root .hq .hq-row.hq-row--both .hq-go { width: 46px; height: 46px; }
+}
