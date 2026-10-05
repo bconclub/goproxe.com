@@ -49,8 +49,10 @@ export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
-  // Form on load: a 'Talk to PROXe' button in front of it took ad leads to zero (5 Oct 2026).
-  const [step, setStep] = useState<Step>('form');
+  // Z, 5 Oct 2026 (after seeing the ads data): "Talk to PROXe" first, then name,
+  // brand and mobile. Watch hero leads from ad traffic; the open form was the fix
+  // when this button preceded a day of zero leads.
+  const [step, setStep] = useState<Step>('cta');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');
