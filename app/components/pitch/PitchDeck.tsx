@@ -166,7 +166,7 @@ function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
 // stats: last 90 days from the brand's PROXe database (snapshot 5 Oct 2026); only where real numbers exist.
 const BUILT: { brand: BrandKey; title: string; what: string; stats?: [string, string][] }[] = [
   { brand: "hsh", title: "Kannada voice and complete patient management", what: "One agent on chat and calls, and the whole patient journey on PROXe" },
-  { brand: "lokazen", title: "Real estate, end to end", what: "Brands auto-matched to properties; onboarding from ₹1,000 to ₹10,000 paid on chat, in minutes",
+  { brand: "lokazen", title: "Brand and property onboarding, on WhatsApp", what: "Brands and property owners onboarded end to end on WhatsApp, auto-matched, with fees from ₹1,000 to ₹10,000 paid on chat",
     stats: [["621", "leads"], ["56", "meetings booked"], ["76", "opportunities"], ["8s", "median reply"]] },
   { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%",
     stats: [["3,823", "leads"], ["763", "opportunities"], ["100%", "answered"], ["7s", "median reply"]] },
@@ -1218,8 +1218,9 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
     <div className="pitch-root" style={embed ? undefined : { display: "contents" }}>
     <div ref={rootRef}
       onClick={onExpand ? onEmbedClick : undefined}
-      className={embed ? "relative flex h-[660px] w-full select-none flex-col overflow-hidden rounded-[32px] text-white sm:h-[720px]" : "fixed inset-0 z-[60] flex select-none flex-col overflow-hidden text-white"}
-      style={{ background: C.page }}>
+      // Homepage: no box around it, the cards sit open on the page (Z, 5 Oct 2026).
+      className={embed ? "relative flex h-[660px] w-full select-none flex-col overflow-x-clip text-white sm:h-[720px]" : "fixed inset-0 z-[60] flex select-none flex-col overflow-hidden text-white"}
+      style={embed ? undefined : { background: C.page }}>
       <style>{`
         @keyframes pitch-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         .pitch-in { animation: pitch-in 650ms ${EASE} both; }
@@ -1230,8 +1231,8 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
         .pitch-glow { animation: pitch-drift 18s ease-in-out infinite alternate; }
         @media (prefers-reduced-motion: reduce) { .pitch-in, .pitch-pulse, .pitch-glow { animation: none !important; opacity: 1 !important; } }
       `}</style>
-      {/* Violet glow behind the deck, drifting slowly */}
-      <div className="pitch-glow pointer-events-none absolute inset-0" aria-hidden>
+      {/* Violet glow behind the deck, drifting slowly (full screen only) */}
+      <div className={`pitch-glow pointer-events-none absolute inset-0 ${embed ? "hidden" : ""}`} aria-hidden>
         <div className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(124,58,237,0.42) 0%, rgba(124,58,237,0) 65%)" }} />
         <div className="absolute -left-[15vmin] -top-[20vmin] h-[60vmin] w-[60vmin] rounded-full"
@@ -1240,7 +1241,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
           style={{ background: "radial-gradient(circle, rgba(167,139,250,0.22) 0%, rgba(167,139,250,0) 65%)" }} />
       </div>
       {/* The site's grain, very faint */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: GRAIN }} />
+      {!embed && <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: GRAIN }} />}
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-[max(16px,env(safe-area-inset-top))] sm:px-8">
         {embed ? <span /> : (
@@ -1295,7 +1296,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
               key={s.key}
               ref={(el) => { cardRefs.current[i] = el; }}
               aria-hidden={!current}
-              aria-label={`${i + 1} of ${n}: ${s.label}`}
+              aria-label={`${i + 1} of ${n}: ${s.key === "cover" && variant !== "page" ? "What is PROXe?" : s.label}`}
               data-card={i}
               onClick={() => { if (!onExpand && !current && !moved.current) go(i); }}
               onPointerDown={() => { if (current) setHeld(true); }}
@@ -1320,7 +1321,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
 
               {/* Label and reading timer */}
               <div className="relative mb-4 flex items-center justify-between gap-3">
-                <p className="text-[12px] font-medium" style={{ color: s.hero ? "rgba(255,255,255,0.75)" : C.violet }}>{s.label}</p>
+                <p className="text-[12px] font-medium" style={{ color: s.hero ? "rgba(255,255,255,0.75)" : C.violet }}>{s.key === "cover" && variant !== "page" ? "What is PROXe?" : s.label}</p>
                 {current && started && i < n - 1 && (
                   <button onClick={(e) => { e.stopPropagation(); setUserPaused((p) => !p); }}
                     className="flex items-center gap-1.5 rounded-full bg-white/[0.08] px-2.5 py-1 text-[11px] tabular-nums text-white/70"
@@ -1355,7 +1356,7 @@ export function PitchDeck({ variant = "page", only, onExpand, onClose, autoStart
         <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{index + 1} / {n}{totalSec ? ` · ${clock(totalSec)}` : ""}</span>
         <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
           {slides.map((s, i) => (
-            <button key={s.key} onClick={() => (onExpand ? onExpand(i) : go(i))} aria-label={`Go to ${s.label}`}
+            <button key={s.key} onClick={() => (onExpand ? onExpand(i) : go(i))} aria-label={`Go to ${s.key === "cover" && variant !== "page" ? "What is PROXe?" : s.label}`}
               className="flex h-11 items-center transition-[width] duration-300" style={{ width: i === index ? 26 : 9 }}>
               <span className="block h-1.5 w-full rounded-full transition-colors duration-300"
                 style={{ background: i === index ? C.violet : i < index ? "rgba(167,139,250,0.45)" : "rgba(255,255,255,0.16)" }} />
