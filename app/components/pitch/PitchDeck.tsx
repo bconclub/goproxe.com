@@ -429,7 +429,7 @@ const SLIDES: Slide[] = [
       const b = BRANDS[r.brand];
       return (
         <div className="relative flex h-full flex-col">
-          <div className="relative shrink-0 overflow-hidden rounded-2xl" style={{ height: 180, boxShadow: `0 0 0 1px color-mix(in srgb, ${b.color} 35%, transparent)` }}>
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl" style={{ minHeight: 180, boxShadow: `0 0 0 1px color-mix(in srgb, ${b.color} 35%, transparent)` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/pitch/edge/${r.brand}.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover"
               style={{ transform: on ? "scale(1.06)" : "scale(1.14)", transition: `transform 9s ${EASE}` }} />
@@ -442,12 +442,12 @@ const SLIDES: Slide[] = [
               </span>
             </div>
           </div>
-          <div className="relative flex flex-1 flex-col pt-4">
+          <div className="relative flex shrink-0 flex-col pt-4">
             <p className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe · {b.tag}</p>
             <h2 className={`mt-1.5 text-balance text-[25px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[28px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
             <p className={`mt-2.5 text-[14.5px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
             {r.stats && (
-              <Stagger on={on} className="mt-auto grid grid-cols-4 gap-1.5 pt-3" step={350}>
+              <Stagger on={on} className="mt-3 grid grid-cols-4 gap-1.5" step={350}>
                 {r.stats.map(([n, l]) => (
                   <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
                     <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] tabular-nums" style={{ color: b.color }}>{n}</span>
@@ -458,7 +458,7 @@ const SLIDES: Slide[] = [
             )}
             {r.stats && <p className="mt-1.5 text-[10.5px] text-white/40">Last 90 days</p>}
             <button type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openCard("edges"); }}
-              className={`${r.stats ? "mt-3" : "mt-auto"} flex items-center gap-1.5 self-start rounded-full bg-white/[0.08] px-3.5 py-2 text-[12.5px] font-medium text-white/85 transition-colors hover:bg-white/[0.14]`}>
+              className={`mt-3 flex items-center gap-1.5 self-start rounded-full bg-white/[0.08] px-3.5 py-2 text-[12.5px] font-medium text-white/85 transition-colors hover:bg-white/[0.14]`}>
               <ArrowLeft size={14} /> All edge cases
             </button>
           </div>
@@ -844,7 +844,6 @@ function ToolPile({ on }: { on: boolean }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" className="h-6 w-auto" />
         </span>
-        <span className="text-center text-[12px] text-white/55">One system. Plugs into Slack, Telegram, email, your calendar and payments.</span>
       </div>
     </div>
   );
@@ -1280,6 +1279,10 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         @keyframes pitch-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         .pitch-in { animation: pitch-in 650ms ${EASE} both; }
         @keyframes pitch-spin { to { transform: rotate(360deg); } }
+        @keyframes pitch-rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+        .pitch-rainbow { background: linear-gradient(90deg, #ff5f6d, #ffb347, #f9e64f, #4ade80, #38bdf8, #7c3aed, #e879f9, #ff5f6d); background-size: 300% 100%; animation: pitch-rainbow 6s linear infinite; text-shadow: 0 1px 2px rgba(0,0,0,0.45); box-shadow: 0 0 0 1px rgba(255,255,255,0.25), 0 8px 28px -6px rgba(124,58,237,0.7); transition: transform 200ms; }
+        .pitch-rainbow:hover { transform: scale(1.04); }
+        @media (prefers-reduced-motion: reduce) { .pitch-rainbow { animation: none; } }
         @keyframes pitch-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.45); } 50% { box-shadow: 0 0 0 14px rgba(124,58,237,0); } }
         .pitch-pulse { animation: pitch-pulse 2.6s ease-in-out infinite; }
         @keyframes pitch-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1.5%, 0) scale(1.06); } }
@@ -1421,14 +1424,14 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         </div>
         {index === talkIdx ? (
           <button onClick={() => { track("button_click", { label: "deploy_proxe", location: `${variant}_end` }); startDeploy(`pitch_${variant}_end`); }}
-            className="flex h-11 shrink-0 items-center gap-2 rounded-full px-5 text-[13.5px] font-semibold text-white" style={{ background: C.deep }}>
+            className="pitch-rainbow flex h-11 shrink-0 items-center gap-2 rounded-full px-5 text-[13.5px] font-bold text-white">
             Deploy PROXe <ArrowRight size={16} />
           </button>
         ) : (
           <div className="flex shrink-0 items-center gap-2">
           {!embed && (
             <button onClick={() => { track("button_click", { label: "deploy_proxe", location: "pitch_footer" }); startDeploy("pitch_footer"); }}
-              className="flex h-11 items-center rounded-full border border-white/15 bg-white/[0.07] px-4 text-[13px] font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/[0.12]">
+              className="pitch-rainbow flex h-11 items-center rounded-full px-5 text-[13.5px] font-bold text-white">
               Deploy PROXe
             </button>
           )}
