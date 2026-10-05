@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, Volume2, VolumeX,
+  Sparkles, Building2, BarChart3, Layers, UserRound, PlayCircle,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
@@ -183,6 +184,16 @@ const NUMBERS: [string, string][] = [
   ["861", "opportunities created"],
   ["99", "calls and visits booked"],
 ];
+
+// The on-demand bubbles beside "Talk to PROXe": one colour and icon per group.
+const BUBBLE: Record<string, { color: string; Icon: typeof Phone }> = {
+  edge: { color: "#f97316", Icon: Sparkles },
+  brands: { color: "#22c55e", Icon: Building2 },
+  numbers: { color: "#38bdf8", Icon: BarChart3 },
+  deep: { color: "#a78bfa", Icon: Layers },
+  founder: { color: "#f43f5e", Icon: UserRound },
+  tour: { color: "#eab308", Icon: PlayCircle },
+};
 
 // ── the cards ──
 
@@ -723,17 +734,6 @@ const SLIDES: Slide[] = [
       <div className="flex h-full flex-col">
         <p className="text-[13px] font-medium text-white/70">That&apos;s PROXe.</p>
         <h2 className="mt-1 text-[30px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">Now talk to PROXe.</h2>
-        {extras.length > 0 && (
-          // Everything else is on demand: each bubble plays its cards, then comes back here.
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {extras.map((g) => (
-              <button key={g.key} type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openExtra(g.key); }}
-                className="rounded-full border border-white/25 bg-white/[0.1] px-3 py-1.5 text-[12.5px] font-medium text-white backdrop-blur-md transition-colors hover:bg-white/[0.2]">
-                {g.label} <span aria-hidden>→</span>
-              </button>
-            ))}
-          </div>
-        )}
         <div className="min-h-0 flex-1"><TalkToProxe onActive={setOrb} /></div>
       </div>
     ),
@@ -1253,6 +1253,10 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         @keyframes pitch-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         .pitch-in { animation: pitch-in 650ms ${EASE} both; }
         @keyframes pitch-spin { to { transform: rotate(360deg); } }
+        @keyframes pitch-bubble-in { 0% { opacity: 0; transform: translateX(40px) scale(0.4); } 70% { opacity: 1; transform: translateX(-4px) scale(1.08); } 100% { opacity: 1; transform: none; } }
+        @keyframes pitch-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .pitch-bubble { animation: pitch-bubble-in 520ms cubic-bezier(.34,1.56,.64,1) both; }
+        .pitch-bob { animation: pitch-bob 3.2s ease-in-out infinite; }
         @keyframes pitch-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.45); } 50% { box-shadow: 0 0 0 14px rgba(124,58,237,0); } }
         .pitch-pulse { animation: pitch-pulse 2.6s ease-in-out infinite; }
         @keyframes pitch-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1.5%, 0) scale(1.06); } }
@@ -1374,6 +1378,29 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
           );
         })}
       </div>
+
+      {/* Game-menu bubbles beside "Talk to PROXe": each plays its cards, then comes back. */}
+      {index === talkIdx && extras.length > 0 && (
+        <div className="pointer-events-none absolute inset-y-0 z-20 flex flex-col justify-center gap-2.5"
+          style={card.narrow ? { right: 6 } : { left: `calc(50% + ${card.w / 2 + 28}px)` }}>
+          {extras.map((g, i) => {
+            const b = BUBBLE[g.key] ?? { color: C.violet, Icon: Sparkles };
+            return (
+              <button key={g.key} type="button" aria-label={g.label}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); const at = coreN + extraCards.findIndex((x) => x.group === g.key); track("button_click", { label: `pitch_extra_${g.key}`, location: variant }); if (onExpand) onExpand(at); else go(at); }}
+                className="pitch-bubble pointer-events-auto group flex items-center gap-2.5 self-start"
+                style={{ animationDelay: `${250 + i * 110}ms` }}>
+                <span className="pitch-bob flex items-center justify-center rounded-full text-white shadow-lg ring-2 ring-white/25 transition-transform group-hover:scale-110"
+                  style={{ width: card.narrow ? 46 : 54, height: card.narrow ? 46 : 54, background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${b.color} 70%, white), ${b.color} 55%, color-mix(in srgb, ${b.color} 70%, black))`, boxShadow: `0 8px 24px color-mix(in srgb, ${b.color} 45%, transparent)`, animationDelay: `${i * 0.4}s` }}>
+                  <b.Icon size={card.narrow ? 20 : 23} />
+                </span>
+                {!card.narrow && <span className="rounded-full bg-black/35 px-3 py-1.5 text-[13px] font-semibold text-white backdrop-blur-md">{g.label}</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <footer className="relative z-10 flex items-center justify-between gap-3 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:gap-4 sm:px-8">
         <button onClick={() => (onExpand ? onExpand(Math.max(0, index - 1)) : go(index - 1))} disabled={index === 0} aria-label="Previous card"
