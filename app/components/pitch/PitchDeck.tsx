@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowLeft, ArrowRight, X, Phone, Globe, Clock, Pause, Play, Radar, BellOff, UserMinus, Unlink, MessagesSquare, CalendarCheck, Repeat2, Check, Volume2, VolumeX,
-  Sparkles, Building2, BarChart3, Layers, UserRound, PlayCircle,
 } from "lucide-react";
 import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
@@ -165,12 +164,13 @@ function BrandIcon({ brand, size = 40 }: { brand: BrandKey; size?: number }) {
 
 // Edge solutions built on PROXe, each with the brand it runs for.
 // stats: last 90 days from the brand's PROXe database (snapshot 5 Oct 2026); only where real numbers exist.
+// image: public/pitch/edge/<brand>.jpg, made for the card (ChatGPT, 5 Oct 2026).
 const BUILT: { brand: BrandKey; title: string; what: string; stats?: [string, string][] }[] = [
   { brand: "hsh", title: "Kannada voice and complete patient management", what: "One agent on chat and calls, and the whole patient journey on PROXe" },
   { brand: "lokazen", title: "Brand and property onboarding, on WhatsApp", what: "Brands and property owners onboarded end to end on WhatsApp, and auto-matched",
-    stats: [["621", "leads"], ["56", "meetings booked"], ["76", "opportunities"], ["8s", "median reply"]] },
+    stats: [["621", "leads"], ["56", "meetings booked"], ["76", "oppor­tunities"], ["8s", "median reply"]] },
   { brand: "windchasers", title: "High-volume admissions leads", what: "Parents and students scored and routed: opportunities up 800%",
-    stats: [["3,823", "leads"], ["763", "opportunities"], ["100%", "answered"], ["7s", "median reply"]] },
+    stats: [["3,823", "leads"], ["763", "oppor­tunities"], ["100%", "answered"], ["7s", "median reply"]] },
   { brand: "bcon", title: "Instagram comment and DM automation, and lead management", what: "Every comment and DM answered, followed up and managed as a lead, by PROXe" },
   { brand: "khadivasthra", title: "Complete e-commerce", what: "Cart recovery, and catalogs across Google Merchant and Instagram" },
 ];
@@ -185,21 +185,11 @@ const NUMBERS: [string, string][] = [
   ["99", "calls and visits booked"],
 ];
 
-// The on-demand bubbles beside "Talk to PROXe": one colour and icon per group.
-const BUBBLE: Record<string, { color: string; Icon: typeof Phone }> = {
-  edge: { color: "#f97316", Icon: Sparkles },
-  brands: { color: "#22c55e", Icon: Building2 },
-  numbers: { color: "#38bdf8", Icon: BarChart3 },
-  deep: { color: "#a78bfa", Icon: Layers },
-  founder: { color: "#f43f5e", Icon: UserRound },
-  tour: { color: "#eab308", Icon: PlayCircle },
-};
-
 // ── the cards ──
 
-/** On-demand cards: not in the main run, opened from the bubbles on "Talk to PROXe". */
+/** On-demand cards: not in the main run, opened from a hub card (the edge cases). */
 export type ExtraGroup = { key: string; label: string; cards: string[] };
-type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void; extras: ExtraGroup[]; openExtra: (key: string) => void }) => React.ReactNode };
+type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void; extras: ExtraGroup[]; openExtra: (key: string) => void; openCard: (key: string) => void }) => React.ReactNode };
 
 const SLIDES: Slide[] = [
   {
@@ -432,41 +422,46 @@ const SLIDES: Slide[] = [
       </>
     ),
   },
-  // One card per edge solution, each wearing its brand's colour.
+  // One card per edge case: the brand's photo on top, its colour throughout.
   ...BUILT.map((r, i): Slide => ({
-    key: `built-${r.brand}`, label: `Edge solutions · ${i + 1} of ${BUILT.length}`,
-    render: ({ on }) => {
+    key: `built-${r.brand}`, label: `Edge cases · ${i + 1} of ${BUILT.length}`,
+    render: ({ on, openCard }) => {
       const b = BRANDS[r.brand];
       return (
         <div className="relative flex h-full flex-col">
-          <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: b.color, opacity: on ? 0.38 : 0, transition: `opacity 900ms ${EASE}` }} />
-          <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 rounded-full blur-3xl" style={{ background: b.color, opacity: on ? 0.16 : 0, transition: `opacity 1200ms ${EASE} 200ms` }} />
-          <div className={`relative flex items-center gap-3.5 ${on ? "pitch-in" : "opacity-0"}`}>
-            <BrandIcon brand={r.brand} size={60} />
-            <span className="min-w-0">
-              <span className="block text-[18px] font-semibold leading-tight text-white">{b.name}</span>
-              <span className="mt-0.5 block text-[12.5px] leading-snug text-white/60">{b.about}</span>
-            </span>
+          <div className="relative shrink-0 overflow-hidden rounded-2xl" style={{ height: 180, boxShadow: `0 0 0 1px color-mix(in srgb, ${b.color} 35%, transparent)` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`/pitch/edge/${r.brand}.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover"
+              style={{ transform: on ? "scale(1.06)" : "scale(1.14)", transition: `transform 9s ${EASE}` }} />
+            <div aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 35%, rgba(12,9,24,0.85)), linear-gradient(90deg, color-mix(in srgb, ${b.color} 30%, transparent), transparent 60%)` }} />
+            <div className={`absolute bottom-3 left-3 flex items-center gap-2.5 ${on ? "pitch-in" : "opacity-0"}`}>
+              <span className="rounded-full p-[2px]" style={{ background: b.color }}><BrandIcon brand={r.brand} size={38} /></span>
+              <span className="min-w-0">
+                <span className="block text-[15px] font-semibold leading-tight text-white">{b.name}</span>
+                <span className="block text-[11.5px] leading-snug text-white/70">{b.about}</span>
+              </span>
+            </div>
           </div>
-          <div className="relative flex flex-1 flex-col justify-center pt-5">
-            <p className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe</p>
-            <h2 className={`mt-1.5 text-balance text-[27px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[31px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
-            <p className={`mt-3 text-[15px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
+          <div className="relative flex flex-1 flex-col pt-4">
+            <p className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe · {b.tag}</p>
+            <h2 className={`mt-1.5 text-balance text-[25px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[28px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
+            <p className={`mt-2.5 text-[14.5px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
             {r.stats && (
-              <>
-                <p className={`mt-4 text-[11px] font-medium uppercase tracking-[0.08em] text-white/45 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: D(1400) }}>Last 90 days</p>
-                <Stagger on={on} className="mt-1.5 grid grid-cols-4 gap-1.5" step={350}>
-                  {r.stats.map(([n, l]) => (
-                    <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
-                      <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] tabular-nums" style={{ color: b.color }}>{n}</span>
-                      <span className="mt-1 block text-[10.5px] leading-tight text-white/55">{l}</span>
-                    </div>
-                  ))}
-                </Stagger>
-              </>
+              <Stagger on={on} className="mt-auto grid grid-cols-4 gap-1.5 pt-3" step={350}>
+                {r.stats.map(([n, l]) => (
+                  <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
+                    <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] tabular-nums" style={{ color: b.color }}>{n}</span>
+                    <span className="mt-1 block text-[10.5px] leading-tight text-white/55">{l}</span>
+                  </div>
+                ))}
+              </Stagger>
             )}
+            {r.stats && <p className="mt-1.5 text-[10.5px] text-white/40">Last 90 days</p>}
+            <button type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openCard("edges"); }}
+              className={`${r.stats ? "mt-3" : "mt-auto"} flex items-center gap-1.5 self-start rounded-full bg-white/[0.08] px-3.5 py-2 text-[12.5px] font-medium text-white/85 transition-colors hover:bg-white/[0.14]`}>
+              <ArrowLeft size={14} /> All edge cases
+            </button>
           </div>
-          <div className="relative mt-4 h-1 origin-left rounded-full" style={{ background: `linear-gradient(90deg, ${b.color}, transparent)`, transform: on ? "scaleX(1)" : "scaleX(0)", transition: `transform 1200ms ${EASE} 500ms` }} />
         </div>
       );
     },
@@ -739,6 +734,34 @@ const SLIDES: Slide[] = [
     ),
   },
   {
+    key: "edges", label: "Edge cases",
+    render: ({ on, openCard }) => (
+      <>
+        <Headline>Edge cases, built on PROXe.</Headline>
+        <p className={`mt-2 text-[14px] leading-relaxed text-white/65 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>Same platform, a different problem for each brand. Tap one.</p>
+        <div className="flex flex-1 flex-col justify-center pt-4">
+          <Stagger on={on} className="grid grid-cols-1 gap-2" step={160}>
+            {BUILT.map((r) => {
+              const b = BRANDS[r.brand];
+              return (
+                <button key={r.brand} type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openCard(`built-${r.brand}`); }}
+                  className="group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl p-2.5 pr-3 text-left transition-transform active:scale-[0.98]"
+                  style={{ background: `linear-gradient(90deg, color-mix(in srgb, ${b.color} 16%, transparent), rgba(255,255,255,0.04))`, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 28%, transparent)` }}>
+                  <BrandIcon brand={r.brand} size={38} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[13.5px] font-semibold leading-tight text-white">{b.name}</span>
+                    <span className="block truncate text-[11.5px] leading-snug text-white/60">{r.title}</span>
+                  </span>
+                  <ArrowRight size={16} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: b.color }} />
+                </button>
+              );
+            })}
+          </Stagger>
+        </div>
+      </>
+    ),
+  },
+  {
     key: "watch", hero: true, label: "Watch how it works",
     render: () => (
       <div className="flex h-full flex-col">
@@ -931,11 +954,15 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   const coreN = core.length;
   const groupAt = (i: number) => (i >= coreN ? extraCards[i - coreN]?.group ?? null : null);
   const talkIdx = Math.max(0, core.findIndex((x) => x.key === "talk") >= 0 ? core.findIndex((x) => x.key === "talk") : coreN - 1);
-  // After a card: the next core card; inside a group, the group's next card, then back to Talk.
-  const nextAfter = (i: number) => {
-    if (i < coreN) return i === talkIdx ? i : Math.min(coreN - 1, i + 1);
+  const hubIdx = core.findIndex((x) => x.key === "edges");
+  const home = hubIdx >= 0 ? hubIdx : talkIdx;
+  // After a card: the next core card; an edge case goes back to the hub.
+  const nextAfter = (i: number) => (i < coreN ? (i === talkIdx || i === hubIdx ? i : Math.min(coreN - 1, i + 1)) : home);
+  // A swipe or arrow: inside a group it moves within the group, and off either end back to the hub.
+  const stepFrom = (i: number, d: number) => {
     const g = groupAt(i);
-    return i + 1 < slides.length && groupAt(i + 1) === g ? i + 1 : talkIdx;
+    if (!g) return Math.max(0, Math.min(coreN - 1, i + d));
+    return groupAt(i + d) === g ? i + d : home;
   };
   const { startDeploy } = useDeployModal();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -996,8 +1023,8 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
     if (embed) return;
     const key = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === "INPUT") return;
-      if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); go(index + 1); }
-      if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(index - 1); }
+      if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); go(stepFrom(index, 1)); }
+      if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(stepFrom(index, -1)); }
       if (e.key === " ") { e.preventDefault(); setUserPaused((p) => !p); }
       if (e.key === "Escape" && onClose) { e.preventDefault(); onClose(); }
     };
@@ -1086,7 +1113,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   }, [narrate, unlocked, lang, n, index]);
 
   // ── reading timer: each card gets the time it takes to read, then moves on ──
-  const paused = !started || !inView || held || userPaused || orb || dragging || index === talkIdx;
+  const paused = !started || !inView || held || userPaused || orb || dragging || index === talkIdx || index === hubIdx;
   // The loop reads `paused` through a ref so pausing keeps the elapsed time.
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -1210,7 +1237,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
     if (move === 0 && Math.abs(v) > 0.35) move = v < 0 ? 1 : -1;
     setDragging(false);
     setDrag(0);
-    go(index + move);
+    go(move === 0 ? index : groupAt(index) ? stepFrom(index, Math.sign(move)) : stepFrom(index, move));
   }
   function onWheel(e: React.WheelEvent) {
     // Homepage deck: vertical scroll belongs to the page; a sideways swipe opens it full screen.
@@ -1224,7 +1251,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
     const now = performance.now();
     if (Math.abs(d) < 12 || now - wheelLock.current < 420) return;
     wheelLock.current = now;
-    go(index + (d > 0 ? 1 : -1));
+    go(stepFrom(index, d > 0 ? 1 : -1));
   }
 
   // Embed with onExpand: a tap anywhere on the deck opens it full screen, narrated,
@@ -1253,10 +1280,6 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         @keyframes pitch-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         .pitch-in { animation: pitch-in 650ms ${EASE} both; }
         @keyframes pitch-spin { to { transform: rotate(360deg); } }
-        @keyframes pitch-bubble-in { 0% { opacity: 0; transform: translateX(40px) scale(0.4); } 70% { opacity: 1; transform: translateX(-4px) scale(1.08); } 100% { opacity: 1; transform: none; } }
-        @keyframes pitch-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .pitch-bubble { animation: pitch-bubble-in 520ms cubic-bezier(.34,1.56,.64,1) both; }
-        .pitch-bob { animation: pitch-bob 3.2s ease-in-out infinite; }
         @keyframes pitch-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.45); } 50% { box-shadow: 0 0 0 14px rgba(124,58,237,0); } }
         .pitch-pulse { animation: pitch-pulse 2.6s ease-in-out infinite; }
         @keyframes pitch-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1.5%, 0) scale(1.06); } }
@@ -1369,7 +1392,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
                 </div>
               )}
 
-              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, extras, openExtra: (k) => { const at = coreN + extraCards.findIndex((x) => x.group === k); track("button_click", { label: `pitch_extra_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
+              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, extras, openCard: (k) => { const at = slides.findIndex((x) => x.key === k); if (at < 0) return; track("button_click", { label: `pitch_open_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, openExtra: (k) => { const at = coreN + extraCards.findIndex((x) => x.group === k); track("button_click", { label: `pitch_extra_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
 
               {/* Side cards sink back, but stay visible as more to come */}
               <div className="pointer-events-none absolute inset-0 rounded-[28px]"
@@ -1379,31 +1402,8 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         })}
       </div>
 
-      {/* Game-menu bubbles beside "Talk to PROXe": each plays its cards, then comes back. */}
-      {index === talkIdx && extras.length > 0 && (
-        <div className="pointer-events-none absolute inset-y-0 z-20 flex flex-col justify-center gap-2.5"
-          style={card.narrow ? { right: 6 } : { left: `calc(50% + ${card.w / 2 + 28}px)` }}>
-          {extras.map((g, i) => {
-            const b = BUBBLE[g.key] ?? { color: C.violet, Icon: Sparkles };
-            return (
-              <button key={g.key} type="button" aria-label={g.label}
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={(e) => { e.stopPropagation(); const at = coreN + extraCards.findIndex((x) => x.group === g.key); track("button_click", { label: `pitch_extra_${g.key}`, location: variant }); if (onExpand) onExpand(at); else go(at); }}
-                className="pitch-bubble pointer-events-auto group flex items-center gap-2.5 self-start"
-                style={{ animationDelay: `${250 + i * 110}ms` }}>
-                <span className="pitch-bob flex items-center justify-center rounded-full text-white shadow-lg ring-2 ring-white/25 transition-transform group-hover:scale-110"
-                  style={{ width: card.narrow ? 46 : 54, height: card.narrow ? 46 : 54, background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${b.color} 70%, white), ${b.color} 55%, color-mix(in srgb, ${b.color} 70%, black))`, boxShadow: `0 8px 24px color-mix(in srgb, ${b.color} 45%, transparent)`, animationDelay: `${i * 0.4}s` }}>
-                  <b.Icon size={card.narrow ? 20 : 23} />
-                </span>
-                {!card.narrow && <span className="rounded-full bg-black/35 px-3 py-1.5 text-[13px] font-semibold text-white backdrop-blur-md">{g.label}</span>}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
       <footer className="relative z-10 flex items-center justify-between gap-3 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 sm:gap-4 sm:px-8">
-        <button onClick={() => (onExpand ? onExpand(Math.max(0, index - 1)) : go(index - 1))} disabled={index === 0} aria-label="Previous card"
+        <button onClick={() => (onExpand ? onExpand(Math.max(0, index - 1)) : go(stepFrom(index, -1)))} disabled={index === 0} aria-label="Previous card"
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-white transition-opacity disabled:opacity-25">
           <ArrowLeft size={18} />
         </button>
