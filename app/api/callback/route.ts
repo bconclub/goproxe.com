@@ -233,6 +233,7 @@ export async function POST(request: Request) {
         conversation_initiation_client_data: { dynamic_variables: {
           first_name: callerName ? callerName.split(' ')[0] : 'there',
           business_name: callerBusiness || 'not shared yet',
+          business_type: String(body.businessType ?? '').replace(/_/g, ' ') || 'not shared yet',
         } },
       }),
     })
