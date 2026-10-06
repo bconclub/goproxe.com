@@ -205,9 +205,10 @@ export async function POST(request: Request) {
         // and applies reverse charge. Off otherwise: a B2C buyer has nothing to
         // put in it and an empty tax field only costs completions.
         allow_tax_id: Boolean(gstin),
-        // Skip Dodo's own success interstitial and land straight on /thank-you,
-        // which is where the onboarding call gets booked.
-        redirect_immediately: true,
+        // Off: stay on Dodo until the payment or mandate actually settles. With
+        // it on, buyers were handed to /thank-you with status=pending before
+        // any card was confirmed, saw "Payment received" and left (6 Oct).
+        redirect_immediately: false,
       },
       // Only the zipcode is required. Street/city/state are not needed to bill a
       // subscription and every extra required field costs completions.

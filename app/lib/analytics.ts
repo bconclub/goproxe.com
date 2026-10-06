@@ -72,6 +72,7 @@ export type ProxeEvent =
   // ── Checkout journey ────────────────────────────────────────────
   | 'checkout_redirect'    // actually navigating to the hosted Dodo page
   | 'checkout_cancelled'   // came back to /#pricing from Dodo without paying
+  | 'checkout_incomplete'  // returned from Dodo but status was not succeeded/active
   | 'plan_select'          // a pricing plan CTA was chosen — params: plan, market
   // ── Dashboard tour videos (/dashboard-tour) ─────────────────────────────
   | 'tour_video_start'    // first play of a video this page view, params: video, index

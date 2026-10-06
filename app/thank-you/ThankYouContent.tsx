@@ -13,8 +13,21 @@ const FALLBACK_EMAIL = 'brands@bconclub.com'
 
 export default function ThankYouContent() {
   const params = useSearchParams()
-  /** Dodo sends the buyer back here with ?checkout=success after payment. */
-  const paid = params?.get('checkout') === 'success'
+  /**
+   * Dodo sends the buyer back here with ?checkout=success, but that only means
+   * the checkout ended, not that money moved. Dodo appends its own status: a
+   * buyer who never confirmed a card comes back with status=pending, and this
+   * page used to tell them "Payment received" (6 Oct: a trial with no card on
+   * file that could never bill). Missing status is treated as paid for links
+   * that predate the status param.
+   */
+  const returned = params?.get('checkout') === 'success'
+  const status = params?.get('status')?.toLowerCase() ?? null
+  const confirmed = !status || status === 'succeeded' || status === 'active'
+  const paid = returned && confirmed
+  const unpaid = returned && !confirmed
+  /** Still with the bank: retrying now could double-charge, so no resume button. */
+  const processing = unpaid && status === 'processing'
   /**
    * The payment's own id, whichever of these Dodo appends to the return URL.
    * GA4 and Google Ads dedupe purchases on transaction_id; without one, every
@@ -49,8 +62,9 @@ export default function ThankYouContent() {
     // buyer's own currency (Purchase with no value reports as zero revenue,
     // which makes every campaign look like it earned nothing).
     if (paid) trackPurchase(meta, transactionId)
+    else if (unpaid) track('checkout_incomplete', { ...meta, status: status ?? 'unknown' })
     else track('demo_booked', meta)
-  }, [paid, transactionId])
+  }, [paid, unpaid, status, transactionId])
 
   /**
    * Post-payment onboarding call. The lead row already exists (captured before
@@ -69,6 +83,42 @@ export default function ThankYouContent() {
     if (email) {
       submitLead({ type: 'booking', eventId: bookingEventId, email, bookingLabel: slot.label, bookingTime: slot.time })
     }
+  }
+
+  const resumeQuery = new URLSearchParams()
+  const resumePayment = params?.get('payment_id')
+  const resumeSub = params?.get('subscription_id')
+  if (resumePayment) resumeQuery.set('payment_id', resumePayment)
+  if (resumeSub) resumeQuery.set('subscription_id', resumeSub)
+  const resumeHref = `/api/checkout/resume?${resumeQuery.toString()}`
+
+  if (unpaid) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.card}>
+          <p className={styles.eyebrow}>{processing ? 'Payment processing' : 'Payment not completed'}</p>
+          <h1 className={styles.title}>
+            {firstName ? `Almost there, ${firstName}.` : 'Almost there.'}
+          </h1>
+          <p className={styles.subtitle}>
+            {processing
+              ? <>Your bank is still confirming the payment. This usually takes a few minutes. We&rsquo;ll email you once it&rsquo;s through.</>
+              : <>Your card or UPI wasn&rsquo;t confirmed, so PROXe isn&rsquo;t active yet and nothing was charged. Finish the payment to start.</>}
+          </p>
+          {!processing && (
+            <a href={resumeHref} className={styles.cta}>Complete payment</a>
+          )}
+          <div className={styles.altRow}>
+            <a href={`mailto:${FALLBACK_EMAIL}?subject=PROXe%20payment%20help`} className={styles.altLink}>
+              <FiMail size={13} /> Need help? Email us
+            </a>
+          </div>
+          <div className={styles.brand}>
+            <img src="/proxe/brand/proxe-logo-white.webp" alt="PROXe" />
+          </div>
+        </main>
+      </div>
+    )
   }
 
   // Paid but no slot chosen yet → the whole page IS the scheduler.
