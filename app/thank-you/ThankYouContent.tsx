@@ -3,10 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { FiCalendar, FiClock, FiVideo, FiMail, FiArrowLeft } from 'react-icons/fi'
-import { getStoredUser, getStoredBooking, storeBooking, type LocalBooking } from '../lib/chatLocalStorage'
-import { track, trackPurchase, newEventId } from '../lib/analytics'
-import { submitLead } from '../lib/leads'
-import BookingCalendar, { type BookingSlot } from '../components/shared/BookingCalendar'
+import { getStoredUser, getStoredBooking, type LocalBooking } from '../lib/chatLocalStorage'
+import { track, trackPurchase } from '../lib/analytics'
 import styles from './thankyou.module.css'
 
 const FALLBACK_EMAIL = 'brands@bconclub.com'
@@ -40,17 +38,13 @@ export default function ThankYouContent() {
     undefined
 
   const [firstName, setFirstName] = useState('')
-  const [email, setEmail] = useState('')
   const [booking, setBooking] = useState<LocalBooking | null>(null)
-  const [hydrated, setHydrated] = useState(false)
   const viewedRef = useRef(false)
 
   useEffect(() => {
     const user = getStoredUser('proxe')
     setFirstName(user?.name?.trim().split(' ')[0] ?? '')
-    setEmail(user?.email?.trim() ?? '')
     setBooking(getStoredBooking('proxe'))
-    setHydrated(true)
     if (viewedRef.current) return
     viewedRef.current = true
     const meta = {
@@ -66,24 +60,6 @@ export default function ThankYouContent() {
     else track('demo_booked', meta)
   }, [paid, unpaid, status, transactionId])
 
-  /**
-   * Post-payment onboarding call. The lead row already exists (captured before
-   * checkout), so this is the same booking upsert the modal calendar does —
-   * matched by email.
-   */
-  const handleBookingConfirm = (slot: BookingSlot) => {
-    storeBooking({ label: slot.label, time: slot.time }, 'proxe')
-    setBooking({ label: slot.label, time: slot.time })
-    const bookingEventId = newEventId()
-    track('booking_confirm', {
-      source: 'post_checkout',
-      day_of_week: new Date(slot.iso).toLocaleDateString('en-US', { weekday: 'long' }),
-      time: slot.time,
-    }, bookingEventId)
-    if (email) {
-      submitLead({ type: 'booking', eventId: bookingEventId, email, bookingLabel: slot.label, bookingTime: slot.time })
-    }
-  }
 
   const resumeQuery = new URLSearchParams()
   const resumePayment = params?.get('payment_id')
@@ -121,8 +97,7 @@ export default function ThankYouContent() {
     )
   }
 
-  // Paid but no slot chosen yet → the whole page IS the scheduler.
-  const needsScheduling = paid && hydrated && !booking
+  // Paid: no time picker. The team reaches out to set PROXe up (Z, 7 Oct 2026).
 
   return (
     <div className={styles.page}>
@@ -134,7 +109,7 @@ export default function ThankYouContent() {
         </div>
 
         <p className={styles.eyebrow}>
-          {paid ? (booking ? 'You’re all set' : 'Payment received') : booking ? 'You’re booked' : 'Request received'}
+          {paid ? 'Payment received' : booking ? 'You’re booked' : 'Request received'}
         </p>
         <h1 className={styles.title}>
           {firstName ? `Thank you, ${firstName}.` : 'Thank you.'}
@@ -144,25 +119,19 @@ export default function ThankYouContent() {
 
         <p className={styles.subtitle}>
           {paid
-            ? booking
-              ? <>Payment confirmed and your onboarding call is locked in. We&rsquo;ll send a Google Meet invite — come with your channels handy and we&rsquo;ll wire PROXe up live.</>
-              : <>Payment confirmed. Last step: pick a time and we&rsquo;ll set PROXe up on your channels together.</>
+            ? <>Your payment is confirmed. Someone from the PROXe team will reach out to you shortly to set PROXe up on your channels.</>
             : booking
               ? <>Your demo is locked in. We&rsquo;ll send a Google Meet invite to your inbox — see you then.</>
               : <>We&rsquo;ve got your details. The last step is picking a time — we&rsquo;ll walk you through PROXe live, tuned to your business.</>}
         </p>
 
-        {needsScheduling ? (
-          <div className={styles.scheduler}>
-            <BookingCalendar
-              firstName={firstName}
-              isSubmitting={false}
-              onConfirm={handleBookingConfirm}
-            />
-          </div>
-        ) : (
           <ul className={styles.meta}>
-            {booking ? (
+            {paid ? (
+              <>
+                <li><FiMail size={15} /> A confirmation is on its way to your email</li>
+                <li><FiClock size={15} /> The PROXe team will reach out to you shortly</li>
+              </>
+            ) : booking ? (
               <>
                 <li><FiCalendar size={15} /> {booking.label}</li>
                 <li><FiClock size={15} /> {booking.time} · 30 minutes</li>
@@ -176,7 +145,6 @@ export default function ThankYouContent() {
               </>
             )}
           </ul>
-        )}
 
         <div className={styles.altRow}>
           <a
