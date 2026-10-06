@@ -12530,3 +12530,8 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq .hq-row--pair .hq-input { padding-left: 12px; }
   .proxe-root .hq .hq-row--pair .hq-go, .proxe-root .hq .hq-row--solo .hq-go { flex-basis: 48px; width: 48px; height: 48px; }
 }
+
+/* Calling state (7 Oct 2026): the dark 14px spinner on green read as stuck.
+   White, bigger, with a line saying what is happening. */
+.proxe-root .hq .hq-go .hq-spin { width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; animation: hqSpin .8s linear infinite; }
+.proxe-root .hq-dialing { margin: 10px 0 0; font-size: 13.5px; color: rgba(255,255,255,.8); text-align: center; animation: hqIn .35s ease both; }

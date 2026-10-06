@@ -26,6 +26,9 @@ type Step = 'cta' | 'form' | 'phone' | 'calling' | 'ringing';
 const RING_HINT_MS = 25000;
 
 /** India: a 10-digit mobile starting 6-9, optionally written with +91, 91 or 0. */
+/** Trim, collapse spaces, drop zero-width characters some keyboards insert. */
+const clean = (v: string) => v.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
+
 function indianMobile(raw: string): string | null {
   let d = raw.replace(/\D/g, '');
   if (d.length === 12 && d.startsWith('91')) d = d.slice(2);
@@ -57,6 +60,11 @@ export default function HeroPhoneCapture() {
   const nameRef = useRef<HTMLInputElement>(null);
   const brandRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
+  // What was typed, read from the inputs themselves at submit. Android keyboards
+  // (word suggestions, autofill) can leave the field showing text React state
+  // never saw, and the visitor got "Add your brand name" with a brand typed in
+  // (Clarity, 6 Oct 2026). The field on screen is the truth.
+  const picked = useRef({ name: '', brand: '' });
 
   useEffect(() => { setMarket(detectMarket() === 'usd' ? 'usd' : 'inr'); }, []);
 
@@ -103,19 +111,25 @@ export default function HeroPhoneCapture() {
 
   const submitDetails = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanName = name.trim().replace(/\s+/g, ' ');
+    const typedName = nameRef.current?.value ?? name;
+    const typedBrand = brandRef.current?.value ?? brand;
+    if (typedName !== name) setName(typedName);
+    if (typedBrand !== brand) setBrand(typedBrand);
+    const cleanName = clean(typedName);
+    const cleanBrand = clean(typedBrand);
     if (!cleanName) {
       setError('Add your name so PROXe knows who it is calling.');
       track('form_error', { form: 'hero_phone', field: 'name', reason: 'missing' });
       nameRef.current?.focus();
       return;
     }
-    if (!brand.trim()) {
+    if (!cleanBrand) {
       setError('Add your brand name so PROXe knows what to talk about.');
       track('form_error', { form: 'hero_phone', field: 'brand', reason: 'missing' });
       brandRef.current?.focus();
       return;
     }
+    picked.current = { name: cleanName, brand: cleanBrand };
     setError('');
     track('button_click', { label: 'hero_details_next', location: 'hero' });
     setStep('phone');
@@ -124,9 +138,12 @@ export default function HeroPhoneCapture() {
 
   const submitPhone = async (e: React.FormEvent) => {
     e.preventDefault();
-    const number = validPhone(phone.trim());
-    const cleanName = name.trim().replace(/\s+/g, ' ');
-    if (!cleanName || !brand.trim()) { setStep('form'); return; }
+    const typedPhone = phoneRef.current?.value ?? phone;
+    if (typedPhone !== phone) setPhone(typedPhone);
+    const number = validPhone(typedPhone.trim());
+    const cleanName = picked.current.name || clean(name);
+    const cleanBrand = picked.current.brand || clean(brand);
+    if (!cleanName || !cleanBrand) { setStep('form'); return; }
     if (!number) {
       setError(market === 'inr' ? 'Enter a 10-digit mobile number.' : 'That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: market === 'inr' ? 'invalid_in_mobile' : 'length' });
@@ -136,18 +153,18 @@ export default function HeroPhoneCapture() {
     setError('');
     setStep('calling');
     track('callback_submit', { market });
-    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName, brandName: brand.trim() }, 'proxe');
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName, brandName: cleanBrand }, 'proxe');
     // The one Meta Lead conversion for this visitor: a named person, with a brand, who asked for the call.
     const leadEventId = trackLead({ source: 'hero_phone', hasBrand: true });
     savedRef.current = { phone: number, eventId: leadEventId };
-    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: brand.trim(), source: 'hero_phone', eventId: leadEventId });
+    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: cleanBrand, source: 'hero_phone', eventId: leadEventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
     const res = await fetch('/api/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: number, name: cleanName, business: brand.trim(), market, source: 'hero_phone' }),
+      body: JSON.stringify({ phone: number, name: cleanName, business: cleanBrand, market, source: 'hero_phone' }),
       signal: ac.signal,
     })
       .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
@@ -236,6 +253,7 @@ export default function HeroPhoneCapture() {
           {calling ? <span className="hq-spin" aria-hidden="true" /> : <PhoneIcon size={20} />}
         </button>
       </form>
+      {calling && <p className="hq-dialing" role="status" aria-live="polite">Connecting your call. PROXe will ring you in a few seconds.</p>}
       {error && <p className="hq-error" role="alert">{error}</p>}
     </div>
   );
