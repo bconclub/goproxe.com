@@ -1279,9 +1279,9 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         @keyframes pitch-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         .pitch-in { animation: pitch-in 650ms ${EASE} both; }
         @keyframes pitch-spin { to { transform: rotate(360deg); } }
-        @keyframes pitch-rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
-        .pitch-rainbow { background: linear-gradient(90deg, #ff5f6d, #ffb347, #f9e64f, #4ade80, #38bdf8, #7c3aed, #e879f9, #ff5f6d); background-size: 300% 100%; animation: pitch-rainbow 6s linear infinite; text-shadow: 0 1px 2px rgba(0,0,0,0.45); box-shadow: 0 0 0 1px rgba(255,255,255,0.25), 0 8px 28px -6px rgba(124,58,237,0.7); transition: transform 200ms; }
-        .pitch-rainbow:hover { transform: scale(1.04); }
+        @keyframes pitch-rainbow { to { --pitch-ang: 360deg; } }
+        @property --pitch-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+        .pitch-rainbow { border: 2px solid transparent; background: linear-gradient(135deg, #7c3aed, #4c1d95) padding-box, conic-gradient(from var(--pitch-ang), #f87171, #fbbf24, #4ade80, #38bdf8, #a78bfa, #f472b6, #f87171) border-box; animation: pitch-rainbow 5s linear infinite; }
         @media (prefers-reduced-motion: reduce) { .pitch-rainbow { animation: none; } }
         @keyframes pitch-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.45); } 50% { box-shadow: 0 0 0 14px rgba(124,58,237,0); } }
         .pitch-pulse { animation: pitch-pulse 2.6s ease-in-out infinite; }
