@@ -8,6 +8,7 @@ import * as B from "./brandIcons";
 import { TalkToProxe } from "./TalkToProxe";
 import { useDeployModal } from "../../contexts/DeployModalContext";
 import { track } from "../../lib/analytics";
+import { sendPitchSnapshot } from "../../lib/pitchView";
 import "./pitch.css";
 import DURATIONS from "../../../public/pitch/audio/durations.json";
 
@@ -1051,12 +1052,26 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   }, [embed]);
 
   // ── analytics: who opens it, how far they get, how long they stay ──
-  const seen = useRef({ t0: 0, max: 0, sent: false });
+  const seen = useRef({ t0: 0, max: 0, sent: false, cards: new Set<string>(), extras: new Set<string>(), completed: false, voiced: false, lang: "en" });
+  // Depth per visit, for links we send (?for=<name>): see app/api/pitch-view.
+  const snapshot = (final = false) => sendPitchSnapshot({
+    seconds: Math.round((Date.now() - seen.current.t0) / 1000),
+    maxCard: Math.min(seen.current.max, coreN - 1) + 1,
+    totalCards: coreN,
+    cardsSeen: Array.from(seen.current.cards),
+    extrasOpened: Array.from(seen.current.extras),
+    completed: seen.current.completed,
+    narration: seen.current.voiced,
+    lang: seen.current.lang,
+  }, final);
   useEffect(() => {
     seen.current.t0 = Date.now();
     track("pitch_view", { variant });
+    snapshot();
     const exit = () => {
-      if (seen.current.sent || document.visibilityState !== "hidden") return;
+      if (document.visibilityState !== "hidden") return;
+      snapshot(true);
+      if (seen.current.sent) return;
       seen.current.sent = true;
       track("pitch_exit", { variant, seconds: Math.round((Date.now() - seen.current.t0) / 1000), max_card: seen.current.max + 1, cards: n });
     };
@@ -1067,9 +1082,15 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   }, []);
   useEffect(() => {
     if (!started) return;
-    if (index > seen.current.max) seen.current.max = index;
-    track("pitch_card", { variant, card: slides[index]!.key, index: index + 1 });
+    if (index < coreN && index > seen.current.max) seen.current.max = index;
+    const key = slides[index]!.key;
+    if (index < coreN) seen.current.cards.add(key); else seen.current.extras.add(key);
+    if (index === talkIdx) seen.current.completed = true;
+    seen.current.voiced = seen.current.voiced || (narrate && unlocked);
+    seen.current.lang = lang;
+    track("pitch_card", { variant, card: key, index: index + 1 });
     if (index === talkIdx) track("pitch_complete", { variant, seconds: Math.round((Date.now() - seen.current.t0) / 1000) });
+    snapshot();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, started]);
 
