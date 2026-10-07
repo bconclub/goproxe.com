@@ -123,7 +123,11 @@ export const GA4_KEY_EVENTS: readonly ProxeEvent[] = [
 const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
   form_completed: 'Lead',
   checkout_start: 'InitiateCheckout',
-  checkout_complete: 'Purchase',
+  // checkout_complete is NOT Purchase on Meta (7 Oct 2026). The Dodo webhook
+  // sends the one real Purchase from the server, with the paid amount. The
+  // browser's return page also fired Purchase, under a different event id, so
+  // each sale counted twice and test or unpaid returns counted as sales (3 on
+  // 6 Oct). It is a custom event now.
   // ONE Schedule per real booking. booking_confirm is the moment a slot is
   // actually chosen, and it is the only event that fires on BOTH booking
   // paths (sales calendar in the modal, and the onboarding call after
@@ -140,6 +144,7 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
 
 /** Custom (non-standard) Meta names, PascalCase per Meta's convention. */
 const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
+  checkout_complete: 'CheckoutReturn',
   lead_form_start: 'LeadFormStart',
   // WAS mapped to Schedule, which double-counted: the visitor books in the
   // modal (booking_confirm -> Schedule) and is then redirected here, firing a
