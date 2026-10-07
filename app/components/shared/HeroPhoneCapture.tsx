@@ -7,28 +7,24 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
 /**
- * Hero call capture. Z, 5 Oct 2026: "If they enter their name and details,
- * they should get a call. Otherwise, they'll not get a call. If we have a phone
- * number and the call is not happening, we send a utility WhatsApp."
+ * Hero call capture. Z, 7 Oct 2026: "Talk to PROXe can be the CTA. When they
+ * click on it, it just asks for phone number and call. That's all."
  *
- *   1. One button: "Talk to PROXe", with a phone (Z, 5 Oct 2026: the CTA is
- *      the main thing; tapping it opens name and number together, inline).
- *   2. Name and brand name, side by side, same size, then an arrow.
- *   3. Mobile number, then the call button: the call starts at once (Z, 6 Oct
- *      2026: one thing at a time, the three-field row was hard to use; the
- *      business-type step is gone). The number is saved the moment it is
- *      valid, so anyone who leaves is still a lead (core then sends one
- *      WhatsApp). Lead fires once, when the call is asked for.
- *   4. Ringing.
+ *   1. "Talk to PROXe" button.
+ *   2. Mobile number and the call button. Name, brand and business are asked
+ *      on the call. The name, brand, mobile hero (5 to 6 Oct) took ad form
+ *      leads from ~9 a day to 0 and left Meta with no Lead events for two days.
+ *   3. The number is saved the moment it is valid, so anyone who leaves is
+ *      still a lead in PROXe (core sends one WhatsApp). That save is partial:
+ *      never a Meta conversion.
+ *   4. Meta Lead fires once, when the call is asked for with a valid number.
+ *   5. Calling, then ringing.
  */
-type Step = 'cta' | 'form' | 'phone' | 'calling' | 'ringing';
+type Step = 'cta' | 'phone' | 'calling' | 'ringing';
 
 const RING_HINT_MS = 25000;
 
 /** India: a 10-digit mobile starting 6-9, optionally written with +91, 91 or 0. */
-/** Trim, collapse spaces, drop zero-width characters some keyboards insert. */
-const clean = (v: string) => v.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
-
 function indianMobile(raw: string): string | null {
   let d = raw.replace(/\D/g, '');
   if (d.length === 12 && d.startsWith('91')) d = d.slice(2);
@@ -40,31 +36,15 @@ const PhoneIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
 );
 
-const ArrowIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-);
-
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
-  const [name, setName] = useState('');
-  const [brand, setBrand] = useState('');
-  // Z, 5 Oct 2026 (after seeing the ads data): "Talk to PROXe" first, then name,
-  // brand and mobile. Watch hero leads from ad traffic; the open form was the fix
-  // when this button preceded a day of zero leads.
   const [step, setStep] = useState<Step>('cta');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');
   const startedRef = useRef(false);
   const savedRef = useRef<{ phone: string; eventId: string } | null>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const brandRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
-  // What was typed, read from the inputs themselves at submit. Android keyboards
-  // (word suggestions, autofill) can leave the field showing text React state
-  // never saw, and the visitor got "Add your brand name" with a brand typed in
-  // (Clarity, 6 Oct 2026). The field on screen is the truth.
-  const picked = useRef({ name: '', brand: '' });
 
   useEffect(() => { setMarket(detectMarket() === 'usd' ? 'usd' : 'inr'); }, []);
 
@@ -84,14 +64,13 @@ export default function HeroPhoneCapture() {
 
   /**
    * Save the number the moment it is valid, so a visitor who leaves is still a
-   * lead in PROXe. NOT a Meta conversion: no pixel here, and the server skips
-   * CAPI for a nameless hero save. Lead fires once, on the details step.
+   * lead in PROXe. Partial: no pixel here, and the server skips CAPI for it.
    */
   const saveNumber = (number: string) => {
     if (savedRef.current?.phone === number) return;
     const eventId = newEventId();
     savedRef.current = { phone: number, eventId };
-    void submitLead({ type: 'lead', phone: number, source: 'hero_phone', eventId });
+    void submitLead({ type: 'lead', phone: number, source: 'hero_phone', eventId, partial: true });
   };
 
   const onPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,45 +84,17 @@ export default function HeroPhoneCapture() {
   const open = () => {
     markStart();
     track('cta_click', { location: 'hero_talk' });
-    setStep('form');
-    window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 60);
-  };
-
-  const submitDetails = (e: React.FormEvent) => {
-    e.preventDefault();
-    const typedName = nameRef.current?.value ?? name;
-    const typedBrand = brandRef.current?.value ?? brand;
-    if (typedName !== name) setName(typedName);
-    if (typedBrand !== brand) setBrand(typedBrand);
-    const cleanName = clean(typedName);
-    const cleanBrand = clean(typedBrand);
-    if (!cleanName) {
-      setError('Add your name so PROXe knows who it is calling.');
-      track('form_error', { form: 'hero_phone', field: 'name', reason: 'missing' });
-      nameRef.current?.focus();
-      return;
-    }
-    if (!cleanBrand) {
-      setError('Add your brand name so PROXe knows what to talk about.');
-      track('form_error', { form: 'hero_phone', field: 'brand', reason: 'missing' });
-      brandRef.current?.focus();
-      return;
-    }
-    picked.current = { name: cleanName, brand: cleanBrand };
-    setError('');
-    track('button_click', { label: 'hero_details_next', location: 'hero' });
     setStep('phone');
     window.setTimeout(() => phoneRef.current?.focus({ preventScroll: true }), 60);
   };
 
-  const submitPhone = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Read the field itself: Android keyboards can leave text on screen that
+    // React state never saw (Clarity, 6 Oct 2026).
     const typedPhone = phoneRef.current?.value ?? phone;
     if (typedPhone !== phone) setPhone(typedPhone);
     const number = validPhone(typedPhone.trim());
-    const cleanName = picked.current.name || clean(name);
-    const cleanBrand = picked.current.brand || clean(brand);
-    if (!cleanName || !cleanBrand) { setStep('form'); return; }
     if (!number) {
       setError(market === 'inr' ? 'Enter a 10-digit mobile number.' : 'That number looks incomplete. Check and try again.');
       track('form_error', { form: 'hero_phone', field: 'phone', reason: market === 'inr' ? 'invalid_in_mobile' : 'length' });
@@ -153,18 +104,18 @@ export default function HeroPhoneCapture() {
     setError('');
     setStep('calling');
     track('callback_submit', { market });
-    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true, name: cleanName, brandName: cleanBrand }, 'proxe');
-    // The one Meta Lead conversion for this visitor: a named person, with a brand, who asked for the call.
-    const leadEventId = trackLead({ source: 'hero_phone', hasBrand: true });
+    storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true }, 'proxe');
+    // The one Meta Lead conversion for this visitor: a valid number that asked for the call.
+    const leadEventId = trackLead({ source: 'hero_phone' });
     savedRef.current = { phone: number, eventId: leadEventId };
-    void submitLead({ type: 'lead', phone: number, name: cleanName, brandName: cleanBrand, source: 'hero_phone', eventId: leadEventId });
+    void submitLead({ type: 'lead', phone: number, source: 'hero_phone', eventId: leadEventId });
 
     const ac = new AbortController();
     const timeout = window.setTimeout(() => ac.abort(), 20000);
     const res = await fetch('/api/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: number, name: cleanName, business: cleanBrand, market, source: 'hero_phone' }),
+      body: JSON.stringify({ phone: number, market, source: 'hero_phone' }),
       signal: ac.signal,
     })
       .then((r) => r.json().catch(() => ({ ok: false, reason: 'bad_response' })))
@@ -195,10 +146,8 @@ export default function HeroPhoneCapture() {
       <div className="hq-ringing" role="status" aria-live="polite">
         {!settled ? (
           <>
-            <span className="hq-phone" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-            </span>
-            <span><strong>PROXe is calling {name.trim().split(' ')[0] || 'you'} now.</strong> Pick up.</span>
+            <span className="hq-phone" aria-hidden="true"><PhoneIcon /></span>
+            <span><strong>PROXe is calling you now.</strong> Pick up.</span>
           </>
         ) : (
           <a href="#voice" className="hq-next">While you talk, see what else PROXe does <span aria-hidden="true">→</span></a>
@@ -218,31 +167,10 @@ export default function HeroPhoneCapture() {
     );
   }
 
-  if (step === 'form') {
-    return (
-      <div className="hq">
-        <form className="hq-row hq-row--pair" onSubmit={submitDetails} autoComplete="off" noValidate aria-label="Your name and brand">
-          <label className="hq-field hq-field--name">
-            <input ref={nameRef} className="hq-input" placeholder="Your name" autoComplete="given-name" value={name}
-              onChange={(e) => { markStart(); setName(e.target.value); if (error) setError(''); }} maxLength={60} aria-label="Your name" />
-          </label>
-          <label className="hq-field hq-field--brand">
-            <input ref={brandRef} className="hq-input" placeholder="Brand name" autoComplete="organization" value={brand}
-              onChange={(e) => { setBrand(e.target.value); if (error) setError(''); }} maxLength={80} aria-label="Your brand name" />
-          </label>
-          <button type="submit" className="hq-go" aria-label="Next">
-            <ArrowIcon />
-          </button>
-        </form>
-        {error && <p className="hq-error" role="alert">{error}</p>}
-      </div>
-    );
-  }
-
   const calling = step === 'calling';
   return (
     <div className="hq">
-      <form className="hq-row hq-row--solo" onSubmit={submitPhone} autoComplete="off" noValidate aria-label="Get a call from PROXe">
+      <form className="hq-row hq-row--solo" onSubmit={submit} autoComplete="off" noValidate aria-label="Get a call from PROXe">
         <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
           <input ref={phoneRef} id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"

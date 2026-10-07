@@ -44,6 +44,8 @@ interface LeadPayload {
   source?: string
   bookingLabel?: string
   bookingTime?: string
+  /** Saved while typing, before the call was asked for: a lead, not a conversion. */
+  partial?: boolean
   // First-touch attribution
   channel?: string
   utmSource?: string
@@ -146,11 +148,12 @@ export async function POST(request: Request) {
   // 10th-digit save, no name) and a self-declared job seeker are not leads:
   // reporting them taught the ads to find people who type a number and leave
   // (Z, 5 Oct 2026). They are still saved; they just are not conversions.
-  // Hero leads count only with a name AND a brand name (6 Oct 2026: the
-  // business-type step is gone; a name alone let fruit vendors and watchmen through).
-  const notAConversion =
-    body.businessType === 'job_seeker' ||
-    (body.source === 'hero_phone' && (!String(body.name || '').trim() || !String(body.brandName || '').trim()))
+  // A hero lead counts when the visitor asks for the call with a valid number
+  // (Z, 7 Oct 2026: "it just asks for phone number and call"). Requiring a name
+  // and brand first (5 to 6 Oct) cut ad form leads to zero and starved Meta of
+  // Lead events for two days. The number saved while typing is partial: a
+  // PROXe lead, not a conversion.
+  const notAConversion = body.businessType === 'job_seeker' || body.partial === true
   if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`

@@ -30,6 +30,8 @@ export interface LeadInput {
    * here, which covers callers that fire no pixel event of their own.
    */
   eventId?: string
+  /** Saved while the visitor types, before they ask for the call: a PROXe lead, never a Meta conversion. */
+  partial?: boolean
 }
 
 /** Read a cookie by name in the browser, or undefined. */
