@@ -56,6 +56,7 @@ export async function POST(request: Request) {
       lang: clip(body.lang, 12) || null,
       device: clip(body.device, 20) || null,
       referrer: clip(body.referrer, 200) || null,
+      source: clip(body.source, 160) || null,
     }
     const { error } = await db.from('pitch_views').upsert(row, { onConflict: 'session_id' })
     if (error) console.error('[api/pitch-view] upsert failed', error.message)

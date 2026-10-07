@@ -29,10 +29,25 @@ export function pitchRecipient(): string {
   }
 }
 
-/** Track /what-is-proxe and /pitch always; anything else only when it came from a link we sent. */
+/** Every deck view on the live site, named or anonymous (the caller skips homepage decks nobody started). */
 export function shouldTrackPitch(): boolean {
   if (typeof location === 'undefined' || isLocal()) return false
-  return /^\/(what-is-proxe|pitch)\/?$/.test(location.pathname) || !!pitchRecipient()
+  return true
+}
+
+/** Where an anonymous visitor came from: UTM if any, else the referring site, else direct. */
+function visitSource(): string {
+  try {
+    const q = new URLSearchParams(location.search)
+    const utm = [q.get('utm_source'), q.get('utm_medium'), q.get('utm_campaign')].filter(Boolean).join(' / ')
+    if (utm) { sessionStorage.setItem('pitch_src', utm); return utm }
+    const kept = sessionStorage.getItem('pitch_src')
+    if (kept) return kept
+    const ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''
+    return ref && ref !== location.hostname ? ref : 'direct'
+  } catch {
+    return 'direct'
+  }
 }
 
 let sessionId = ''
@@ -50,6 +65,7 @@ export function sendPitchSnapshot(s: PitchSnapshot, final = false): void {
     sessionId: sid(),
     page: location.pathname,
     recipient,
+    source: visitSource().slice(0, 160),
     device: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
     referrer: document.referrer.slice(0, 200),
   })

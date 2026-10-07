@@ -1054,7 +1054,8 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   // ── analytics: who opens it, how far they get, how long they stay ──
   const seen = useRef({ t0: 0, max: 0, sent: false, cards: new Set<string>(), extras: new Set<string>(), completed: false, voiced: false, lang: "en" });
   // Depth per visit, for links we send (?for=<name>): see app/api/pitch-view.
-  const snapshot = (final = false) => sendPitchSnapshot({
+  // The homepage deck is on every visit: only log it once someone starts it.
+  const snapshot = (final = false) => (embed && !started && seen.current.cards.size === 0) ? undefined : sendPitchSnapshot({
     seconds: Math.round((Date.now() - seen.current.t0) / 1000),
     maxCard: Math.min(seen.current.max, coreN - 1) + 1,
     totalCards: coreN,

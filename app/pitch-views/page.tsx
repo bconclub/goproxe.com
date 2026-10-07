@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: 'Deck views · PROXe', robots: { inde
 type View = {
   recipient: string | null; page: string; started_at: string; last_seen_at: string; seconds: number
   max_card: number; total_cards: number; cards_seen: string[]; extras_opened: string[]
-  completed: boolean; narration: boolean; lang: string | null; device: string | null; referrer: string | null
+  completed: boolean; narration: boolean; lang: string | null; device: string | null; referrer: string | null; source: string | null
 }
 
 const ist = (iso: string) => new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
@@ -30,17 +30,30 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
   if (q && sp.for) q = q.eq('recipient', sp.for.toLowerCase())
   const { data } = (await q) ?? { data: [] }
   const views = (data ?? []) as View[]
+  // The cover counts once they start; jumping ahead with the dots does not count as reading.
+  const seenOf = (v: View) => Math.min(v.total_cards, v.cards_seen.length + (v.cards_seen.length ? 1 : 0))
+  const started = views.filter((v) => v.cards_seen.length > 0)
+  const avgCards = started.length ? Math.round(started.reduce((a, v) => a + seenOf(v), 0) / started.length) : 0
+  const stats: [string, string][] = [
+    ['Visits', String(views.length)],
+    ['Named', String(views.filter((v) => v.recipient).length)],
+    ['Anonymous', String(views.filter((v) => !v.recipient).length)],
+    ['Started', String(started.length)],
+    ['Finished', String(views.filter((v) => v.completed).length)],
+    ['Avg cards seen', String(avgCards)],
+  ]
   const named = views.filter((v) => v.recipient)
   const people = Array.from(new Set(named.map((v) => v.recipient!)))
   const keyQ = `key=${encodeURIComponent(sp.key!)}`
 
   const Row = ({ v }: { v: View }) => {
     // Cards actually seen (the cover counts once they start): jumping ahead does not count as reading.
-    const seenN = Math.min(v.total_cards, v.cards_seen.length + (v.cards_seen.length ? 1 : 0))
+    const seenN = seenOf(v)
     const pct = v.total_cards ? Math.round((seenN / v.total_cards) * 100) : 0
     return (
       <tr style={{ borderTop: '1px solid rgba(255,255,255,.08)' }}>
         <td style={td}>{v.recipient ? <a href={`/pitch-views?${keyQ}&for=${encodeURIComponent(v.recipient)}`} style={{ color: '#c4b5fd' }}>{v.recipient}</a> : <span style={{ opacity: .45 }}>anonymous</span>}</td>
+        <td style={td}>{v.source ?? <span style={{ opacity: .45 }}>unknown</span>}</td>
         <td style={td}>{ist(v.started_at)}</td>
         <td style={td}>{v.page}</td>
         <td style={td}>
@@ -61,8 +74,16 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
     <main style={{ padding: '32px 20px', fontFamily: 'Inter, system-ui, sans-serif', color: '#fff', background: '#0c0918', minHeight: '100vh' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h1 style={{ fontSize: 26, margin: 0 }}>Deck views</h1>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '18px 0 6px' }}>
+          {stats.map(([l, n]) => (
+            <div key={l} style={{ background: 'rgba(255,255,255,.06)', borderRadius: 14, padding: '10px 14px', minWidth: 110 }}>
+              <div style={{ fontSize: 22, fontWeight: 700 }}>{n}</div>
+              <div style={{ fontSize: 12, opacity: .6 }}>{l}</div>
+            </div>
+          ))}
+        </div>
         <p style={{ opacity: .65, fontSize: 14, marginTop: 6 }}>
-          Send <code style={code}>goproxe.com/what-is-proxe?for=name</code> (or <code style={code}>/pitch?for=name</code>). Each visit appears here with how far they got. Times in IST.
+          Every deck visit is here: named links, anonymous visitors on /what-is-proxe and /pitch, and anyone who starts the deck on the homepage. Send <code style={code}>goproxe.com/what-is-proxe?for=name</code> (or <code style={code}>/pitch?for=name</code>). Each visit appears here with how far they got. Times in IST.
           {sp.for && <> Showing <b>{sp.for}</b> · <a href={`/pitch-views?${keyQ}`} style={{ color: '#c4b5fd' }}>show all</a></>}
         </p>
         {!sp.for && people.length > 0 && (
@@ -72,7 +93,7 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
         )}
         <div style={{ overflowX: 'auto', marginTop: 16 }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
-            <thead><tr style={{ textAlign: 'left', opacity: .55 }}>{['Who', 'Opened', 'Page', 'How far', 'Time', 'Edge cases opened', 'Narration', 'Device'].map((h) => <th key={h} style={td}>{h}</th>)}</tr></thead>
+            <thead><tr style={{ textAlign: 'left', opacity: .55 }}>{['Who', 'Came from', 'Opened', 'Page', 'How far', 'Time', 'Edge cases opened', 'Narration', 'Device'].map((h) => <th key={h} style={td}>{h}</th>)}</tr></thead>
             <tbody>{views.map((v, i) => <Row key={i} v={v} />)}</tbody>
           </table>
           {views.length === 0 && <p style={{ opacity: .6 }}>No visits yet.</p>}
