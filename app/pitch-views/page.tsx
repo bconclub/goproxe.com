@@ -35,7 +35,9 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
   const keyQ = `key=${encodeURIComponent(sp.key!)}`
 
   const Row = ({ v }: { v: View }) => {
-    const pct = v.total_cards ? Math.round((v.max_card / v.total_cards) * 100) : 0
+    // Cards actually seen (the cover counts once they start): jumping ahead does not count as reading.
+    const seenN = Math.min(v.total_cards, v.cards_seen.length + (v.cards_seen.length ? 1 : 0))
+    const pct = v.total_cards ? Math.round((seenN / v.total_cards) * 100) : 0
     return (
       <tr style={{ borderTop: '1px solid rgba(255,255,255,.08)' }}>
         <td style={td}>{v.recipient ? <a href={`/pitch-views?${keyQ}&for=${encodeURIComponent(v.recipient)}`} style={{ color: '#c4b5fd' }}>{v.recipient}</a> : <span style={{ opacity: .45 }}>anonymous</span>}</td>
@@ -44,7 +46,7 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
         <td style={td}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 90, height: 6, borderRadius: 3, background: 'rgba(255,255,255,.1)' }}><div style={{ width: `${pct}%`, height: 6, borderRadius: 3, background: v.completed ? '#22c55e' : '#7c3aed' }} /></div>
-            {v.max_card}/{v.total_cards}{v.completed ? ' · finished' : ''}
+            {seenN ? `${seenN} of ${v.total_cards} cards` : 'opened, not started'}{v.completed ? ' · finished' : ''}
           </div>
         </td>
         <td style={td}>{dur(v.seconds)}</td>
