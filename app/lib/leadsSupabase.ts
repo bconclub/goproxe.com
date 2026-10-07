@@ -321,8 +321,13 @@ export async function lastCallbackAt(phone: string | null | undefined): Promise<
     const GRACE_MS = 10 * 60 * 1000
     const conversationId = voice?.last_conversation_id
     const transcripts = Array.isArray(voice?.transcripts) ? voice.transcripts : []
+    // Connected = a real conversation, not just a transcript row. A 13-second
+    // call that hit the carrier's announcement (Exotel promo, 7 Oct 2026) still
+    // gets a transcript from the webhook, and used to lock the number out for
+    // 24h, so the person who never heard PROXe could not ask again.
+    const MIN_CONNECTED_SECS = 30
     const connected = conversationId
-      ? transcripts.some((t: any) => t?.conversation_id === conversationId)
+      ? transcripts.some((t: any) => t?.conversation_id === conversationId && Number(t?.duration_secs ?? 0) >= MIN_CONNECTED_SECS)
       : false
 
     if (!connected && Date.now() - when.getTime() > GRACE_MS) return null
