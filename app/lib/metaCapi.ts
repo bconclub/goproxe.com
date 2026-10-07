@@ -39,7 +39,11 @@ function hash(value?: string | null): string | undefined {
 /** Phone → digits only, then hashed. "+91 98765 43210" → hash("919876543210"). */
 function hashPhone(phone?: string | null): string | undefined {
   if (!phone) return undefined
-  const digits = phone.replace(/\D/g, '')
+  let digits = phone.replace(/\D/g, '')
+  // Meta matches on the full number with country code. Our forms take a bare
+  // 10-digit Indian mobile (and 0-prefixed), which hashed without 91 matched nobody.
+  if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1)
+  if (digits.length === 10 && /^[6-9]/.test(digits)) digits = `91${digits}`
   if (digits.length < 8) return undefined
   return crypto.createHash('sha256').update(digits).digest('hex')
 }
@@ -82,10 +86,9 @@ export interface CapiEvent {
  */
 export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
   if (!ACCESS_TOKEN) {
-    // Not configured is not an error: the pixel still covers the browser path.
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn('[capi] META_CAPI_ACCESS_TOKEN unset — skipping', event.eventName)
-    }
+    // Loud in production too (7 Oct 2026: it was silent there, and every
+    // server-side conversion was dropped for days without anyone seeing it).
+    console.warn('[capi] META_CAPI_ACCESS_TOKEN is not set: server conversion NOT sent to Meta', event.eventName)
     return false
   }
 
@@ -93,6 +96,8 @@ export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
     em: hash(event.user.email),
     ph: hashPhone(event.user.phone),
     fn: hash(event.user.firstName),
+    // Same person across events: the phone if we have it, else the email.
+    external_id: hashPhone(event.user.phone) || hash(event.user.email),
     client_ip_address: event.user.clientIp || undefined,
     client_user_agent: event.user.userAgent || undefined,
     fbp: event.user.fbp || undefined,

@@ -87,7 +87,18 @@ const AnalyticsScripts = () => {
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${metaPixelId}');
+              var am = {};
+              try {
+                var u = JSON.parse(localStorage.getItem('proxe.chat.user') || 'null') || {};
+                var d = String(u.phone || '').replace(/\\D/g, '');
+                if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+                if (d.length === 10) d = '91' + d;
+                if (d.length >= 10) { am.ph = d; am.external_id = d; }
+                if (u.email) am.em = String(u.email).trim().toLowerCase();
+                var fn = String(u.name || '').trim().split(/\\s+/)[0];
+                if (fn) am.fn = fn.toLowerCase();
+              } catch (e) {}
+              fbq('init', '${metaPixelId}', am);
               fbq('track', 'PageView');
             `}
           </Script>
