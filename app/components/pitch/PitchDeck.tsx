@@ -1305,6 +1305,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
         @property --pitch-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
         .pitch-rainbow { border: 2px solid transparent; background: linear-gradient(135deg, #7c3aed, #4c1d95) padding-box, conic-gradient(from var(--pitch-ang), #f87171, #fbbf24, #4ade80, #38bdf8, #a78bfa, #f472b6, #f87171) border-box; animation: pitch-rainbow 5s linear infinite; }
         @media (prefers-reduced-motion: reduce) { .pitch-rainbow { animation: none; } }
+        @media (max-width: 359px) { .pitch-langword { display: none; } .pitch-counter { visibility: hidden; } }
         @keyframes pitch-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.45); } 50% { box-shadow: 0 0 0 14px rgba(124,58,237,0); } }
         .pitch-pulse { animation: pitch-pulse 2.6s ease-in-out infinite; }
         @keyframes pitch-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1.5%, 0) scale(1.06); } }
@@ -1433,7 +1434,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
           <ArrowLeft size={18} />
         </button>
         {/* Phones get a counter; the row of dots needs the room Deploy now uses. */}
-        <span className={`${embed ? "hidden" : "sm:hidden"} flex-1 whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{groupAt(index) ? extras.find((g) => g.key === groupAt(index))?.label : `${index + 1} / ${coreN}${totalSec ? ` · ${clock(totalSec)}` : ""}`}</span>
+        <span className={`${embed ? "hidden" : "sm:hidden"} pitch-counter min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center font-mono text-[12px] text-white/50`}>{groupAt(index) ? extras.find((g) => g.key === groupAt(index))?.label : <>{index + 1} / {coreN}</>}</span>
         <div className={`${embed ? "flex" : "hidden sm:flex"} min-w-0 flex-1 items-center justify-center gap-1.5`}>
           {slides.slice(0, coreN).map((s, i) => (
             <button key={s.key} onClick={() => (onExpand ? onExpand(i) : go(i))} aria-label={`Go to ${s.key === "cover" && variant !== "page" ? "What is PROXe?" : s.label}`}
@@ -1453,7 +1454,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
           <div className="flex shrink-0 items-center gap-2">
           {!embed && (
             <button onClick={() => { track("button_click", { label: "deploy_proxe", location: "pitch_footer" }); startDeploy("pitch_footer"); }}
-              className="pitch-rainbow flex h-11 items-center rounded-full px-5 text-[13.5px] font-bold text-white">
+              className="pitch-rainbow flex h-11 shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[13px] font-bold text-white sm:px-5 sm:text-[13.5px]">
               Deploy PROXe
             </button>
           )}
@@ -1492,7 +1493,7 @@ function LangMenu({ lang, onPick, highlight }: { lang: string; onPick: (code: st
         style={{ background: highlight ? C.deep : "rgba(255,255,255,0.07)" }}>
         <Globe size={14} className={`shrink-0 ${highlight ? "text-white" : "text-white/60"}`} />
         <span className="hidden sm:inline">{highlight ? "Pick a language" : name}</span>
-        <span className="sm:hidden">{highlight ? "Language" : lang.slice(0, 2).toUpperCase()}</span>
+        <span className="pitch-langword sm:hidden">{highlight ? "Language" : lang.slice(0, 2).toUpperCase()}</span>
       </button>
       {open && (
         // One row of chips hovering just under the header, above the cards
