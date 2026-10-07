@@ -18,8 +18,9 @@ export default function LinkBuilder() {
   const tag = [slug(name), slug(brand)].filter(Boolean).join('-')
   const link = tag ? `https://goproxe.com/${page}?for=${tag}` : ''
   const first = name.trim().split(/\s+/)[0] || ''
+  // The WhatsApp copy carries its channel, so "Came from" reads whatsapp, not direct.
   const message = link
-    ? `Hi ${first || 'there'}, here's a 3-minute look at what PROXe can do${brand.trim() ? ` for ${brand.trim()}` : ''}: ${link}`
+    ? `Hi ${first || 'there'}, here's a 3-minute look at what PROXe can do${brand.trim() ? ` for ${brand.trim()}` : ''}: ${link}&utm_source=whatsapp`
     : ''
 
   const copy = async (text: string) => {
