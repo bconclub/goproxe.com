@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getSupabaseServiceClient } from '../lib/supabase'
+import LinkBuilder from './LinkBuilder'
 
 /**
  * Who opened the deck links we sent, and how deep they went (Z, 7 Oct 2026).
@@ -74,6 +75,7 @@ export default async function PitchViews({ searchParams }: { searchParams: Promi
     <main style={{ padding: '32px 20px', fontFamily: 'Inter, system-ui, sans-serif', color: '#fff', background: '#0c0918', minHeight: '100vh' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h1 style={{ fontSize: 26, margin: 0 }}>Deck views</h1>
+        <LinkBuilder />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '18px 0 6px' }}>
           {stats.map(([l, n]) => (
             <div key={l} style={{ background: 'rgba(255,255,255,.06)', borderRadius: 14, padding: '10px 14px', minWidth: 110 }}>
