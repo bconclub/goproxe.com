@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   if (!supabase) return NextResponse.json({ ok: false }, { status: 503 })
   const { error } = await supabase.from('dashboard_settings').insert({
     key: `waref:${code}`,
-    value: { attribution: clean, location: String(body.location || '').slice(0, 60), brand: process.env.PROXE_LEAD_BRAND || 'proxe', at: new Date().toISOString() },
+    value: { attribution: clean, location: String(body.location || '').slice(0, 60), name: String(body.name || '').trim().slice(0, 60) || undefined, brand: process.env.PROXE_LEAD_BRAND || 'proxe', at: new Date().toISOString() },
     description: 'Website WhatsApp button source code',
   })
   if (error) {
