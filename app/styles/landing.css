@@ -12535,3 +12535,16 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
    White, bigger, with a line saying what is happening. */
 .proxe-root .hq .hq-go .hq-spin { width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; animation: hqSpin .8s linear infinite; }
 .proxe-root .hq-dialing { margin: 10px 0 0; font-size: 13.5px; color: rgba(255,255,255,.8); text-align: center; animation: hqIn .35s ease both; }
+
+/* WhatsApp gate on phones (7 Oct 2026): a centred pop-up, not a bottom sheet.
+   The keyboard pushed the sheet off screen. It sits in the upper middle, in
+   the part of the screen the keyboard never covers. */
+@media (max-width: 640px) {
+  .wag-backdrop { align-items: flex-start; justify-content: center; padding: max(16dvh, 90px) 16px 16px; }
+  .wag-card {
+    width: 100%; max-width: 380px;
+    border-radius: 22px;
+    padding: 22px 20px 20px;
+    animation: wagIn 0.18s ease-out;
+  }
+}
