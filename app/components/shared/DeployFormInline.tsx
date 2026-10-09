@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { BrandConfig } from '../../configs';
 import { storeUserProfile, getStoredUser } from '../../lib/chatLocalStorage';
-import { track, trackLead } from '../../lib/analytics';
+import { track, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import styles from './ChatWidget.module.css';
 
@@ -144,12 +144,8 @@ export function DeployFormInline({
     // Store for the brand
     storeUserProfile(userProfileData, 'proxe');
 
-    // 🎯 The conversion — GA4 `form_completed` + Meta `Lead`.
-    // Same id to pixel and server so Meta merges them into ONE Lead.
-    const leadEventId = trackLead({
-      source: 'chat_widget',
-      hasWebsite: Boolean(userProfileData.websiteUrl),
-    });
+    // No brand field here, so not a Meta Lead (Z, 9 Oct 2026). Still saved.
+    const leadEventId = newEventId();
 
     // Persist the lead to the Google Sheet (via /api/lead).
     await submitLead({

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { track, trackLead } from '../../lib/analytics'
+import { track, newEventId } from '../../lib/analytics'
 import { submitLead } from '../../lib/leads'
 import { detectMarket } from '../../lib/market'
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
@@ -90,8 +90,8 @@ export default function CallMeNowButton({
 
     setStatus('dialing')
 
-    // Same event id down both paths so Meta merges pixel + CAPI into one Lead.
-    const leadEventId = trackLead({ source })
+    // Not a Meta Lead: a bare number is not an enquiry (Z, 9 Oct 2026).
+    const leadEventId = newEventId()
     track('callback_submit', { market: detectMarket(), location: source })
 
     // Merge, never replace: a phone-only capture must not wipe a name or email

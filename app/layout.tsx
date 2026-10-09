@@ -4,6 +4,7 @@ import './globals.css';
 import 'lenis/dist/lenis.css';
 import LenisProvider from './components/shared/LenisProvider';
 import AnalyticsScripts from './components/shared/AnalyticsScripts';
+import HighIntentTracker from './components/shared/HighIntentTracker';
 import ProxeWidget from './components/shared/ProxeWidget';
 import JsonLd from './components/shared/JsonLd';
 import { DeployModalProvider } from './contexts/DeployModalContext';
@@ -75,6 +76,7 @@ export default function RootLayout({
       </head>
       <body>
         <AnalyticsScripts />
+        <HighIntentTracker />
         {/* The real PROXe agent, live on its own site. */}
         <ProxeWidget />
         <LenisProvider />

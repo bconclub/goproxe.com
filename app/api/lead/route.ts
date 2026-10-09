@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sendCapiEvent, deriveEventId } from '../../lib/metaCapi'
-import { upsertProxeLead, updateProxeBooking } from '../../lib/leadsSupabase'
+import { upsertProxeLead, updateProxeBooking, stampMetaSent } from '../../lib/leadsSupabase'
 
 /**
  * Lead sink → PROXe/Beacon Supabase (`all_leads`) + Google Sheet.
@@ -46,6 +46,8 @@ interface LeadPayload {
   bookingTime?: string
   /** Saved while typing, before the call was asked for: a lead, not a conversion. */
   partial?: boolean
+  /** A later save for an already-reported Lead: not a second conversion. */
+  followUp?: boolean
   // First-touch attribution
   channel?: string
   utmSource?: string
@@ -144,22 +146,30 @@ export async function POST(request: Request) {
   // contact details, which is stable for the same person and still dedupes a
   // retry — but a browser that fired an unmatched pixel id would double-count,
   // which is why the client passes one.
-  // Meta optimises toward whatever we report as Lead. A bare hero number (the
-  // 10th-digit save, no name) and a self-declared job seeker are not leads:
-  // reporting them taught the ads to find people who type a number and leave
-  // (Z, 5 Oct 2026). They are still saved; they just are not conversions.
-  // A hero lead counts when the visitor asks for the call with a valid number
-  // (Z, 7 Oct 2026: "it just asks for phone number and call"). Requiring a name
-  // and brand first (5 to 6 Oct) cut ad form leads to zero and starved Meta of
-  // Lead events for two days. The number saved while typing is partial: a
-  // PROXe lead, not a conversion.
-  const notAConversion = body.businessType === 'job_seeker' || body.partial === true
+  // Meta optimises toward whatever we report as Lead, so only a real enquiry
+  // counts: name + phone + brand (Z, 9 Oct 2026). A bare number (hero "Call me
+  // back", "Call me now") still saves the lead and still dials; it just is not
+  // a conversion. Z accepted the higher cost per lead: a bare-number Lead (7 Oct)
+  // taught the ads to find people who type a number and never become customers,
+  // and 30 of 41 Closed Lost leads in 45 days came from Meta ads.
+  // History: 5-6 Oct required name + brand BEFORE the call, which cut leads to
+  // zero. Not that: the call never waits, only the Meta event does.
+  const phoneDigits = (body.phone || '').replace(/\D/g, '')
+  const realEnquiry =
+    body.type === 'lead' && Boolean(body.name?.trim()) && Boolean(body.brandName?.trim()) && phoneDigits.length >= 10
+  const notAConversion =
+    body.businessType === 'job_seeker' ||
+    body.partial === true ||
+    body.followUp === true ||
+    (body.type !== 'booking' && !realEnquiry)
   if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
+    const eventName = isBooking ? 'Schedule' : 'Lead'
+    const eventId = body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed)
     void sendCapiEvent({
-      eventName: isBooking ? 'Schedule' : 'Lead',
-      eventId: body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed),
+      eventName,
+      eventId,
       eventSourceUrl: body.sourceUrl,
       user: {
         email: body.email,
@@ -173,7 +183,12 @@ export async function POST(request: Request) {
         fbc: body.fbc,
       },
       custom: { source: body.source, lead_type: body.type },
-    })
+    }).then((sent) =>
+      // On the lead row, so the admin Meta tab shows what the site told Meta.
+      stampMetaSent({ phone: body.phone, email: body.email }, eventName, {
+        events: [eventName], event_id: eventId, source: body.source, sent,
+      }),
+    )
   }
 
   return NextResponse.json({ ok: captured, supabase, sheet })

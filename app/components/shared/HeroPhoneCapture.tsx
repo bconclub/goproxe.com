@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { track, trackLead, newEventId } from '../../lib/analytics';
+import { track, newEventId } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
@@ -97,8 +97,9 @@ export default function HeroPhoneCapture() {
     setStep('calling');
     track('callback_submit', { market });
     storeUserProfile({ ...(getStoredUser('proxe') ?? {}), phone: number, promptedPhone: true }, 'proxe');
-    // The one Meta Lead conversion for this visitor: a valid number that asked for the call.
-    const leadEventId = trackLead({ source: 'hero_phone' });
+    // Not a Meta Lead: a bare number is not an enquiry until name + brand come
+    // with it (Z, 9 Oct 2026). Saved and dialled all the same.
+    const leadEventId = newEventId();
     savedRef.current = { phone: number, eventId: leadEventId };
     void submitLead({ type: 'lead', phone: number, source: 'hero_phone', eventId: leadEventId });
 

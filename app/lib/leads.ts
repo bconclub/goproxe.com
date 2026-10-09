@@ -32,6 +32,8 @@ export interface LeadInput {
   eventId?: string
   /** Saved while the visitor types, before they ask for the call: a PROXe lead, never a Meta conversion. */
   partial?: boolean
+  /** A later save for someone already reported as a Lead (deploy modal step 2, its WhatsApp exit): never a second conversion. */
+  followUp?: boolean
 }
 
 /** Read a cookie by name in the browser, or undefined. */

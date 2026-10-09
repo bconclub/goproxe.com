@@ -46,6 +46,7 @@ export type ProxeEvent =
   | 'faq_open'             // expanded a FAQ item — param: question
   | 'scroll_depth'         // crossed a 25/50/75/90% scroll milestone — param: percent
   | 'pricing_view'         // the pricing section scrolled into view (buying intent)
+  | 'high_intent_view'     // a page or step only serious buyers reach, once per session — param: page
   // ── Industry pages + demo funnel ────────────────────────────
   | 'industry_page_view'   // an /industries/[slug] page mounted — param: industry
   | 'industry_cta_click'   // industry-page CTA — params: industry, target: demo|deploy
@@ -146,6 +147,9 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
 const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   checkout_complete: 'CheckoutReturn',
   lead_form_start: 'LeadFormStart',
+  // The signal for buyers who are close but have not given name + phone +
+  // brand (Z, 9 Oct 2026). Custom on purpose: it must never count as a Lead.
+  high_intent_view: 'HighIntentView',
   // WAS mapped to Schedule, which double-counted: the visitor books in the
   // modal (booking_confirm -> Schedule) and is then redirected here, firing a
   // second Schedule for the same booking. Meta saw two bookings per person and
@@ -371,6 +375,9 @@ export function track(event: ProxeEvent, params: EventParams = {}, eventId?: str
 
 /**
  * Convenience for the single most important event: a completed deploy form. Fires
+ * ONLY where the visitor has given name + phone + brand (Z, 9 Oct 2026); the
+ * server applies the same rule to its CAPI twin, see api/lead/route.ts.
+ *
  * the GA4 `form_completed` + Meta `Lead`, carrying non-PII context only (we send
  * the source + whether a brand/site was provided, never the raw email/phone).
  */
@@ -456,4 +463,22 @@ export function initScrollDepthTracking(): () => void {
 
   window.addEventListener('scroll', onScroll, { passive: true })
   return () => window.removeEventListener('scroll', onScroll)
+}
+
+/**
+ * A page or step only serious buyers reach (pricing, the dashboard tour,
+ * compare pages, the booking calendar). Sent to Meta as the custom event
+ * HighIntentView so it can feed audiences and a custom conversion, without
+ * ever counting as a Lead (Z, 9 Oct 2026). Once per page per browser session,
+ * so a refresh or a back-and-forth does not inflate it.
+ */
+export function trackHighIntent(page: string): void {
+  try {
+    const key = `proxe_high_intent:${page}`
+    if (sessionStorage.getItem(key)) return
+    sessionStorage.setItem(key, '1')
+  } catch {
+    // Storage blocked: still send, an occasional repeat beats never sending.
+  }
+  track('high_intent_view', { page })
 }

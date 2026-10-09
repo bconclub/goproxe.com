@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DeployModal.module.css';
 import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLocalStorage';
-import { track, trackLead, newEventId } from '../../lib/analytics';
+import { track, trackLead, newEventId, trackHighIntent } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 
@@ -234,8 +234,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     //
     // This second submit fills in email, brand and website. upsertProxeLead
     // matches on the normalised phone captured in step 1, so it UPDATES that
-    // lead rather than creating a duplicate. eventId is a fresh id purely for
-    // request tracing; it is not a second conversion.
+    // lead rather than creating a duplicate. followUp tells the server this is
+    // not a second conversion (it used to send a second CAPI Lead).
     await submitLead({
       type: 'lead',
       name: userProfile.name,
@@ -245,6 +245,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       websiteUrl: userProfile.websiteUrl,
       source: isSales ? `${source}_sales` : 'deploy_modal',
       eventId: newEventId(),
+      followUp: true,
     });
 
     onFormSubmit?.();
@@ -252,6 +253,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     // Sales enquiries never hit checkout — they pick a call slot right here.
     if (isSales) {
       setIsSubmitting(false);
+      trackHighIntent('booking_calendar');
       setFlipped(true);
       return;
     }
@@ -297,6 +299,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       websiteUrl: formData.websiteUrl.trim(),
       source: 'deploy_modal_whatsapp',
       eventId: newEventId(),
+      followUp: true,
     });
     const text = encodeURIComponent(
       `Hi, I'd like to set up PROXe${formData.brandName.trim() ? ` for ${formData.brandName.trim()}` : ''}.`

@@ -1062,3 +1062,41 @@ export async function updateProxeBooking(input: SupabaseLeadInput): Promise<Supa
     return { ok: false, reason: 'db_error' }
   }
 }
+
+/**
+ * Record a conversion the site sent to Meta on the lead row, under
+ * unified_context.capi_sent: the same map core's meta-qualified cron writes,
+ * so one place (the admin Meta tab) shows everything Meta has been told about
+ * a lead. Keys are prefixed "site:" so they never collide with core's stage keys.
+ * Matches by phone, else email (bookings carry only an email). Never throws.
+ */
+export async function stampMetaSent(
+  who: { phone?: string; email?: string },
+  key: string,
+  record: { events: string[]; event_id: string; source?: string; sent: boolean },
+): Promise<void> {
+  const supabase = getSupabaseServiceClient()
+  if (!supabase) return
+  try {
+    const normalizedPhone = normalizePhone(who.phone)
+    const email = trimOrNull(who.email)
+    let q = supabase.from('all_leads').select('id, unified_context').eq('brand', BRAND)
+    if (normalizedPhone) q = q.eq('customer_phone_normalized', normalizedPhone)
+    else if (email) q = q.eq('email', email)
+    else return
+    const { data } = await q.order('created_at', { ascending: false }).limit(1).maybeSingle()
+    if (!data) return
+    const ctx = (data.unified_context as Record<string, any>) || {}
+    await supabase.from('all_leads').update({
+      unified_context: {
+        ...ctx,
+        capi_sent: {
+          ...(ctx.capi_sent || {}),
+          [`site:${key}`]: { ...record, at: new Date().toISOString(), test: false },
+        },
+      },
+    }).eq('id', data.id)
+  } catch (err) {
+    console.error('[leadsSupabase] stampMetaSent failed', err)
+  }
+}

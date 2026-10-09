@@ -5,7 +5,7 @@ import styles from '../styles/legal.module.css'
 import o from './tour.module.css'
 import { WatchPlayer } from '../components/watch/WatchPlayer'
 import type { WatchEpisode } from '../lib/watch'
-import { track, trackLead } from '../lib/analytics'
+import { track, newEventId } from '../lib/analytics'
 import { submitLead } from '../lib/leads'
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
@@ -285,7 +285,8 @@ function GateForm({ slug, onUnlocked, onClose }: { slug: string; onUnlocked: (v:
     if (name.trim().length < 2) return setError('Please enter your name.')
     if (digits.length < 10) return setError('Please enter a 10-digit mobile number.')
     setBusy(true); setError('')
-    const eventId = trackLead({ source: 'dashboard_tour' })
+    // Name + phone, no brand: saved, not a Meta Lead (Z, 9 Oct 2026).
+    const eventId = newEventId()
     await submitLead({ type: 'lead', name: name.trim(), phone: digits, source: 'dashboard-tour', eventId })
     // Unlock even if saving the lead failed: a network hiccup must not lock someone out.
     onUnlocked({ name: name.trim(), phone: digits })
