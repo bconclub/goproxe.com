@@ -62,14 +62,12 @@ export default function PricingPage() {
           </p>
         </header>
 
-        <Calculator />
-
         {/* ── Core plan ── */}
         <section id="plan" className={s.coreRow} aria-label="PROXe Core">
           <article className={s.coreCard}>
             <p className={s.tier}>PROXe Core</p>
             <p className={s.price}>{inr(CORE_PRICE)}</p>
-            <p className={s.per}>per month + GST</p>
+            <p className={s.per}>per month</p>
             <hr className={s.rule} />
             <p className={s.coreBlurb}>Every lead answered, qualified and followed up, on voice and text.</p>
             <button type="button" className={s.ctaPrimary} onClick={() => deploy('pricing_page_core')} disabled={isStartingCheckout}>
@@ -129,6 +127,7 @@ export default function PricingPage() {
               </div>
             ))}
           </div>
+          <Calculator />
           <p className={s.rollover}>
             <FiRefreshCw aria-hidden /> <span><strong>Your top-ups roll over.</strong> Pick minutes or leads when you buy. Anything you don&apos;t use carries into next month, so your pool of extra minutes and leads keeps building.</span>
           </p>

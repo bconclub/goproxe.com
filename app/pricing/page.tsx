@@ -6,7 +6,7 @@ import '../styles/landing.css'
 
 const TITLE = 'Plan & pricing'
 const DESCRIPTION =
-  'PROXe Core is ₹9,999 a month + GST: 250 voice minutes, 1,000 leads and 2 team seats. Top-up packs roll over. Extra seats ₹999 a month.'
+  'PROXe Core is ₹9,999 a month: 250 voice minutes, 1,000 leads and 2 team seats. Top-up packs roll over. Extra seats ₹999 a month.'
 
 export const metadata: Metadata = {
   title: TITLE,
