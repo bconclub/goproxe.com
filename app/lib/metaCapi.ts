@@ -50,6 +50,7 @@ function hashPhone(phone?: string | null): string | undefined {
 
 export type CapiEventName =
   | 'Lead'
+  | 'Enquiry'
   | 'Purchase'
   | 'InitiateCheckout'
   | 'Schedule'

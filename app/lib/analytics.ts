@@ -122,7 +122,9 @@ export const GA4_KEY_EVENTS: readonly ProxeEvent[] = [
  * Standard names used here are exactly as Meta spells them; do not rename.
  */
 const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
-  form_completed: 'Lead',
+  // form_completed is NOT Lead on Meta (Z, 9 Oct 2026). Lead is sent by PROXe
+  // core only after a person has called the lead and judged it good; the form
+  // is the custom 'Enquiry' below.
   checkout_start: 'InitiateCheckout',
   // checkout_complete is NOT Purchase on Meta (7 Oct 2026). The Dodo webhook
   // sends the one real Purchase from the server, with the paid amount. The
@@ -146,6 +148,7 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
 /** Custom (non-standard) Meta names, PascalCase per Meta's convention. */
 const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
   checkout_complete: 'CheckoutReturn',
+  form_completed: 'Enquiry',
   lead_form_start: 'LeadFormStart',
   // The signal for buyers who are close but have not given name + phone +
   // brand (Z, 9 Oct 2026). Custom on purpose: it must never count as a Lead.
@@ -375,8 +378,10 @@ export function track(event: ProxeEvent, params: EventParams = {}, eventId?: str
 
 /**
  * Convenience for the single most important event: a completed deploy form. Fires
- * ONLY where the visitor has given name + phone + brand (Z, 9 Oct 2026); the
- * server applies the same rule to its CAPI twin, see api/lead/route.ts.
+ * GA4 `form_completed` + Meta custom `Enquiry`, ONLY where the visitor has given
+ * name + phone + brand (Z, 9 Oct 2026); the server applies the same rule to its
+ * CAPI twin, see api/lead/route.ts. Meta's Lead comes from PROXe core, after a
+ * person has judged the lead good.
  *
  * the GA4 `form_completed` + Meta `Lead`, carrying non-PII context only (we send
  * the source + whether a brand/site was provided, never the raw email/phone).
