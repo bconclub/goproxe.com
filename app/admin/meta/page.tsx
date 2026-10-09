@@ -76,9 +76,9 @@ function Spark({ values, labels, tone }: { values: number[]; labels: string[]; t
   )
 }
 
-type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null }
+type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null; via?: string; relay?: unknown; relay_expired?: boolean }
 type LeadRow = { id: string; customer_name: string | null; phone: string | null; lead_stage: string | null; capi: Record<string, SendRecord> | null; attr: Record<string, any> | null }
-type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; fromAd: boolean; bad: boolean }
+type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; relayed: boolean; queued: boolean; fromAd: boolean; bad: boolean }
 type LeadView = { id: string; name: string; phone: string; stage: string; fromAd: boolean; bad: boolean; last: string; sends: Send[] }
 
 const ist = (d: string | number) => new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
@@ -172,6 +172,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
       mine.push({
         leadId: l.id, name: l.customer_name || '', phone: maskPhone(l.phone), stage: l.lead_stage || '',
         key, at: rec.at || '', events, site: key.startsWith('site:'), test: !!rec.test, sent: rec.sent !== false,
+        relayed: rec.via === 'core', queued: rec.sent === false && !!rec.relay && !rec.relay_expired,
         fromAd: fromMetaAd(l.attr),
         bad: closedLost && events.some((e) => POSITIVE.has(e)),
       })
@@ -247,7 +248,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
       {res?.error && <p className="banner">Could not read leads: {res.error.message}</p>}
       {!stats.ok && stats.noToken && (
         <p className="banner" role="status">
-          <span><b>The website is not sending anything to Meta from the server.</b> <code>META_CAPI_ACCESS_TOKEN</code> is not set on goproxe.com, so website leads only reach Meta through the browser pixel, which ad blockers and iPhones drop. Everything in this table came from the PROXe dashboard, which has its own key. Add the token to the server&apos;s environment and restart.</span>
+          <span><b>The website is not sending anything to Meta from the server.</b> <code>META_CAPI_ACCESS_TOKEN</code> is not set on goproxe.com, so website leads only reach Meta through the browser pixel, which ad blockers and iPhones drop. Until it is, the website parks each server event on the lead and the PROXe dashboard sends it with its own key within 10 minutes (marked “relayed”).</span>
         </p>
       )}
 
@@ -326,7 +327,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                         {l.sends.map((s) => (
                           <span key={s.key} className={`chip ${chipTone(s)}`} title={`Trigger: ${s.key}`}>
                             <b>{s.events.join(' + ') || '(nothing)'}</b>
-                            <span>{s.at ? istDay(s.at) : 'no date'} · {s.site ? 'website' : 'dashboard'}{s.test ? ' · test' : ''}{!s.sent ? ' · not delivered' : ''}</span>
+                            <span>{s.at ? istDay(s.at) : 'no date'} · {s.site ? 'website' : 'dashboard'}{s.relayed ? ' · relayed' : ''}{s.test ? ' · test' : ''}{s.queued ? ' · queued for relay' : !s.sent ? ' · not delivered' : ''}</span>
                           </span>
                         ))}
                       </div>
@@ -352,7 +353,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                     <td><span className={`pill ${stageTone(s.stage)}`}>{s.stage || 'No stage'}</span></td>
                     <td><span className={`chip ${chipTone(s)}`}><b>{s.events.join(' + ')}</b>{s.bad && <span>now junk</span>}</span></td>
                     <td className="nowrap"><span className="hint">{s.key.replace(/^site:/, 'Website ')}</span></td>
-                    <td>{s.site ? 'Website' : 'Dashboard'}{s.test && <> <span className="pill dim">test</span></>}{!s.sent && <> <span className="pill dim">not delivered</span></>}</td>
+                    <td>{s.site ? 'Website' : 'Dashboard'}{s.relayed && <> <span className="pill blue">relayed</span></>}{s.test && <> <span className="pill dim">test</span></>}{s.queued ? <> <span className="pill warn">queued for relay</span></> : !s.sent && <> <span className="pill dim">not delivered</span></>}</td>
                     <td>{s.fromAd ? <span className="pill blue">Meta ad</span> : <span className="hint">Other</span>}</td>
                   </tr>
                 ))}

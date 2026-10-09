@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sendCapiEvent, deriveEventId } from '../../lib/metaCapi'
+import { sendCapiEvent, deriveEventId, buildCapiEvent, type CapiEvent } from '../../lib/metaCapi'
 import { upsertProxeLead, updateProxeBooking, stampMetaSent } from '../../lib/leadsSupabase'
 
 /**
@@ -167,7 +167,7 @@ export async function POST(request: Request) {
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
     const eventName = isBooking ? 'Schedule' : 'Lead'
     const eventId = body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed)
-    void sendCapiEvent({
+    const capiEvent = {
       eventName,
       eventId,
       eventSourceUrl: body.sourceUrl,
@@ -183,10 +183,14 @@ export async function POST(request: Request) {
         fbc: body.fbc,
       },
       custom: { source: body.source, lead_type: body.type },
-    }).then((sent) =>
+    } satisfies CapiEvent
+    void sendCapiEvent(capiEvent).then((sent) =>
       // On the lead row, so the admin Meta tab shows what the site told Meta.
+      // Not sent (no token here): keep the ready event as `relay`, and PROXe
+      // core's cron sends it with core's own token.
       stampMetaSent({ phone: body.phone, email: body.email }, eventName, {
         events: [eventName], event_id: eventId, source: body.source, sent,
+        ...(sent ? {} : { relay: buildCapiEvent(capiEvent) }),
       }),
     )
   }

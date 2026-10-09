@@ -82,17 +82,10 @@ export interface CapiEvent {
 }
 
 /**
- * Send one conversion. Returns true only when Meta accepted it.
- * Never throws — callers can ignore the result entirely.
+ * One CAPI event object, hashed and ready for Meta, or null when it carries no
+ * identifier Meta could match on. Shared by sendCapiEvent and the relay below.
  */
-export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
-  if (!ACCESS_TOKEN) {
-    // Loud in production too (7 Oct 2026: it was silent there, and every
-    // server-side conversion was dropped for days without anyone seeing it).
-    console.warn('[capi] META_CAPI_ACCESS_TOKEN is not set: server conversion NOT sent to Meta', event.eventName)
-    return false
-  }
-
+export function buildCapiEvent(event: CapiEvent): Record<string, unknown> | null {
   const userData: Record<string, unknown> = {
     em: hash(event.user.email),
     ph: hashPhone(event.user.phone),
@@ -109,24 +102,44 @@ export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
 
   // Every event needs at least one user identifier or it cannot be attributed.
   const hasIdentifier = Boolean(userData.em || userData.ph || userData.fbp || userData.fbc)
-  if (!hasIdentifier) return false
+  if (!hasIdentifier) return null
 
+  return {
+    event_name: event.eventName,
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: event.eventId,
+    event_source_url: event.eventSourceUrl,
+    action_source: 'website',
+    user_data: userData,
+    custom_data: {
+      ...(event.value !== undefined ? { value: event.value } : {}),
+      ...(event.currency ? { currency: event.currency } : {}),
+      ...(event.custom ?? {}),
+    },
+  }
+}
+
+/**
+ * Send one conversion. Returns true only when Meta accepted it.
+ * Never throws — callers can ignore the result entirely.
+ *
+ * When this server has no token (9 Oct 2026: goproxe.com's was missing), the
+ * caller stores buildCapiEvent()'s object on the lead as `relay`, and PROXe
+ * core's meta-qualified cron sends it with core's own token. Same pixel, same
+ * event id, so it still dedupes against the browser's copy.
+ */
+export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
+  if (!ACCESS_TOKEN) {
+    // Loud in production too (7 Oct 2026: it was silent there, and every
+    // server-side conversion was dropped for days without anyone seeing it).
+    console.warn('[capi] META_CAPI_ACCESS_TOKEN is not set: server conversion NOT sent to Meta (left for the PROXe core relay)', event.eventName)
+    return false
+  }
+
+  const item = buildCapiEvent(event)
+  if (!item) return false
   const payload = {
-    data: [
-      {
-        event_name: event.eventName,
-        event_time: Math.floor(Date.now() / 1000),
-        event_id: event.eventId,
-        event_source_url: event.eventSourceUrl,
-        action_source: 'website',
-        user_data: userData,
-        custom_data: {
-          ...(event.value !== undefined ? { value: event.value } : {}),
-          ...(event.currency ? { currency: event.currency } : {}),
-          ...(event.custom ?? {}),
-        },
-      },
-    ],
+    data: [item],
     ...(TEST_CODE ? { test_event_code: TEST_CODE } : {}),
   }
 

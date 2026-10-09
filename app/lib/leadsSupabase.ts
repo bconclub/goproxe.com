@@ -1073,7 +1073,7 @@ export async function updateProxeBooking(input: SupabaseLeadInput): Promise<Supa
 export async function stampMetaSent(
   who: { phone?: string; email?: string },
   key: string,
-  record: { events: string[]; event_id: string; source?: string; sent: boolean },
+  record: { events: string[]; event_id: string; source?: string; sent: boolean; relay?: Record<string, unknown> | null },
 ): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return

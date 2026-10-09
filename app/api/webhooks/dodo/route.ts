@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient } from '../../../lib/dodo'
 import { recordBillingEvent } from '../../../lib/leadsSupabase'
-import { sendCapiEvent, deriveEventId } from '../../../lib/metaCapi'
+import { sendCapiEvent, deriveEventId, buildCapiEvent, type CapiEvent } from '../../../lib/metaCapi'
+import { stampMetaSent } from '../../../lib/leadsSupabase'
 
 /**
  * Dodo Payments webhook receiver.
@@ -150,7 +151,7 @@ export async function POST(request: Request) {
         : typeof data.recurring_pre_tax_amount === 'number'
           ? data.recurring_pre_tax_amount
           : null
-    void sendCapiEvent({
+    const purchase = {
       eventName: 'Purchase',
       eventId: deriveEventId('purchase', String(data.payment_id ?? data.subscription_id ?? webhookId)),
       user: { email: customer.email ?? null, firstName: (customer.name ?? '').split(' ')[0] || null },
@@ -158,6 +159,15 @@ export async function POST(request: Request) {
       value: amountMinor !== null ? amountMinor / 100 : undefined,
       currency: data.currency ?? undefined,
       custom: { event_type: type, market: metadata.market ?? undefined },
+    } satisfies CapiEvent
+    // Not sent (no token on this server): park it on the buyer's lead (matched
+    // by email) for PROXe core's cron to relay with core's token.
+    void sendCapiEvent(purchase).then((sent) => {
+      if (sent || !customer.email) return
+      return stampMetaSent({ email: customer.email }, 'Purchase', {
+        events: ['Purchase'], event_id: purchase.eventId, source: 'dodo', sent: false,
+        relay: buildCapiEvent(purchase),
+      })
     })
   }
 
