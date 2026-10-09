@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       // Conversion page — no reason for it to appear in search results.
       // Internal BDR dial page - not a public URL.
-      disallow: ['/thank-you', '/bdr'],
+      disallow: ['/thank-you', '/bdr', '/admin', '/pitch-views'],
     },
     sitemap: 'https://goproxe.com/sitemap.xml',
   }
