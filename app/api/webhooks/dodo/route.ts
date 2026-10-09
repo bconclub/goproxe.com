@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient } from '../../../lib/dodo'
 import { recordBillingEvent } from '../../../lib/leadsSupabase'
-import { sendCapiEvent, deriveEventId, buildCapiEvent, type CapiEvent } from '../../../lib/metaCapi'
+import { sendCapiEventResult, deriveEventId, matchKeys, type CapiEvent } from '../../../lib/metaCapi'
 import { stampMetaSent } from '../../../lib/leadsSupabase'
 
 /**
@@ -162,11 +162,16 @@ export async function POST(request: Request) {
     } satisfies CapiEvent
     // Not sent (no token on this server): park it on the buyer's lead (matched
     // by email) for PROXe core's cron to relay with core's token.
-    void sendCapiEvent(purchase).then((sent) => {
-      if (sent || !customer.email) return
+    // Not sent (no token on this server): park it on the buyer's lead (matched
+    // by email) for PROXe core's cron to relay with core's token. Sent: still
+    // stamp it, so the admin can see the payment reached Meta and with what.
+    void sendCapiEventResult(purchase).then((r) => {
+      if (!customer.email) return
       return stampMetaSent({ email: customer.email }, 'Purchase', {
-        events: ['Purchase'], event_id: purchase.eventId, source: 'dodo', sent: false,
-        relay: buildCapiEvent(purchase),
+        events: ['Purchase'], event_id: purchase.eventId, source: 'dodo', sent: r.sent,
+        keys: matchKeys(r.item),
+        ...(r.sent ? { fbtrace: r.fbtrace ?? null, events_received: r.eventsReceived ?? null } : { error: r.error }),
+        ...(r.sent || !r.item || r.error?.startsWith('http_4') ? {} : { relay: r.item }),
       })
     })
   }

@@ -76,9 +76,76 @@ function Spark({ values, labels, tone }: { values: number[]; labels: string[]; t
   )
 }
 
-type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null; via?: string; relay?: unknown; relay_expired?: boolean }
+type Health = {
+  at: string
+  ours: Record<string, number>
+  meta: Record<string, number> | null
+  meta_error: string | null
+  coverage: Record<string, Record<string, number>>
+  coverage_n: Record<string, number>
+  problems: { kind: string; count: number; detail: string }[]
+}
+
+/** Meta's match-key names, as people say them. */
+const KEY_LABEL: Record<string, string> = {
+  ph: 'phone', em: 'email', fn: 'name', external_id: 'person id', fbp: 'browser id', fbc: 'ad click',
+  client_ip_address: 'IP', client_user_agent: 'device',
+}
+const keyList = (keys?: string[]) => (keys && keys.length ? keys.map((k) => KEY_LABEL[k] || k).join(', ') : '')
+
+function HealthPanel({ h }: { h: Health | null }) {
+  if (!h) {
+    return <p className="banner">The hourly check has not run yet. It runs on the PROXe dashboard at five past every hour; this panel fills in after its first run.</p>
+  }
+  const ageMin = Math.round((Date.now() - Date.parse(h.at)) / 60000)
+  const stale = ageMin > 130
+  const events = ['Lead', 'QualifiedLead', 'Schedule', 'DisqualifiedLead', 'Purchase'].filter((e) => h.ours[e] || h.meta?.[e])
+  const cols: [string, string][] = [['ph', 'phone'], ['em', 'email'], ['fbp', 'browser id'], ['fbc', 'ad click'], ['client_ip_address', 'IP']]
+  const bad = h.problems.length > 0 || stale
+  return (
+    <section className={`health ${bad ? 'health-bad' : 'health-ok'}`} aria-labelledby="health-h">
+      <div className="health-head">
+        <h3 id="health-h">{h.problems.length ? `${h.problems.length} problem${h.problems.length > 1 ? 's' : ''} in the last 24 hours` : 'Every check passed in the last 24 hours'}</h3>
+        <span className="hint">Checked {ageMin < 1 ? 'just now' : `${ageMin} min ago`}{stale ? ' · the check itself looks stopped' : ''} · alerts go to Telegram</span>
+      </div>
+      {h.problems.length > 0 && (
+        <ul className="health-list">{h.problems.map((p) => <li key={p.kind}>{p.detail}</li>)}</ul>
+      )}
+      <div className="health-grid">
+        <div className="tablewrap">
+          <table>
+            <thead><tr><th>Event, last 24h</th><th>We delivered</th><th>Meta received</th></tr></thead>
+            <tbody>
+              {events.length ? events.map((e) => {
+                const short = h.meta && (h.meta[e] || 0) < h.ours[e]
+                return <tr key={e}><td className="name">{e}</td><td>{h.ours[e] || 0}</td><td>{h.meta ? <span className={short ? 'pill bad' : 'pill ok'}>{h.meta[e] || 0}</span> : <span className="hint">unavailable</span>}</td></tr>
+              }) : <tr><td colSpan={3} className="hint">Nothing sent in the last 24 hours.</td></tr>}
+            </tbody>
+          </table>
+          {h.meta_error && <p className="hint" style={{ margin: '8px 16px 12px', fontSize: 13 }}>Meta count: {h.meta_error}</p>}
+          <p className="hint" style={{ margin: '8px 16px 12px', fontSize: 12.5 }}>Meta counts the browser pixel too, so its number can be higher than ours. Lower than ours means some of our sends did not land.</p>
+        </div>
+        <div className="tablewrap">
+          <table>
+            <thead><tr><th>Details carried</th>{cols.map(([, l]) => <th key={l}>{l}</th>)}</tr></thead>
+            <tbody>
+              {Object.keys(h.coverage).length ? Object.entries(h.coverage).map(([e, c]) => (
+                <tr key={e}><td className="name">{e}<small>{h.coverage_n[e]} sent</small></td>{cols.map(([k]) => {
+                  const v = c[k] ?? 0
+                  return <td key={k}><span className={`pill ${v >= 80 ? 'ok' : v >= 40 ? 'warn' : 'bad'}`}>{v}%</span></td>
+                })}</tr>
+              )) : <tr><td colSpan={6} className="hint">Fills in from new sends: each send now records which details it carried.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null; via?: string; relay?: unknown; relay_expired?: boolean; keys?: string[]; error?: string; relay_error?: string }
 type LeadRow = { id: string; customer_name: string | null; phone: string | null; lead_stage: string | null; capi: Record<string, SendRecord> | null; attr: Record<string, any> | null }
-type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; relayed: boolean; queued: boolean; fromAd: boolean; bad: boolean }
+type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; relayed: boolean; queued: boolean; keys?: string[]; problem?: string; fromAd: boolean; bad: boolean }
 type LeadView = { id: string; name: string; phone: string; stage: string; fromAd: boolean; bad: boolean; last: string; sends: Send[] }
 
 const ist = (d: string | number) => new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
@@ -151,14 +218,17 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
   const windows = { Today: istMidnight(), '7 days': now - 7 * 86_400_000, '28 days': now - 28 * 86_400_000 }
 
   const db = getSupabaseServiceClient()
-  const [res, stats] = await Promise.all([
+  const [res, stats, healthRes] = await Promise.all([
     db?.from('all_leads')
       .select('id, customer_name, phone, lead_stage, capi:unified_context->capi_sent, attr:unified_context->web->attribution')
       .eq('brand', BRAND)
       .not('unified_context->capi_sent', 'is', null)
       .limit(5000),
     loadMetaStats(windows),
+    // Written hourly by PROXe core's meta-health cron, which has the Meta token.
+    db?.from('dashboard_settings').select('value').eq('key', `meta_health:${BRAND}`).maybeSingle(),
   ])
+  const health = (healthRes?.data?.value ?? null) as Health | null
   const leadRows = (res?.data ?? []) as unknown as LeadRow[]
 
   const sends: Send[] = []
@@ -173,6 +243,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         leadId: l.id, name: l.customer_name || '', phone: maskPhone(l.phone), stage: l.lead_stage || '',
         key, at: rec.at || '', events, site: key.startsWith('site:'), test: !!rec.test, sent: rec.sent !== false,
         relayed: rec.via === 'core', queued: rec.sent === false && !!rec.relay && !rec.relay_expired,
+        keys: Array.isArray(rec.keys) ? rec.keys : undefined, problem: rec.relay_error || (rec.sent === false ? rec.error : undefined),
         fromAd: fromMetaAd(l.attr),
         bad: closedLost && events.some((e) => POSITIVE.has(e)),
       })
@@ -261,6 +332,9 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         <div><b>{siteSends}</b><span>from the website</span></div>
       </section>
 
+      <h2>Is it reaching Meta? <small>checked hourly by the PROXe dashboard</small></h2>
+      <HealthPanel h={health} />
+
       <h2>Signals we sent, by event <small>live sends only, IST</small></h2>
       <div className="grid3">
         {EVENTS.map((e) => (
@@ -325,7 +399,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                     <td>
                       <div className="chips">
                         {l.sends.map((s) => (
-                          <span key={s.key} className={`chip ${chipTone(s)}`} title={`Trigger: ${s.key}`}>
+                          <span key={s.key} className={`chip ${chipTone(s)}`} title={`Trigger: ${s.key}${s.keys ? `\nDetails sent: ${keyList(s.keys)}` : ''}${s.problem ? `\nProblem: ${s.problem}` : ''}`}>
                             <b>{s.events.join(' + ') || '(nothing)'}</b>
                             <span>{s.at ? istDay(s.at) : 'no date'} · {s.site ? 'website' : 'dashboard'}{s.relayed ? ' · relayed' : ''}{s.test ? ' · test' : ''}{s.queued ? ' · queued for relay' : !s.sent ? ' · not delivered' : ''}</span>
                           </span>
@@ -344,7 +418,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         activeSend[2].length ? (
           <div className="tablewrap">
             <table>
-              <thead><tr><th>Sent</th><th>Lead</th><th>Stage today</th><th>We told Meta</th><th>Because</th><th>From</th><th>Came from</th></tr></thead>
+              <thead><tr><th>Sent</th><th>Lead</th><th>Stage today</th><th>We told Meta</th><th>Details sent</th><th>Because</th><th>From</th><th>Came from</th></tr></thead>
               <tbody>
                 {activeSend[2].slice(0, 500).map((s) => (
                   <tr key={`${s.leadId}:${s.key}`} className={s.bad ? 'bad' : undefined}>
@@ -352,6 +426,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                     <td className="name">{s.name || <i>no name</i>}<small>{s.phone}</small></td>
                     <td><span className={`pill ${stageTone(s.stage)}`}>{s.stage || 'No stage'}</span></td>
                     <td><span className={`chip ${chipTone(s)}`}><b>{s.events.join(' + ')}</b>{s.bad && <span>now junk</span>}</span></td>
+                    <td style={{ minWidth: 180 }}>{s.keys ? <span style={{ fontSize: 13 }}>{keyList(s.keys)}</span> : <span className="hint">not recorded</span>}{s.problem && <small style={{ color: '#fecdd3' }}>{s.problem}</small>}</td>
                     <td className="nowrap"><span className="hint">{s.key.replace(/^site:/, 'Website ')}</span></td>
                     <td>{s.site ? 'Website' : 'Dashboard'}{s.relayed && <> <span className="pill blue">relayed</span></>}{s.test && <> <span className="pill dim">test</span></>}{s.queued ? <> <span className="pill warn">queued for relay</span></> : !s.sent && <> <span className="pill dim">not delivered</span></>}</td>
                     <td>{s.fromAd ? <span className="pill blue">Meta ad</span> : <span className="hint">Other</span>}</td>

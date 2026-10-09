@@ -42,6 +42,9 @@ export interface SupabaseLeadInput {
   utmCampaign?: string
   referrer?: string
   landingPage?: string
+  /** Meta's _fbp / _fbc browser cookies, read by lib/leads.ts. */
+  fbp?: string
+  fbc?: string
 }
 
 export type SupabaseLeadResult =
@@ -83,6 +86,13 @@ function buildContext(input: SupabaseLeadInput) {
 
   const attribution: Record<string, unknown> = {}
   if (input.channel) attribution.channel = input.channel
+  // Meta's browser cookies: kept on the lead so PROXe core's later
+  // QualifiedLead / Schedule / DisqualifiedLead for this person can carry them
+  // (9 Oct 2026: 0 of 73 leads had fbp, so core's events matched on phone only).
+  const fbp = trimOrNull(input.fbp)
+  if (fbp) web.fbp = fbp.slice(0, 200)
+  const fbc = trimOrNull(input.fbc)
+  if (fbc) web.fbc = fbc.slice(0, 300)
   if (input.utmSource) attribution.utm_source = input.utmSource
   if (input.utmMedium) attribution.utm_medium = input.utmMedium
   if (input.utmCampaign) attribution.utm_campaign = input.utmCampaign
@@ -1073,7 +1083,15 @@ export async function updateProxeBooking(input: SupabaseLeadInput): Promise<Supa
 export async function stampMetaSent(
   who: { phone?: string; email?: string },
   key: string,
-  record: { events: string[]; event_id: string; source?: string; sent: boolean; relay?: Record<string, unknown> | null },
+  record: {
+    events: string[]; event_id: string; source?: string; sent: boolean
+    /** Match keys the event carried (ph, em, fn, external_id, fbp, fbc, client_ip_address, client_user_agent). */
+    keys?: string[]
+    error?: string
+    fbtrace?: string | null
+    events_received?: number | null
+    relay?: Record<string, unknown> | null
+  },
 ): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return

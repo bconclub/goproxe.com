@@ -119,30 +119,43 @@ export function buildCapiEvent(event: CapiEvent): Record<string, unknown> | null
   }
 }
 
+/** Which match keys an event carries, in Meta's names: what the admin shows per send. */
+export function matchKeys(item: Record<string, unknown> | null): string[] {
+  const ud = (item?.user_data as Record<string, unknown>) || {}
+  return Object.keys(ud).filter((k) => ud[k] !== undefined && ud[k] !== null && ud[k] !== '')
+}
+
+export interface CapiResult {
+  sent: boolean
+  /** Why it did not go: no_token, no_identifier, http_<status>: <message>, network. */
+  error?: string
+  fbtrace?: string | null
+  eventsReceived?: number | null
+  /** The event as built, so a caller can stamp it or hand it to the relay. */
+  item: Record<string, unknown> | null
+}
+
 /**
- * Send one conversion. Returns true only when Meta accepted it.
- * Never throws — callers can ignore the result entirely.
+ * Send one conversion and report exactly what happened. Never throws.
  *
  * When this server has no token (9 Oct 2026: goproxe.com's was missing), the
- * caller stores buildCapiEvent()'s object on the lead as `relay`, and PROXe
- * core's meta-qualified cron sends it with core's own token. Same pixel, same
- * event id, so it still dedupes against the browser's copy.
+ * caller stores `item` on the lead as `relay`, and PROXe core's meta-qualified
+ * cron sends it with core's own token. Same pixel, same event id, so it still
+ * dedupes against the browser's copy.
  */
-export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
+export async function sendCapiEventResult(event: CapiEvent): Promise<CapiResult> {
+  const item = buildCapiEvent(event)
+  if (!item) return { sent: false, error: 'no_identifier', item }
   if (!ACCESS_TOKEN) {
     // Loud in production too (7 Oct 2026: it was silent there, and every
     // server-side conversion was dropped for days without anyone seeing it).
-    console.warn('[capi] META_CAPI_ACCESS_TOKEN is not set: server conversion NOT sent to Meta (left for the PROXe core relay)', event.eventName)
-    return false
+    console.warn('[capi] META_CAPI_ACCESS_TOKEN is not set: left for the PROXe core relay', event.eventName)
+    return { sent: false, error: 'no_token', item }
   }
-
-  const item = buildCapiEvent(event)
-  if (!item) return false
   const payload = {
     data: [item],
     ...(TEST_CODE ? { test_event_code: TEST_CODE } : {}),
   }
-
   try {
     const res = await fetch(
       `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`,
@@ -152,17 +165,23 @@ export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
         body: JSON.stringify(payload),
       }
     )
+    const body = (await res.json().catch(() => ({}))) as Record<string, any>
     if (!res.ok) {
-      const body = await res.text().catch(() => '')
-      console.error('[capi] rejected', event.eventName, res.status, body.slice(0, 300))
-      return false
+      const msg = String(body?.error?.message || '').slice(0, 200)
+      console.error('[capi] rejected', event.eventName, res.status, msg)
+      return { sent: false, error: `http_${res.status}: ${msg}`, fbtrace: body?.fbtrace_id ?? null, item }
     }
-    return true
+    return { sent: true, fbtrace: body?.fbtrace_id ?? null, eventsReceived: body?.events_received ?? null, item }
   } catch (err) {
     // A tracking failure must never surface to the visitor or break a webhook.
     console.error('[capi] send failed', event.eventName, (err as Error)?.message)
-    return false
+    return { sent: false, error: 'network', item }
   }
+}
+
+/** Send one conversion. Returns true only when Meta accepted it. Never throws. */
+export async function sendCapiEvent(event: CapiEvent): Promise<boolean> {
+  return (await sendCapiEventResult(event)).sent
 }
 
 /**

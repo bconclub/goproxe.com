@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sendCapiEvent, deriveEventId, buildCapiEvent, type CapiEvent } from '../../lib/metaCapi'
+import { sendCapiEventResult, deriveEventId, matchKeys, type CapiEvent } from '../../lib/metaCapi'
 import { upsertProxeLead, updateProxeBooking, stampMetaSent } from '../../lib/leadsSupabase'
 
 /**
@@ -184,13 +184,16 @@ export async function POST(request: Request) {
       },
       custom: { source: body.source, lead_type: body.type },
     } satisfies CapiEvent
-    void sendCapiEvent(capiEvent).then((sent) =>
-      // On the lead row, so the admin Meta tab shows what the site told Meta.
-      // Not sent (no token here): keep the ready event as `relay`, and PROXe
-      // core's cron sends it with core's own token.
+    void sendCapiEventResult(capiEvent).then((r) =>
+      // On the lead row, so the admin Meta tab shows what the site told Meta:
+      // the details it carried (keys), Meta's answer, and, when this server
+      // could not send (no token here), the ready event as `relay` for PROXe
+      // core's cron to send with core's own token.
       stampMetaSent({ phone: body.phone, email: body.email }, eventName, {
-        events: [eventName], event_id: eventId, source: body.source, sent,
-        ...(sent ? {} : { relay: buildCapiEvent(capiEvent) }),
+        events: [eventName], event_id: eventId, source: body.source, sent: r.sent,
+        keys: matchKeys(r.item),
+        ...(r.sent ? { fbtrace: r.fbtrace ?? null, events_received: r.eventsReceived ?? null } : { error: r.error }),
+        ...(r.sent || !r.item || r.error?.startsWith('http_4') ? {} : { relay: r.item }),
       }),
     )
   }

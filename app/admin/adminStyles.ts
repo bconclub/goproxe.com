@@ -84,6 +84,16 @@ tr.bad td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
 .ev dl div{display:flex;flex-direction:column}
 .ev dt{font-size:12px;color:var(--ink3)}
 .ev dd{margin:0;font-size:26px;line-height:1.1;font-weight:700;letter-spacing:-.02em}
+.health{border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;border:1px solid var(--line)}
+.health-ok{background:rgba(66,191,140,.06);border-color:rgba(66,191,140,.35)}
+.health-bad{background:rgba(251,113,133,.06);border-color:rgba(251,113,133,.4)}
+.health-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.health-head h3{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
+.health-ok .health-head h3{color:#a7f3d0}
+.health-bad .health-head h3{color:#fecdd3}
+.health-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--ink2);font-size:14.5px}
+.health-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px}
+@media(max-width:1100px){.health-grid{grid-template-columns:minmax(0,1fr)}}
 .spark{margin:0;display:flex;flex-direction:column;gap:4px}
 .spark svg{display:block}
 .spark rect{transition:opacity .15s}
