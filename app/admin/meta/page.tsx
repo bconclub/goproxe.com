@@ -40,6 +40,42 @@ const EVENT_NOTE: Record<string, string> = {
   Purchase: 'a payment',
 }
 
+const EVENT_TONE: Record<string, string> = {
+  Lead: '#a997fb',
+  QualifiedLead: '#42bf8c',
+  Schedule: '#6fa8ff',
+  DisqualifiedLead: '#f1bd22',
+  Purchase: '#e9754c',
+}
+
+/** A 28-day daily bar micrograph: one bar per IST day, today on the right and brightest. */
+function Spark({ values, labels, tone }: { values: number[]; labels: string[]; tone: string }) {
+  const W = 220, H = 44, gap = 2
+  const n = values.length
+  const bw = (W - gap * (n - 1)) / n
+  const max = Math.max(1, ...values)
+  const total = values.reduce((a, b) => a + b, 0)
+  const peak = values.indexOf(Math.max(...values))
+  const day = (k: string) => new Date(k + 'T00:00:00Z').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+  return (
+    <figure className="spark" aria-label={`Last 28 days: ${total} sent${total ? `, most on ${day(labels[peak])} (${values[peak]})` : ''}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} preserveAspectRatio="none" role="img" aria-hidden="true">
+        <line x1="0" y1={H - 0.5} x2={W} y2={H - 0.5} stroke="rgba(255,255,255,.12)" />
+        {values.map((v, i) => {
+          const h = v ? Math.max(3, (v / max) * (H - 4)) : 1.5
+          return (
+            <rect key={labels[i]} x={i * (bw + gap)} y={H - h} width={bw} height={h} rx="1.5"
+              fill={v ? tone : 'rgba(255,255,255,.14)'} opacity={i === n - 1 ? 1 : v ? 0.7 : 1}>
+              <title>{`${day(labels[i])}: ${v}`}</title>
+            </rect>
+          )
+        })}
+      </svg>
+      <figcaption><span>{day(labels[0])}</span><span>{total ? `peak ${values[peak]} · ${day(labels[peak])}` : 'none in 28 days'}</span><span>today</span></figcaption>
+    </figure>
+  )
+}
+
 type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null }
 type LeadRow = { id: string; customer_name: string | null; phone: string | null; lead_stage: string | null; capi: Record<string, SendRecord> | null; attr: Record<string, any> | null }
 type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; fromAd: boolean; bad: boolean }
@@ -160,6 +196,17 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
       if (t >= from) for (const e of s.events) totals[w][e] = (totals[w][e] || 0) + 1
     }
   }
+  // Daily counts per event for the last 28 IST days, oldest first: the cards' micrographs.
+  const DAYS = 28
+  const dayKey = (t: number) => new Date(t + 330 * 60_000).toISOString().slice(0, 10)
+  const dayKeys = Array.from({ length: DAYS }, (_, i) => dayKey(windows.Today - (DAYS - 1 - i) * 86_400_000))
+  const daily: Record<string, number[]> = Object.fromEntries(EVENTS.map((e) => [e, dayKeys.map(() => 0)]))
+  for (const s of sends) {
+    if (s.test || !s.sent || !s.at) continue
+    const i = dayKeys.indexOf(dayKey(Date.parse(s.at)))
+    if (i < 0) continue
+    for (const e of s.events) if (daily[e]) daily[e][i] += 1
+  }
   const badLeads = leads.filter((l) => l.bad).length
   const adLeads = leads.filter((l) => l.fromAd).length
   const siteSends = sends.filter((s) => s.site).length
@@ -223,6 +270,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                 <Fragment key={w}><div><dt>{w}</dt><dd>{totals[w][e] || 0}</dd></div></Fragment>
               ))}
             </dl>
+            <Spark values={daily[e]} labels={dayKeys} tone={EVENT_TONE[e]} />
           </div>
         ))}
       </div>

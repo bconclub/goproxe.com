@@ -84,6 +84,11 @@ tr.bad td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
 .ev dl div{display:flex;flex-direction:column}
 .ev dt{font-size:12px;color:var(--ink3)}
 .ev dd{margin:0;font-size:26px;line-height:1.1;font-weight:700;letter-spacing:-.02em}
+.spark{margin:0;display:flex;flex-direction:column;gap:4px}
+.spark svg{display:block}
+.spark rect{transition:opacity .15s}
+.spark rect:hover{opacity:1}
+.spark figcaption{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:var(--ink3)}
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .filters a{font-size:13.5px;padding:7px 14px;border:1px solid var(--line-2);border-radius:999px;text-decoration:none;color:var(--ink2)!important}
 .filters a[aria-current=true]{border-color:var(--accent);color:var(--ink)!important;background:rgba(169,151,251,.16)}
