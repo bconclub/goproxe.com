@@ -146,8 +146,8 @@ export async function POST(request: Request) {
   // contact details, which is stable for the same person and still dedupes a
   // retry — but a browser that fired an unmatched pixel id would double-count,
   // which is why the client passes one.
-  // Only a real enquiry is reported (as the custom 'Enquiry'): name + phone +
-  // brand (Z, 9 Oct 2026). A bare number (hero "Call me
+  // Meta optimises toward whatever we report as Lead, so only a real enquiry
+  // counts: name + phone + brand (Z, 9 Oct 2026). A bare number (hero "Call me
   // back", "Call me now") still saves the lead and still dials; it just is not
   // a conversion. Z accepted the higher cost per lead: a bare-number Lead (7 Oct)
   // taught the ads to find people who type a number and never become customers,
@@ -165,8 +165,7 @@ export async function POST(request: Request) {
   if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
-    // 'Enquiry', not 'Lead': Lead is a person's verdict, sent by PROXe core.
-    const eventName = isBooking ? 'Schedule' : 'Enquiry'
+    const eventName = isBooking ? 'Schedule' : 'Lead'
     const eventId = body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed)
     void sendCapiEvent({
       eventName,
