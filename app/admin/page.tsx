@@ -34,6 +34,14 @@ function leadSource(l: Lead) {
   const web = l.unified_context?.web
   return web?.attribution?.channel || web?.attribution?.utm_source || web?.source || l.last_touchpoint || ''
 }
+/** Stage as a coloured pill: junk red, won green, working violet, untouched grey. */
+function stageTone(stage: string) {
+  const s = stage.toLowerCase()
+  if (s === 'closed lost') return 'bad'
+  if (s === 'booking made' || s === 'booked' || s === 'demo taken' || s === 'closed won' || s === 'converted') return 'ok'
+  if (s === 'qualified' || s === 'high intent' || s === 'talking') return ''
+  return 'dim'
+}
 function leadStage(l: Lead) {
   if (l.lead_stage) return l.lead_stage
   if (l.unified_context?.web?.booking_status === 'Call Booked') return 'Booked'
@@ -173,23 +181,23 @@ export default async function AdminPage() {
       </div>
 
       <section>
-        <h2>Latest leads</h2>
+        <h2>Latest leads <small>40 most recent, newest first</small></h2>
         {leads.length ? (
           <div className="tablewrap">
             <table>
-              <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Source</th><th>Stage</th><th>Booking</th><th>Last activity</th></tr></thead>
+              <thead><tr><th>Lead</th><th>Stage</th><th>Came from</th><th>Booking</th><th>Email</th><th>Last activity</th></tr></thead>
               <tbody>
                 {leads.map((l) => {
                   const web = l.unified_context?.web
+                  const stage = leadStage(l)
                   return (
                     <tr key={l.id}>
-                      <td>{l.customer_name || <i>no name</i>}{web?.brand_name ? <small> · {web.brand_name}</small> : null}</td>
-                      <td>{l.phone ? <a href={`tel:${l.phone}`}>{l.phone}</a> : ''}</td>
-                      <td>{l.email ?? ''}</td>
-                      <td>{leadSource(l)}</td>
-                      <td><span className="pill">{leadStage(l)}</span></td>
-                      <td>{web?.booking_time ? `${web.booking_label ?? ''} ${web.booking_time}`.trim() : ''}</td>
-                      <td>{l.last_interaction_at ? ist(l.last_interaction_at) : ''}</td>
+                      <td className="name">{l.customer_name || <i>no name</i>}{web?.brand_name ? <span className="hint" style={{ fontWeight: 400 }}> · {web.brand_name}</span> : null}<small>{l.phone ? <a href={`tel:${l.phone}`}>{l.phone}</a> : 'no phone'}</small></td>
+                      <td><span className={`pill ${stageTone(stage)}`}>{stage}</span></td>
+                      <td>{leadSource(l) || <span className="hint">unknown</span>}</td>
+                      <td className="nowrap">{web?.booking_time ? `${web.booking_label ?? ''} ${web.booking_time}`.trim() : <span className="hint">none</span>}</td>
+                      <td>{l.email ?? <span className="hint">none</span>}</td>
+                      <td className="when">{l.last_interaction_at ? ist(l.last_interaction_at) : ''}</td>
                     </tr>
                   )
                 })}
