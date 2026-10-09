@@ -50,6 +50,8 @@ const COPY_FILES = [
   'app/components/CapabilitiesSection.tsx',
   'app/components/shared/DeployModal.tsx',
   'app/thank-you/ThankYouContent.tsx',
+  'app/pricing/PricingPage.tsx',
+  'app/pricing/content.ts',
 ];
 
 const failures = [];
@@ -94,6 +96,9 @@ const ALLOWED_PRICES = new Set([
   grab(/usd:\s*\{[^}]*was:\s*'([^']+)'/, 'USD anchor'),
   grab(/inr:\s*\{[^}]*seat:\s*'₹([^']+)'/, 'INR seat'),
   grab(/usd:\s*\{[^}]*seat:\s*'\$([^']+)'/, 'USD seat'),
+  // Top-up pack prices, from app/lib/billing/plan.ts (sold on /pricing).
+  ...[...read(path.join(ROOT, 'app/lib/billing/plan.ts')).matchAll(/price:\s*([\d_]+)/g)]
+    .map((m) => Number(m[1].replace(/_/g, '')).toLocaleString('en-IN')),
 ]);
 for (const f of COPY_FILES) {
   scan(f, (line, at) => {

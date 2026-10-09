@@ -1606,8 +1606,8 @@ export default function ProxeLanding() {
               answer="Anytime. PROXe hands off to your team the moment you jump in, with full conversation context across every channel. The AI picks back up when you step away."
             />
             <FaqItem
-              question="What happens if I go over 500 leads in a month?"
-              answer="Nothing switches off. We keep everything running and true up at renewal, and if you are consistently above 500 we move you to Scale on volume pricing. No lead is ever dropped for hitting a limit."
+              question="What happens if I go over 1,000 leads in a month?"
+              answer="Nothing goes silent. PROXe keeps replying to every lead by text, and you can add a top-up pack of leads or voice minutes that rolls over if unused. If you need more every month, Scale prices your volume up front. No lead is ever dropped for hitting a limit."
             />
             <FaqItem
               question="What counts as a lead?"
@@ -1745,7 +1745,7 @@ export default function ProxeLanding() {
               <div className="pf-col-title">Product</div>
               <ul className="pf-links">
                 <li><a href="#features">Features</a></li>
-                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="/pricing">Pricing</a></li>
                 <li><a href="#voice">Live Demo</a></li>
               </ul>
             </div>

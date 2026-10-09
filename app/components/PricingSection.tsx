@@ -37,7 +37,8 @@ const CORE_CHANNELS = [
 ];
 
 const CORE_FEATURES = [
-  'Up to 500 leads managed per month',
+  'Up to 1,000 leads managed per month',
+  '250 voice minutes per month',
   'Unified memory across every channel',
   'Live analytics dashboard',
   'Automated follow-ups',
@@ -127,7 +128,8 @@ export default function PricingSection() {
             </h2>
             <p className="pr-sub">
               Every channel, one unified memory, your whole team on board.
-              Locked for life for the first {FOUNDING_LIMIT} businesses.
+              Locked for life for the first {FOUNDING_LIMIT} businesses.{' '}
+              <a href="/pricing" className="pr-sub-link">Top-ups, minutes and full details <FiArrowRight size={12} /></a>
             </p>
 
             {/* INR ⇄ USD toggle */}

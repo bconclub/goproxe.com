@@ -10444,6 +10444,15 @@ button.proxe-float-cta { cursor: pointer; appearance: none; -webkit-appearance: 
   margin: 0;
   max-width: 520px;
 }
+.pr-sub-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #c4b5fd;
+  font-weight: 600;
+  text-decoration: none;
+}
+.pr-sub-link:hover { color: #fff; text-decoration: underline; }
 
 /* Header right vis — channel pips → curved lines → hex orb + callout */
 .pr-header-vis {

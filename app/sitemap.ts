@@ -67,6 +67,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   })
 
+  // Plan & pricing: Core, top-up packs, seats, bill estimator
+  entries.push({
+    url: 'https://goproxe.com/pricing',
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  })
+
   // Dashboard tour: short videos of the real dashboard
   entries.push({
     url: 'https://goproxe.com/dashboard-tour',
