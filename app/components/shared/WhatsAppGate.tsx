@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { track } from '../../lib/analytics'
 import { getAttribution } from '../../lib/attribution'
 import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
+import { openWhatsApp } from '../../lib/openWhatsApp'
 
 /**
  * One field before the WhatsApp chat opens: their name (Z, 7 Oct 2026: "bring
@@ -16,8 +17,9 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage'
  * person, and the short code carries the campaign (stored at /api/wa-ref, with
  * the name) which PROXe core attaches to the lead when the message arrives.
  *
- * - window.open runs in the submit handler, on the gesture, so iOS Safari's
- *   popup blocker does not eat it.
+ * - The chat opens in the submit handler, on the gesture, so iOS Safari's
+ *   popup blocker does not eat it. openWhatsApp handles in-app browsers
+ *   (Instagram, Facebook), where wa.me would stay a web page.
  * - A returning visitor's name is prefilled.
  * - Rendered through a portal into .proxe-root (the floating header's
  *   backdrop-filter would otherwise trap position:fixed, and the brand fonts
@@ -35,7 +37,8 @@ function refCode(): string {
   return out
 }
 
-function waLink(name: string, location: string): string {
+/** The first message, carrying the ref code that ties the chat to the campaign. */
+function firstMessage(name: string, location: string): string {
   const code = refCode()
   try {
     const a: any = getAttribution()
@@ -49,8 +52,7 @@ function waLink(name: string, location: string): string {
     }
   } catch { /* attribution unavailable: the chat still opens */ }
   const first = name.trim().split(/\s+/)[0]
-  const text = `Hi, I'm ${first}. I want to know more about PROXe. PX-${code}`
-  return `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`
+  return `Hi, I'm ${first}. I want to know more about PROXe. PX-${code}`
 }
 
 export default function WhatsAppGate({ open, onClose, location = 'header' }: { open: boolean; onClose: () => void; location?: string }) {
@@ -80,15 +82,14 @@ export default function WhatsAppGate({ open, onClose, location = 'header' }: { o
     // Read the field itself: some Android keyboards leave text React never saw.
     const cleanName = (nameRef.current?.value ?? name).replace(/\s+/g, ' ').trim()
     if (!cleanName) { setErr('Your name, so PROXe knows who it is talking to.'); nameRef.current?.focus(); return }
-    const href = waLink(cleanName, location)
-    // Opened on the gesture, before anything async.
-    const win = window.open(href, '_blank', 'noopener')
+    const text = firstMessage(cleanName, location)
     try {
       storeUserProfile({ ...(getStoredUser('proxe') ?? {}), name: cleanName }, 'proxe')
       track('whatsapp_click', { location, stage: 'named' })
     } catch { /* analytics never blocks the chat */ }
     onClose()
-    if (!win) window.location.href = href
+    // Still on the gesture: nothing above awaits.
+    openWhatsApp(PHONE, text)
   }
 
   const host = typeof document !== 'undefined' ? (document.querySelector('.proxe-root') as HTMLElement | null) ?? document.body : null

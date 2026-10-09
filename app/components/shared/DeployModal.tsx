@@ -7,6 +7,7 @@ import { storeUserProfile, getStoredUser, storeBooking } from '../../lib/chatLoc
 import { track, trackLead, newEventId, trackHighIntent } from '../../lib/analytics';
 import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
+import { openWhatsApp } from '../../lib/openWhatsApp';
 
 // The real self-serve setup (reads the website, builds the knowledge base).
 // Z, 3 Oct 2026: Deploy must land here, not on the site's placeholder form.
@@ -301,11 +302,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
       eventId: newEventId(),
       followUp: true,
     });
-    const text = encodeURIComponent(
-      `Hi, I'd like to set up PROXe${formData.brandName.trim() ? ` for ${formData.brandName.trim()}` : ''}.`
-    );
-    window.open(`https://wa.me/918123808817?text=${text}`, '_blank', 'noopener');
     onClose();
+    openWhatsApp('918123808817', `Hi, I'd like to set up PROXe${formData.brandName.trim() ? ` for ${formData.brandName.trim()}` : ''}.`);
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
