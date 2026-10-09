@@ -77,6 +77,32 @@ echo "Building..."
 NODE_OPTIONS="--max-old-space-size=6144" npm run build
 test -f .next/BUILD_ID
 
+# Clarity session replays re-fetch the page's CSS, fonts and JS by their
+# hashed URLs when someone WATCHES the replay, which can be weeks later. Each
+# release used to serve only its own .next/static, so every session recorded
+# before a deploy replayed unstyled (giant logo, tofu digits). Keep every
+# build's static files in one archive and carry them into each release: names
+# are content-hashed, so old files never collide with new ones. ~3MB a build;
+# files older than 60 days (past Clarity's 30-day retention) are pruned.
+# Never blocks a deploy.
+STATIC_ARCHIVE=/var/www/goproxe-static-archive
+# cp -n (never overwrite) on every coreutils; newer ones exit 1 when they
+# skip an existing file, which is the normal case here, so status is ignored.
+keep_copy() { cp -rn "$1/." "$2/" 2>/dev/null || true; }
+echo "Carrying older builds' static assets forward..."
+{
+  mkdir -p "$STATIC_ARCHIVE"
+  keep_copy .next/static "$STATIC_ARCHIVE"
+  # Seeds the archive from releases still on disk (the first run recovers them).
+  for old in "$RELEASES"/*/.next/static; do
+    [ "$old" = "$REL/.next/static" ] && continue
+    [ -d "$old" ] && keep_copy "$old" "$STATIC_ARCHIVE"
+  done
+  find "$STATIC_ARCHIVE" -type f -mtime +60 -delete
+  keep_copy "$STATIC_ARCHIVE" .next/static
+  echo "static archive: $(du -sh "$STATIC_ARCHIVE" | cut -f1)"
+} || echo "static archive step failed; replays of older sessions may lose CSS"
+
 echo "Smoke test on :$SMOKE_PORT ..."
 # A smoke server left behind by an earlier run (killing the npx wrapper did
 # not kill its child) held the port and failed every deploy after it. Clear
