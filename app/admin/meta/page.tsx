@@ -79,6 +79,8 @@ function Spark({ values, labels, tone }: { values: number[]; labels: string[]; t
 type Health = {
   at: string
   ours: Record<string, number>
+  confirmed?: Record<string, number>
+  answered?: Record<string, number>
   meta: Record<string, number> | null
   meta_error: string | null
   coverage: Record<string, Record<string, number>>
@@ -114,16 +116,25 @@ function HealthPanel({ h }: { h: Health | null }) {
       <div className="health-grid">
         <div className="tablewrap">
           <table>
-            <thead><tr><th>Event, last 24h</th><th>We delivered</th><th>Meta received</th></tr></thead>
+            <thead><tr><th>Event, last 24h</th><th>We sent</th><th>Meta confirmed</th>{h.meta && <th>Meta total</th>}</tr></thead>
             <tbody>
               {events.length ? events.map((e) => {
-                const short = h.meta && (h.meta[e] || 0) < h.ours[e]
-                return <tr key={e}><td className="name">{e}</td><td>{h.ours[e] || 0}</td><td>{h.meta ? <span className={short ? 'pill bad' : 'pill ok'}>{h.meta[e] || 0}</span> : <span className="hint">unavailable</span>}</td></tr>
+                const conf = h.confirmed?.[e] ?? 0
+                const asked = h.answered?.[e] ?? 0
+                const sent = h.ours[e] || 0
+                const short = h.meta && (h.meta[e] || 0) < sent
+                return (
+                  <tr key={e}>
+                    <td className="name">{e}</td>
+                    <td>{sent}</td>
+                    <td>{asked ? <span className={conf < asked ? 'pill bad' : 'pill ok'}>{conf} of {asked}</span> : <span className="hint">{sent ? 'sent before replies were recorded' : 'none'}</span>}</td>
+                    {h.meta && <td><span className={short ? 'pill bad' : 'pill ok'}>{h.meta[e] || 0}</span></td>}
+                  </tr>
+                )
               }) : <tr><td colSpan={3} className="hint">Nothing sent in the last 24 hours.</td></tr>}
             </tbody>
           </table>
-          {h.meta_error && <p className="hint" style={{ margin: '8px 16px 12px', fontSize: 13 }}>Meta count: {h.meta_error}</p>}
-          <p className="hint" style={{ margin: '8px 16px 12px', fontSize: 12.5 }}>Meta counts the browser pixel too, so its number can be higher than ours. Lower than ours means some of our sends did not land.</p>
+          <p className="hint" style={{ margin: '8px 16px 12px', fontSize: 12.5 }}>Meta confirmed = Meta&apos;s own reply to each server send, saying it accepted the event. Sends from before 9 Oct, 9 pm did not record the reply.{h.meta ? ' Meta total also counts the browser pixel, so it can be higher than ours.' : ''}</p>
         </div>
         <div className="tablewrap">
           <table>
