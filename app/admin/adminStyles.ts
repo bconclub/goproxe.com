@@ -94,6 +94,10 @@ tr.bad td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
 .health-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--ink2);font-size:14.5px}
 .health-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px}
 @media(max-width:1100px){.health-grid{grid-template-columns:minmax(0,1fr)}}
+.leadsum{margin:0 0 14px;font-size:15.5px;color:var(--ink2);line-height:1.6}
+.leadsum b{color:var(--ink);font-weight:700}
+.leadsum b.ok{color:#a7f3d0}
+.leadsum b.no{color:#fde68a}
 .spark{margin:0;display:flex;flex-direction:column;gap:4px}
 .spark svg{display:block}
 .spark rect{transition:opacity .15s}

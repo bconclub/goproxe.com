@@ -154,10 +154,53 @@ function HealthPanel({ h }: { h: Health | null }) {
   )
 }
 
-type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null; via?: string; relay?: unknown; relay_expired?: boolean; keys?: string[]; error?: string; relay_error?: string }
-type LeadRow = { id: string; customer_name: string | null; phone: string | null; lead_stage: string | null; capi: Record<string, SendRecord> | null; attr: Record<string, any> | null }
-type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; relayed: boolean; queued: boolean; keys?: string[]; problem?: string; fromAd: boolean; bad: boolean }
-type LeadView = { id: string; name: string; phone: string; stage: string; fromAd: boolean; bad: boolean; last: string; sends: Send[] }
+type SendRecord = { at?: string; events?: string[]; test?: boolean; sent?: boolean; source?: string; event_id?: string; fbtrace?: string | null; via?: string; relay?: unknown; relay_expired?: boolean; keys?: string[]; error?: string; relay_error?: string; events_received?: number | null }
+type LeadRow = { id: string; customer_name: string | null; phone: string | null; lead_stage: string | null; created_at?: string | null; src?: string | null; brand_name?: string | null; capi: Record<string, SendRecord> | null; attr: Record<string, any> | null }
+type Send = { leadId: string; name: string; phone: string; stage: string; key: string; at: string; events: string[]; site: boolean; test: boolean; sent: boolean; relayed: boolean; queued: boolean; keys?: string[]; problem?: string; confirmed?: boolean; fromAd: boolean; bad: boolean }
+type LeadView = {
+  id: string; name: string; phone: string; stage: string; fromAd: boolean; bad: boolean; last: string; sends: Send[]
+  created: string; source: string; brandName: string
+  /** The send that told Meta "Lead" for this person, if any. */
+  metaLead?: Send
+  /** Why Meta has no Lead for this person: [short label, longer reason]. */
+  why?: [string, string]
+}
+
+/** Website site:* stamps start here (9 Oct 2026, 121da3a). Browser-only Leads before this were never recorded on the lead. */
+const SITE_STAMPS_FROM = Date.parse('2026-10-09T12:00:00Z')
+
+const SOURCE_LABEL: Record<string, string> = {
+  hero_phone: 'Call me back', deploy_modal: 'Deploy form', chat_widget: 'Chat form', 'dashboard-tour': 'Dashboard tour',
+  whatsapp_gate: 'WhatsApp pop-up', whatsapp_button: 'WhatsApp button', deploy_modal_whatsapp: 'Deploy form WhatsApp',
+  social: 'Instagram / Facebook DM', whatsapp: 'WhatsApp message', voice: 'Phone call', web: 'Website',
+}
+const sourceLabel = (src: string) =>
+  SOURCE_LABEL[src] || (src.startsWith('deploy_modal') ? 'Deploy form' : src ? src.replace(/_/g, ' ') : 'Unknown')
+
+/** Why Meta has no Lead for this person, in plain words: [label, detail]. */
+function whyNoLead(l: { source: string; created: string; name: string; brandName: string }): [string, string] {
+  const src = l.source
+  const before = Date.parse(l.created || '0') < SITE_STAMPS_FROM
+  if (!src || src === 'social' || src === 'whatsapp' || src === 'voice') {
+    return ['Came in directly', 'Came in by WhatsApp, Instagram or a call, not a website form: the website has nothing to send. The dashboard stopped sending Lead on 9 Oct.']
+  }
+  if (src === 'whatsapp_gate' || src === 'whatsapp_button' || src === 'deploy_modal_whatsapp') {
+    return ['WhatsApp tap', 'Tapped WhatsApp on the website: Meta gets Contact for that, not Lead.']
+  }
+  if (src === 'hero_phone') {
+    return before
+      ? ['Not recorded', 'Typed a number in Call me back before 9 Oct. If they tapped the button, the browser sent Lead, but website sends were not recorded on the lead then.']
+      : ['Number only', 'Call me back with just a number: since 9 Oct a Lead needs name + phone + business.']
+  }
+  if (src === 'dashboard-tour') return ['No business name', 'Dashboard tour gives name + phone, no business: not a Lead by the 9 Oct rule.']
+  if (src.startsWith('deploy_modal') || src === 'chat_widget') {
+    if (before) return ['Not recorded', 'Form filled before 9 Oct: the website sent Lead from the browser and server then, but those sends were not recorded on the lead.']
+    if (!l.name || !l.brandName) return ['Incomplete form', 'Form without a name or business name: not a Lead by the 9 Oct rule.']
+    return ['Missing', 'A full form after 9 Oct should have sent Lead. The hourly check flags this as "missed".']
+  }
+  return ['No Lead', 'Nothing in the record sent Meta a Lead for this person.']
+}
+
 
 const ist = (d: string | number) => new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
 const istDay = (d: string | number) => new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short' })
@@ -219,6 +262,8 @@ async function loadMetaStats(windows: Record<string, number>): Promise<MetaStats
   }
 }
 
+const LEAD_FIELDS = 'id, customer_name, phone, lead_stage, created_at, src:unified_context->web->>source, brand_name:unified_context->web->>brand_name, capi:unified_context->capi_sent, attr:unified_context->web->attribution'
+
 export default async function MetaTab({ searchParams }: { searchParams: Promise<{ show?: string; view?: string }> }) {
   const cookieStore = await cookies()
   if (!verifyBdrSession(cookieStore.get(BDR_COOKIE)?.value)) redirect('/admin/login')
@@ -229,18 +274,23 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
   const windows = { Today: istMidnight(), '7 days': now - 7 * 86_400_000, '28 days': now - 28 * 86_400_000 }
 
   const db = getSupabaseServiceClient()
-  const [res, stats, healthRes] = await Promise.all([
+  const [res, stats, healthRes, recentRes] = await Promise.all([
     db?.from('all_leads')
-      .select('id, customer_name, phone, lead_stage, capi:unified_context->capi_sent, attr:unified_context->web->attribution')
+      .select(LEAD_FIELDS)
       .eq('brand', BRAND)
       .not('unified_context->capi_sent', 'is', null)
       .limit(5000),
     loadMetaStats(windows),
     // Written hourly by PROXe core's meta-health cron, which has the Meta token.
     db?.from('dashboard_settings').select('value').eq('key', `meta_health:${BRAND}`).maybeSingle(),
+    // Every lead of the last 28 days, so the ones Meta never heard about show too.
+    db?.from('all_leads').select(LEAD_FIELDS).eq('brand', BRAND)
+      .gte('created_at', new Date(windows['28 days']).toISOString()).limit(5000),
   ])
   const health = (healthRes?.data?.value ?? null) as Health | null
-  const leadRows = (res?.data ?? []) as unknown as LeadRow[]
+  const byId = new Map<string, LeadRow>()
+  for (const r of [...((res?.data ?? []) as unknown as LeadRow[]), ...((recentRes?.data ?? []) as unknown as LeadRow[])]) byId.set(r.id, r)
+  const leadRows = Array.from(byId.values())
 
   const sends: Send[] = []
   const leads: LeadView[] = []
@@ -255,16 +305,21 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         key, at: rec.at || '', events, site: key.startsWith('site:'), test: !!rec.test, sent: rec.sent !== false,
         relayed: rec.via === 'core', queued: rec.sent === false && !!rec.relay && !rec.relay_expired,
         keys: Array.isArray(rec.keys) ? rec.keys : undefined, problem: rec.relay_error || (rec.sent === false ? rec.error : undefined),
+        confirmed: rec.events_received === undefined || rec.events_received === null ? undefined : Number(rec.events_received) >= 1,
         fromAd: fromMetaAd(l.attr),
         bad: closedLost && events.some((e) => POSITIVE.has(e)),
       })
     }
-    if (!mine.length) continue
     mine.sort((a, b) => Date.parse(a.at || '0') - Date.parse(b.at || '0'))
     sends.push(...mine)
+    const base = { name: l.customer_name || '', brandName: l.brand_name || '', source: l.src || '', created: l.created_at || '' }
+    const metaLead = mine.find((x) => x.events.includes('Lead') && !x.test)
     leads.push({
-      id: l.id, name: l.customer_name || '', phone: maskPhone(l.phone), stage: l.lead_stage || '',
-      fromAd: fromMetaAd(l.attr), bad: mine.some((s) => s.bad), last: mine[mine.length - 1].at, sends: mine,
+      id: l.id, name: base.name, phone: maskPhone(l.phone), stage: l.lead_stage || '',
+      fromAd: fromMetaAd(l.attr), bad: mine.some((x) => x.bad),
+      last: mine.length ? mine[mine.length - 1].at : base.created, sends: mine,
+      created: base.created, source: base.source, brandName: base.brandName,
+      metaLead, why: metaLead ? undefined : whyNoLead(base),
     })
   }
   sends.sort((a, b) => Date.parse(b.at || '0') - Date.parse(a.at || '0'))
@@ -290,10 +345,17 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
     if (i < 0) continue
     for (const e of s.events) if (daily[e]) daily[e][i] += 1
   }
+  // Lead in Meta: of every lead created in the last 28 days.
+  const recentLeads = leads.filter((l) => Date.parse(l.created || '0') >= windows['28 days'])
+  const gotLead = recentLeads.filter((l) => l.metaLead)
+  const noLead = recentLeads.filter((l) => !l.metaLead)
+  const whyCounts = new Map<string, number>()
+  for (const l of noLead) whyCounts.set(l.why![0], (whyCounts.get(l.why![0]) || 0) + 1)
   const badLeads = leads.filter((l) => l.bad).length
-  const adLeads = leads.filter((l) => l.fromAd).length
+  const told = leads.filter((l) => l.sends.length)
+  const adLeads = told.filter((l) => l.fromAd).length
   const siteSends = sends.filter((s) => s.site).length
-  const junkLeads = leads.filter((l) => stageTone(l.stage) === 'bad').length
+  const junkLeads = told.filter((l) => stageTone(l.stage) === 'bad').length
 
   const sendFilters: [string, string, Send[]][] = [
     ['all', 'All', sends],
@@ -305,6 +367,8 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
   ]
   const leadFilters: [string, string, LeadView[]][] = [
     ['all', 'All', leads],
+    ['got', 'Meta got a Lead', leads.filter((l) => l.metaLead)],
+    ['not', 'Meta never got a Lead', leads.filter((l) => !l.metaLead)],
     ['bad', 'Taught Meta wrong', leads.filter((l) => l.bad)],
     ['ads', 'From Meta ads', leads.filter((l) => l.fromAd)],
     ['junk', 'Junk now', leads.filter((l) => stageTone(l.stage) === 'bad')],
@@ -335,7 +399,7 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
       )}
 
       <section className="stats">
-        <div><b>{leads.length}</b><span>Leads we told Meta about</span></div>
+        <div><b>{told.length}</b><span>Leads we told Meta about</span></div>
         <div><b>{adLeads}</b><span>of them came from Meta ads</span></div>
         <div><b>{junkLeads}</b><span>are junk now (Closed Lost)</span></div>
         <div className={badLeads ? 'bad' : undefined}><b>{badLeads}</b><span>junk we first called good</span></div>
@@ -385,6 +449,13 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         {bySend ? 'Every signal, newest first' : 'Each lead, and what Meta heard'}
         <small><a href={bySend ? '/admin/meta' : '/admin/meta?view=sends'}>{bySend ? 'Show one row per lead' : 'Show one row per signal'}</a></small>
       </h2>
+      {!bySend && (
+        <p className="leadsum">
+          Of <b>{recentLeads.length}</b> leads in the last 28 days, <b className="ok">{gotLead.length}</b> reached Meta as a Lead and{' '}
+          <b className="no">{noLead.length}</b> did not
+          {noLead.length > 0 && <>: {Array.from(whyCounts.entries()).sort((a, b) => b[1] - a[1]).map(([k, n], i) => <span key={k}>{i ? ', ' : ''}{n} {k.toLowerCase()}</span>)}</>}.
+        </p>
+      )}
       <nav className="filters" aria-label="Filter">
         {(bySend ? sendFilters : leadFilters).map(([k, label, list]) => (
           <a key={k} href={q(k)} aria-current={k === (bySend ? activeSend[0] : activeLead[0]) ? 'true' : undefined}>{label} · {list.length}</a>
@@ -401,14 +472,28 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
         activeLead[2].length ? (
           <div className="tablewrap">
             <table>
-              <thead><tr><th>Lead</th><th>Stage today</th><th>What we told Meta, oldest first</th><th>Came from</th><th>Last signal</th></tr></thead>
+              <thead><tr><th>Lead</th><th>Lead in Meta?</th><th>Stage today</th><th>Everything Meta heard, oldest first</th><th>Came from</th></tr></thead>
               <tbody>
                 {activeLead[2].slice(0, 500).map((l) => (
                   <tr key={l.id} className={l.bad ? 'bad' : undefined}>
-                    <td className="name">{l.name || <i>no name</i>}<small>{l.phone}</small></td>
+                    <td className="name">{l.name || <i>no name</i>}<small>{l.phone} · {sourceLabel(l.source)}{l.created ? ` · ${istDay(l.created)}` : ''}</small></td>
+                    <td style={{ minWidth: 200 }}>
+                      {l.metaLead ? (
+                        <>
+                          <span className={`pill ${l.metaLead.queued ? 'warn' : l.metaLead.sent ? 'ok' : 'bad'}`}>{l.metaLead.queued ? 'Queued' : l.metaLead.sent ? 'Yes' : 'Not delivered'}</span>
+                          <small>{istDay(l.metaLead.at)} · {l.metaLead.site ? 'website' : 'dashboard'}{l.metaLead.relayed ? ' · relayed' : ''}{l.metaLead.confirmed === true ? ' · Meta confirmed' : l.metaLead.confirmed === false ? ' · Meta did not confirm' : ''}</small>
+                        </>
+                      ) : (
+                        <>
+                          <span className="pill dim" title={l.why![1]}>No · {l.why![0]}</span>
+                          <small title={l.why![1]}>{l.why![1]}</small>
+                        </>
+                      )}
+                    </td>
                     <td><span className={`pill ${stageTone(l.stage)}`}>{l.stage || 'No stage'}</span>{l.bad && <small style={{ color: '#fecdd3' }}>We told Meta this was a good lead</small>}</td>
                     <td>
                       <div className="chips">
+                        {!l.sends.length && <span className="hint">Nothing</span>}
                         {l.sends.map((s) => (
                           <span key={s.key} className={`chip ${chipTone(s)}`} title={`Trigger: ${s.key}${s.keys ? `\nDetails sent: ${keyList(s.keys)}` : ''}${s.problem ? `\nProblem: ${s.problem}` : ''}`}>
                             <b>{s.events.join(' + ') || '(nothing)'}</b>
@@ -418,7 +503,6 @@ export default async function MetaTab({ searchParams }: { searchParams: Promise<
                       </div>
                     </td>
                     <td>{l.fromAd ? <span className="pill blue">Meta ad</span> : <span className="hint">Other</span>}</td>
-                    <td className="when">{l.last ? ist(l.last) : ''}</td>
                   </tr>
                 ))}
               </tbody>
