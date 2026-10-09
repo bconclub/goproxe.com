@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
-import { CORE_ALLOWANCE, TOP_UP_PACKS, inr, num, type TopUpPack } from '../lib/billing/plan'
+import { CORE_ALLOWANCE, TOP_UP_PACKS, inr, num, perUnit, type TopUpPack } from '../lib/billing/plan'
 import { track } from '../lib/analytics'
 import s from './pricing.module.css'
 
@@ -10,27 +10,36 @@ import s from './pricing.module.css'
  * Top-up calculator: "I need 250 extra minutes / 1,500 extra leads, what do
  * I buy?" Core is a flat price shown elsewhere; this only prices the extra.
  *
- * Every pack costs the same per unit (₹5 a lead, ₹20 a minute), so the
- * cheapest cover is the need rounded up to the smallest pack, split into the
- * fewest packs. Inputs sync to the URL (?leads=&minutes=) so a pre-filled
- * link can be sent.
+ * Packs are volume-tiered (bigger is cheaper per unit), so the cheapest cover
+ * is searched for rather than rounded: every mix of large and medium packs,
+ * topped up with small ones, ranked by price, then fewest packs, then least
+ * left over. Inputs sync to the URL (?leads=&minutes=) so a pre-filled link
+ * can be sent.
  */
 
 const MAX = 50_000
 
 type Line = { pack: TopUpPack; qty: number }
 
-function cover(extra: number, unit: 'leads' | 'minutes'): Line[] {
-  if (extra <= 0) return []
-  const packs = [...TOP_UP_PACKS].sort((a, b) => b[unit] - a[unit])
-  const step = packs[packs.length - 1][unit]
-  let left = Math.ceil(extra / step) * step
-  const lines: Line[] = []
-  for (const p of packs) {
-    const qty = Math.floor(left / p[unit])
-    if (qty > 0) { lines.push({ pack: p, qty }); left -= qty * p[unit] }
+function cover(need: number, unit: 'leads' | 'minutes'): Line[] {
+  if (need <= 0) return []
+  const [small, mid, big] = [...TOP_UP_PACKS].sort((a, b) => a[unit] - b[unit])
+  let best: { cost: number; packs: number; spare: number; q: [number, number, number] } | null = null
+  for (let b = 0; b <= Math.ceil(need / big[unit]); b++) {
+    for (let m = 0; m <= Math.ceil(Math.max(0, need - b * big[unit]) / mid[unit]); m++) {
+      const left = need - b * big[unit] - m * mid[unit]
+      const sm = left > 0 ? Math.ceil(left / small[unit]) : 0
+      const cost = b * big.price + m * mid.price + sm * small.price
+      const packs = b + m + sm
+      const spare = b * big[unit] + m * mid[unit] + sm * small[unit] - need
+      if (!best || cost < best.cost || (cost === best.cost && (packs < best.packs || (packs === best.packs && spare < best.spare)))) {
+        best = { cost, packs, spare, q: [b, m, sm] }
+      }
+    }
   }
-  return lines
+  return ([[big, best!.q[0]], [mid, best!.q[1]], [small, best!.q[2]]] as [TopUpPack, number][])
+    .filter(([, qty]) => qty > 0)
+    .map(([pack, qty]) => ({ pack, qty }))
 }
 
 const clamp = (n: number) => Math.max(0, Math.min(MAX, Math.round(n || 0)))
@@ -133,7 +142,7 @@ export default function Calculator() {
         <ul className={s.billCovers}>
           <li><FiCheck aria-hidden /> One-time purchase, not a monthly charge</li>
           <li><FiCheck aria-hidden /> Unused minutes and leads roll over to next month</li>
-          <li><FiCheck aria-hidden /> ₹20 a minute, ₹5 a lead, on every pack</li>
+          <li><FiCheck aria-hidden /> Bigger packs cost less: down to ₹{perUnit(TOP_UP_PACKS[TOP_UP_PACKS.length - 1], 'minutes')} a minute</li>
         </ul>
         <button type="button" className={s.copyBtn} onClick={copyLink}>
           {copied ? <><FiCheck /> Link copied</> : <><FiCopy /> Copy link to this top-up</>}

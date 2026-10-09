@@ -6,7 +6,7 @@ import { FiArrowRight, FiCheck, FiPhone, FiRefreshCw, FiMessageSquare, FiUsers, 
 import { useDeployModal } from '../contexts/DeployModalContext'
 import { track } from '../lib/analytics'
 import { PRICING } from '../lib/billing/pricing'
-import { CORE_ALLOWANCE, TOP_UP_PACKS, GST_PERCENT, inr, num } from '../lib/billing/plan'
+import { CORE_ALLOWANCE, TOP_UP_PACKS, GST_PERCENT, inr, num, perUnit, savingPct } from '../lib/billing/plan'
 import Calculator from './Calculator'
 import CallMeNowButton from '../components/shared/CallMeNowButton'
 import WhatsAppHeaderButton from '../components/shared/WhatsAppHeaderButton'
@@ -109,7 +109,7 @@ export default function PricingPage() {
         {/* ── Top-ups ── */}
         <section className={s.section} aria-labelledby="topups">
           <div className={s.sectionHead}>
-            <h2 id="topups" className={s.h2}>Top-up packs: choose minutes or leads</h2>
+            <h2 id="topups" className={s.h2}>Top-up packs: bigger packs cost less</h2>
             <div className={s.toggle} role="group" aria-label="Show packs as">
               <button type="button" aria-pressed={kind === 'minutes'} onClick={() => setKind('minutes')}>Minutes</button>
               <button type="button" aria-pressed={kind === 'leads'} onClick={() => setKind('leads')}>Leads</button>
@@ -118,7 +118,11 @@ export default function PricingPage() {
           <div className={s.packs}>
             {TOP_UP_PACKS.map((p) => (
               <div key={p.price} className={s.pack}>
-                <p className={s.packPrice}>{inr(p.price)}</p>
+                {savingPct(p) > 0 && <span className={s.packSave}>Save {savingPct(p)}%</span>}
+                <div>
+                  <p className={s.packPrice}>{inr(p.price)}</p>
+                  <p className={s.packRate}>{kind === 'minutes' ? `₹${perUnit(p, 'minutes')} a minute` : `₹${perUnit(p, 'leads')} a lead`}</p>
+                </div>
                 <div className={s.packOpts}>
                   <p data-on={kind === 'minutes'}><strong>{num(p.minutes)}</strong> minutes</p>
                   <span>or</span>

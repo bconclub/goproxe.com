@@ -20,12 +20,25 @@ export interface TopUpPack {
   leads: number
 }
 
-/** Each pack is bought as EITHER its minutes OR its leads. Unused packs roll over. */
+/**
+ * Each pack is bought as EITHER its minutes OR its leads. Unused packs roll
+ * over. Volume-tiered (Oct 2026): the bigger the pack, the cheaper per unit,
+ * ₹16.7 → ₹14.3 → ₹12.5 a minute. Leads stay at 4 per minute.
+ */
 export const TOP_UP_PACKS: TopUpPack[] = [
-  { price: 2_500, minutes: 125, leads: 500 },
-  { price: 5_000, minutes: 250, leads: 1_000 },
-  { price: 10_000, minutes: 500, leads: 2_000 },
+  { price: 2_500, minutes: 150, leads: 600 },
+  { price: 5_000, minutes: 350, leads: 1_400 },
+  { price: 10_000, minutes: 800, leads: 3_200 },
 ]
+
+/** Rupees per unit, to one decimal: 16.7, 4.2. */
+export const perUnit = (p: TopUpPack, unit: 'minutes' | 'leads') => Math.round((p.price / p[unit]) * 10) / 10
+
+/** % saved per unit against the smallest pack. */
+export const savingPct = (p: TopUpPack) => {
+  const base = TOP_UP_PACKS[0].price / TOP_UP_PACKS[0].minutes
+  return Math.round((1 - p.price / p.minutes / base) * 100)
+}
 
 export const GST_PERCENT = 18
 

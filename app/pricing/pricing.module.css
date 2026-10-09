@@ -96,11 +96,17 @@
 
 .packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .pack {
+  position: relative;
   background: var(--tile); border: 1px solid var(--line); border-radius: 18px;
   padding: 26px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .packPrice { font-family: var(--proxe-font-heading); font-size: clamp(30px, 3.4vw, 40px); font-weight: 800; margin: 0; }
 .packOpts { text-align: right; }
+.packRate { margin: 6px 0 0; font-size: 13px; color: var(--fg-3); }
+.packSave {
+  position: absolute; top: -11px; left: 20px; padding: 3px 10px; border-radius: 999px;
+  background: var(--green); color: #052e16; font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+}
 .packOpts p { margin: 0; color: var(--fg-3); transition: color 0.2s; }
 .packOpts p[data-on='true'] { color: var(--fg); }
 .packOpts strong { font-size: 18px; }
@@ -270,7 +276,7 @@
   .bill { border-left: 0; border-top: 1px solid var(--line); }
   .coreRow { grid-template-columns: repeat(3, 1fr); }
   .coreCard { grid-column: 1 / -1; }
-  .packs { grid-template-columns: 1fr; }
+  .packs { grid-template-columns: 1fr; gap: 22px; }
   .estimator { grid-template-columns: 1fr; }
   .estOut { border-left: 0; border-top: 1px solid var(--line); }
 }

@@ -37,7 +37,7 @@ export const PRICING_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'How do top-up packs work?',
-    a: 'Each pack is bought as either minutes or leads, your choice at purchase. Top-ups never expire at month end: anything unused rolls over, so your pool of extra minutes and leads keeps building.',
+    a: 'Each pack is bought as either minutes or leads, your choice at purchase. Bigger packs cost less per minute and per lead. Top-ups never expire at month end: anything unused rolls over, so your pool of extra minutes and leads keeps building.',
   },
   {
     q: 'Are WhatsApp charges included?',
