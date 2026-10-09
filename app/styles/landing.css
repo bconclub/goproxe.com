@@ -12557,3 +12557,21 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
     animation: wagIn 0.18s ease-out;
   }
 }
+
+/* Hero callback (9 Oct 2026): just the number and a "Call me back" button. */
+.proxe-root .hq:has(.hq-row--callback) { max-width: 480px; }
+.proxe-root .hq .hq-row.hq-row--callback { display: flex; gap: 8px; justify-content: stretch; }
+.proxe-root .hq .hq-row--callback .hq-field { flex: 1 1 0; width: auto; min-width: 0; height: 52px; }
+.proxe-root .hq .hq-row--callback .hq-input { font-size: 16px; }
+.proxe-root .hq .hq-row--callback .hq-go {
+  flex: 0 0 auto; width: auto; height: 52px; padding: 0 20px; gap: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #22c55e; color: #fff; font-weight: 700; font-size: 15px; white-space: nowrap;
+}
+.proxe-root .hq .hq-row--callback .hq-go svg { transform: none; }
+@media (max-width: 640px) {
+  .proxe-root .hq:has(.hq-row--callback) { max-width: 380px; width: 100%; }
+  .proxe-root .hq .hq-row.hq-row--callback { gap: 6px; }
+  .proxe-root .hq .hq-row--callback .hq-field, .proxe-root .hq .hq-row--callback .hq-go { height: 50px; }
+  .proxe-root .hq .hq-row--callback .hq-go { padding: 0 14px; font-size: 14px; }
+}

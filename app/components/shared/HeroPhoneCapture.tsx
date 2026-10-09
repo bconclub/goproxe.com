@@ -7,20 +7,19 @@ import { getStoredUser, storeUserProfile } from '../../lib/chatLocalStorage';
 import { detectMarket } from '../../lib/market';
 
 /**
- * Hero call capture. Z, 7 Oct 2026: "Talk to PROXe can be the CTA. When they
- * click on it, it just asks for phone number and call. That's all."
+ * Hero call capture. Z, 9 Oct 2026: "just a phone number and Call me back.
+ * That's it." The "Talk to PROXe" step before the field is gone.
  *
- *   1. "Talk to PROXe" button.
- *   2. Mobile number and the call button. Name, brand and business are asked
- *      on the call. The name, brand, mobile hero (5 to 6 Oct) took ad form
- *      leads from ~9 a day to 0 and left Meta with no Lead events for two days.
- *   3. The number is saved the moment it is valid, so anyone who leaves is
+ *   1. Mobile number and a "Call me back" button, on load. Name, brand and
+ *      business are asked on the call. The name, brand, mobile hero (5 to 6
+ *      Oct) took ad form leads from ~9 a day to 0.
+ *   2. The number is saved the moment it is valid, so anyone who leaves is
  *      still a lead in PROXe (core sends one WhatsApp). That save is partial:
  *      never a Meta conversion.
- *   4. Meta Lead fires once, when the call is asked for with a valid number.
- *   5. Calling, then ringing.
+ *   3. Meta Lead fires once, when the call is asked for with a valid number.
+ *   4. Calling, then ringing.
  */
-type Step = 'cta' | 'phone' | 'calling' | 'ringing';
+type Step = 'phone' | 'calling' | 'ringing';
 
 const RING_HINT_MS = 25000;
 
@@ -38,7 +37,7 @@ const PhoneIcon = ({ size = 18 }: { size?: number }) => (
 
 export default function HeroPhoneCapture() {
   const [phone, setPhone] = useState('');
-  const [step, setStep] = useState<Step>('cta');
+  const [step, setStep] = useState<Step>('phone');
   const [error, setError] = useState('');
   const [settled, setSettled] = useState(false);
   const [market, setMarket] = useState<'inr' | 'usd'>('inr');
@@ -79,13 +78,6 @@ export default function HeroPhoneCapture() {
     if (error) setError('');
     const n = market === 'inr' ? indianMobile(e.target.value) : null;
     if (n) saveNumber(n);
-  };
-
-  const open = () => {
-    markStart();
-    track('cta_click', { location: 'hero_talk' });
-    setStep('phone');
-    window.setTimeout(() => phoneRef.current?.focus({ preventScroll: true }), 60);
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -156,29 +148,18 @@ export default function HeroPhoneCapture() {
     );
   }
 
-  if (step === 'cta') {
-    return (
-      <div className="hq">
-        <button type="button" className="hq-cta" onClick={open}>
-          <span className="hq-cta-icon"><PhoneIcon /></span>
-          Talk to PROXe
-        </button>
-      </div>
-    );
-  }
-
   const calling = step === 'calling';
   return (
     <div className="hq">
-      <form className="hq-row hq-row--solo" onSubmit={submit} autoComplete="off" noValidate aria-label="Get a call from PROXe">
+      <form className="hq-row hq-row--callback" onSubmit={submit} autoComplete="off" noValidate aria-label="Get a call from PROXe">
         <label className={'hq-field hq-field--phone' + (calling ? ' hq-field--calling' : '')}>
           {market === 'inr' && <span className="hq-cc" aria-hidden="true">+91</span>}
           <input ref={phoneRef} id="hero-phone" type="tel" inputMode="tel" autoComplete="tel" className="hq-input"
-            placeholder={market === 'inr' ? 'Mobile number' : 'Phone number'} value={phone} onChange={onPhone}
+            placeholder={market === 'inr' ? 'Mobile no.' : 'Phone no.'} value={phone} onChange={onPhone}
             readOnly={calling} aria-label="Your mobile number" aria-invalid={!!error} />
         </label>
-        <button type="submit" className="hq-go" disabled={calling} aria-busy={calling} aria-label={calling ? 'Calling' : 'Call me now'}>
-          {calling ? <span className="hq-spin" aria-hidden="true" /> : <PhoneIcon size={20} />}
+        <button type="submit" className="hq-go" disabled={calling} aria-busy={calling}>
+          {calling ? <><span className="hq-spin" aria-hidden="true" /> Calling</> : <><PhoneIcon size={18} /> Call me back</>}
         </button>
       </form>
       {calling && <p className="hq-dialing" role="status" aria-live="polite">Connecting your call. PROXe will ring you in a few seconds.</p>}
