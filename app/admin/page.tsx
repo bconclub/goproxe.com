@@ -86,7 +86,7 @@ export default async function AdminPage() {
 
   const leads = (leadsRes?.data ?? []) as Lead[]
   const views = (viewsRes?.data ?? []) as View[]
-  const booked = leads.filter((l) => leadStage(l) === 'Booked').length
+  const booked = leads.filter((l) => stageTone(leadStage(l)) === 'ok').length
   const pvKey = process.env.PITCH_VIEWS_KEY
   const pitchViewsHref = pvKey ? `/pitch-views?key=${encodeURIComponent(pvKey)}` : null
   const n = (v: number | null | undefined) => (v == null ? '–' : v.toLocaleString('en-IN'))
@@ -95,7 +95,7 @@ export default async function AdminPage() {
     ['Leads (all time)', n(leadsAll)],
     ['Active today', n(leads1)],
     ['Active 7 days', n(leads7)],
-    ['Booked (latest 40)', String(booked)],
+    ['Booked or demo (latest 40)', String(booked)],
     ['Deck visits 7 days', n(views7?.count)],
     ['Callbacks due', String(callbacks.length)],
   ]
