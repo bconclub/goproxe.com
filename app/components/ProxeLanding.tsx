@@ -1769,12 +1769,14 @@ export default function ProxeLanding() {
               </ul>
             </div>
 
-            {/* Legal — only the pages that actually exist. /privacy and /terms
-                both 404'd; the real route is /privacy-policy. */}
+            {/* Legal — only the pages that actually exist. /privacy 404s; the
+                real route is /privacy-policy. /terms exists since 10 Oct 2026
+                (Meta App Review needs a Terms of Service URL). */}
             <div className="pf-col">
               <div className="pf-col-title">Legal</div>
               <ul className="pf-links">
                 <li><a href="/privacy-policy">Privacy</a></li>
+                <li><a href="/terms">Terms</a></li>
                 <li><a href="/data-deletion">Data deletion</a></li>
               </ul>
             </div>

@@ -108,6 +108,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     {
+      url: 'https://goproxe.com/terms',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
       url: 'https://goproxe.com/data-deletion',
       lastModified: new Date(),
       changeFrequency: 'monthly',
