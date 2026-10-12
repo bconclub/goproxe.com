@@ -928,6 +928,14 @@ export interface BillingEventInput {
  * paying customer because they skipped the form would be the worse failure. Such
  * rows have no phone, so `customer_phone_normalized` stays null and the usual
  * phone-based dedupe simply doesn't apply to them.
+ *
+ * A payer is a customer, not a new lead (Z, 12 Oct 2026: Scan2Kare and Lokazen
+ * kept reappearing at the top of the lead book as "New"). So: an active
+ * subscription moves the row to Closed Won; a billing event never bumps
+ * last_interaction_at (paying is not the customer talking to us, and it sent
+ * them back to the top on every renewal); a payer-created row skips the
+ * new-lead Telegram ping; and two events landing together (Dodo sends them
+ * milliseconds apart) collapse onto one row instead of making two.
  */
 export async function recordBillingEvent(input: BillingEventInput): Promise<SupabaseLeadResult> {
   const supabase = getSupabaseServiceClient()
@@ -951,14 +959,15 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
     seats: input.seats ?? null,
     provider: 'dodo',
   }
+  const won = input.status === 'active'
 
   try {
     const { data: existing, error: fetchError } = await supabase
       .from('all_leads')
-      .select('id, unified_context')
+      .select('id, unified_context, lead_stage')
       .eq('email', email)
       .eq('brand', BRAND)
-      .order('last_interaction_at', { ascending: false })
+      .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle()
 
@@ -973,7 +982,7 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
         .from('all_leads')
         .update({
           last_touchpoint: 'billing',
-          last_interaction_at: new Date().toISOString(),
+          ...(won && existing.lead_stage !== 'Closed Won' ? { lead_stage: 'Closed Won' } : {}),
           unified_context: {
             ...existingContext,
             billing: { ...(existingContext.billing || {}), ...billing },
@@ -998,7 +1007,10 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
         last_touchpoint: 'billing',
         last_interaction_at: new Date().toISOString(),
         brand: BRAND,
-        unified_context: { billing },
+        ...(won ? { lead_stage: 'Closed Won' } : {}),
+        // tg_alert_at set: PROXe core's new-lead Telegram ping skips rows that
+        // already carry it. A payer is not a new lead.
+        unified_context: { billing, tg_alert_at: new Date().toISOString() },
       })
       .select('id')
       .single()
@@ -1006,6 +1018,24 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
     if (createError) {
       console.error('[leadsSupabase] billing insert failed', createError.code, createError.message)
       return { ok: false, reason: 'db_error' }
+    }
+    // Two events for a new payer can both miss the lookup above and both
+    // insert. The oldest row wins: fold this event onto it and drop ours.
+    const { data: twins } = await supabase
+      .from('all_leads')
+      .select('id, unified_context')
+      .eq('email', email)
+      .eq('brand', BRAND)
+      .order('created_at', { ascending: true })
+      .limit(2)
+    const keep = twins?.[0]
+    if (keep && created?.id && keep.id !== created.id) {
+      const keepCtx = (keep.unified_context as Record<string, any>) || {}
+      await supabase.from('all_leads').update({
+        unified_context: { ...keepCtx, billing: { ...(keepCtx.billing || {}), ...billing } },
+      }).eq('id', keep.id)
+      await supabase.from('all_leads').delete().eq('id', created.id)
+      return { ok: true, leadId: keep.id as string }
     }
     return { ok: true, leadId: (created?.id as string) ?? null }
   } catch (err) {
