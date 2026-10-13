@@ -125,7 +125,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
-    if (!formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
+    // "See PROXe in action" asks only name + phone (Z, 13 Oct 2026); the brand
+    // is asked in onboarding. Sales still asks it here.
+    if (isSales && !formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -183,11 +185,14 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
     if (!savedStep1.current) {
       savedStep1.current = true;
-      const leadEventId = trackLead({
-        source: 'deploy_modal',
-        hasBrand: true,
-        hasWebsite: false,
-      });
+      // Meta Lead needs name + phone + business. Without a brand this is a
+      // saved contact, not a Lead: the Lead fires later, when the business
+      // comes in (onboarding or the team after a call).
+      const hasBrand = !!partial.brandName;
+      track('button_click', { label: 'see_in_action_submit', location: 'deploy_modal', has_brand: hasBrand });
+      const leadEventId = hasBrand
+        ? trackLead({ source: 'deploy_modal', hasBrand: true, hasWebsite: false })
+        : newEventId();
       // Never blocks the step change: submitLead resolves false on failure,
       // and a lead we could not persist must not trap someone on step 1.
       await within(submitLead({
@@ -327,23 +332,34 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
             >×</button>
 
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'Deploy PROXe'}</h2>
+              <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'See PROXe in action'}</h2>
+              {!isSales && (
+                // Short, muted, looping clip of PROXe catching an enquiry (1.5 MB).
+                <video
+                  className={styles.demoVideo}
+                  src="/how-it-works/01-capture.mp4"
+                  autoPlay muted loop playsInline preload="metadata"
+                  aria-label="PROXe answering an enquiry"
+                />
+              )}
               <p className={styles.modalSubtitle}>
-                {step === 1
-                  ? 'Your brand, your name and your phone. That is all we need to start.'
-                  : isSales
-                    ? 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'
-                    : 'Next: your website. No payment required.'}
+                {!isSales
+                  ? 'Your name and number. We’ll set PROXe up on your own business and show you.'
+                  : step === 1
+                    ? 'Your brand, your name and your phone. That is all we need to start.'
+                    : 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'}
               </p>
-              <div className={styles.stepRow} aria-hidden>
-                <span className={`${styles.stepDot} ${styles.stepDotActive}`} />
-                <span className={`${styles.stepDot}${step === 2 ? ' ' + styles.stepDotActive : ''}`} />
-                <span className={styles.stepLabel}>Step {step} of 2</span>
-              </div>
+              {isSales && (
+                <div className={styles.stepRow} aria-hidden>
+                  <span className={`${styles.stepDot} ${styles.stepDotActive}`} />
+                  <span className={`${styles.stepDot}${step === 2 ? ' ' + styles.stepDotActive : ''}`} />
+                  <span className={styles.stepLabel}>Step {step} of 2</span>
+                </div>
+              )}
             </div>
 
             <form onSubmit={step === 1 ? handleStep1 : handleSubmit} className={styles.form}>
-              <div className={styles.formGroup} hidden={step !== 1}>
+              <div className={styles.formGroup} hidden={step !== 1 || !isSales}>
                 <label htmlFor="brandName" className={styles.label}>
                   Brand name <span className={styles.required}>*</span>
                 </label>
@@ -422,7 +438,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 disabled={isSubmitting}
               >
                 {step === 1
-                  ? (isSubmitting ? 'Saving…' : 'Continue →')
+                  ? (isSubmitting ? 'Saving…' : isSales ? 'Continue →' : 'Show me on my business →')
                   : isSubmitting
                     ? (isSales ? 'Sending…' : 'Opening onboarding…')
                     : (isSales ? 'Continue →' : 'Continue to onboarding →')}
