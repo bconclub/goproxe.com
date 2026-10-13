@@ -19,6 +19,9 @@ export interface Attribution {
   utmCampaign: string
   referrer: string
   landingPage: string
+  /** The ad click ids, kept as fields so every path (form, WhatsApp) can hand them on. */
+  fbclid?: string
+  gclid?: string
 }
 
 const EMPTY: Attribution = {
@@ -60,6 +63,8 @@ function compute(): Attribution {
     utmCampaign,
     referrer,
     landingPage: window.location.pathname + window.location.search,
+    ...(fbclid ? { fbclid } : {}),
+    ...(gclid ? { gclid } : {}),
   }
 }
 

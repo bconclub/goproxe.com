@@ -8,6 +8,7 @@ import { track, trackLead, newEventId, trackHighIntent } from '../../lib/analyti
 import { submitLead } from '../../lib/leads';
 import BookingCalendar, { type BookingSlot } from './BookingCalendar';
 import { openWhatsApp } from '../../lib/openWhatsApp';
+import ProxeVideos from './ProxeVideos';
 
 // The real self-serve setup (reads the website, builds the knowledge base).
 // Z, 3 Oct 2026: Deploy must land here, not on the site's placeholder form.
@@ -61,6 +62,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
   const savedStep1 = useRef(false);
   /** Flipped state — once the form is submitted, flip to the booking calendar. */
   const [flipped, setFlipped] = useState(false);
+  // "See PROXe in action": the videos unlock once name + phone + business are in.
+  const [unlocked, setUnlocked] = useState(false);
   /** Fire `lead_form_start` only on the first field interaction per open. */
   const startedRef = useRef(false);
 
@@ -125,9 +128,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
-    // "See PROXe in action" asks only name + phone (Z, 13 Oct 2026); the brand
-    // is asked in onboarding. Sales still asks it here.
-    if (isSales && !formData.brandName.trim()) newErrors.brandName = 'Brand name is required';
+    // Name + phone + business on both paths (Z, 13 Oct 2026: "Show me on my
+    // business"): it is what PROXe is set up on, and what makes this a Lead.
+    if (!formData.brandName.trim()) newErrors.brandName = 'Business name is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -170,7 +173,7 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
   const handleStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep1()) { showFirstError(['brandName', 'name', 'phoneNumber']); return; }
+    if (!validateStep1()) { showFirstError(['name', 'phoneNumber', 'brandName']); return; }
 
     setIsSubmitting(true);
 
@@ -208,8 +211,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
     setIsSubmitting(false);
     setErrors({});
     if (!isSales) {
-      onClose();
-      window.location.href = PROXE_ONBOARDING_URL;
+      // Stay here and play the videos (Z, 13 Oct 2026). Onboarding is one tap below them.
+      setUnlocked(true);
       return;
     }
     setStep(2);
@@ -333,18 +336,9 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
 
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>{isSales ? 'Talk to sales' : 'See PROXe in action'}</h2>
-              {!isSales && (
-                // Short, muted, looping clip of PROXe catching an enquiry (1.5 MB).
-                <video
-                  className={styles.demoVideo}
-                  src="/how-it-works/01-capture.mp4"
-                  autoPlay muted loop playsInline preload="metadata"
-                  aria-label="PROXe answering an enquiry"
-                />
-              )}
               <p className={styles.modalSubtitle}>
                 {!isSales
-                  ? 'Your name and number. We’ll set PROXe up on your own business and show you.'
+                  ? (unlocked ? `Thanks${formData.name.trim() ? `, ${formData.name.trim().split(' ')[0]}` : ''}. Here is PROXe at work.` : 'Your name, number and business, then watch PROXe at work.')
                   : step === 1
                     ? 'Your brand, your name and your phone. That is all we need to start.'
                     : 'Tell us about your setup. We’ll come back with a quote and a time to walk through it.'}
@@ -359,20 +353,6 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
             </div>
 
             <form onSubmit={step === 1 ? handleStep1 : handleSubmit} className={styles.form}>
-              <div className={styles.formGroup} hidden={step !== 1 || !isSales}>
-                <label htmlFor="brandName" className={styles.label}>
-                  Brand name <span className={styles.required}>*</span>
-                </label>
-                <input
-                  type="text" id="brandName" name="brandName"
-                  value={formData.brandName} onChange={handleChange}
-                  className={`${styles.input} ${errors.brandName ? styles.inputError : ''}`}
-                  placeholder="Enter your brand name"
-                  autoComplete="organization"
-                />
-                {errors.brandName && <span className={styles.errorText}>{errors.brandName}</span>}
-              </div>
-
               <div className={styles.formGroup} hidden={step !== 1}>
                 <label htmlFor="name" className={styles.label}>
                   Name <span className={styles.required}>*</span>
@@ -390,7 +370,8 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
               {/* Step 1: brand + name + phone. `hidden` rather than unmounting, so
                   typed values survive a step change and browser autofill
                   still sees the whole form as one unit. */}
-              <div className={styles.formGroup} hidden={step !== 1}>
+              <div className={styles.formRow} hidden={step !== 1}>
+              <div className={styles.formGroup}>
                 <label htmlFor="phoneNumber" className={styles.label}>
                   Phone <span className={styles.required}>*</span>
                 </label>
@@ -398,10 +379,25 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                   type="tel" id="phoneNumber" name="phoneNumber"
                   value={formData.phoneNumber} onChange={handleChange}
                   className={`${styles.input} ${errors.phoneNumber ? styles.inputError : ''}`}
-                  placeholder="+91 98XXXXXX12"
+                  placeholder="Mobile no."
                   autoComplete="tel"
                 />
                 {errors.phoneNumber && <span className={styles.errorText}>{errors.phoneNumber}</span>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="brandName" className={styles.label}>
+                  {isSales ? 'Brand name' : 'Business name'} <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="text" id="brandName" name="brandName"
+                  value={formData.brandName} onChange={handleChange}
+                  className={`${styles.input} ${errors.brandName ? styles.inputError : ''}`}
+                  placeholder={isSales ? 'Enter your brand name' : 'Your business'}
+                  autoComplete="organization"
+                />
+                {errors.brandName && <span className={styles.errorText}>{errors.brandName}</span>}
+              </div>
               </div>
 
               <div className={styles.formGroup} hidden={step !== 2}>
@@ -432,17 +428,19 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 {errors.websiteUrl && <span className={styles.errorText}>{errors.websiteUrl}</span>}
               </div>
 
+              {!(unlocked && !isSales) && (
               <button
                 type="submit"
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
                 {step === 1
-                  ? (isSubmitting ? 'Saving…' : isSales ? 'Continue →' : 'Show me on my business →')
+                  ? (isSubmitting ? 'Saving…' : isSales ? 'Continue →' : 'See PROXe in action →')
                   : isSubmitting
                     ? (isSales ? 'Sending…' : 'Opening onboarding…')
                     : (isSales ? 'Continue →' : 'Continue to onboarding →')}
               </button>
+              )}
 
               {step === 2 && !isSubmitting && (
                 <>
@@ -459,6 +457,12 @@ export default function DeployModal({ isOpen, onClose, onFormSubmit, source = 'u
                 </>
               )}
             </form>
+
+            {/* The videos sit under the form, locked until the details are in (Z, 13 Oct 2026). */}
+            {!isSales && <ProxeVideos locked={!unlocked} />}
+            {!isSales && unlocked && (
+              <a className={styles.onboardLink} href={PROXE_ONBOARDING_URL}>Set PROXe up on my business →</a>
+            )}
           </div>
 
           {/* ───── BACK FACE — inline booking calendar (no second lead event) ───── */}

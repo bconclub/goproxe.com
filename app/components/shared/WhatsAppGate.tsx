@@ -28,6 +28,11 @@ import { openWhatsApp } from '../../lib/openWhatsApp'
 
 const PHONE = '918123808817' // +91 81238 08817, E.164 without the + (PROXe WABA)
 
+function cookie(name: string): string | undefined {
+  const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+  return m ? decodeURIComponent(m[1]) : undefined
+}
+
 /** 5 characters, no look-alikes (0/O, 1/I). */
 function refCode(): string {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -45,6 +50,12 @@ function firstMessage(name: string, location: string): string {
     const attribution = {
       channel: a.channel, utm_source: a.utmSource, utm_medium: a.utmMedium, utm_campaign: a.utmCampaign,
       referrer: a.referrer, landing_page: a.landingPage,
+      // The ad click itself (Z, 13 Oct 2026: "they have a click ID, capture it"):
+      // fbclid / gclid, and Meta's own _fbp / _fbc cookies, so a WhatsApp lead
+      // matches back to the ad in Meta like a form lead does.
+      fbclid: a.fbclid || new URLSearchParams(String(a.landingPage || '').split('?')[1] || '').get('fbclid') || undefined,
+      gclid: a.gclid || new URLSearchParams(String(a.landingPage || '').split('?')[1] || '').get('gclid') || undefined,
+      fbp: cookie('_fbp'), fbc: cookie('_fbc'),
     }
     const payload = JSON.stringify({ code, location, name, attribution })
     if (!(navigator.sendBeacon && navigator.sendBeacon('/api/wa-ref', payload))) {

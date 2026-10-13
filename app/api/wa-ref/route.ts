@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   if (!/^[A-Z2-9]{5}$/.test(code)) return NextResponse.json({ ok: false }, { status: 400 })
   const attr = body.attribution && typeof body.attribution === 'object' ? body.attribution : {}
   const clean: Record<string, string> = {}
-  for (const k of ['channel', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'fbclid', 'referrer', 'landing_page']) {
+  for (const k of ['channel', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'fbclid', 'gclid', 'fbp', 'fbc', 'referrer', 'landing_page']) {
     const v = attr[k]
     if (typeof v === 'string' && v.trim()) clean[k] = v.trim().slice(0, 400)
   }
