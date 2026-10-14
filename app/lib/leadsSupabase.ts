@@ -904,6 +904,8 @@ export interface BillingEventInput {
   eventType: string
   webhookId?: string
   email?: string | null
+  /** The payer's phone when Dodo has one: matches a lead that has the number but not this email. */
+  phone?: string | null
   name?: string | null
   subscriptionId?: string | null
   paymentId?: string | null
@@ -960,9 +962,13 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
     provider: 'dodo',
   }
   const won = input.status === 'active'
+  // A payer whose payment did not go through (failed, on hold, pending) is
+  // still past the offer, not a new lead: Proposal Sent. Samprasad (Zensquare,
+  // 13 Oct) landed as "New" from a subscription.failed.
+  const payerStage = won ? 'Closed Won' : 'Proposal Sent'
 
   try {
-    const { data: existing, error: fetchError } = await supabase
+    const { data: existingByEmail, error: fetchError } = await supabase
       .from('all_leads')
       .select('id, unified_context, lead_stage')
       .eq('email', email)
@@ -974,6 +980,24 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
     if (fetchError) {
       console.error('[leadsSupabase] billing fetch failed', fetchError.code, fetchError.message)
       return { ok: false, reason: 'db_error' }
+    }
+
+    // No lead with this email: the same person may already be a lead by
+    // phone (they gave a number on the site, then paid with an email we had
+    // never seen). Attach the email there instead of making a second row.
+    let existing = existingByEmail
+    const payerPhone = normalizePhone(input.phone)
+    if (!existing && payerPhone) {
+      const { data: byPhone } = await supabase
+        .from('all_leads')
+        .select('id, unified_context, lead_stage, email')
+        .eq('customer_phone_normalized', payerPhone)
+        .eq('brand', BRAND)
+        .maybeSingle()
+      if (byPhone) {
+        existing = byPhone
+        if (!byPhone.email) await supabase.from('all_leads').update({ email }).eq('id', byPhone.id)
+      }
     }
 
     if (existing) {
@@ -1007,7 +1031,8 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
         last_touchpoint: 'billing',
         last_interaction_at: new Date().toISOString(),
         brand: BRAND,
-        ...(won ? { lead_stage: 'Closed Won' } : {}),
+        lead_stage: payerStage,
+        ...(payerPhone ? { phone: input.phone, customer_phone_normalized: payerPhone } : {}),
         // tg_alert_at set: PROXe core's new-lead Telegram ping skips rows that
         // already carry it. A payer is not a new lead.
         unified_context: { billing, tg_alert_at: new Date().toISOString() },

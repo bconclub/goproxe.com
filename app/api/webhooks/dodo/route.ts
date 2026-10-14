@@ -98,6 +98,7 @@ export async function POST(request: Request) {
       eventType: type,
       webhookId,
       email: customer.email ?? null,
+      phone: customer.phone_number ?? customer.phone ?? null,
       name: customer.name ?? null,
       subscriptionId: data.subscription_id ?? null,
       paymentId: data.payment_id ?? null,
