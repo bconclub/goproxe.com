@@ -12575,3 +12575,6 @@ html:has(.wag-backdrop) #wc-chat-widget { display: none !important; }
   .proxe-root .hq .hq-row--callback .hq-field, .proxe-root .hq .hq-row--callback .hq-go { height: 50px; }
   .proxe-root .hq .hq-row--callback .hq-go { padding: 0 14px; font-size: 14px; }
 }
+
+/* Hero call pop-up: the optional brand field's hint. */
+.wag-opt { font-weight: 400; opacity: 0.55; margin-left: 4px; }
