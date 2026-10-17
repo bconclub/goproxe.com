@@ -1,0 +1,48 @@
+name: VPS health
+
+# Run from GitHub (Actions > VPS health > Run workflow) when the site is down
+# (Z, 17 Oct 2026). "check" only reads: load, memory, disk, inodes, nginx,
+# pm2 and what answers on :80/:443. "restart" also starts nginx and pm2 apps
+# that are down. Uses the deploy key, so it works without anyone's laptop.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: check or restart
+        required: true
+        default: check
+        type: choice
+        options: [check, restart]
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: VPS status
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 5m
+          script: |
+            echo "== uptime / load"; uptime
+            echo "== memory"; free -m
+            echo "== disk"; df -h / /var 2>/dev/null
+            echo "== inodes"; df -i / /var 2>/dev/null
+            echo "== listening on 80/443"; (ss -ltnp 2>/dev/null || netstat -ltnp) | grep -E ':(80|443)\b' || echo "NOTHING listening on 80/443"
+            echo "== nginx"; systemctl is-active nginx 2>/dev/null; sudo -n nginx -t 2>&1 | tail -3 || nginx -t 2>&1 | tail -3
+            echo "== nginx errors (last 15)"; tail -n 15 /var/log/nginx/error.log 2>/dev/null
+            echo "== pm2"; pm2 ls 2>/dev/null || echo "pm2 not found for this user"
+            echo "== local app"; curl -s -o /dev/null -m 10 -w "localhost:3000 -> %{http_code}\n" http://127.0.0.1:3000/ || echo "app not answering on :3000"
+            echo "== recent OOM kills"; (dmesg 2>/dev/null || sudo -n dmesg 2>/dev/null) | grep -i "killed process" | tail -5 || true
+            if [ "${{ inputs.action }}" = "restart" ]; then
+              echo "== RESTART"
+              (systemctl is-active --quiet nginx || sudo -n systemctl restart nginx || systemctl restart nginx) && echo "nginx: $(systemctl is-active nginx)"
+              pm2 resurrect >/dev/null 2>&1 || true
+              pm2 restart all --update-env >/dev/null 2>&1 || true
+              sleep 8
+              pm2 ls
+              (ss -ltnp 2>/dev/null || netstat -ltnp) | grep -E ':(80|443)\b' || echo "still NOTHING on 80/443"
+              curl -s -o /dev/null -m 15 -w "https://goproxe.com -> %{http_code}\n" https://goproxe.com/ --resolve goproxe.com:443:127.0.0.1 || true
+            fi
