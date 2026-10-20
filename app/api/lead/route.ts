@@ -165,7 +165,12 @@ export async function POST(request: Request) {
   if (captured && !notAConversion) {
     const isBooking = body.type === 'booking'
     const seed = `${body.email || ''}|${body.phone || ''}|${body.type}`
-    const eventName = isBooking ? 'Schedule' : 'Lead'
+    // The site never says "Lead" any more (Z, 20 Oct 2026). A form fill is an
+    // Enquiry: Meta records it but cannot optimise on it. "Lead" goes only from
+    // PROXe core, once a person marks the lead good or a real booking exists:
+    // "Free Fire" and "Golu" (name + phone + one-letter brand) were each sent as
+    // a Lead within two minutes, and the ads learn from every one of those.
+    const eventName = isBooking ? 'Schedule' : 'Enquiry'
     const eventId = body.eventId || deriveEventId(isBooking ? 'sched' : 'lead', seed)
     const capiEvent = {
       eventName,

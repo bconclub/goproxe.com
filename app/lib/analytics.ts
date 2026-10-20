@@ -122,9 +122,6 @@ export const GA4_KEY_EVENTS: readonly ProxeEvent[] = [
  * Standard names used here are exactly as Meta spells them; do not rename.
  */
 const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
-  // The Lead: a form with name + phone + brand (Z, 9 Oct 2026). A booked or
-  // taken demo goes from PROXe core as QualifiedLead + Schedule on top.
-  form_completed: 'Lead',
   checkout_start: 'InitiateCheckout',
   // checkout_complete is NOT Purchase on Meta (7 Oct 2026). The Dodo webhook
   // sends the one real Purchase from the server, with the paid amount. The
@@ -147,6 +144,9 @@ const META_STANDARD: Partial<Record<ProxeEvent, string>> = {
 
 /** Custom (non-standard) Meta names, PascalCase per Meta's convention. */
 const META_CUSTOM: Partial<Record<ProxeEvent, string>> = {
+  // A form fill is an Enquiry, never a Lead (Z, 20 Oct 2026). Lead comes only
+  // from PROXe core when a person judges the lead good or a booking is real.
+  form_completed: 'Enquiry',
   checkout_complete: 'CheckoutReturn',
   lead_form_start: 'LeadFormStart',
   // The signal for buyers who are close but have not given name + phone +
