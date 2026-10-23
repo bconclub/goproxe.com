@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('handoff-without-starting-over', {
   title: `Handoff without starting over`,
   description: `A handoff is not a new chat.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/handoff-without-starting-over',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/handoff-without-starting-over.png'],
-  },
-}
+})
 
 const articleContent = `A handoff is not a new chat. It is not a CRM note. It is not "let me get someone to call you." The customer already said who they are and what they want. The next person has to see that thread.
 

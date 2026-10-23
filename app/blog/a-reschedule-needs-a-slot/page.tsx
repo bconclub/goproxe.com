@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-reschedule-needs-a-slot', {
   title: `A reschedule needs a slot`,
   description: `Let's move it is not done.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-reschedule-needs-a-slot',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-reschedule-needs-a-slot.png'],
-  },
-}
+})
 
 const articleContent = `They said Thursday does not work. You wrote no problem, we will move it. No new times. The thread died.
 

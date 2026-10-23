@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('who-answers-the-customer', {
   title: 'Who answers the customer',
   description:
     'Most teams can show you the lead. Fewer can say who is supposed to talk to them.',
   alternates: {
     canonical: 'https://goproxe.com/blog/who-answers-the-customer',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/who-answers-the-customer.png'],
-  },
-}
+})
 
 const articleContent = `Most teams can show you the lead. Fewer can say who is supposed to talk to them.
 

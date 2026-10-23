@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('curebay-100-crore-clinic-front-desk', {
   title: "CureBay raised ₹100 Cr. Is your front desk ready?",
   description:
     "CureBay raised ₹100 crore to grow rural clinics and add AI screening. Here is what a small clinic can fix first: the reply to the first message.",
   alternates: {
     canonical: 'https://goproxe.com/blog/curebay-100-crore-clinic-front-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/curebay-100-crore-clinic-front-desk.png'],
-  },
-}
+})
 
 const articleContent = `A patient messages your clinic on WhatsApp at 8:40pm. They want to know if the doctor is free tomorrow morning.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('ai-returns-first-whatsapp-reply', {
   title: "Only 13% see AI returns. Fix the first reply",
   description:
     "Gartner found only 13% of companies see major returns from AI. For a clinic, academy or property desk, one job pays back first: the first WhatsApp reply.",
   alternates: {
     canonical: 'https://goproxe.com/blog/ai-returns-first-whatsapp-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/ai-returns-first-whatsapp-reply.png'],
-  },
-}
+})
 
 const articleContent = `A parent messages your coaching academy on WhatsApp at 9pm. They want fees and the next batch timing.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('two-people-one-lead', {
   title: 'Two people, one lead',
   description:
     'Two humans on the same chat is not coverage.',
   alternates: {
     canonical: 'https://goproxe.com/blog/two-people-one-lead',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/two-people-one-lead.png'],
-  },
-}
+})
 
 const articleContent = `One lead. Two phones. Two different answers. The lead picks the cheaper one and ghosts the other.
 

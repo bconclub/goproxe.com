@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('silence-is-not-a-decision', {
   title: 'Silence is not a decision',
   description: `No reply is not a no.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/silence-is-not-a-decision',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/silence-is-not-a-decision.png'],
-  },
-}
+})
 
 const articleContent = `No reply is not a no. An empty thread is not a closed lead. Most teams wait once, then stop. The work is follow up until they pick a slot or they say no.
 

@@ -2,19 +2,20 @@ import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BlogHub } from '../components/blog/BlogHub'
+import { withBlogSocial } from '../lib/blogMetadata'
 import styles from '../styles/legal.module.css'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-sans' })
 const heading = Instrument_Serif({ weight: '400', subsets: ['latin'], display: 'swap', variable: '--font-proxe-heading' })
 const mono = JetBrains_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-proxe-mono' })
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('blog', {
   title: 'Blog',
   description: 'How businesses miss conversations, lose leads, and what to do about it.',
   alternates: {
     canonical: 'https://goproxe.com/blog',
   },
-}
+})
 
 export default function BlogIndexPage() {
   return (

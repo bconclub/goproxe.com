@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('ill-get-back-to-you-is-not-a-reply', {
   title: 'I\'ll get back to you is not a reply',
   description:
     'Parking language is not the desk.',
   alternates: {
     canonical: 'https://goproxe.com/blog/ill-get-back-to-you-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/ill-get-back-to-you-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `They asked for Thursday. You wrote I'll get back to you. That is not a reply. That is a pause with no next line.
 

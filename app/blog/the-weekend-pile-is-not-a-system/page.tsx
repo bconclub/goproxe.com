@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('the-weekend-pile-is-not-a-system', {
   title: 'The weekend pile is not a system',
   description: 'Monday catch-up is not the desk.',
   alternates: {
     canonical: 'https://goproxe.com/blog/the-weekend-pile-is-not-a-system',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/the-weekend-pile-is-not-a-system.png'],
-  },
-}
+})
 
 const articleContent = `Friday at 7pm the leads keep writing. You save them for Monday. By Monday the pile is a wall.
 Some booked elsewhere over the weekend. Your side calls that a backlog. Their side calls it silence.

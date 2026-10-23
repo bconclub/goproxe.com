@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('follow-up-is-a-system', {
   title: 'Follow-up is a system',
   description:
     'The first reply is not the job. Most teams treat it like it is.',
   alternates: {
     canonical: 'https://goproxe.com/blog/follow-up-is-a-system',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/follow-up-is-a-system.png'],
-  },
-}
+})
 
 const articleContent = `The first reply is not the job. Most teams treat it like it is. They answered. They sent the quote. Someone said they will think about it. Then the thread sat. A week later the business that wrote again got the work. That is not a manners problem. That is no system for the week after first contact.
 

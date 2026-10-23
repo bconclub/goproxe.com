@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getRecentPosts, formatBlogDate } from '../lib/blog'
 import type { BlogPost } from '../lib/blog'
+import { BlogCover } from './blog/BlogCover'
 
 export function BlogSection() {
   const recentPosts = getRecentPosts(null, 3)
@@ -19,9 +20,10 @@ export function BlogSection() {
               className="proxe-blog-card"
             >
               <div className="proxe-blog-card-thumb">
-                <img 
-                  src={post.thumbnail} 
+                <BlogCover
+                  thumbnail={post.thumbnail}
                   alt={post.title}
+                  sizes="(max-width: 700px) 100vw, 400px"
                   className="proxe-blog-card-img"
                 />
               </div>

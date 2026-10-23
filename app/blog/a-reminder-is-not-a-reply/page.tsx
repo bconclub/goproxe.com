@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-reminder-is-not-a-reply', {
   title: 'A reminder is not a reply',
   description:
     'You set a phone reminder to reply at 6. The lead needed a slot at 2. A reminder is a promise to yourself. The desk is a next line in their thread now.',
   alternates: {
     canonical: 'https://goproxe.com/blog/a-reminder-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-reminder-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You set a reminder for after lunch. Or after the consult. Or for 7pm when the phone is quieter.
 

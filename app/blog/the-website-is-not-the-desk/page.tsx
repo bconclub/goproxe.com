@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('the-website-is-not-the-desk', {
   title: 'The website is not the desk',
   description: "A form is not a booking.",
   alternates: {
     canonical: 'https://goproxe.com/blog/the-website-is-not-the-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/the-website-is-not-the-desk.png'],
-  },
-}
+})
 
 const articleContent = `A form is not a booking. A chat widget is not a booking. A click is not a booking. Most teams treat the site as the work. The work is the thread that still has to answer, qualify, and put two slots in front of them.
 

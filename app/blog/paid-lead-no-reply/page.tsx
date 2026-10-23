@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('paid-lead-no-reply', {
   title: 'Paid Meta lead, answered tomorrow: first reply wins the site visit',
   description:
     'You paid for the lead. Then you answered tomorrow. Broker WhatsApp dies on a personal phone. First useful reply books the site visit.',
   alternates: {
     canonical: 'https://goproxe.com/blog/paid-lead-no-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/paid-lead-no-reply.png'],
-  },
-}
+})
 
 const articleContent = `The buyer tapped WhatsApp off the listing at 9:12pm. Locality, budget, this weekend. Your phone was in the car. Morning you called. They had already booked the site visit with the broker who asked two questions at 9:14. You paid for that lead. You did not lose it to the portal. You lost it to silence.
 

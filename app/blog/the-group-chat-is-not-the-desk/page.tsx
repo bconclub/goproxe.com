@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('the-group-chat-is-not-the-desk', {
   title: 'The group chat is not the desk',
   description:
     'Staff chatter is not the lead thread.',
   alternates: {
     canonical: 'https://goproxe.com/blog/the-group-chat-is-not-the-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/the-group-chat-is-not-the-desk.png'],
-  },
-}
+})
 
 const articleContent = `The lead wrote on WhatsApp. You pasted it into the owner group. Six people typed. Nobody wrote the lead back.
 

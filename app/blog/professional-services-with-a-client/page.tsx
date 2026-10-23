@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('professional-services-with-a-client', {
   title: 'They WhatsApped while you were with a client. The firm that answered got the brief.',
   description:
     'CA, lawyer, consultant inbound dies in the meeting. Answer, qualify, book the consult. Do not wait until you hang up.',
   alternates: {
     canonical: 'https://goproxe.com/blog/professional-services-with-a-client',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/professional-services-with-a-client.png'],
-  },
-}
+})
 
 const articleContent = `They wrote at 2:10pm. Can you take a new brief. Need someone this week. You were in a meeting. Phone down. You replied at 6. They had already booked the CA who asked two questions at 2:12. Silence is not professionalism. It is a lost brief.
 

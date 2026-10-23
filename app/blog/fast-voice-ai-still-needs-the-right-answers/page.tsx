@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('fast-voice-ai-still-needs-the-right-answers', {
   title: "Fast voice AI still needs the right answers",
   description:
     "Voice AI is now quick enough for live calls. For a clinic, academy or real estate desk, what it is allowed to say matters more than how fast it talks.",
   alternates: {
     canonical: 'https://goproxe.com/blog/fast-voice-ai-still-needs-the-right-answers',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/fast-voice-ai-still-needs-the-right-answers.png'],
-  },
-}
+})
 
 const articleContent = `A parent calls your coaching academy at 8:40pm. Nobody picks up. She rings the next academy on her list and books a demo class there.
 

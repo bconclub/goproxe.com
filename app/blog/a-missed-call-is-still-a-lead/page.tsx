@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-missed-call-is-still-a-lead', {
   title: 'Missed call still a lead: call back before they book elsewhere',
   description: `A missed call is still a lead. A ring is not a booking. Call back, qualify, book before they choose the next number.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-missed-call-is-still-a-lead',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-missed-call-is-still-a-lead.png'],
-  },
-}
+})
 
 const articleContent = `A ring is not a booking. A voicemail is not a booking. "We will call you back" is not a booking. Most teams treat the missed call as noise. The work is the thread that still has to answer, qualify, and put two slots in front of them.
 

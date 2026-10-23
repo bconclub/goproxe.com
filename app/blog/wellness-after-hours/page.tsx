@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('wellness-after-hours', {
   title: 'They wanted 7pm. You replied at 10am. The other studio got the booking.',
   description:
     'Spa, gym, yoga inbound dies after hours. Answer, qualify, book the slot. Do not wait until the next class.',
   alternates: {
     canonical: 'https://goproxe.com/blog/wellness-after-hours',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/wellness-after-hours.png'],
-  },
-}
+})
 
 const articleContent = `They wrote at 8:40pm. Trial tomorrow. First class. Reception left at 8. Greeting said closed. Morning you called. They had already booked the studio that offered 7pm or 8pm at 8:41. The leak is not membership software. The leak is the after-7pm WhatsApp that sat.
 

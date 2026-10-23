@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('closing-the-inbox-is-not-done', {
   title: 'Closing the inbox is not done',
   description:
     'Zero unread is not zero open leads.',
   alternates: {
     canonical: 'https://goproxe.com/blog/closing-the-inbox-is-not-done',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/closing-the-inbox-is-not-done.png'],
-  },
-}
+})
 
 const articleContent = `You cleared every chat. The badge is gone. Three leads still have no Thursday and no next line.
 

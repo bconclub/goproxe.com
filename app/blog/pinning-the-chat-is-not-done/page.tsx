@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('pinning-the-chat-is-not-done', {
   title: `Pinning the chat is not done`,
   description: `Starring the thread is not the desk.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/pinning-the-chat-is-not-done',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/pinning-the-chat-is-not-done.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You pinned the chat so it would not get lost. Or you starred it. Your side felt organized. Their side still has no next line. Pinning is a bookmark. Done is an ask, two times, or a handoff. The desk does the second one.
 

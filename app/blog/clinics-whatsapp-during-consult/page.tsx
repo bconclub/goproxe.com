@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('clinics-whatsapp-during-consult', {
   title: 'Clinic WhatsApp during consult: answer without leaving the chair',
   description:
     'Patients WhatsApp during consult. The clinic that answered got the patient. Answer, qualify, book. Do not wait until the next gap.',
   alternates: {
     canonical: 'https://goproxe.com/blog/clinics-whatsapp-during-consult',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/clinics-whatsapp-during-consult.png'],
-  },
-}
+})
 
 const articleContent = `They messaged during a filling. Reception was with the next patient. You saw it at 8pm. They already booked the clinic that wrote back at 2:14. The ad did not fail. The consult did not fail. The chat sat there.
 

@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-forward-is-not-a-handoff', {
   title: `A forward is not a handoff`,
   description: `Passing the chat is not the desk.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-forward-is-not-a-handoff',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-forward-is-not-a-handoff.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You forwarded the chat to a teammate. Done, from your side. The teammate gets a wall of screenshots. The lead gets silence. A forward is a pass. A handoff is context plus a next line the lead can act on. The desk does the second one.
 

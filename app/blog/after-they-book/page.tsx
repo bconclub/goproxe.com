@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('after-they-book', {
   title: `After they book`,
   description: `A booking is not the end.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/after-they-book',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/after-they-book.png'],
-  },
-}
+})
 
 const articleContent = `A booking is not the end. Confirm in the thread. Remind. If they no-show, they are still a lead.
 

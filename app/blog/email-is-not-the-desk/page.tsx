@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('email-is-not-the-desk', {
   title: 'Email is not the desk',
   description:
     'The enquiry is the thread they already opened.',
   alternates: {
     canonical: 'https://goproxe.com/blog/email-is-not-the-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/email-is-not-the-desk.png'],
-  },
-}
+})
 
 const articleContent = `They emailed. You will reply tonight. They already wrote on WhatsApp at 2. The desk is that thread, not your inbox at 6.
 

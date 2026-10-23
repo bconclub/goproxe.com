@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('conversation-that-books', {
   title: 'A conversation that books',
   description:
     'A reply is not a booking. Most first messages are a thanks, a brochure, or a link.',
   alternates: {
     canonical: 'https://goproxe.com/blog/conversation-that-books',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/conversation-that-books.png'],
-  },
-}
+})
 
 const articleContent = `A reply is not a booking. Most first messages are a thanks, a brochure, or a link. None of those put a time on the calendar.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('instagram-engagement-is-not-a-lead', {
   title: 'Instagram likes are not leads. DMs that book are.',
   description:
     'A like is not a booking. A comment is not a booking. Instagram engagement is not a lead until the conversation books.',
   alternates: {
     canonical: 'https://goproxe.com/blog/instagram-engagement-is-not-a-lead',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/instagram-engagement-is-not-a-lead.png'],
-  },
-}
+})
 
 const articleContent = `A like is not a booking. A comment is not a booking. A save is not a booking. Most teams treat the public numbers as the work. The work is the DM that still has to answer, qualify, and put two slots in the thread.
 

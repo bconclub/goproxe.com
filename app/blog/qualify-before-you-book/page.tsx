@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('qualify-before-you-book', {
   title: 'Qualify before you book',
   description: `A reply is not a qualified lead.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/qualify-before-you-book',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/qualify-before-you-book.png'],
-  },
-}
+})
 
 const articleContent = `A hello is not a lead you can book. A thanks for writing is not qualify. Most teams answer, then dump a menu, then wait. The work is two questions in the same thread, then two times.
 

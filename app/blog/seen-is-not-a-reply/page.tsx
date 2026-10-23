@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('seen-is-not-a-reply', {
   title: 'Seen is not a reply',
   description:
     'Blue ticks are not the desk.',
   alternates: {
     canonical: 'https://goproxe.com/blog/seen-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/seen-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `They wrote at 2pm. You opened it at 2:01. The ticks went blue. The thread still has no next line.
 

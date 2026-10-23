@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('saving-the-contact-is-not-done', {
   title: 'Saving the contact is not done',
   description:
     'A new contact is a file. It is not the desk.',
   alternates: {
     canonical: 'https://goproxe.com/blog/saving-the-contact-is-not-done',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/saving-the-contact-is-not-done.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a fee and a slot. You tapped Save. Name. Number. Blue tick on the contact card.
 The lead still has no next line. Your phone has one more row.

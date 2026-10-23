@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('one-number-a-whole-team', {
   title: 'One number is not a whole team',
   description:
     "The business number lives on one phone. The owner.",
   alternates: {
     canonical: 'https://goproxe.com/blog/one-number-a-whole-team',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/one-number-a-whole-team.png'],
-  },
-}
+})
 
 const articleContent = `The business number lives on one phone. The owner. Staff cannot see the chats. Two people guess who already replied. The owner goes out, the phone goes with them, and so do the customers.
 

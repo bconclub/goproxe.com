@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('what-is-proxe', {
   title: 'What is PROXe?',
   description:
     'PROXe answers, qualifies, books and follows up on every lead, on every channel.',
   alternates: {
     canonical: 'https://goproxe.com/blog/what-is-proxe',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/what-is-proxe.png'],
-  },
-}
+})
 
 const articleContent = `PROXe is an AI that runs the customer side of your business. It answers every enquiry across WhatsApp, Instagram, your website and calls in seconds, qualifies the lead, books the appointment, and keeps following up until they decide, remembering every conversation along the way. That is the whole product. Not a chatbot you paste into WhatsApp. Not a CRM you have to open.
 

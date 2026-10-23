@@ -518,6 +518,24 @@ export const BLOG_POSTS: BlogPost[] = [
 
 export const BLOG_SLUGS = BLOG_POSTS.map((p) => p.slug);
 
+/**
+ * Optimised cover variants, written from the PNG by
+ * scripts/optimize-blog-images.cjs. Non-PNG thumbnails pass through.
+ */
+export const COVER_WIDTH = 1536;
+export const COVER_HEIGHT = 864;
+
+export function coverSources(thumbnail: string): { src: string; srcSet?: string } {
+  if (!/^\/blog\/[^/]+\.png$/.test(thumbnail)) return { src: thumbnail };
+  const base = thumbnail.slice(0, -4);
+  return { src: `${base}.webp`, srcSet: `${base}-768.webp 768w, ${base}.webp 1536w` };
+}
+
+/** 1200x630 JPEG for og:image and twitter:image. 'blog' is the index card. */
+export function blogOgImageUrl(slug: string): string {
+  return `https://goproxe.com/blog/og/${slug}.jpg`;
+}
+
 export function getBlogPost(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((p) => p.slug === slug);
 }

@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('dont-invent-the-price', {
   title: 'Do not invent the price',
   description: `A fee you made up is not a booking.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/dont-invent-the-price',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/dont-invent-the-price.png'],
-  },
-}
+})
 
 const articleContent = `A fee you made up is not a booking. A guess in the thread is not a consult. Most teams think the desk has to quote. The desk has to book.
 

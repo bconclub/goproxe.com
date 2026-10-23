@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('not-a-whatsapp-bot', {
   title: 'WhatsApp chatbot vs AI that books (not FAQ dumps)',
   description:
     'A WhatsApp chatbot dumps FAQs on one channel. PROXe answers, qualifies, books and follows up, on every channel, with one memory.',
   alternates: {
     canonical: 'https://goproxe.com/blog/not-a-whatsapp-bot',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/not-a-whatsapp-bot.png'],
-  },
-}
+})
 
 const articleContent = `You already tried a chatbot. It said hello. It sent the brochure. It could not book Tuesday 4pm. It forgot they called in the morning. That is a bot. PROXe is not that.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('one-memory-every-channel', {
   title: 'One lead, four channels, one memory',
   description:
     'WhatsApp Monday. Instagram Thursday. Site Saturday. Call later. Same person. They should never repeat themselves.',
   alternates: {
     canonical: 'https://goproxe.com/blog/one-memory-every-channel',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/one-memory-every-channel.png'],
-  },
-}
+})
 
 const articleContent = `They DMed Instagram at night. WhatsApp in the morning. Form on the site at lunch. Called at 4. You asked their name four times. They hung up. That is not four leads. That is one person hitting four inboxes.
 

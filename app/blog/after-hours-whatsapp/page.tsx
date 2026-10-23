@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('after-hours-whatsapp', {
   title: 'After-hours WhatsApp leads: why morning replies lose them',
   description:
     'After-hours WhatsApp is how you lose the lead. An away message is not an answer. Answer, qualify, book. Do not wait until morning.',
   alternates: {
     canonical: 'https://goproxe.com/blog/after-hours-whatsapp',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/after-hours-whatsapp.png'],
-  },
-}
+})
 
 const articleContent = `They wrote at 11pm. You sent the green tick: thanks, we are closed, we will call tomorrow. They did not want a receipt. They wanted Tuesday at 4. The clinic that stayed in the thread got Tuesday. An away message is not an answer. It is a polite way to lose.
 

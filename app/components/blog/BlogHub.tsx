@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { BLOG_POSTS, type Trade, getTradeLabel, calculateReadingTime } from '../../lib/blog'
+import { BlogCover } from './BlogCover'
 import styles from './BlogHub.module.css'
 
 type FilterOption = Trade | 'all'
@@ -59,13 +60,11 @@ export function BlogHub() {
               className={styles.card}
             >
               <div className={styles.cardImage}>
-                <img
-                  src={post.thumbnail}
+                <BlogCover
+                  thumbnail={post.thumbnail}
                   alt={post.title}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src = `data:image/svg+xml,%3Csvg width='1200' height='630' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1200' height='630' fill='%23140d30'/%3E%3C/svg%3E`
-                  }}
+                  sizes="(max-width: 760px) 100vw, 380px"
+                  fallback={`data:image/svg+xml,%3Csvg width='1200' height='630' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1200' height='630' fill='%23140d30'/%3E%3C/svg%3E`}
                 />
               </div>
               <div className={styles.cardContent}>

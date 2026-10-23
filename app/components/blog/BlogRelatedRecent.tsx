@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import type { BlogPost } from '../../lib/blog'
 import { calculateReadingTime } from '../../lib/blog'
+import { BlogCover } from './BlogCover'
 import styles from '../../styles/legal.module.css'
 
 interface BlogRelatedRecentProps {
@@ -39,21 +40,17 @@ export function BlogRelatedRecent({ posts, title, cardClassName }: BlogRelatedRe
               className={cardClassName}
               style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}
             >
-              <img
-                src={post.thumbnail}
+              <BlogCover
+                thumbnail={post.thumbnail}
                 alt=""
+                sizes="160px"
+                fallback={fallbackImage}
                 style={{
                   width: '160px',
                   height: '120px',
                   objectFit: 'cover',
                   borderRadius: '8px',
                   flexShrink: 0,
-                }}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  if (target.src !== fallbackImage) {
-                    target.src = fallbackImage
-                  }
                 }}
               />
               <div style={{ flex: 1, minWidth: 0 }}>

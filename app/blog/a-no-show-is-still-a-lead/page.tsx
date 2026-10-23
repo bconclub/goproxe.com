@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-no-show-is-still-a-lead', {
   title: `A no-show is still a lead`,
   description: `Empty chair is not closed.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-no-show-is-still-a-lead',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-no-show-is-still-a-lead.png'],
-  },
-}
+})
 
 const articleContent = `Thursday 4pm. The chair is empty. You mark No-show and move on. The lead still has no next line.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('coaching-parents-at-night', {
   title: 'Coaching WhatsApp after 9pm: parents who booked elsewhere',
   description:
     'Parents message coaching institutes after class and after 7pm. Answer, qualify the exam, book counselling. Do not wait until morning.',
   alternates: {
     canonical: 'https://goproxe.com/blog/coaching-parents-at-night',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/coaching-parents-at-night.png'],
-  },
-}
+})
 
 const articleContent = `The parent wrote at 9:12pm. JEE, this year, demo this week. Your counsellor finished class at 8. Phone on silent. Morning they called. The parent had already booked the institute that asked the two questions at 9:14. They did not ghost you. They messaged five places. First useful reply got the seat.
 

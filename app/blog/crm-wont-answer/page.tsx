@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('crm-wont-answer', {
   title: 'CRM vs WhatsApp: why your CRM never replies',
   description:
     'Your CRM stores the lead. It does not answer, qualify, book, or follow up on WhatsApp. That is why the chat still sits.',
   alternates: {
     canonical: 'https://goproxe.com/blog/crm-wont-answer',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/crm-wont-answer.png'],
-  },
-}
+})
 
 const articleContent = `They messaged at 9:12pm. Your CRM made a row. Name, number, source. Status: New. Nobody answered. At 9:18 they booked the clinic that wrote back. The row is still New in the morning. That is not a CRM bug. That is what a CRM is.
 

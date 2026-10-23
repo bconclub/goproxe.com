@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('how-fast-to-reply-whatsapp', {
   title: 'How fast should you reply to a WhatsApp lead',
   description:
     'How fast to reply to a WhatsApp lead in India. First useful reply gets the slot. Thanks, we will call you, is not a reply.',
   alternates: {
     canonical: 'https://goproxe.com/blog/how-fast-to-reply-whatsapp',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/how-fast-to-reply-whatsapp.png'],
-  },
-}
+})
 
 const articleContent = `They sent one line at 9:12pm. You replied at 10am. They booked at 9:14 with whoever wrote back. People ask how fast. Fast is not a green tick. Fast is a useful reply: answer, qualify, two slots.
 

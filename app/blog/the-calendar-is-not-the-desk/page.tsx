@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('the-calendar-is-not-the-desk', {
   title: 'The calendar is not the desk',
   description: `A link is not a booking.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/the-calendar-is-not-the-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/the-calendar-is-not-the-desk.png'],
-  },
-}
+})
 
 const articleContent = `A link is not a booking. A Calendly page is not a thread. Most teams send the URL and call it done. The work is two times in the chat they already opened.
 

@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('the-ad-is-not-the-desk', {
   title: 'The ad is not the desk',
   description: `A click is not a booking.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/the-ad-is-not-the-desk',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/the-ad-is-not-the-desk.png'],
-  },
-}
+})
 
 const articleContent = `A click is not a booking. A WhatsApp that opened from an ad is not a booked slot. Most teams treat the click as the work. The work is the thread that still has to answer, qualify, and put two times in front of them.
 

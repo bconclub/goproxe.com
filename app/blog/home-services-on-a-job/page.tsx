@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('home-services-on-a-job', {
   title: 'They called while you were on a job. The crew that answered got the work.',
   description:
     'Plumber, AC, electrician inbound dies on the job and at night. Answer, qualify, book. Do not wait until you park.',
   alternates: {
     canonical: 'https://goproxe.com/blog/home-services-on-a-job',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/home-services-on-a-job.png'],
-  },
-}
+})
 
 const articleContent = `The AC died at 2pm. They WhatsApped. You were on a roof. You replied at 7. They already booked the crew that asked address and slot at 2:04. Night is the same leak. 10pm. You see it at 8am. Gone. You did not lose the job to a bigger brand. You lost it because the chat sat while you worked.
 

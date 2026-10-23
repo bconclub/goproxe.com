@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('what-to-measure-on-inbound', {
   title: 'What to measure on inbound',
   description:
     'Most teams measure the wrong clock.',
   alternates: {
     canonical: 'https://goproxe.com/blog/what-to-measure-on-inbound',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/what-to-measure-on-inbound.png'],
-  },
-}
+})
 
 const articleContent = `Most teams measure the wrong clock. First reply. Tickets closed. Chat volume. None of those say whether a lead was answered, qualified, booked, and followed until they decided.
 

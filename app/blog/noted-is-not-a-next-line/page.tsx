@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('noted-is-not-a-next-line', {
   title: `Noted is not a next line`,
   description: `Parking the ask is not the next line.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/noted-is-not-a-next-line',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/noted-is-not-a-next-line.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You typed noted. Or ok. Or a thumbs up. The chat went quiet. Your side felt done. Their side still needs a time. Noted is a receipt. A next line is an ask, two times, or a handoff. The desk does the second one.
 

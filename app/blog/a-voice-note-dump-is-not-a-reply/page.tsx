@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-voice-note-dump-is-not-a-reply', {
   title: `A voice note dump is not a reply`,
   description: `A long clip is not the next line.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-voice-note-dump-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-voice-note-dump-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You sent a three-minute voice note. Price, story, parking tips, and a maybe. The lead still has no clear time. Your side felt thorough. A voice note dump is a file. A reply is an ask, two times, or a handoff. The desk does the second one.
 

@@ -1,5 +1,4 @@
-'use client'
-
+import { BlogCover } from './BlogCover'
 import styles from './BlogHero.module.css'
 
 type BlogHeroProps = {
@@ -14,16 +13,13 @@ export function BlogHero({ src, alt }: BlogHeroProps) {
   
   return (
     <div className={styles.hero}>
-      <img
-        src={src}
+      <BlogCover
+        thumbnail={src}
         alt={alt}
+        sizes="(max-width: 800px) 100vw, 760px"
+        priority
+        fallback={fallbackImage}
         className={styles.heroImage}
-        onError={(e) => {
-          const target = e.target as HTMLImageElement
-          if (target.src !== fallbackImage && !target.src.includes(fallbackImage)) {
-            target.src = fallbackImage
-          }
-        }}
       />
     </div>
   )

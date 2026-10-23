@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-broadcast-is-not-a-reply', {
   title: 'A broadcast is not a reply',
   description:
     'A blast is marketing. Inbound still needs a reply in their thread.',
   alternates: {
     canonical: 'https://goproxe.com/blog/a-broadcast-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-broadcast-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `You sent 400 WhatsApps at 9. That is a campaign. The person who wrote at 9:12 still has no answer.
 

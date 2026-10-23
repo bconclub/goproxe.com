@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-status-is-not-a-message', {
   title: 'A status is not a message',
   description:
     'The CRM moved. The lead did not hear you.',
   alternates: {
     canonical: 'https://goproxe.com/blog/a-status-is-not-a-message',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-status-is-not-a-message.png'],
-  },
-}
+})
 
 const articleContent = `You flipped the lead to Follow up. The board looks clean. The WhatsApp thread is still empty.
 

@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('people-miss-conversations', {
   title: 'Missed WhatsApp leads: how chats go cold overnight',
   description:
     'WhatsApp leads go cold overnight. Clinics, coaches, and brokers miss the chat. How fast to reply, what after-hours enquiries do, and how to stop the leak.',
   alternates: {
     canonical: 'https://goproxe.com/blog/people-miss-conversations',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/people-miss-conversations.png'],
-  },
-}
+})
 
 const articleContent = `Parents do not enquire at 10am because that is when your counsellor is free. They enquire at 11pm. After the kid is in bed. After they have compared three institutes on Instagram. After they have already messaged two other numbers. You see the chat at 8:40 the next morning. You type a polite reply. They have already booked a counselling slot somewhere else. This is the leak. Not the ad. Not the offer. The conversation you were not in.
 

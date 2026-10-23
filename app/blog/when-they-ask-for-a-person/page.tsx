@@ -1,18 +1,16 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('when-they-ask-for-a-person', {
   title: 'When they ask for a person',
   description:
     '"Can I talk to someone" is not a dump. The desk still asks, then hands the thread over.',
   alternates: {
     canonical: 'https://goproxe.com/blog/when-they-ask-for-a-person',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/when-they-ask-for-a-person.png'],
-  },
-}
+})
 
 const articleContent = `They wrote can I talk to a person. You dumped the chat. That is not a handoff. That is quitting on message 1.
 

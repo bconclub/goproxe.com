@@ -1,17 +1,15 @@
 import type { Metadata } from 'next'
+import { withBlogSocial } from '../../lib/blogMetadata'
 import { BlogPostWrapper } from '../../components/blog/BlogPostWrapper'
 import styles from '../../styles/legal.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBlogSocial('a-draft-is-not-a-reply', {
   title: `A draft is not a reply`,
   description: `Typing and leaving it is not the desk.`,
   alternates: {
     canonical: 'https://goproxe.com/blog/a-draft-is-not-a-reply',
   },
-  openGraph: {
-    images: ['https://goproxe.com/blog/a-draft-is-not-a-reply.png'],
-  },
-}
+})
 
 const articleContent = `They asked for a slot. You typed a careful reply. Then you left the chat. The draft sat in the box. Your side felt almost done. Their side still has silence. A draft is a private note. A reply is a next line the lead can read. The desk does the second one.
 
