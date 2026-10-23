@@ -18,6 +18,36 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-returns-first-whatsapp-reply',
+    title: 'Only 13% see AI returns. Fix the first reply',
+    dek: 'Gartner found only 13% of companies see major returns from AI. For a clinic, academy or property desk, one job pays back first: the first WhatsApp reply.',
+    date: '2026-10-23',
+    thumbnail: '/blog/ai-returns-first-whatsapp-reply.png',
+    trade: 'product',
+    wordCount: 940,
+    related: ['what-to-measure-on-inbound', 'clinics-whatsapp-during-consult', 'coaching-parents-at-night', 'how-fast-to-reply-whatsapp'],
+  },
+  {
+    slug: 'curebay-100-crore-clinic-front-desk',
+    title: 'CureBay raised ₹100 Cr. Is your front desk ready?',
+    dek: 'CureBay raised ₹100 crore to grow rural clinics and add AI screening. Here is what a small clinic can fix first: the reply to the first message.',
+    date: '2026-10-22',
+    thumbnail: '/blog/curebay-100-crore-clinic-front-desk.png',
+    trade: 'healthcare',
+    wordCount: 860,
+    related: ['clinics-whatsapp-during-consult', 'how-fast-to-reply-whatsapp', 'a-missed-call-is-still-a-lead', 'after-hours-whatsapp'],
+  },
+  {
+    slug: 'fast-voice-ai-still-needs-the-right-answers',
+    title: 'Fast voice AI still needs the right answers',
+    dek: 'Voice AI is now quick enough for live calls. For a clinic, academy or real estate desk, what it is allowed to say matters more than how fast it talks.',
+    date: '2026-10-21',
+    thumbnail: '/blog/fast-voice-ai-still-needs-the-right-answers.png',
+    trade: 'product',
+    wordCount: 920,
+    related: ['dont-invent-the-price', 'when-they-ask-for-a-person', 'one-memory-every-channel', 'a-missed-call-is-still-a-lead', 'what-is-proxe'],
+  },
+  {
     slug: 'a-reminder-is-not-a-reply',
     title: 'A reminder is not a reply',
     dek: 'You set a phone reminder to reply at 6. The lead needed a slot at 2. A reminder is a promise to yourself. The desk is a next line in their thread now.',
@@ -357,7 +387,7 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'one-number-a-whole-team',
     title: 'One number is not a whole team',
-    dek: "The business number lives on one phone. The owner.",
+    dek: 'The business number lives on one phone. The owner.',
     date: '2026-03-07',
     thumbnail: '/blog/one-number-a-whole-team.png',
     trade: 'product',
