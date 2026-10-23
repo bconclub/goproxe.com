@@ -32,10 +32,12 @@ const UPDATABLE = new Set(['on_hold', 'past_due', 'active'])
  * Slack fetch a pasted link for its preview before the client taps it, so
  * without these two guards the real tap would always land on that 409:
  * - preview bots get a plain page and never mint;
- * - a minted link is reused for 10 minutes (Dodo's own expiry is ~15).
+ * - a minted link is reused for 90 seconds only, just past that 409 window:
+ *   Dodo's page shows a 15-minute countdown from the mint, and a longer reuse
+ *   handed later openers a link with most of its time gone.
  */
 const PREVIEW_BOT = /whatsapp|facebookexternalhit|facebot|twitterbot|slackbot|telegrambot|discordbot|linkedinbot|skypeuripreview|googlebot|bingbot|embedly|preview/i
-const REUSE_MS = 10 * 60 * 1000
+const REUSE_MS = 90 * 1000
 const minted = new Map<string, { link: string; at: number }>()
 
 function previewPage() {
