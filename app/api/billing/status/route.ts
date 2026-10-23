@@ -51,16 +51,37 @@ export async function GET(request: Request) {
     const sub = await client.subscriptions.retrieve(subscriptionId)
     const [product, payments] = await Promise.all([
       client.products.retrieve(sub.product_id).catch(() => null),
-      client.payments.list({ subscription_id: subscriptionId, page_size: 1 }).catch(() => null),
+      client.payments.list({ subscription_id: subscriptionId, page_size: 25 }).catch(() => null),
     ])
-    const last = payments?.items?.[0] ?? null
+    const items = payments?.items ?? []
+    const last = items[0] ?? null
+    /**
+     * Every open of a /pay link mints a dues invoice that sits at
+     * requires_payment_method until paid. Those are not attempts: on 23 Oct one
+     * sat on top of Ahoy's failed UPI payment and the dashboard read "not paid
+     * yet" instead of "failed". The last real attempt skips them.
+     */
+    const attempt = items.find((p) => p.status && !p.status.startsWith('requires_')) ?? null
     // The list view has no failure reason; fetch it only when there was one.
-    const lastError =
-      last?.status === 'failed'
-        ? ((await client.payments.retrieve(last.payment_id).catch(() => null))?.error_code ?? null)
+    const attemptError =
+      attempt?.status === 'failed'
+        ? ((await client.payments.retrieve(attempt.payment_id).catch(() => null))?.error_code ?? null)
         : null
     // 'past_due' (grace period) is newer than this SDK's status union.
     const status = sub.status as string
+    const needsPayment = status === 'on_hold' || status === 'past_due'
+    /**
+     * One word for the dashboard bar. Z's rule (23 Oct): red only on a real
+     * failure, nothing at all for processing or not-yet-paid.
+     */
+    const paymentState: 'ok' | 'processing' | 'failed' | 'due' =
+      attempt?.status === 'processing'
+        ? 'processing'
+        : !needsPayment
+          ? 'ok'
+          : attempt?.status === 'failed'
+            ? 'failed'
+            : 'due'
     // Recurring prices carry `price`, usage-based ones `fixed_price`.
     const plan = product?.price as
       | { price?: number; fixed_price?: number; currency?: string; tax_inclusive?: boolean | null }
@@ -81,18 +102,42 @@ export async function GET(request: Request) {
         previous_billing_date: sub.previous_billing_date,
         cancel_at_next_billing_date: sub.cancel_at_next_billing_date,
         product_name: product?.name ?? null,
+        // What the client bought, without Dodo's checkout variant ("(India)",
+        // "- 7 Day Trial", "- 3 Months"): those describe the link we sent.
+        plan_name: product?.name?.split(/s+[-(]/)[0]?.trim() || null,
         last_payment: last
           ? {
               status: last.status,
               amount_minor: last.total_amount,
               currency: last.currency,
               payment_method: last.payment_method ?? null,
-              error_code: lastError,
+              error_code: last.status === 'failed' ? attemptError : null,
               created_at: last.created_at,
             }
           : null,
-        // on_hold / past_due: the dashboard shows the red bar with this link.
-        needs_payment: status === 'on_hold' || status === 'past_due',
+        last_attempt: attempt
+          ? {
+              status: attempt.status,
+              amount_minor: attempt.total_amount,
+              currency: attempt.currency,
+              payment_method: attempt.payment_method ?? null,
+              error_code: attemptError,
+              created_at: attempt.created_at,
+            }
+          : null,
+        payment_state: paymentState,
+        // Paid bills with Dodo's invoice PDF, newest first.
+        invoices: items
+          .filter((p) => p.status === 'succeeded' && p.invoice_url)
+          .map((p) => ({
+            payment_id: p.payment_id,
+            amount_minor: p.total_amount,
+            currency: p.currency,
+            created_at: p.created_at,
+            invoice_url: p.invoice_url,
+          })),
+        // on_hold / past_due: money is owed (see payment_state for the bar).
+        needs_payment: needsPayment,
         pay_url: `${getSiteUrl(url.origin)}/pay/${encodeURIComponent(subscriptionId)}`,
       },
       { headers }
