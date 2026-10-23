@@ -95,7 +95,7 @@ export default function WellnessAfterHoursPage() {
             <section className={styles.section}>
               <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer on WhatsApp, Instagram, the site, the missed call. Same person. One memory.</p>
-              <p>Qualify: trial or member, which service, when. Offer two slots. Book it. Do not invent a package price.</p>
+              <p>Qualify: trial or member, which service, when. <a href="/blog/conversation-that-books">Offer two slots. Book it.</a> Do not invent a package price.</p>
               <p>Morning you walk into a booked trial, not a pile of last night&apos;s greets.</p>
             </section>
 

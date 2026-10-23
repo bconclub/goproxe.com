@@ -94,7 +94,7 @@ export default function HomeServicesOnAJobPage() {
             <section className={styles.section}>
               <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer on the channel they used. Same person. One memory.</p>
-              <p>Qualify: address, job type, when. Offer two slots. Book tomorrow&apos;s first if it is night. Do not invent a quote.</p>
+              <p>Qualify: address, job type, when. Offer two slots. Book tomorrow&apos;s first if it is night. <a href="/blog/dont-invent-the-price">Do not invent a quote</a>.</p>
               <p>You finish the current job. The next one is already on the calendar.</p>
             </section>
 

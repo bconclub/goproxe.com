@@ -96,7 +96,7 @@ export default function PaidLeadNoReplyPage() {
             <section className={styles.section}>
               <h2 id="what-to-do-instead">What to do instead</h2>
               <p>Answer in seconds on WhatsApp, Instagram, the site, the missed call. Same buyer. One memory.</p>
-              <p>Qualify: locality, budget, when. Offer two site-visit slots. Book it. Do not invent a price.</p>
+              <p>Qualify: locality, budget, when. Offer two site-visit slots. Book it. <a href="/blog/dont-invent-the-price">Do not invent a price</a>.</p>
               <p>Morning you walk into a booked visit, not a list of last night&apos;s portal names.</p>
             </section>
 
