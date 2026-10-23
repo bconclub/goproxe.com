@@ -114,8 +114,8 @@ export default function WhatIsProxePage() {
             <section className={styles.section}>
               <h2 id="what-it-is-not">What it is not</h2>
               <p>It is not a WhatsApp auto-reply. An auto-reply says "we will call you tomorrow." That tells them you are closed.</p>
-              <p>It is not a CRM. A CRM stores the lead after you already lost them.</p>
-              <p>It is not a bot you prompt yourself. We train it on your business and it is live in 48 hours.</p>
+              <p>It is not a CRM. A CRM stores the lead after you already lost them. <a href="/blog/crm-wont-answer">Your CRM will not answer</a>.</p>
+              <p>It is not a bot you prompt yourself. We train it on your business and it is live in 48 hours. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>.</p>
             </section>
 
             <section className={styles.section}>

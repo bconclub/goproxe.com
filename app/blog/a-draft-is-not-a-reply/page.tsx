@@ -17,7 +17,7 @@ const articleContent = `They asked for a slot. You typed a careful reply. Then y
 
 Draft means you started. The lead still waits. Reply means the thread moved. Two facts. Two times. Or a clear handoff to a person. If the last thing you did is leave text unsent, you parked. You did not desk.
 
-Type half a reply. Switch apps. Forget. Save as draft. Plan to finish later. Rewrite three times. Never hit send. Draft on one phone. Lead is on another thread.
+Type half a reply. Switch apps. Forget. Save as draft. Plan to finish later. Rewrite three times. Never hit send. Give up and record a long clip instead. A voice note dump is not a reply. Draft on one phone. Lead is on another thread.
 
 You can open the thread and point at the last line the lead got. If that line is missing and only your draft box grew, you typed. You did not reply.
 
@@ -125,7 +125,7 @@ export default function ADraftIsNotAReplyPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>Type half a reply. Switch apps. Forget. Save as draft. Plan to finish later. Rewrite three times. Never hit send. Draft on one phone. Lead is on another thread.</p>
+              <p>Type half a reply. Switch apps. Forget. Save as draft. Plan to finish later. Rewrite three times. Never hit send. Give up and record a long clip instead. <a href="/blog/a-voice-note-dump-is-not-a-reply">A voice note dump is not a reply</a>. Draft on one phone. Lead is on another thread.</p>
             </section>
 
             <section className={styles.section}>

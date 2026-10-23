@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 const articleContent = `They DMed Instagram at night. WhatsApp in the morning. Form on the site at lunch. Called at 4. You asked their name four times. They hung up. That is not four leads. That is one person hitting four inboxes.
 
-What people run. A WhatsApp bot. An Instagram reply from someone else. A site form into a CRM. A missed-call list on paper. Each tool has a slice. None of them know it is the same parent, the same patient, the same buyer. A CRM can store four rows. It still does not remember the thread.
+What people run. A WhatsApp bot. An Instagram reply from someone else (likes are not leads). A site form into a CRM. A missed-call list on paper. Each tool has a slice. None of them know it is the same parent, the same patient, the same buyer. A CRM can store four rows. It still does not remember the thread.
 
 What one memory means. WhatsApp, Instagram, the website, the call write into one conversation. They never repeat the exam, the tooth, the locality, the job type. You pick up where they left. Night, Sunday, peak hour.`
 
@@ -89,7 +89,7 @@ export default function OneMemoryEveryChannelPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run">What people run</h2>
-              <p>A WhatsApp bot. An Instagram reply from someone else. A site form into a CRM. A missed-call list on paper.</p>
+              <p>A WhatsApp bot. An Instagram reply from someone else (<a href="/blog/instagram-engagement-is-not-a-lead">likes are not leads</a>). A site form into a CRM. A missed-call list on paper.</p>
               <p>Each tool has a slice. None of them know it is the same parent, the same patient, the same buyer.</p>
               <p>A CRM can store four rows. It still does not remember the thread.</p>
             </section>

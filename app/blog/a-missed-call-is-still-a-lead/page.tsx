@@ -25,7 +25,7 @@ The call gets attention. Ring, voicemail, a missed-call log. That is inbound. It
 
 The thread is the desk. Same job as WhatsApp and Instagram. Write back on a channel they will read. Two questions. Two slots. Follow up until they decide. Do not promise a call you will not place. [Who answers the customer](/blog/who-answers-the-customer). [How fast to reply on WhatsApp](/blog/how-fast-to-reply-whatsapp)
 
-If you only staff the phone, you will look busy and still miss the consult.
+If you only staff the phone, you will look busy and still miss the consult. Voice AI can pick up now. Fast voice AI still needs the right answers.
 
 ## What people run instead
 
@@ -160,7 +160,7 @@ export default function AMissedCallIsStillALeadPage() {
               <h2 id="two-different-jobs">Two different jobs</h2>
               <p>The call gets attention. Ring, voicemail, a missed-call log. That is inbound. It is real. It is not a lead until someone is in a conversation that can book. <a href="/blog/conversation-that-books">A conversation that books</a></p>
               <p>The thread is the desk. Same job as WhatsApp and Instagram. Write back on a channel they will read. Two questions. Two slots. Follow up until they decide. Do not promise a call you will not place. <a href="/blog/who-answers-the-customer">Who answers the customer</a>. <a href="/blog/how-fast-to-reply-whatsapp">How fast to reply on WhatsApp</a></p>
-              <p>If you only staff the phone, you will look busy and still miss the consult.</p>
+              <p>If you only staff the phone, you will look busy and still miss the consult. Voice AI can pick up now. <a href="/blog/fast-voice-ai-still-needs-the-right-answers">Fast voice AI still needs the right answers</a>.</p>
             </section>
 
             <section className={styles.section}>

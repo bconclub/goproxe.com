@@ -34,7 +34,7 @@ If you cannot point at those four, you are measuring activity.
 
 Average first response time. Fast and empty still loses the slot.
 
-Open conversations. A pile is not a pipeline.
+Open conversations. A pile is not a pipeline. The weekend pile is not a system.
 
 A weekly screenshot of we replied to everyone. No names. No times. No books.
 
@@ -44,7 +44,7 @@ Invented close rates. Do not put a percent on this page you did not earn.
 
 ## How you know the inbound is working
 
-You can name last week: how many got a useful reply, how many booked, how many were followed, how many are still silent.
+You can name last week: how many got a useful reply, how many booked, how many were followed, how many are still silent. A worked example: Only 13% see AI returns. Fix the first reply.
 
 Speed without a book is a miss. A book without follow-up on the rest is a miss.
 
@@ -177,7 +177,7 @@ export default function WhatToMeasureOnInboundPage() {
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Average first response time. Fast and empty still loses the slot.</p>
-              <p>Open conversations. A pile is not a pipeline.</p>
+              <p>Open conversations. A pile is not a pipeline. <a href="/blog/the-weekend-pile-is-not-a-system">The weekend pile is not a system</a>.</p>
               <p>A weekly screenshot of we replied to everyone. No names. No times. No books.</p>
               <p>A CRM count of new leads. The CRM did not sit in the thread. <a href="/blog/crm-wont-answer">Your CRM will not answer</a></p>
               <p>Invented close rates. Do not put a percent on this page you did not earn.</p>
@@ -185,7 +185,7 @@ export default function WhatToMeasureOnInboundPage() {
 
             <section className={styles.section}>
               <h2 id="how-you-know-the-inbound-is-working">How you know the inbound is working</h2>
-              <p>You can name last week: how many got a useful reply, how many booked, how many were followed, how many are still silent.</p>
+              <p>You can name last week: how many got a useful reply, how many booked, how many were followed, how many are still silent. A worked example: <a href="/blog/ai-returns-first-whatsapp-reply">Only 13% see AI returns. Fix the first reply</a>.</p>
               <p>Speed without a book is a miss. A book without follow-up on the rest is a miss.</p>
             </section>
 

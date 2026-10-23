@@ -18,7 +18,7 @@ const articleContent = `The first reply is not the job. Most teams treat it like
 
 Inbound has two clocks. The first clock is speed. Did anyone write back on the channel they used. The second clock is the quiet. They went silent. They said maybe. They took a number and disappeared. Somebody still has to keep the conversation alive until yes or no. If you only own the first clock, you will look responsive and still lose the lead.
 
-A note in someone's head. I will ping them Friday. Friday the counsellor is in a session. The note dies. A CRM task. Status: Follow-up. Nobody opens WhatsApp. The task is not a message. One just checking in on day three, then nothing. That is a poke. It is not a system. A broadcast on day seven. Same text to fifty people. The person who already said maybe gets a blast. The person who said no gets it too. Hope. The inbox stays bold.
+A note in someone's head. I will ping them Friday. Friday the counsellor is in a session. The note dies. A CRM task. Status: Follow-up. Nobody opens WhatsApp. The task is not a message. One just checking in on day three, then nothing. That is a poke. It is not a system. A broadcast on day seven. Same text to fifty people. The person who already said maybe gets a blast. The person who said no gets it too. A broadcast is not a reply. Hope. The inbox stays bold.
 
 It knows the state. New. Replied. Quoted. Maybe. Silent. Booked. No. It writes on the channel they already used. It does not drag them onto email because the sequence lives there. It asks a real next question. Still looking this week. Two slots. Who else decides. It does not invent a fee. It does not guilt them for going quiet. It stops at yes, no, or they asked you to stop. Silence is not a no. A no is a no. It remembers this is the same person who DMed on Instagram, filled a form, then went quiet on WhatsApp. One memory. One thread in its head. That is the desk, after the first reply.
 
@@ -119,7 +119,7 @@ export default function FollowUpIsASystemPage() {
               <p>A note in someone's head. "I will ping them Friday." Friday the counsellor is in a session. The note dies.</p>
               <p>A CRM task. Status: Follow-up. Nobody opens WhatsApp. The task is not a message. <a href="/blog/crm-wont-answer">Your CRM will not answer that WhatsApp</a>.</p>
               <p>One "just checking in" on day three, then nothing. That is a poke. It is not a system.</p>
-              <p>A broadcast on day seven. Same text to fifty people. The person who already said maybe gets a blast. The person who said no gets it too.</p>
+              <p>A broadcast on day seven. Same text to fifty people. The person who already said maybe gets a blast. The person who said no gets it too. <a href="/blog/a-broadcast-is-not-a-reply">A broadcast is not a reply</a>.</p>
               <p>Hope. The inbox stays bold. <a href="/blog/people-miss-conversations">People miss conversations. Then they lose the lead.</a></p>
             </section>
 

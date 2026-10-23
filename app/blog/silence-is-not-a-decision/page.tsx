@@ -68,7 +68,7 @@ When do you stop?
 When they decide. A booked time or a clear no.
 
 Is a no-show a no?
-No. Offer two new times. After they book
+No. Offer two new times. After they book. A no-show is still a lead.
 
 Does it invent a price?
 No. It books the consult and hands you the thread.
@@ -198,7 +198,7 @@ export default function SilenceIsNotADecisionPage() {
               <p><strong>When do you stop?</strong></p>
               <p>When they decide. A booked time or a clear no.</p>
               <p><strong>Is a no-show a no?</strong></p>
-              <p>No. Offer two new times. <a href="/blog/after-they-book">After they book</a></p>
+              <p>No. Offer two new times. <a href="/blog/after-they-book">After they book</a>. <a href="/blog/a-no-show-is-still-a-lead">A no-show is still a lead</a>.</p>
               <p><strong>Does it invent a price?</strong></p>
               <p>No. It books the consult and hands you the thread.</p>
               <p><strong>How long to go live?</strong></p>

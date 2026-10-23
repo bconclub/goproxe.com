@@ -29,7 +29,7 @@ If you only staff the site, you will look busy and still miss the consult.
 
 ## What people run instead
 
-A thank-you page and an email. The lead is on their phone. Email is a second hunt.
+A thank-you page and an email. The lead is on their phone. Email is a second hunt. Email is not the desk.
 
 A chatbot that dumps FAQs. No two questions. No two times. They bounce.
 
@@ -165,7 +165,7 @@ export default function TheWebsiteIsNotTheDeskPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>A thank-you page and an email. The lead is on their phone. Email is a second hunt.</p>
+              <p>A thank-you page and an email. The lead is on their phone. Email is a second hunt. <a href="/blog/email-is-not-the-desk">Email is not the desk</a>.</p>
               <p>A chatbot that dumps FAQs. No two questions. No two times. They bounce.</p>
               <p>A CRM row with no thread. Someone will "get back." They do not. <a href="/blog/crm-wont-answer">Your CRM will not answer</a></p>
               <p>A click-to-WhatsApp button, then silence. You paid for the click and left the desk empty. <a href="/blog/who-answers-the-customer">Who answers the customer</a></p>

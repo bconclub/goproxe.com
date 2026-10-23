@@ -17,7 +17,7 @@ const articleContent = `They asked for a slot. You sent a three-minute voice not
 
 A long clip can explain. The lead still needs a next step they can act on. A reply moves the thread. Two facts. Two times. Or a clear handoff to a person. If the last thing you sent is a dump with no ask, you talked. You did not desk.
 
-Record everything. Hit send. Hope they listen. Voice note plus noted. Still no slot. Forward a staff voice note into the lead thread. No clear question. Type a wall, then convert it to audio. Same park, spoken.
+Record everything. Hit send. Hope they listen. Voice note plus noted. Still no slot. Forward a staff voice note into the lead thread. No clear question. A forward is not a handoff. Type a wall, then convert it to audio. Same park, spoken.
 
 You can open the thread and point at the last line the lead got. If that line is only a long clip with no two times and no ask, you dumped. You did not offer a slot.
 
@@ -131,7 +131,7 @@ export default function AVoiceNoteDumpIsNotAReplyPage() {
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Record everything. Hit send. Hope they listen.</p>
               <p>Voice note plus <a href="/blog/noted-is-not-a-next-line">noted</a>. Still no slot.</p>
-              <p>Forward a staff voice note into the lead thread. No clear question.</p>
+              <p>Forward a staff voice note into the lead thread. No clear question. <a href="/blog/a-forward-is-not-a-handoff">A forward is not a handoff</a>.</p>
               <p>Type a wall, then convert it to audio. Same park, spoken.</p>
             </section>
 

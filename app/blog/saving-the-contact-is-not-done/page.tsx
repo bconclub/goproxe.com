@@ -24,6 +24,7 @@ If the last thing you did is Save, you filed. You did not desk.
 
 Save contact. Close the chat.
 Add to CRM. Leave New.
+Add a row to the sheet. The spreadsheet is not the desk.
 Screenshot the number into Notes. No reply.
 Forward the vCard to the group. No line back to the lead.
 
@@ -133,6 +134,7 @@ export default function SavingTheContactIsNotDonePage() {
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Save contact. <a href="/blog/closing-the-inbox-is-not-done">Close the chat</a>.</p>
               <p>Add to CRM. <a href="/blog/a-status-is-not-a-message">Leave New</a>.</p>
+              <p>Add a row to the sheet. <a href="/blog/the-spreadsheet-is-not-the-desk">The spreadsheet is not the desk</a>.</p>
               <p>Screenshot the number into Notes. <a href="/blog/noted-is-not-a-next-line">No reply</a>.</p>
               <p>Forward the vCard to the group. No line back to the lead.</p>
             </section>

@@ -17,7 +17,7 @@ const articleContent = `They asked for a slot. You typed noted. Or ok. Or a thum
 
 Noted means you saw the ask. The lead still waits. A next line moves the thread. Two facts. Two times. Or a clear handoff to a person. If the last thing you sent is noted, you parked. You did not desk.
 
-Reply noted so the badge dies. Send a thumbs up and open the calendar later. Forward the chat to the group. No line back to the lead. Type I'll get back to you and leave. Same park, longer words. I'll get back to you is not a reply
+Reply noted so the badge dies. Send a thumbs up and open the calendar later. Forward the chat to the group. No line back to the lead. A forward is not a handoff. Type I'll get back to you and leave. Same park, longer words. I'll get back to you is not a reply
 
 You can open the thread and point at the last line the lead got. If that line is only noted, ok, or a reaction, you logged attention. You did not offer a slot.
 
@@ -125,7 +125,7 @@ export default function NotedIsNotANextLinePage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>Reply noted so the badge dies. Send a thumbs up and open the calendar later. Forward the chat to the group. No line back to the lead. Type I'll get back to you and leave. Same park, longer words. <a href="/blog/ill-get-back-to-you-is-not-a-reply">I'll get back to you is not a reply</a></p>
+              <p>Reply noted so the badge dies. Send a thumbs up and open the calendar later. Forward the chat to the group. No line back to the lead. <a href="/blog/a-forward-is-not-a-handoff">A forward is not a handoff</a>. Type I'll get back to you and leave. Same park, longer words. <a href="/blog/ill-get-back-to-you-is-not-a-reply">I'll get back to you is not a reply</a></p>
             </section>
 
             <section className={styles.section}>

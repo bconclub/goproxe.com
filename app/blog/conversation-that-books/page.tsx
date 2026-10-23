@@ -33,6 +33,7 @@ That is a conversation that finishes. How fast should you reply to a WhatsApp le
 Thanks, we will get back to you. That is a receipt.
 
 A PDF. That is a brochure in a chat.
+A three-minute voice note with the fee, the story and no time. A voice note dump is not a reply.
 
 A Calendly, a Google calendar, a Zoho Bookings link. A link is extra work. Most people do not tap it. The thread dies on the tap they did not make.
 
@@ -163,6 +164,7 @@ export default function ConversationThatBooksPage() {
               <h2 id="what-people-send-instead">What people send instead</h2>
               <p>Thanks, we will get back to you. That is a receipt.</p>
               <p>A PDF. That is a brochure in a chat.</p>
+              <p>A three-minute voice note with the fee, the story and no time. <a href="/blog/a-voice-note-dump-is-not-a-reply">A voice note dump is not a reply</a>.</p>
               <p>A Calendly, a Google calendar, a Zoho Bookings link. A link is extra work. Most people do not tap it. The thread dies on the tap they did not make.</p>
               <p>A chatbot menu. Press 1 for fees. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>. A menu is not two slots.</p>
               <p>An away message. A sign on the door is not a booking.</p>

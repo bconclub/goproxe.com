@@ -29,7 +29,7 @@ If the handoff is a new inbox, you paid for the lead twice.
 
 ## What people run instead
 
-A screenshot into a staff group. The lead waits while the picture travels.
+A screenshot into a staff group. The lead waits while the picture travels. A forward is not a handoff.
 
 A CRM row with no thread. "Assigned." Nobody has the words. [Your CRM will not answer](/blog/crm-wont-answer)
 
@@ -165,7 +165,7 @@ export default function HandoffWithoutStartingOverPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>A screenshot into a staff group. The lead waits while the picture travels.</p>
+              <p>A screenshot into a staff group. The lead waits while the picture travels. <a href="/blog/a-forward-is-not-a-handoff">A forward is not a handoff</a>.</p>
               <p>A CRM row with no thread. "Assigned." Nobody has the words. <a href="/blog/crm-wont-answer">Your CRM will not answer</a></p>
               <p>A fresh WhatsApp from the owner. The customer starts over. They drop.</p>
               <p>Two people writing in the same chat with no memory of who already offered Thursday.</p>

@@ -17,7 +17,7 @@ const articleContent = `They asked for a slot. You put them in a sheet. Name, nu
 
 A row means you can sort the lead later. The lead still waits. The desk means the thread moved. Two facts. Two times. Or a clear handoff. If the last thing you did is update a cell, you logged. You did not desk.
 
-Paste the WhatsApp into column A. Close the chat. Color the row yellow. Plan to call after lunch. Filter by status. Still no line back to the lead. Share the sheet with the team. Nobody sends a next line.
+Paste the WhatsApp into column A. Close the chat. Color the row yellow. Plan to call after lunch. Filter by status. Still no line back to the lead. Share the sheet with the team. Nobody sends a next line. Save the number to your phone too. Saving the contact is not done.
 
 You can open the lead thread and point at the last line they got. If that line is missing and only the sheet grew, you tracked. You did not offer a slot.
 
@@ -125,7 +125,7 @@ export default function TheSpreadsheetIsNotTheDeskPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>Paste the WhatsApp into column A. Close the chat. Color the row yellow. Plan to call after lunch. Filter by status. Still no line back to the lead. Share the sheet with the team. Nobody sends a next line.</p>
+              <p>Paste the WhatsApp into column A. Close the chat. Color the row yellow. Plan to call after lunch. Filter by status. Still no line back to the lead. Share the sheet with the team. Nobody sends a next line. Save the number to your phone too. <a href="/blog/saving-the-contact-is-not-done">Saving the contact is not done</a>.</p>
             </section>
 
             <section className={styles.section}>

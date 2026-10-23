@@ -20,7 +20,7 @@ A no-show is not a lost deal. It is an open thread. Rebook two times, or clear a
 After they book is the booking job. This page is what happens when they do not sit.
 
 A booking puts a slot on the calendar.
-A no-show is a miss. The next line is a new slot or a clear stop.
+A no-show is a miss. The next line is a new slot or a clear stop. Same rule when they move it. A reschedule needs a slot.
 If the only update is a no-show tag, you logged a miss. You did not desk.
 
 Mark No-show. Never write again.
@@ -137,7 +137,7 @@ export default function ANoShowIsStillALeadPage() {
             <section className={styles.section}>
               <h2 id="two-different-jobs">Two different jobs</h2>
               <p>A booking puts a slot on the calendar.</p>
-              <p>A no-show is a miss. The next line is a new slot or a clear stop.</p>
+              <p>A no-show is a miss. The next line is a new slot or a clear stop. Same rule when they move it. <a href="/blog/a-reschedule-needs-a-slot">A reschedule needs a slot</a>.</p>
               <p>If the only update is a no-show tag, you logged a miss. You did not desk.</p>
             </section>
 

@@ -24,7 +24,7 @@ A reply moves the thread. Two facts. Two times. Or a clear handoff. Qualify befo
 A park says later and closes the laptop. No ask. No time. No owner.
 If you park every hard question, Thursday never lands.
 
-I'll check and get back. Then nothing.
+I'll check and get back. Then nothing. A reminder is not a reply.
 Let me confirm with the team. Then a cold thread. Silence is not a decision.
 A CRM note waiting with no message in the chat. A status is not a message.
 Typing one moment while the lead waits all day.
@@ -125,9 +125,9 @@ export default function IllGetBackToYouIsNotAReplyPage() {
 
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
-              <p>I'll check and get back. Then nothing.</p>
+              <p>I'll check and get back. Then nothing. <a href="/blog/a-reminder-is-not-a-reply">A reminder is not a reply</a>.</p>
               <p>Let me confirm with the team. Then a cold thread. <a href="/blog/silence-is-not-a-decision">Silence is not a decision</a>.</p>
-              <p>A CRM note waiting with no message in the chat. A status is not a message.</p>
+              <p>A CRM note waiting with no message in the chat. <a href="/blog/a-status-is-not-a-message">A status is not a message</a>.</p>
               <p>Typing one moment while the lead waits all day.</p>
             </section>
 

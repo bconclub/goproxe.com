@@ -147,7 +147,7 @@ export default function AfterTheyBookPage() {
             <section className={styles.section}>
               <h2 id="two-different-jobs">Two different jobs</h2>
               <p>The book is the slot. A day and a time in the thread. <a href="/blog/conversation-that-books">A conversation that books</a>.</p>
-              <p>After is the desk that keeps them coming. Confirm in the same thread. Remind before the slot. If they miss it, follow up until they decide again. A no-show is still a lead. <a href="/blog/follow-up-is-a-system">Follow-up is a system</a>. <a href="/blog/what-to-measure-on-inbound">What to measure on inbound</a>.</p>
+              <p>After is the desk that keeps them coming. Confirm in the same thread. Remind before the slot. If they miss it, follow up until they decide again. <a href="/blog/a-no-show-is-still-a-lead">A no-show is still a lead</a>. <a href="/blog/follow-up-is-a-system">Follow-up is a system</a>. <a href="/blog/what-to-measure-on-inbound">What to measure on inbound</a>.</p>
               <p>If you stop at booked, you will look full and still sit empty.</p>
             </section>
 

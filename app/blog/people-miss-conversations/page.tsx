@@ -18,7 +18,7 @@ const articleContent = `Parents do not enquire at 10am because that is when your
 
 The searches are blunt. missed WhatsApp leads. how fast should I reply on WhatsApp. after hours WhatsApp enquiry. parents message at night coaching. patients WhatsApp during consult. site visit lead no reply. first broker to reply. They are not searching for AI transformation. They are searching because a chat sat there and the person on the other side left.
 
-The five-minute window. Industry research on lead response is ugly and simple: reply inside five minutes and you are in the conversation. Wait thirty minutes and you are a callback they will ignore. WhatsApp makes that worse. The person is already in the app. They sent the same message to two other businesses. The first useful reply gets the slot.`
+The five-minute window. Industry research on lead response is ugly and simple: reply inside five minutes and you are in the conversation. Wait thirty minutes and you are a callback they will ignore. Count it on your own desk first. Only 13% see AI returns. Fix the first reply. WhatsApp makes that worse. The person is already in the app. They sent the same message to two other businesses. The first useful reply gets the slot.`
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -126,6 +126,7 @@ export default function BlogPostPage() {
             <section className={styles.section}>
               <h2 id="the-five-minute-window">The five-minute window</h2>
               <p>Industry research on lead response (MIT / InsideSales, cited across sales teams) is ugly and simple: reply inside five minutes and you are in the conversation. Wait thirty minutes and you are a callback they will ignore.</p>
+              <p>Count it on your own desk first. <a href="/blog/ai-returns-first-whatsapp-reply">Only 13% see AI returns. Fix the first reply</a>.</p>
               <p>WhatsApp makes that worse. The person is already in the app. They sent the same message to two other businesses. The first useful reply gets the slot.</p>
               <p>A next-morning reply is not late.</p>
               <p>It is a different conversation. They have already decided.</p>
@@ -136,6 +137,7 @@ export default function BlogPostPage() {
               <p>You are in consult. WhatsApp fills up. A new patient asked for a slot. You cannot type. They book the next clinic that answered.</p>
               <p>The search behind that: "patients WhatsApp during consult" and "never miss an appointment lead."</p>
               <p>The job is not a clever auto-reply. The job is: answer, qualify (new vs follow-up, which doctor, when), book, remind.</p>
+              <p>A 250-clinic network is funding this exact step. <a href="/blog/curebay-100-crore-clinic-front-desk">CureBay raised ₹100 Cr. Is your front desk ready?</a></p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>.</p>
             </section>
 
@@ -155,6 +157,7 @@ export default function BlogPostPage() {
               <p>How PROXe does this for <a href="/industries/realestate">real estate</a>.</p>
               <p>How PROXe does this for <a href="/industries/wellness">wellness</a>.</p>
               <p>How PROXe does this for <a href="/industries/professional-services">professional services</a>.</p>
+              <p>Crews lose the job from the roof. <a href="/blog/home-services-on-a-job">Home services on a job</a>.</p>
               <p>How PROXe does this for <a href="/industries/home-services">home services</a>.</p>
             </section>
 

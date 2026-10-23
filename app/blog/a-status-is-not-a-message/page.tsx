@@ -43,7 +43,7 @@ Talk to PROXe at goproxe.com.
 Can the desk update the CRM too?
 Yes. After it writes the lead a real line.
 Is a reminder a message?
-No. A reminder is a status for you.
+No. A reminder is a status for you. A reminder is not a reply.
 Does PROXe leave leads on Waiting with no text?
 No. It asks, books, or hands off.
 Does it replace the clinic?
@@ -169,7 +169,7 @@ export default function AStatusIsNotAMessagePage() {
               <p><strong>Can the desk update the CRM too?</strong></p>
               <p>Yes. After it writes the lead a real line.</p>
               <p><strong>Is a reminder a message?</strong></p>
-              <p>No. A reminder is a status for you.</p>
+              <p>No. A reminder is a status for you. <a href="/blog/a-reminder-is-not-a-reply">A reminder is not a reply</a>.</p>
               <p><strong>Does PROXe leave leads on Waiting with no text?</strong></p>
               <p>No. It asks, books, or hands off.</p>
               <p><strong>Does it replace the clinic?</strong></p>

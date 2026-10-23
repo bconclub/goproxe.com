@@ -27,7 +27,7 @@ If you quote what you do not know, you will look fast and still lose the consult
 
 A canned "starts at" line with a number nobody approved.
 
-A bot that invents a package to keep the chat going.
+A bot that invents a package to keep the chat going. On a call it sounds even surer. Fast voice AI still needs the right answers.
 
 A form that asks budget, then nobody writes back. The website is not the desk.
 
@@ -149,7 +149,7 @@ export default function DontInventThePricePage() {
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>A canned "starts at" line with a number nobody approved.</p>
-              <p>A bot that invents a package to keep the chat going.</p>
+              <p>A bot that invents a package to keep the chat going. On a call it sounds even surer. <a href="/blog/fast-voice-ai-still-needs-the-right-answers">Fast voice AI still needs the right answers</a>.</p>
               <p>A form that asks budget, then nobody writes back. <a href="/blog/the-website-is-not-the-desk">The website is not the desk</a>.</p>
               <p>An intern guessing. The owner finds out when the lead shows up angry.</p>
             </section>

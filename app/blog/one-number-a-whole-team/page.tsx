@@ -38,7 +38,7 @@ Any named person can pick up a live thread without asking who has the phone. The
 
 If the inbox dies when one handset leaves the building, you do not have a team. You have a phone.
 
-Home services, professional services, clinics. Anyone whose WhatsApp is the business and lives on one person.
+Home services, professional services, clinics. Anyone whose WhatsApp is the business and lives on one person. For firms: professional services, with a client.
 
 If a booking dies because the owner was on site, this page is the map.
 
@@ -168,7 +168,7 @@ export default function OneNumberAWholeTeamPage() {
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Home services, professional services, clinics. Anyone whose WhatsApp is the business and lives on one person.</p>
+              <p>Home services, professional services, clinics. Anyone whose WhatsApp is the business and lives on one person. For firms: <a href="/blog/professional-services-with-a-client">professional services, with a client</a>.</p>
               <p>If a booking dies because the owner was on site, this page is the map.</p>
             </section>
 

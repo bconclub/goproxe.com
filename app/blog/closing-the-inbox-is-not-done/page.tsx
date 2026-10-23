@@ -27,6 +27,7 @@ If unread is empty and the calendar is empty, you cleaned the UI. You did not fi
 Archive after reading. No reply.
 Mark unread as read so the badge dies. Silence is not a decision.
 Mute the chat. The lead still waits.
+Pin it so it looks handled. Pinning the chat is not done.
 Close WhatsApp at 6pm with open asks still hanging. I'll get back to you is not a reply.
 
 You can point at the slot, the no, or the handoff in the thread.
@@ -141,6 +142,7 @@ export default function ClosingTheInboxIsNotDonePage() {
               <p>Archive after reading. No reply.</p>
               <p>Mark unread as read so the badge dies. <a href="/blog/silence-is-not-a-decision">Silence is not a decision</a>.</p>
               <p>Mute the chat. The lead still waits.</p>
+              <p>Pin it so it looks handled. <a href="/blog/pinning-the-chat-is-not-done">Pinning the chat is not done</a>.</p>
               <p>Close WhatsApp at 6pm with open asks still hanging. <a href="/blog/ill-get-back-to-you-is-not-a-reply">I'll get back to you is not a reply</a>.</p>
             </section>
 

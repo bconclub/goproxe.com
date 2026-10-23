@@ -118,12 +118,12 @@ export default function CrmWontAnswerPage() {
               <p>Treat the inbound as a conversation, not a row.</p>
               <p>Answer on the channel they used. WhatsApp, Instagram, the site, the call. Same person. One memory.</p>
               <p>Qualify in the thread. Book a slot. Follow up until yes or no. Log the outcome after, if you still want a CRM.</p>
-              <p>The record comes after the reply. Not instead of it.</p>
+              <p>The record comes after the reply. Not instead of it. Same for the phone book. <a href="/blog/saving-the-contact-is-not-done">Saving the contact is not done</a>.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Businesses that already get inbound and already have a board. Excel, Zoho, LeadSquared. The board is not the leak. The unanswered chat is.</p>
+              <p>Businesses that already get inbound and already have a board. Excel, Zoho, LeadSquared. The board is not the leak. The unanswered chat is. <a href="/blog/the-spreadsheet-is-not-the-desk">The spreadsheet is not the desk</a>.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>.</p>
             </section>

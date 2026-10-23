@@ -20,7 +20,7 @@ What clinics actually run. A personal phone at the front desk. OPD software for 
 
 What to do instead. Answer in seconds on WhatsApp, the site, Instagram, the missed call. Same person. One memory. Ask the two questions: what hurts, when can they come. Offer two slots. Book the calendar. Do not diagnose in the thread. Do not invent a fee. Morning you walk into a booked visit, not a pile of we will confirm.
 
-Who this is for. Clinics that already get inbound on WhatsApp and still answer between patients. Between patients is too late.`
+Who this is for. Clinics that already get inbound on WhatsApp and still answer between patients. Between patients is too late. Even a 250-clinic network is spending on the first reply. CureBay raised ₹100 Cr. Is your front desk ready?`
 
 export default function ClinicsWhatsAppDuringConsultPage() {
   const slug = 'clinics-whatsapp-during-consult'
@@ -103,7 +103,7 @@ export default function ClinicsWhatsAppDuringConsultPage() {
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Clinics that already get inbound on WhatsApp and still answer between patients. Between patients is too late.</p>
+              <p>Clinics that already get inbound on WhatsApp and still answer between patients. Between patients is too late. Even a 250-clinic network is spending on the first reply. <a href="/blog/curebay-100-crore-clinic-front-desk">CureBay raised ₹100 Cr. Is your front desk ready?</a></p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>. Same leak for <a href="/industries/coaching">coaching</a> and <a href="/industries/realestate">real estate</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/after-hours-whatsapp">After-hours WhatsApp is how you lose the lead</a>. <a href="/blog/how-fast-to-reply-whatsapp">How fast should you reply to a WhatsApp lead</a>. <a href="/blog/what-is-proxe">What PROXe is</a>.</p>
             </section>

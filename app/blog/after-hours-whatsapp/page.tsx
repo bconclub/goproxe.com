@@ -106,12 +106,12 @@ export default function AfterHoursWhatsAppPage() {
               <p>Ask the two questions that qualify (what, when, who).</p>
               <p>Offer two slots. Book one. Remember the thread for morning.</p>
               <p>Your counsellor walks in to a calendar, not a pile of "we'll call you."</p>
-              <p>Clinic during consult, coaching parent at night, broker after a site visit: same leak. The human is busy. The chat is not.</p>
+              <p><a href="/blog/clinics-whatsapp-during-consult">Clinic during consult</a>, <a href="/blog/coaching-parents-at-night">coaching parent at night</a>, <a href="/blog/paid-lead-no-reply">broker after a site visit</a>, <a href="/blog/wellness-after-hours">studio after 8pm</a>: same leak. The human is busy. The chat is not.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Businesses that already get inbound after 7pm and treat it as tomorrow's work. Tomorrow is too late.</p>
+              <p>Businesses that already get inbound after 7pm and treat it as tomorrow's work. Tomorrow is too late. Friday night is the same leak, three days long. <a href="/blog/the-weekend-pile-is-not-a-system">The weekend pile is not a system</a>.</p>
               <p>How PROXe does this for <a href="/industries/clinics">clinics</a>, <a href="/industries/coaching">coaching</a>, <a href="/industries/realestate">real estate</a>, <a href="/industries/wellness">wellness</a>, <a href="/industries/professional-services">professional services</a>, <a href="/industries/home-services">home services</a>.</p>
               <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/blog/what-is-proxe">What PROXe is</a>. <a href="/blog/people-miss-conversations">Why people miss conversations</a>. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>.</p>
             </section>

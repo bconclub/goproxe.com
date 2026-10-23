@@ -34,13 +34,13 @@ A chatbot. That is a menu. It dumps a brochure. It cannot book Tuesday. It forge
 
 A CRM with WhatsApp bolted on. That is a filing cabinet with a pipe. The connector logs the chat. A person still has to type.
 
-A broadcast tool. That is a megaphone. It is not a conversation.
+A broadcast tool. That is a megaphone. It is not a conversation. A broadcast is not a reply.
 
 None of those are wrong. They are the wrong job for the first thirty seconds of inbound.
 
 You know the lead's name and nobody wrote back. You are missing the desk.
 
-You answered, then the week went quiet, and nobody wrote again. You have a desk for the first reply and nothing for follow-up. That is a later post. Same job family.
+You answered, then the week went quiet, and nobody wrote again. You have a desk for the first reply and nothing for follow-up. That is follow-up is a system. Same job family.
 
 Two people replied with two different slots. You have an inbox. You do not have one memory.
 
@@ -174,14 +174,14 @@ export default function WhoAnswersTheCustomerPage() {
               <p>An away message. That is a sign on the door. It is not a reply.</p>
               <p>A chatbot. That is a menu. It dumps a brochure. It cannot book Tuesday. It forgets they called in the morning. <a href="/blog/not-a-whatsapp-bot">PROXe is not a WhatsApp chatbot</a>.</p>
               <p>A CRM with WhatsApp bolted on. That is a filing cabinet with a pipe. <a href="/blog/crm-wont-answer">Your CRM will not answer that WhatsApp</a>. The connector logs the chat. A person still has to type.</p>
-              <p>A broadcast tool. That is a megaphone. It is not a conversation.</p>
+              <p>A broadcast tool. That is a megaphone. It is not a conversation. <a href="/blog/a-broadcast-is-not-a-reply">A broadcast is not a reply</a>.</p>
               <p>None of those are wrong. They are the wrong job for the first thirty seconds of inbound.</p>
             </section>
 
             <section className={styles.section}>
               <h2 id="how-to-tell-which-job-you-are-missing">How to tell which job you are missing</h2>
               <p>You know the lead's name and nobody wrote back. You are missing the desk.</p>
-              <p>You answered, then the week went quiet, and nobody wrote again. You have a desk for the first reply and nothing for follow-up. That is a later post. Same job family.</p>
+              <p>You answered, then the week went quiet, and nobody wrote again. You have a desk for the first reply and nothing for follow-up. That is <a href="/blog/follow-up-is-a-system">follow-up is a system</a>. Same job family.</p>
               <p>Two people replied with two different slots. You have an inbox. You do not have one memory.</p>
               <p>Staff leave and the chats leave with the phone. You never owned the desk. You rented a person's pocket.</p>
               <p>If your answer to "who talks to them at 9pm" is "whoever is free," you do not have a desk. You have hope.</p>
@@ -192,7 +192,7 @@ export default function WhoAnswersTheCustomerPage() {
               <p>Answer on the channel they used. Do not drag a WhatsApp lead onto a form. Do not dump a booking link and call it a reply.</p>
               <p>Ask the two questions that matter. What do they need. When. Who decides.</p>
               <p>Put two slots in the thread. Book there.</p>
-              <p>Keep writing until yes or no. Silence is not a decision.</p>
+              <p>Keep writing until yes or no. <a href="/blog/silence-is-not-a-decision">Silence is not a decision</a>.</p>
               <p>One person, every channel. They should not repeat themselves.</p>
               <p>That is the customer side. The record can wait until after the slot exists.</p>
             </section>

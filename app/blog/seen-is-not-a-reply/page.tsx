@@ -27,7 +27,7 @@ If the only update is blue ticks, you watched. You did not desk.
 Open the chat. Close it. Plan to answer later. I'll get back to you is not a reply
 Screenshot to the group. No line back to the lead. The group chat is not the desk.
 Mark as read so the badge dies. Closing the inbox is not done
-Type one word. Delete it. Leave.
+Type one word. Delete it. Leave. A draft is not a reply.
 
 You can open the thread and point at the last line the lead got.
 If the last change is only seen, you logged attention. You did not desk.
@@ -139,9 +139,9 @@ export default function SeenIsNotAReplyPage() {
             <section className={styles.section}>
               <h2 id="what-people-run-instead">What people run instead</h2>
               <p>Open the chat. Close it. Plan to answer later. <a href="/blog/ill-get-back-to-you-is-not-a-reply">I'll get back to you is not a reply</a></p>
-              <p>Screenshot to the group. No line back to the lead. The group chat is not the desk.</p>
+              <p>Screenshot to the group. No line back to the lead. <a href="/blog/the-group-chat-is-not-the-desk">The group chat is not the desk</a>.</p>
               <p>Mark as read so the badge dies. <a href="/blog/closing-the-inbox-is-not-done">Closing the inbox is not done</a></p>
-              <p>Type one word. Delete it. Leave.</p>
+              <p>Type one word. Delete it. Leave. <a href="/blog/a-draft-is-not-a-reply">A draft is not a reply</a>.</p>
             </section>
 
             <section className={styles.section}>

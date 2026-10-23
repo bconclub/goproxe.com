@@ -204,6 +204,7 @@ export default function AReminderIsNotAReplyPage() {
               <p>Tell yourself you will do all reminders in one block after 7.</p>
               <p>Pass the reminder to a junior who is also in a consult.</p>
               <p>Mark unread so it looks urgent later. Later never comes clean. <a href="/blog/closing-the-inbox-is-not-done">Closing the inbox is not done</a>.</p>
+              <p>Pin it to the top. Same park, higher up. <a href="/blog/pinning-the-chat-is-not-done">Pinning the chat is not done</a>.</p>
               <p>None of that puts a line in the thread.</p>
             </section>
 
@@ -241,7 +242,7 @@ export default function AReminderIsNotAReplyPage() {
               <p>PROXe is the desk that finishes the thread, not the reminder that parks it.</p>
               <p>It answers, qualifies, books and follows up on every lead across every channel, so you never miss a lead ever again. WhatsApp. Instagram. Web. Calls. One memory. It asks. It books. Or it hands over with context. It does not invent a fee. It does not replace the clinic.</p>
               <p>You stay on the consult. The desk still moves.</p>
-              <p>Talk to PROXe at <a href="/">goproxe.com</a>. Founding is open at Rs 9,999/mo if you want the desk live without building it yourself.</p>
+              <p>Talk to PROXe at <a href="/">goproxe.com</a>. <a href="/pricing">Founding is open at Rs 9,999/mo</a> if you want the desk live without building it yourself.</p>
             </section>
 
             <section className={styles.section}>

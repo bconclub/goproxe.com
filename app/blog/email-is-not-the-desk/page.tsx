@@ -26,7 +26,7 @@ Auto-reply: thanks, we will email you. Then nothing in the thread. Forward the W
 
 You can point at the WhatsApp (or IG, or the site chat) where they picked a time. That message is the booking. If the only line is an unread email, you have a queue. You do not have a desk.
 
-Clinics, coaches, home services, anyone who still treats Gmail as the office while the lead is waiting on WhatsApp. If your speed-to-lead is your inbox, this page is the map.
+Clinics, coaches, home services, anyone who still treats Gmail as the office while the lead is waiting on WhatsApp. Firms feel it most. Professional services, with a client. If your speed-to-lead is your inbox, this page is the map.
 
 PROXe is the desk on the thread they opened. It answers, qualifies, books and follows up on every lead across every channel, so you never miss a lead ever again. WhatsApp, IG, site, call. Same memory. Email does not become the queue. It does not invent a fee. It does not replace the clinic. Talk to PROXe at goproxe.com.`
 
@@ -129,7 +129,7 @@ export default function EmailIsNotTheDeskPage() {
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Clinics, coaches, home services, anyone who still treats Gmail as the office while the lead is waiting on WhatsApp.</p>
+              <p>Clinics, coaches, home services, anyone who still treats Gmail as the office while the lead is waiting on WhatsApp. Firms feel it most. <a href="/blog/professional-services-with-a-client">Professional services, with a client</a>.</p>
               <p>If your speed-to-lead is your inbox, this page is the map.</p>
             </section>
 

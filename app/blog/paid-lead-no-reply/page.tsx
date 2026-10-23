@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 }
 
-const articleContent = `The buyer tapped WhatsApp off the listing at 9:12pm. Locality, budget, this weekend. Your phone was in the car. Morning you called. They had already booked the site visit with the broker who asked two questions at 9:14. You paid for that lead. You did not lose it to the portal. You lost it to silence.
+const articleContent = `The buyer tapped WhatsApp off the listing at 9:12pm. Locality, budget, this weekend. Your phone was in the car. Morning you called. They had already booked the site visit with the broker who asked two questions at 9:14. You paid for that lead. You did not lose it to the portal. You lost it to silence. The ad is not the desk.
 
 What brokers actually run. Personal WhatsApp. A greeting. 99acres and MagicBricks dumping into the same chat. Sometimes a CRM for the developer. The leak is not attribution. The leak is the independent broker whose number is on the listing, on Instagram, and on the site, and who answers when the site visit ends.
 
@@ -83,7 +83,7 @@ export default function PaidLeadNoReplyPage() {
             <section className={styles.section}>
               <p>The buyer tapped WhatsApp off the listing at 9:12pm. Locality, budget, this weekend.</p>
               <p>Your phone was in the car. Morning you called. They had already booked the site visit with the broker who asked two questions at 9:14.</p>
-              <p>You paid for that lead. You did not lose it to the portal. You lost it to silence.</p>
+              <p>You paid for that lead. You did not lose it to the portal. You lost it to silence. <a href="/blog/the-ad-is-not-the-desk">The ad is not the desk</a>.</p>
             </section>
 
             <section className={styles.section}>

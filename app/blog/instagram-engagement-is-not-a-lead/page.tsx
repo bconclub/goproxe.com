@@ -38,7 +38,7 @@ There is a thread. There is a day and a time they picked. Not a heart on the ree
 
 If you cannot point at the message where they chose Thursday, you have engagement. You do not have a lead.
 
-Gyms, spas, coaches, clinics, anyone whose inbound starts on Instagram. Reels, ads, comments, DMs.
+Gyms, spas, coaches, clinics, anyone whose inbound starts on Instagram. Reels, ads, comments, DMs. Studios see it after 7pm. Wellness after hours.
 
 If your team celebrates comments and cannot show bookings from those comments, this page is the map.
 
@@ -163,7 +163,7 @@ export default function InstagramEngagementIsNotALeadPage() {
 
             <section className={styles.section}>
               <h2 id="who-this-is-for">Who this is for</h2>
-              <p>Gyms, spas, coaches, clinics, anyone whose inbound starts on Instagram. Reels, ads, comments, DMs.</p>
+              <p>Gyms, spas, coaches, clinics, anyone whose inbound starts on Instagram. Reels, ads, comments, DMs. Studios see it after 7pm. <a href="/blog/wellness-after-hours">Wellness after hours</a>.</p>
               <p>If your team celebrates comments and cannot show bookings from those comments, this page is the map.</p>
             </section>
 

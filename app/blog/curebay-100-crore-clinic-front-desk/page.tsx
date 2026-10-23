@@ -146,7 +146,7 @@ export default function Curebay100CroreClinicFrontDeskPage() {
               <h2 id="where-proxe-fits">Where PROXe fits</h2>
               <p>PROXe is the front desk that works when yours cannot.</p>
               <p>It answers on WhatsApp, Instagram, your website, email and voice. It asks the two or three things a clinic needs, offers a slot, and books it. If the question is outside what you have told it, it hands the whole conversation to your team, so the patient is not asked the same thing again.</p>
-              <p>PROXe Core is ₹9,999 a month + GST. It includes 1,000 leads, 250 voice minutes, every channel and 2 seats, with a 7-day trial. You can read more on the <a href="/">PROXe home page</a>.</p>
+              <p><a href="/pricing">PROXe Core is ₹9,999 a month + GST</a>. It includes 1,000 leads, 250 voice minutes, every channel and 2 seats, with a 7-day trial. You can read more on the <a href="/">PROXe home page</a>.</p>
               <p>It does not diagnose and it does not replace your doctor. It handles the front desk part: the first reply, the questions, the booking, the follow-up.</p>
             </section>
 
