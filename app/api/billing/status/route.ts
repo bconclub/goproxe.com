@@ -80,7 +80,7 @@ export async function GET(request: Request) {
         ? 'processing'
         : !needsPayment
           ? 'ok'
-          : attempt?.status === 'failed' && attemptError !== 'CUSTOMER_CANCELLED'
+          : attempt?.status === 'failed'
             ? 'failed'
             : 'due'
     // Recurring prices carry `price`, usage-based ones `fixed_price`.
