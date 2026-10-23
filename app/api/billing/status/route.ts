@@ -72,14 +72,15 @@ export async function GET(request: Request) {
     const needsPayment = status === 'on_hold' || status === 'past_due'
     /**
      * One word for the dashboard bar. Z's rule (23 Oct): red only on a real
-     * failure, nothing at all for processing or not-yet-paid.
+     * failure, nothing at all for processing or not-yet-paid. The client
+     * declining their own UPI request (CUSTOMER_CANCELLED) is not-yet-paid.
      */
     const paymentState: 'ok' | 'processing' | 'failed' | 'due' =
       attempt?.status === 'processing'
         ? 'processing'
         : !needsPayment
           ? 'ok'
-          : attempt?.status === 'failed'
+          : attempt?.status === 'failed' && attemptError !== 'CUSTOMER_CANCELLED'
             ? 'failed'
             : 'due'
     // Recurring prices carry `price`, usage-based ones `fixed_price`.
