@@ -72,8 +72,9 @@ export async function GET(request: Request) {
     const needsPayment = status === 'on_hold' || status === 'past_due'
     /**
      * One word for the dashboard bar. Z's rule (23 Oct): red only on a real
-     * failure, nothing at all for processing or not-yet-paid. The client
-     * declining their own UPI request (CUSTOMER_CANCELLED) is not-yet-paid.
+     * failure, nothing at all for processing or not-yet-paid. A client
+     * cancelling their own payment request is still a failure (Z corrected
+     * this the same day); 'due' means owed with no attempt yet.
      */
     const paymentState: 'ok' | 'processing' | 'failed' | 'due' =
       attempt?.status === 'processing'
