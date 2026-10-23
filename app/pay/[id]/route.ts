@@ -11,8 +11,12 @@ import { getDodoClient, getSiteUrl } from '../../lib/dodo'
  * the client opens it (seen 23 Oct with Ahoy + Lokazen, both on_hold after a
  * failed first renewal). This mints the Dodo link at the moment it is opened.
  *
- * - on_hold / past_due / active → update-payment-method on THE SAME subscription:
- *   Dodo charges any dues and reactivates it, no new subscription.
+ * - on_hold / past_due → update-payment-method on THE SAME subscription: Dodo
+ *   charges the dues and reactivates it, no new subscription. If a dues payment
+ *   is already with the bank, Dodo refuses (422) and we show "processing".
+ * - active → nothing owed.
+ * Both answers are a plain page, not /thank-you: that page fires the purchase
+ * pixel, and re-opening a payment link is not a sale.
  * - anything else (pending, failed, cancelled, expired) has nothing to update,
  *   so it falls through to /api/checkout/resume: a fresh checkout for the same
  *   customer and plan.
@@ -24,7 +28,7 @@ import { getDodoClient, getSiteUrl } from '../../lib/dodo'
 
 export const runtime = 'nodejs'
 
-const UPDATABLE = new Set(['on_hold', 'past_due', 'active'])
+const UPDATABLE = new Set(['on_hold', 'past_due'])
 
 /**
  * Dodo answers 409 "a payment for this subscription started a moment ago" to a
@@ -39,6 +43,17 @@ const UPDATABLE = new Set(['on_hold', 'past_due', 'active'])
 const PREVIEW_BOT = /whatsapp|facebookexternalhit|facebot|twitterbot|slackbot|telegrambot|discordbot|linkedinbot|skypeuripreview|googlebot|bingbot|embedly|preview/i
 const REUSE_MS = 90 * 1000
 const minted = new Map<string, { link: string; at: number }>()
+
+function infoPage(title: string, body: string) {
+  return new NextResponse(
+    `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
+      `<title>${title}</title><meta name="robots" content="noindex"></head>` +
+      `<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0d0d0d;color:#f2f2f2;font-family:system-ui,sans-serif">` +
+      `<main style="max-width:420px;padding:32px 20px;text-align:center"><h1 style="font-size:22px;margin:0 0 12px">${title}</h1>` +
+      `<p style="color:#b5b5b5;line-height:1.5;margin:0">${body}</p></main></body></html>`,
+    { headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex' } }
+  )
+}
 
 function previewPage() {
   return new NextResponse(
@@ -70,6 +85,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     const sub = await client.subscriptions.retrieve(subscriptionId)
 
+    if (sub.status === 'active') {
+      return infoPage('Your PROXe subscription is active', 'Nothing is due right now. Your payments are up to date.')
+    }
     if (!UPDATABLE.has(sub.status)) {
       return NextResponse.redirect(
         `${siteUrl}/api/checkout/resume?subscription_id=${encodeURIComponent(subscriptionId)}`,
@@ -92,6 +110,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     minted.set(subscriptionId, { link: res.payment_link, at: Date.now() })
     return NextResponse.redirect(res.payment_link, 302)
   } catch (err) {
+    // 422 "Latest payment is not failed": the client already started paying
+    // (seen 23 Oct, Ahoy's UPI dues payment still with the bank). Retrying
+    // could double-charge, so show the processing screen, never pricing.
+    if ((err as { status?: number })?.status === 422) {
+      return infoPage(
+        'Your payment is processing',
+        'Your bank is still confirming the payment. This can take up to 48 hours for UPI autopay. Please do not pay again; we will confirm once it clears.'
+      )
+    }
     console.error('[pay] could not mint a payment link', subscriptionId, err)
     return fallback
   }
