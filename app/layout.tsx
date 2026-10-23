@@ -75,6 +75,19 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body>
+        {/* Boot loader (Z, 23 Oct 2026: "keep a loader so it loads, then we see
+            the screen, rather than just breaking"). Styled inline, so it works
+            when the site's CSS does not arrive (a phone holding an old page,
+            a slow or failed CSS fetch). globals.css hides it, so whenever the
+            real CSS is there it never shows. If the CSS is still missing after
+            8 seconds: reload once, then offer a reload button. */}
+        <style dangerouslySetInnerHTML={{ __html: "#pxboot{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center;background:linear-gradient(135deg,#7C3AED 0%,#4C1D95 50%,#1E1B4B 100%);color:#fff;font:600 15px/1.4 system-ui,-apple-system,'Segoe UI',sans-serif;text-align:center;padding:24px}#pxboot b{font-size:26px;letter-spacing:.04em}#pxboot i{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:pxspin .8s linear infinite}@keyframes pxspin{to{transform:rotate(360deg)}}#pxboot button{display:none;margin-top:6px;padding:12px 22px;border:0;border-radius:999px;background:#fff;color:#4C1D95;font:600 15px system-ui,sans-serif}" }} />
+        <div id="pxboot" aria-hidden="true">
+          <b>PROXe</b>
+          <i />
+          <button type="button" id="pxboot-retry">Tap to reload</button>
+        </div>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){function up(){var b=document.getElementById('pxboot');return !b||getComputedStyle(b).display==='none'}var r=document.getElementById('pxboot-retry');if(r)r.onclick=function(){location.reload()};setTimeout(function(){if(up()){try{sessionStorage.removeItem('pxboot')}catch(e){}return}try{if(!sessionStorage.getItem('pxboot')){sessionStorage.setItem('pxboot','1');location.reload();return}}catch(e){}if(r)r.style.display='block'},8000)})()` }} />
         <AnalyticsScripts />
         <HighIntentTracker />
         {/* The real PROXe agent, live on its own site. */}

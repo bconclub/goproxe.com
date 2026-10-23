@@ -31,3 +31,6 @@ img {
   max-width: 100%;
   display: block;
 }
+
+/* The site's CSS is here, so the inline boot loader (app/layout.tsx) is not needed. */
+#pxboot { display: none !important; }

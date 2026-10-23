@@ -434,7 +434,10 @@ body:has(.proxe-root) {
    what an eyebrow is for. Tighter bottom margin ties it TO the heading instead
    of leaving it floating between the nav and the H1. */
 .proxe-hero-eyebrow {
-  font-family: var(--proxe-font-mono);
+  /* Sans, not mono (Z, 23 Oct 2026): in JetBrains Mono the slab-serif I next to
+     A read as "API lead conversion". */
+  font-family: var(--proxe-font-sans);
+  font-weight: 600;
   font-size: 12.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
