@@ -104,7 +104,7 @@ export async function GET(request: Request) {
         product_name: product?.name ?? null,
         // What the client bought, without Dodo's checkout variant ("(India)",
         // "- 7 Day Trial", "- 3 Months"): those describe the link we sent.
-        plan_name: product?.name?.split(/s+[-(]/)[0]?.trim() || null,
+        plan_name: product?.name?.split(/\s+[-(]/)[0]?.trim() || null,
         last_payment: last
           ? {
               status: last.status,
