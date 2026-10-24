@@ -72,6 +72,12 @@ const nextConfig = {
       // Said aloud it is easy to spell wrong; the page is /what-is-proxe.
       { source: '/what-is-proxie', destination: '/what-is-proxe', permanent: true },
       { source: '/what-is-proxy', destination: '/what-is-proxe', permanent: true },
+      // Short deck links for WhatsApp (Z, 24 Oct 2026: the UTM tail made the
+      // message too long). /w/<tag> is the copied link, /p and /c the 4h ping
+      // and the closing nudge; the tracking params ride on the redirect.
+      { source: '/w/:tag/p', destination: '/what-is-proxe?for=:tag&utm_source=whatsapp&utm_medium=reactivate&utm_content=ping', permanent: false },
+      { source: '/w/:tag/c', destination: '/what-is-proxe?for=:tag&utm_source=whatsapp&utm_medium=reactivate&utm_content=closing', permanent: false },
+      { source: '/w/:tag', destination: '/what-is-proxe?for=:tag', permanent: false },
       // The real onboarding (website in, everything pulled) lives on the PROXe app.
       // Not permanent: browsers cache 308s for good, and this target may move.
       { source: '/onboarding', destination: 'https://proxe.goproxe.com/onboarding', permanent: false },
