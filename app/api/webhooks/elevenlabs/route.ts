@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
     }
     const lines = transcript.map((t) => `${t.role}: ${t.text}`).join('\n')
     const summary = d.analysis?.transcript_summary ?? ''
+    let arc: any = {}
     try {
       const fwd = await fetch(`${ingestBase}/api/agent/outreach-call`, {
         method: 'POST',
@@ -134,22 +135,35 @@ export async function POST(request: NextRequest) {
           disposition: evidence.outcome,
           callback_request: evidence.callback_request,
           occurred_at: d.metadata?.start_time_unix_secs ? new Date(d.metadata.start_time_unix_secs * 1000).toISOString() : undefined,
-          target_id: d.conversation_initiation_client_data?.dynamic_variables?.arc_target_id || undefined,
+          // Only a real ARC id. A free-text id (24 Oct test: "test-callfix-20261024")
+          // made ARC answer 404 instead of falling back to the phone.
+          target_id: /^[0-9a-f-]{36}$/i.test(String(d.conversation_initiation_client_data?.dynamic_variables?.arc_target_id || ''))
+            ? d.conversation_initiation_client_data.dynamic_variables.arc_target_id : undefined,
+          recording_url: d.has_audio && conversationId ? `https://api.elevenlabs.io/v1/convai/conversations/${conversationId}/audio` : undefined,
           agent_id: agentId,
         }),
       })
       if (!fwd.ok) {
         const detail = await fwd.text().catch(() => '')
-        console.error('[webhooks/elevenlabs] ARC ingest failed', fwd.status, detail.slice(0, 200))
+        console.error('[webhooks/elevenlabs] ARC ingest failed', fwd.status, conversationId, detail.slice(0, 200))
+        // 404/409 (no target, phone shared by several targets) never heal on a
+        // retry; answering 500 only walks ElevenLabs toward auto-disabling the
+        // webhook for every later call. Ack, keep the log, ingest by hand.
+        if (fwd.status === 404 || fwd.status === 409) {
+          return NextResponse.json({ ok: false, reason: 'arc_rejected', status: fwd.status }, { status: 202 })
+        }
         return NextResponse.json({ ok: false, reason: 'arc_ingest_failed' }, { status: 500 })
       }
+      arc = await fwd.json().catch(() => ({}))
     } catch (err) {
       console.error('[webhooks/elevenlabs] ARC ingest unreachable', err)
       return NextResponse.json({ ok: false, reason: 'arc_unreachable' }, { status: 500 })
     }
 
-    // Prospect and test calls remain in ARC. Qualification and promotion are explicit.
-    return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length });
+    // ARC owns the call and mirrors it to PROXe proxe_outbound_* (interested -> all_leads).
+    if (arc?.mirror && !arc.mirror.ok) console.error('[webhooks/elevenlabs] ARC logged the call, PROXe mirror failed', conversationId, arc.mirror.error)
+    console.log(`[webhooks/elevenlabs] outreach call ${conversationId} -> ARC message ${arc?.message_id ?? '-'} mirror=${arc?.mirror?.ok ?? '-'}`)
+    return NextResponse.json({ ok: true, routed: 'arc', turns: transcript.length, message_id: arc?.message_id ?? null });
   }
 
   try {
