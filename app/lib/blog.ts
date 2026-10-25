@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'should-your-ai-caller-say-its-an-ai',
+    title: "Should your AI caller say it's an AI?",
+    dek: 'AI voices now sound human. If an AI answers your clinic or academy phone, here is what to tell callers, what it may say, and when a person steps in.',
+    date: '2026-10-25',
+    thumbnail: '/blog/should-your-ai-caller-say-its-an-ai.png',
+    trade: 'product',
+    wordCount: 820,
+    related: ['fast-voice-ai-still-needs-the-right-answers', 'when-they-ask-for-a-person', 'handoff-without-starting-over', 'dont-invent-the-price', 'a-missed-call-is-still-a-lead'],
+  },
+  {
     slug: 'ai-returns-first-whatsapp-reply',
     title: 'Only 13% see AI returns. Fix the first reply',
     dek: 'Gartner found only 13% of companies see major returns from AI. For a clinic, academy or property desk, one job pays back first: the first WhatsApp reply.',
