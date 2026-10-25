@@ -28,6 +28,16 @@ export const BLOG_POSTS: BlogPost[] = [
     related: ['fast-voice-ai-still-needs-the-right-answers', 'when-they-ask-for-a-person', 'handoff-without-starting-over', 'dont-invent-the-price', 'a-missed-call-is-still-a-lead'],
   },
   {
+    slug: 'whatsapp-business-ai-what-a-desk-still-decides',
+    title: "WhatsApp's built-in AI: what your desk still decides",
+    dek: "Meta's Business AI now answers WhatsApp chats for small businesses in India. Here is what a clinic, academy or real estate desk still has to decide.",
+    date: '2026-10-24',
+    thumbnail: '/blog/whatsapp-business-ai-what-a-desk-still-decides.png',
+    trade: 'product',
+    wordCount: 850,
+    related: ['dont-invent-the-price', 'one-memory-every-channel', 'handoff-without-starting-over', 'when-they-ask-for-a-person', 'after-hours-whatsapp'],
+  },
+  {
     slug: 'ai-returns-first-whatsapp-reply',
     title: 'Only 13% see AI returns. Fix the first reply',
     dek: 'Gartner found only 13% of companies see major returns from AI. For a clinic, academy or property desk, one job pays back first: the first WhatsApp reply.',
