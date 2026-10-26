@@ -57,7 +57,7 @@ const REASONS: Record<string, string> = {
 export default function BdrDialPage() {
   const [phone, setPhone] = useState('')
   const [agent, setAgent] = useState<AgentKey>('dm')
-  const [opener, setOpener] = useState<1 | 2 | 3 | 4>(1)
+  const [opener, setOpener] = useState<1 | 2 | 3 | 4 | 5>(1)
   const [first, setFirst] = useState('')
   const [business, setBusiness] = useState('')
   const [vertical, setVertical] = useState('clinic')
