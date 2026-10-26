@@ -49,7 +49,12 @@ function brief(id: string, d: any): Brief {
     outcome: (() => {
       const o = callEvidence(d).outcome
       const said = (Array.isArray(d?.transcript) ? d.transcript : []).filter((t: any) => t.role === 'user').map((t: any) => String(t.message || '')).join(' ')
-      return o !== 'failed' && o !== 'in_progress' && BOT_LINE.test(said) ? 'automated' : o
+      if (o !== 'failed' && o !== 'in_progress' && BOT_LINE.test(said)) return 'automated'
+      // They agreed a time: a booked call, not "undecided" (Z, 26 Oct 2026:
+      // Glam 'N' Smile gave a slot for 10 am and it showed as call back).
+      const summary = String(d?.analysis?.transcript_summary || '')
+      if (['connected', 'callback', 'interested'].includes(o) && /(agreed|scheduled|booked|confirmed|set up)[^.]{0,90}(call|callback|demo|meeting|appointment)|(call|callback|demo)[^.]{0,40}(scheduled|booked|confirmed)/i.test(summary)) return 'booked'
+      return o
     })(),
     cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
     fail,
