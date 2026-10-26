@@ -15,14 +15,14 @@ export const OPENERS: Record<OpenerAgent, Opener[]> = {
   noname: [
     { v: 1, label: 'Thirty seconds', line: () => "Hi, I'm Proxy, an AI, calling to introduce myself. Can I have thirty seconds?" },
     { v: 2, label: 'Good time', line: () => "Hi, I'm Proxy, an AI, calling to introduce myself. Is this a good time?" },
-    { v: 3, label: 'Straight in', line: () => "Hi, I'm Proxy, an AI. I help businesses manage the leads they get, from every channel. Do you have a quick minute?" },
+    { v: 3, label: 'Straight in', line: () => "Hi, I'm Proxy, an AI for your leads. Got a minute?" },
     // For prospects pulled from their Meta ads. Only pick it when they really run ads.
     { v: 4, label: 'Saw your ads', line: () => "Hi, I'm Proxy, an AI. I saw your ads on Facebook and wanted to introduce myself. Is this a good time?" },
   ],
   dm: [
     { v: 1, label: 'Thirty seconds', line: (f) => `Hi ${f}, I'm Proxy, an AI, calling to introduce myself. Can I have thirty seconds?` },
     { v: 2, label: 'Good time', line: (f) => `Hi ${f}, I'm Proxy, an AI, calling to introduce myself. Is this a good time?` },
-    { v: 3, label: 'Straight in', line: (f) => `Hi ${f}, I'm Proxy, an AI. I help businesses manage the leads they get, from every channel. Do you have a quick minute?` },
+    { v: 3, label: 'Straight in', line: (f) => `Hi ${f}, I'm Proxy, an AI for your leads. Got a minute?` },
     { v: 4, label: 'Saw your ads', line: (f) => `Hi ${f}, I'm Proxy, an AI. I saw your ads on Facebook and wanted to introduce myself. Is this a good time?` },
   ],
 }
