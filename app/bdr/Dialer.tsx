@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { BDR_HOOKS } from '../lib/bdrHooks'
 
 /**
  * The BDR team's dial page. Fill what you know, pick the agent, dial. The
@@ -310,6 +311,25 @@ export default function BdrDialPage() {
           <p className="foot">Voice: Raj. Calls stay in ARC for review before follow-up.</p>
         </div>
 
+        {/* Every opening line, playable in the call voice (Z, 26 Oct 2026). */}
+        <div className="recent hooks">
+          <p className="kicker">Opening lines · listen</p>
+          {(['Live now', 'New options'] as const).map((g) => (
+            <div key={g}>
+              <p className="hint">{g}</p>
+              <ul>
+                {BDR_HOOKS.filter((h) => h.group === g).map((h) => (
+                  <li key={h.id} className="hook">
+                    <span>{h.label}</span>
+                    <small>&ldquo;{h.text}&rdquo;</small>
+                    <audio controls preload="none" src={`/api/outreach-dial/hooks/${h.id}`} aria-label={`Play ${h.label}`} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
         {live && stage && (
           <div className={`live ${stage}`} aria-live="polite">
             <p className="kicker">{stageLabel}</p>
@@ -416,6 +436,7 @@ const CSS = `
 .script .line.dim{font-weight:500;color:var(--ink-2)}
 .script .then{margin:12px 0 6px;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
 .script .foot{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
+.hooks .hint{margin:10px 0 4px}.hooks li.hook{display:flex;flex-direction:column;align-items:stretch;gap:4px}.hooks li.hook small{color:var(--ink-2)}.hooks li.hook audio{width:100%;height:34px}
 .live{animation:rise 420ms cubic-bezier(.16,1,.3,1)}
 .live .kicker{color:var(--ink-2)}
 .live.ringing .kicker,.live.talking .kicker{color:var(--ok)}
