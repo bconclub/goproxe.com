@@ -9,20 +9,38 @@ import { callEvidence } from '../../../../lib/outreachPolicy'
  */
 export const dynamic = 'force-dynamic'
 
-type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null; cost_usd: number | null }
+type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null; cost_usd: number | null; fail: { code: string; label: string; side: 'theirs' | 'ours' | 'network' } | null }
 
 // A bot line, IVR or hold message, not a person (Z, 26 Oct 2026: music on the
 // other end and the agent kept talking).
 const BOT_LINE = /thank(s| you) for calling|for calling us|please (hold|wait|stay on the line)|stay on the line|this person is available|is not available|not reachable|switched off|your call (is|has been)|all (our|of our) (agents|lines|executives)|press (any|[0-9])|after the (tone|beep)|is busy|call is being (forwarded|transferred)|currently unavailable/i
 const cache = new Map<string, Brief>()
 
+// Why a call did not ring, from the SIP answer the network gave (Z, 26 Oct
+// 2026: "was it our end or theirs, wrong number, whatever it is").
+function failReason(err: string): Brief['fail'] {
+  const code = (err.match(/sip status:?\s*(\d{3})/i) || err.match(/(4\d\d|5\d\d|6\d\d)/) || [])[1] || ''
+  const t: Record<string, [string, 'theirs' | 'ours' | 'network']> = {
+    '486': ['Line busy', 'theirs'], '600': ['Line busy', 'theirs'],
+    '480': ['Phone off or out of coverage', 'theirs'],
+    '404': ["Number doesn't exist", 'theirs'], '484': ["Number doesn't exist", 'theirs'], '604': ["Number doesn't exist", 'theirs'],
+    '603': ['They rejected the call', 'theirs'], '487': ['Call cancelled before answer', 'ours'],
+    '403': ['Network refused our call', 'ours'], '401': ['Our line not authorised', 'ours'], '407': ['Our line not authorised', 'ours'],
+    '488': ['Our line settings were refused', 'ours'], '408': ['Network did not respond', 'network'],
+    '500': ['Network error', 'network'], '502': ['Network error', 'network'], '503': ['Network busy', 'network'], '504': ['Network did not respond', 'network'],
+  }
+  if (t[code]) return { code, label: t[code][0], side: t[code][1] }
+  if (/timed out|timeout/i.test(err)) return { code: 'timeout', label: 'Network did not respond', side: 'network' }
+  return err ? { code: code || 'other', label: 'Call did not go through', side: 'network' } : null
+}
+
 function brief(id: string, d: any): Brief {
   const dyn = d?.conversation_initiation_client_data?.dynamic_variables || {}
   const md = d?.metadata || {}
   const first = String(dyn.first_name || '').trim()
-  const why = d?.status === 'failed'
-    ? String(md.termination_reason || md.error?.message || md.phone_call?.call_status || 'The number did not ring').slice(0, 120)
-    : null
+  const err = String(md.error?.reason || md.error?.message || md.termination_reason || '')
+  const fail = d?.status === 'failed' ? failReason(err) : null
+  const why = d?.status === 'failed' ? (err || 'The number did not ring').slice(0, 140) : null
   return {
     id,
     business: String(dyn.business_name || '').trim() || null,
@@ -34,6 +52,7 @@ function brief(id: string, d: any): Brief {
       return o !== 'failed' && o !== 'in_progress' && BOT_LINE.test(said) ? 'automated' : o
     })(),
     cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
+    fail,
     opener: dyn.opener_variant ? String(dyn.opener_variant) : null,
     why,
   }

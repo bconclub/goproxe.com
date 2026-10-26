@@ -33,7 +33,8 @@ const AGENTS: Array<{ key: AgentKey; label: string; when: string; opener: (v: Va
     key: 'noname',
     label: 'Intro Cold',
     when: 'First call. You only know the business. Reception may answer.',
-    opener: (v) => `Hi, is this ${v.business || 'the business'}?`,
+    // Never the business name: we can't be sure how it is said (Z, 26 Oct 2026).
+    opener: (v) => `Hi, am I speaking with the ${v.vertical || 'clinic'}?`,
     second: () => 'Hi, I’m PROXe, and I’m an AI. I’m calling to introduce myself. Is this a good time?',
   },
   {

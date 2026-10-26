@@ -84,6 +84,13 @@ export async function POST(request: Request) {
   }
   if (manual && !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'forbidden' }, { status: 403 })
   const caller = manual ? 'bdr' : 'bot'
+  // PAUSE (Z, 26 Oct 2026, 4:5x PM: "pause the calls until we figure this
+  // out"): automated dials are refused here, whoever sends them. Manual dials
+  // from the signed-in /bdr page still go, for testing. Flip back to resume.
+  const BOT_DIALS_PAUSED = true
+  if (caller === 'bot' && BOT_DIALS_PAUSED) {
+    return NextResponse.json({ ok: false, reason: 'paused' }, { status: 409 })
+  }
   if (!API_KEY) {
     return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   }
