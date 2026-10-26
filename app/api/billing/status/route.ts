@@ -76,8 +76,18 @@ export async function GET(request: Request) {
      * cancelling their own payment request is still a failure (Z corrected
      * this the same day); 'due' means owed with no attempt yet.
      */
-    const paymentState: 'ok' | 'processing' | 'failed' | 'due' =
-      attempt?.status === 'processing'
+    /**
+     * A grace period we granted by hand (subscription metadata.grace_until,
+     * ISO date). Dodo won't reactivate or re-date an on_hold subscription
+     * without a payment, so an extra trial week is recorded here and the
+     * dashboards stay quiet until it ends (Ahoy, 26 Oct).
+     */
+    const graceUntil = typeof sub.metadata?.grace_until === 'string' ? sub.metadata.grace_until : null
+    const inGrace = !!graceUntil && Date.parse(graceUntil) > Date.now()
+    const paymentState: 'ok' | 'processing' | 'failed' | 'due' | 'grace' =
+      inGrace && needsPayment
+        ? 'grace'
+        : attempt?.status === 'processing'
         ? 'processing'
         : !needsPayment
           ? 'ok'
@@ -128,6 +138,8 @@ export async function GET(request: Request) {
             }
           : null,
         payment_state: paymentState,
+        // Set while a hand-granted grace period runs: show no bar, no pay button.
+        grace_until: inGrace ? graceUntil : null,
         // Paid bills with Dodo's invoice PDF, newest first.
         invoices: items
           .filter((p) => p.status === 'succeeded' && p.invoice_url)
