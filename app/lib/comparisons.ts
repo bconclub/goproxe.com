@@ -137,7 +137,7 @@ export const COMPARISONS: ComparisonData[] = [
       },
       {
         q: "What does PROXe cost compared to Wati?",
-        a: "PROXe Founding Core is ₹9,999/month (all channels, unified memory, 2 seats, up to 500 leads/month, voice AI included). Wati pricing varies by usage, check their website for current plans.",
+        a: "PROXe Core is ₹9,999/month + GST (all channels, unified memory, 2 seats, 1,000 leads and 250 AI voice minutes a month). Wati pricing varies by usage, check their website for current plans.",
       },
       {
         q: "How long does PROXe setup take?",
@@ -252,7 +252,7 @@ export const COMPARISONS: ComparisonData[] = [
       },
       {
         q: "What is PROXe's founding price?",
-        a: "PROXe Founding Core is ₹9,999/month: all channels (WhatsApp, web, Instagram, email, voice), unified memory, 2 seats, up to 500 leads/month, voice AI included. Interakt pricing varies, check their site.",
+        a: "PROXe Core is ₹9,999/month + GST: all channels (WhatsApp, web, Instagram, email, voice), unified memory, 2 seats, 1,000 leads and 250 AI voice minutes a month. Interakt pricing varies, check their site.",
       },
       {
         q: "Who is PROXe built for?",
@@ -371,7 +371,7 @@ export const COMPARISONS: ComparisonData[] = [
       },
       {
         q: "What does PROXe cost?",
-        a: "PROXe Founding Core is ₹9,999/month: all channels (WhatsApp, website, Instagram, email, voice), unified memory, 2 seats, up to 500 leads/month, voice AI included. AiSensy pricing varies by usage, check their website.",
+        a: "PROXe Core is ₹9,999/month + GST: all channels (WhatsApp, website, Instagram, email, voice), unified memory, 2 seats, 1,000 leads and 250 AI voice minutes a month. AiSensy pricing varies by usage, check their website.",
       },
     ],
   },

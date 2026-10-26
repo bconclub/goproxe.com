@@ -29,13 +29,12 @@ const SOFTWARE = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   description:
-    'AI lead conversion for SMBs: every channel answered in seconds, one memory per customer, automatic follow-up, live dashboard. Up to 500 leads/month with 2 team seats.',
+    'AI lead conversion for SMBs: every channel answered in seconds, one memory per customer, automatic follow-up, live dashboard. ₹9,999 a month + GST for 1,000 leads and 250 AI voice minutes across every channel, with 2 team seats.',
   offers: {
-    '@type': 'AggregateOffer',
+    '@type': 'Offer',
+    name: 'PROXe Core',
     priceCurrency: 'INR',
-    lowPrice: '9999',
-    highPrice: '24999',
-    offerCount: '2',
+    price: '9999',
   },
 };
 
@@ -85,10 +84,10 @@ const FAQ_PAGE = {
     },
     {
       '@type': 'Question',
-      name: 'What happens if I go over 500 leads in a month?',
+      name: 'What happens if I use up my 1,000 leads or 250 voice minutes?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nothing switches off. We keep everything running and true up at renewal, and if you are consistently above 500 we move you to Scale on volume pricing. No lead is ever dropped for hitting a limit.',
+        text: 'Nothing goes silent. PROXe keeps replying to every lead by text; only calls pause until you add a top-up pack. Unused top-ups roll over.',
       },
     },
     {

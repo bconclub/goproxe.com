@@ -107,7 +107,8 @@ export async function POST(request: Request) {
   if (!hasBdrSession(request) || !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   if (!API_KEY) return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   const body: any = await request.json().catch(() => ({}))
-  const target = AGENTS.find((a) => a.key === body.key && a.key !== 'callback')
+  // The callback agent's voice is the reference, so only its script may change.
+  const target = AGENTS.find((a) => a.key === body.key && (a.key !== 'callback' || body.action === 'set_script'))
   if (!target) return NextResponse.json({ ok: false, reason: 'unknown_agent' }, { status: 400 })
   let patch: any
   if (body.action === 'match_voice') {
