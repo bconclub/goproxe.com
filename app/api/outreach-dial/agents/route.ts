@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { isBdrOperator } from '../../../lib/bdrSession'
+import { isBdrOperator, isBdrSameOrigin } from '../../../lib/bdrSession'
 
 /**
  * Read-only view of the outreach agents as ElevenLabs has them: first
@@ -92,4 +92,41 @@ export async function GET(request: Request) {
     }
   }))
   return NextResponse.json({ ok: true, agents })
+}
+
+/**
+ * POST /api/outreach-dial/agents - change one of the three outreach agents.
+ * Only these three, only for a signed-in operator on this site.
+ *   { action: 'match_voice', key }  copies the website callback agent's voice
+ *       settings (voice, model, stability, speed) onto it, so every outbound
+ *       call sounds the same (Z, 26 Oct 2026: "keep the same voice across").
+ *   { action: 'set_script', key, prompt?, first_message? }
+ */
+export async function POST(request: Request) {
+  if (!isBdrOperator(request) || !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
+  if (!API_KEY) return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
+  const body: any = await request.json().catch(() => ({}))
+  const target = AGENTS.find((a) => a.key === body.key && a.key !== 'callback')
+  if (!target) return NextResponse.json({ ok: false, reason: 'unknown_agent' }, { status: 400 })
+  let patch: any
+  if (body.action === 'match_voice') {
+    const ref: any = await el(`/v1/convai/agents/${AGENTS.find((a) => a.key === 'callback')!.id}`)
+    const t = ref?.conversation_config?.tts
+    if (!t?.voice_id) return NextResponse.json({ ok: false, reason: 'reference_unreadable' }, { status: 502 })
+    patch = { conversation_config: { tts: { voice_id: t.voice_id, model_id: t.model_id, stability: t.stability, similarity_boost: t.similarity_boost, speed: t.speed } } }
+  } else if (body.action === 'set_script') {
+    const agent: any = {}
+    if (typeof body.prompt === 'string' && body.prompt.trim()) agent.prompt = { prompt: body.prompt }
+    if (typeof body.first_message === 'string' && body.first_message.trim()) agent.first_message = body.first_message
+    if (!Object.keys(agent).length) return NextResponse.json({ ok: false, reason: 'nothing_to_set' }, { status: 400 })
+    patch = { conversation_config: { agent } }
+  } else {
+    return NextResponse.json({ ok: false, reason: 'unknown_action' }, { status: 400 })
+  }
+  const res = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${target.id}`, {
+    method: 'PATCH', headers: { 'xi-api-key': API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(patch),
+  })
+  if (!res.ok) return NextResponse.json({ ok: false, reason: `upstream_${res.status}`, detail: (await res.text()).slice(0, 300) }, { status: 502 })
+  console.log(`[outreach-agents] ${body.action} on ${target.label}`)
+  return NextResponse.json({ ok: true, agent: target.label, action: body.action })
 }
