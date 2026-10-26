@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     if (typeof body.first_message === 'string') agent.first_message = body.first_message
     // The model, from a short list (Z, 26 Oct 2026: Intro Cold on Claude Haiku
     // read its own reasoning aloud on live calls; the Gemini agents did not).
-    if (typeof body.llm === 'string' && ['claude-sonnet-5-5', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'].includes(body.llm)) agent.prompt = { ...(agent.prompt || {}), llm: body.llm }
+    if (typeof body.llm === 'string' && ['claude-sonnet-5-5', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'].includes(body.llm)) agent.prompt = { ...(agent.prompt || {}), llm: body.llm, reasoning_effort: null }
     if (!Object.keys(agent).length) return NextResponse.json({ ok: false, reason: 'nothing_to_set' }, { status: 400 })
     patch = { conversation_config: { agent } }
   } else {
