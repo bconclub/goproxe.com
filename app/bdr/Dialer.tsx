@@ -25,15 +25,15 @@ const AGENTS: Array<{ key: AgentKey; label: string; when: string; opener: (v: Va
     key: 'dm',
     label: 'Intro DM',
     when: 'First call. You know the decision maker’s name.',
-    opener: (v) => `Hi ${v.first || 'there'}, this is PROXe. I am an AI, and I’m calling to introduce myself. Can I have thirty seconds?`,
-    second: (v) => `I take care of the customer side of a business, every enquiry and chat on WhatsApp, the website and Instagram. Would something like that be useful at ${v.business || 'your business'}?`,
+    opener: (v) => `Hi, is this ${v.first || 'Ramesh'}?`,
+    second: (v) => `Hi ${v.first || 'Ramesh'}, I’m PROXe, an AI. I’m calling to introduce myself. Is this a good time, or can I have thirty seconds?`,
   },
   {
     key: 'noname',
     label: 'Intro Cold',
     when: 'First call. You only know the business. Reception may answer.',
     opener: (v) => `Hi, is this ${v.business || 'the business'}?`,
-    second: () => 'Hi, PROXe. We answer WhatsApp and Instagram leads in seconds and book them. Got twenty seconds?',
+    second: () => 'Hi, I’m PROXe, and I’m an AI. I’m calling to introduce myself. Is this a good time?',
   },
   {
     key: 'warm',
@@ -308,7 +308,7 @@ export default function BdrDialPage() {
           <p className="line">&ldquo;{script.opener}&rdquo;</p>
           <p className="then">then, once they say yes</p>
           <p className="line dim">&ldquo;{script.second}&rdquo;</p>
-          <p className="foot">Voice: Raj. Calls stay in ARC for review before follow-up.</p>
+          <p className="foot">Voice: Sanket, the same on every call. It checks who picked up (owner or front desk) before explaining anything. Calls stay in ARC for review before follow-up.</p>
         </div>
 
         {/* Every opening line, playable in the call voice (Z, 26 Oct 2026). */}
