@@ -27,6 +27,40 @@ export async function GET(request: Request) {
   if (!isBdrOperator(request)) return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   if (!API_KEY) return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   const voiceNames = new Map<string, string>()
+  // ?all=1: every agent on the account plus the phone lines and the agent
+  // each one routes to, so the outbound callers can be picked from the full
+  // list (Z, 26 Oct 2026: "pull all the agents that do outbound calls").
+  if (new URL(request.url).searchParams.get('all') === '1') {
+    const list: any = await el('/v1/convai/agents?page_size=100')
+    const phones: any = await el('/v1/convai/phone-numbers')
+    const known = new Map(AGENTS.map((a) => [a.id, a.label]))
+    const rows = await Promise.all(((list?.agents || []) as any[]).map(async (a) => {
+      const d: any = await el(`/v1/convai/agents/${a.agent_id}`)
+      const cc = d?.conversation_config || {}
+      const tts = cc.tts || {}
+      const voiceId = tts.voice_id || null
+      if (voiceId && !voiceNames.has(voiceId)) {
+        const v: any = await el(`/v1/voices/${voiceId}`)
+        voiceNames.set(voiceId, v?.name || voiceId)
+      }
+      return {
+        id: a.agent_id,
+        name: a.name,
+        used_by_dialer: known.get(a.agent_id) || null,
+        created: a.created_at_unix_secs ? new Date(a.created_at_unix_secs * 1000).toISOString().slice(0, 10) : null,
+        first_message: cc.agent?.first_message || null,
+        llm: cc.agent?.prompt?.llm || null,
+        voice: voiceId ? voiceNames.get(voiceId) : null,
+        voice_model: tts.model_id || null,
+        dynamic_vars: Object.keys(cc.agent?.dynamic_variables?.dynamic_variable_placeholders || {}),
+      }
+    }))
+    const lines = ((Array.isArray(phones) ? phones : phones?.phone_numbers) || []).map((p: any) => ({
+      id: p.phone_number_id, number: p.phone_number, label: p.label, provider: p.provider,
+      agent: p.assigned_agent?.agent_name || null, agent_id: p.assigned_agent?.agent_id || null,
+    }))
+    return NextResponse.json({ ok: true, agents: rows, lines })
+  }
   const agents = await Promise.all(AGENTS.map(async (a) => {
     const d: any = await el(`/v1/convai/agents/${a.id}`)
     if (!d) return { ...a, error: 'not_found' }
