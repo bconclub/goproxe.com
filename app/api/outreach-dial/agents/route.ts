@@ -122,6 +122,9 @@ export async function POST(request: Request) {
     // An empty first_message is allowed on purpose: the agent then waits for
     // them to say hello before it speaks (Z, 26 Oct 2026: it talked over the ringing).
     if (typeof body.first_message === 'string') agent.first_message = body.first_message
+    // The model, from a short list (Z, 26 Oct 2026: Intro Cold on Claude Haiku
+    // read its own reasoning aloud on live calls; the Gemini agents did not).
+    if (typeof body.llm === 'string' && ['gemini-2.5-flash', 'gemini-2.5-flash-lite'].includes(body.llm)) agent.prompt = { ...(agent.prompt || {}), llm: body.llm }
     if (!Object.keys(agent).length) return NextResponse.json({ ok: false, reason: 'nothing_to_set' }, { status: 400 })
     patch = { conversation_config: { agent } }
   } else {
