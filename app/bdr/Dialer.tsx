@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BDR_HOOKS } from '../lib/bdrHooks'
+import { OPENERS, introLine } from '../lib/bdrOpeners'
 
 /**
  * The BDR team's dial page. Fill what you know, pick the agent, dial. The
@@ -56,6 +57,7 @@ const REASONS: Record<string, string> = {
 export default function BdrDialPage() {
   const [phone, setPhone] = useState('')
   const [agent, setAgent] = useState<AgentKey>('dm')
+  const [opener, setOpener] = useState<1 | 2 | 3>(1)
   const [first, setFirst] = useState('')
   const [business, setBusiness] = useState('')
   const [vertical, setVertical] = useState('clinic')
@@ -136,7 +138,10 @@ export default function BdrDialPage() {
 
   const vars: Vars = { first: first.trim(), business: business.trim(), vertical, city: city.trim(), hook: hook.trim(), last: last.trim() }
   const A = AGENTS.find((a) => a.key === agent)!
-  const script = useMemo(() => ({ opener: A.opener(vars), second: A.second(vars) }), [A, first, business, last]) // eslint-disable-line react-hooks/exhaustive-deps
+  const script = useMemo(() => ({
+    opener: A.opener(vars),
+    second: agent === 'warm' ? A.second(vars) : introLine(agent, opener, first.trim() || 'Ramesh').line,
+  }), [A, agent, opener, first, business, last]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function remember(r: Recent) {
     const next = [r, ...recent.filter((x) => x.conv !== r.conv)].slice(0, 12)
@@ -151,7 +156,7 @@ export default function BdrDialPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phone: digits, agent,
+          phone: digits, agent, opener,
           vars: {
             first_name: vars.first || undefined, business_name: vars.business, vertical, city: vars.city || undefined,
             research_hook: vars.hook || undefined, last_summary: vars.last || undefined,
@@ -254,6 +259,19 @@ export default function BdrDialPage() {
             </label>
           ))}
         </fieldset>
+
+        {agent !== 'warm' && (
+          <fieldset className="agents openers">
+            <legend>Opening line, once they say yes</legend>
+            {OPENERS[agent].map((o) => (
+              <label key={o.v} className={opener === o.v ? 'on' : ''}>
+                <input type="radio" name="opener" value={o.v} checked={opener === o.v} onChange={() => setOpener(o.v)} />
+                <b>{o.v} · {o.label}</b>
+                <small>{o.line(first.trim() || 'Ramesh')}</small>
+              </label>
+            ))}
+          </fieldset>
+        )}
 
         <label>
           <span>Business</span>

@@ -1,5 +1,6 @@
 import { spokenBusinessName } from '../../lib/spokenBusinessName'
 import { NextResponse } from 'next/server'
+import { introLine } from '../../lib/bdrOpeners'
 import { isQuiet, nextOpenTime } from '../../lib/quietHours'
 import { hasBdrSession, isBdrSameOrigin } from '../../lib/bdrSession'
 
@@ -134,6 +135,9 @@ export async function POST(request: Request) {
     research_hook: String(v.research_hook || 'They run a local business that gets enquiries online.'),
     last_summary: String(v.last_summary || 'No previous conversation recorded.'),
     arc_target_id: String(body.target_id || ''),
+    // Which opening line the agent says after they confirm (lib/bdrOpeners).
+    intro_line: introLine(agentKey, body.opener, String(v.first_name || 'there')).line,
+    opener_variant: String(introLine(agentKey, body.opener, '').variant),
   }
 
 

@@ -4,11 +4,13 @@
  * Written the way the agents say them: "Proxy" so the voice says PROXe right,
  * sample names in place of {{first_name}} / {{business_name}}.
  */
+import { OPENERS } from './bdrOpeners'
+
 export interface BdrHook { id: string; group: 'Live now' | 'New options'; label: string; text: string }
 
 export const BDR_HOOKS: BdrHook[] = [
-  { id: 'live-cold-2', group: 'Live now', label: 'Intro Cold · first, then once they say yes', text: "Hi, is this Bright Smile Dental? ... Hi, I'm Proxy, and I'm an AI. I'm calling to introduce myself. Is this a good time?" },
-  { id: 'live-dm-2', group: 'Live now', label: 'Intro DM · first, then once they say yes', text: "Hi, is this Ramesh? ... Hi Ramesh, I'm Proxy, an AI. I'm calling to introduce myself. Is this a good time, or can I have thirty seconds?" },
+  ...OPENERS.noname.map((o): BdrHook => ({ id: `cold-${o.v}`, group: 'Live now', label: `Intro Cold ${o.v} · ${o.label}`, text: `Hi, is this Bright Smile Dental? ... ${o.line('')}` })),
+  ...OPENERS.dm.map((o): BdrHook => ({ id: `dm-${o.v}`, group: 'Live now', label: `Intro DM ${o.v} · ${o.label}`, text: `Hi, is this Ramesh? ... ${o.line('Ramesh')}` })),
   { id: 'live-warm', group: 'Live now', label: 'Follow-up', text: 'Hi Ramesh, Proxy here, following up like I said I would. Is now okay?' },
   { id: 'live-callback', group: 'Live now', label: 'Website callback', text: 'Hi Ramesh, this is Proxy calling back from goproxe dot com. Have I caught you at an okay time?' },
   { id: 'live-pitch', group: 'Live now', label: 'Pitch page', text: 'Hey! You just finished looking at the Proxy pitch. Do you have any questions for me? And before that, can I get your name?' },
