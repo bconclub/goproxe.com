@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { BDR_COOKIE, verifyBdrSession } from '../../lib/bdrSession'
-import { BDR_HOOKS } from '../../lib/bdrHooks'
+import { BDR_HOOKS, HOOK_GROUPS } from '../../lib/bdrHooks'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export default async function HooksPage() {
   const cookieStore = await cookies()
   if (!verifyBdrSession(cookieStore.get(BDR_COOKIE)?.value)) redirect('/bdr/login')
-  const groups = ['Live now', 'New options'] as const
+  const groups = HOOK_GROUPS
   return (
     <main style={{ minHeight: '100vh', background: '#0d0b12', color: '#f3efff', font: '16px/1.5 -apple-system, Segoe UI, sans-serif', padding: '32px 16px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>

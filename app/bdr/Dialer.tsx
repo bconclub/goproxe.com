@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BDR_HOOKS } from '../lib/bdrHooks'
+import { BDR_HOOKS, HOOK_GROUPS } from '../lib/bdrHooks'
 import { OPENERS, introLine } from '../lib/bdrOpeners'
 
 /**
@@ -332,7 +332,7 @@ export default function BdrDialPage() {
         {/* Every opening line, playable in the call voice (Z, 26 Oct 2026). */}
         <div className="recent hooks">
           <p className="kicker">Opening lines · listen</p>
-          {(['Live now', 'New options'] as const).map((g) => (
+          {HOOK_GROUPS.map((g) => (
             <div key={g}>
               <p className="hint">{g}</p>
               <ul>
