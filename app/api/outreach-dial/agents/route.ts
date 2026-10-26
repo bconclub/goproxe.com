@@ -119,7 +119,9 @@ export async function POST(request: Request) {
   } else if (body.action === 'set_script') {
     const agent: any = {}
     if (typeof body.prompt === 'string' && body.prompt.trim()) agent.prompt = { prompt: body.prompt }
-    if (typeof body.first_message === 'string' && body.first_message.trim()) agent.first_message = body.first_message
+    // An empty first_message is allowed on purpose: the agent then waits for
+    // them to say hello before it speaks (Z, 26 Oct 2026: it talked over the ringing).
+    if (typeof body.first_message === 'string') agent.first_message = body.first_message
     if (!Object.keys(agent).length) return NextResponse.json({ ok: false, reason: 'nothing_to_set' }, { status: 400 })
     patch = { conversation_config: { agent } }
   } else {
