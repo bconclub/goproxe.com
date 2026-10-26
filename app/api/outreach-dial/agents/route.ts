@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { isBdrOperator, isBdrSameOrigin } from '../../../lib/bdrSession'
+import { hasBdrSession, isBdrOperator, isBdrSameOrigin } from '../../../lib/bdrSession'
 
 /**
  * Read-only view of the outreach agents as ElevenLabs has them: first
@@ -103,7 +103,8 @@ export async function GET(request: Request) {
  *   { action: 'set_script', key, prompt?, first_message? }
  */
 export async function POST(request: Request) {
-  if (!isBdrOperator(request) || !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
+  // Signed-in person only: the bots' dial key may read, never change an agent.
+  if (!hasBdrSession(request) || !isBdrSameOrigin(request)) return NextResponse.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   if (!API_KEY) return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 503 })
   const body: any = await request.json().catch(() => ({}))
   const target = AGENTS.find((a) => a.key === body.key && a.key !== 'callback')
