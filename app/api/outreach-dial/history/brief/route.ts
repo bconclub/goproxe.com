@@ -9,7 +9,11 @@ import { callEvidence } from '../../../../lib/outreachPolicy'
  */
 export const dynamic = 'force-dynamic'
 
-type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null }
+type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null; cost_usd: number | null }
+
+// A bot line, IVR or hold message, not a person (Z, 26 Oct 2026: music on the
+// other end and the agent kept talking).
+const BOT_LINE = /thank(s| you) for calling|for calling us|please (hold|wait|stay on the line)|stay on the line|this person is available|is not available|not reachable|switched off|your call (is|has been)|all (our|of our) (agents|lines|executives)|press (any|[0-9])|after the (tone|beep)|is busy|call is being (forwarded|transferred)|currently unavailable/i
 const cache = new Map<string, Brief>()
 
 function brief(id: string, d: any): Brief {
@@ -24,7 +28,12 @@ function brief(id: string, d: any): Brief {
     business: String(dyn.business_name || '').trim() || null,
     first_name: first && first.toLowerCase() !== 'there' ? first : null,
     phone: md.phone_call?.external_number || null,
-    outcome: callEvidence(d).outcome,
+    outcome: (() => {
+      const o = callEvidence(d).outcome
+      const said = (Array.isArray(d?.transcript) ? d.transcript : []).filter((t: any) => t.role === 'user').map((t: any) => String(t.message || '')).join(' ')
+      return o !== 'failed' && o !== 'in_progress' && BOT_LINE.test(said) ? 'automated' : o
+    })(),
+    cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
     opener: dyn.opener_variant ? String(dyn.opener_variant) : null,
     why,
   }
