@@ -9,7 +9,7 @@ import { callEvidence } from '../../../../lib/outreachPolicy'
  */
 export const dynamic = 'force-dynamic'
 
-type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null; cost_usd: number | null; fail: { code: string; label: string; side: 'theirs' | 'ours' | 'network' } | null }
+type Brief = { id: string; business: string | null; first_name: string | null; phone: string | null; outcome: string; opener: string | null; why: string | null; cost_usd: number | null; fail: { code: string; label: string; side: 'theirs' | 'ours' | 'network' } | null; duration: number | null; their_turns: number; owner: boolean }
 
 // A bot line, IVR or hold message, not a person (Z, 26 Oct 2026: music on the
 // other end and the agent kept talking).
@@ -57,6 +57,12 @@ function brief(id: string, d: any): Brief {
       return o
     })(),
     cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
+    // For "worth a follow-up" (Z, 27 Oct 2026: show any decent call a person
+    // or owner actually spoke on): how long, how many real replies, and
+    // whether the owner / doctor / founder / manager was on the line.
+    duration: typeof md.call_duration_secs === 'number' ? md.call_duration_secs : null,
+    their_turns: (Array.isArray(d?.transcript) ? d.transcript : []).filter((t: any) => t.role === 'user' && /[a-z]{2,}/i.test(String(t.message || '')) && !/^\s*(hello|hi|hallo)[?!. ]*$/i.test(String(t.message || ''))).length,
+    owner: /(owner|founder|co-founder|director|proprietor|principal|doctor|managing|manager|partner|ceo|head)|dr\.? [a-z]/i.test(String(d?.analysis?.transcript_summary || '')),
     fail,
     opener: dyn.opener_variant ? String(dyn.opener_variant) : null,
     why,
