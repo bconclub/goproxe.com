@@ -61,15 +61,47 @@ export async function GET(request: Request) {
      * sat on top of Ahoy's failed UPI payment and the dashboard read "not paid
      * yet" instead of "failed". The last real attempt skips them.
      */
-    const attempt = items.find((p) => p.status && !p.status.startsWith('requires_')) ?? null
+    // Unpaid /pay invoices expire to 'cancelled' after ~15 min: not attempts either.
+    const lastTry =
+      items.find((p) => p.status && !p.status.startsWith('requires_') && p.status !== 'cancelled') ?? null
+    // Set once periodPayment is known (below): a paid period reports that payment.
+    let attempt = lastTry
     // The list view has no failure reason; fetch it only when there was one.
-    const attemptError =
+    let attemptError =
       attempt?.status === 'failed'
         ? ((await client.payments.retrieve(attempt.payment_id).catch(() => null))?.error_code ?? null)
         : null
-    // 'past_due' (grace period) is newer than this SDK's status union.
-    const status = sub.status as string
+    // Recurring prices carry `price`, usage-based ones `fixed_price`.
+    const plan = product?.price as
+      | { price?: number; fixed_price?: number; currency?: string; tax_inclusive?: boolean | null }
+      | undefined
+    const planAmount = plan?.price ?? plan?.fixed_price ?? null
+    /**
+     * The current period is paid when a full-price payment succeeded at or after
+     * the last billing date. Dodo can leave a subscription on_hold after the
+     * money lands: Ahoy's 22 Oct UPI autopay showed failed, put the subscription
+     * on hold, then flipped to succeeded on 26 Oct and Dodo never reactivated it.
+     * The money decides, not the stale status.
+     */
+    const periodStart = sub.previous_billing_date ? Date.parse(sub.previous_billing_date) - 60 * 60 * 1000 : null
+    const periodPayment =
+      periodStart !== null && planAmount
+        ? (items.find(
+            (p) =>
+              p.status === 'succeeded' &&
+              Date.parse(p.created_at) >= periodStart &&
+              p.total_amount >= planAmount * 0.99
+          ) ?? null)
+        : null
+    // What Dodo says ('past_due' is newer than this SDK's union), and what it means.
+    const dodoStatus = sub.status as string
+    const status = periodPayment && (dodoStatus === 'on_hold' || dodoStatus === 'past_due') ? 'active' : dodoStatus
     const needsPayment = status === 'on_hold' || status === 'past_due'
+    if (periodPayment && attempt?.status === 'failed' && Date.parse(attempt.created_at) >= periodStart!) {
+      // A retry that failed after the period was already paid is noise.
+      attempt = periodPayment
+      attemptError = null
+    }
     /**
      * One word for the dashboard bar. Z's rule (23 Oct): red only on a real
      * failure, nothing at all for processing or not-yet-paid. A client
@@ -94,19 +126,17 @@ export async function GET(request: Request) {
           : attempt?.status === 'failed'
             ? 'failed'
             : 'due'
-    // Recurring prices carry `price`, usage-based ones `fixed_price`.
-    const plan = product?.price as
-      | { price?: number; fixed_price?: number; currency?: string; tax_inclusive?: boolean | null }
-      | undefined
 
     return NextResponse.json(
       {
         subscription_id: sub.subscription_id,
         status,
+        // Raw Dodo status; differs from `status` only when a paid period is stuck on_hold.
+        dodo_status: dodoStatus,
         // The plan's own price and currency. The subscription object reports
         // Dodo's USD settlement figure (Ahoy's ₹9,999 plan reads as 10516 USD),
         // which is not what the client is charged.
-        amount_minor: plan?.price ?? plan?.fixed_price ?? sub.recurring_pre_tax_amount,
+        amount_minor: planAmount ?? sub.recurring_pre_tax_amount,
         currency: plan?.currency ?? sub.currency,
         tax_inclusive: plan?.tax_inclusive ?? sub.tax_inclusive,
         interval: sub.payment_frequency_interval,
