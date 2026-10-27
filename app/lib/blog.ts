@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'fewer-google-clicks-every-enquiry-counts',
+    title: 'Google clicks are falling. What to do with the ones you get',
+    dek: 'AI answers on Google mean fewer clicks to your site. If you run a clinic, academy or service business, here is how to treat every visitor who still comes.',
+    date: '2026-10-26',
+    thumbnail: '/blog/fewer-google-clicks-every-enquiry-counts.png',
+    trade: 'product',
+    wordCount: 780,
+    related: ['the-website-is-not-the-desk', 'paid-lead-no-reply', 'what-to-measure-on-inbound', 'how-fast-to-reply-whatsapp', 'one-memory-every-channel'],
+  },
+  {
     slug: 'should-your-ai-caller-say-its-an-ai',
     title: "Should your AI caller say it's an AI?",
     dek: 'AI voices now sound human. If an AI answers your clinic or academy phone, here is what to tell callers, what it may say, and when a person steps in.',
