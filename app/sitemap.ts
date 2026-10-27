@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { shortSlug, watchEpisodes } from './watch/links'
 import { INDUSTRY_SLUGS } from './lib/industries'
 import { COMPARISON_SLUGS } from './lib/comparisons'
 import { BLOG_SLUGS } from './lib/blog'
@@ -82,6 +83,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'weekly',
     priority: 0.7,
   })
+
+  // PROXe in 60 seconds: /watch and one permanent page per video (the links in PDFs)
+  entries.push({ url: 'https://goproxe.com/watch', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 })
+  entries.push(...watchEpisodes().map((e) => ({
+    url: `https://goproxe.com/watch/${shortSlug(e)}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  })))
 
   // Blog posts from the registry
   try {
