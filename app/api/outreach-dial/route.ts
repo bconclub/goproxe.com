@@ -87,7 +87,7 @@ export async function POST(request: Request) {
   // PAUSE (Z, 26 Oct 2026, 4:5x PM: "pause the calls until we figure this
   // out"): automated dials are refused here, whoever sends them. Manual dials
   // from the signed-in /bdr page still go, for testing. Flip back to resume.
-  const BOT_DIALS_PAUSED = false
+  const BOT_DIALS_PAUSED = true
   if (caller === 'bot' && BOT_DIALS_PAUSED) {
     return NextResponse.json({ ok: false, reason: 'paused' }, { status: 409 })
   }
