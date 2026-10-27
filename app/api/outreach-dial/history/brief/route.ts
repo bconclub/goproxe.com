@@ -19,7 +19,7 @@ const cache = new Map<string, Brief>()
 // Why a call did not ring, from the SIP answer the network gave (Z, 26 Oct
 // 2026: "was it our end or theirs, wrong number, whatever it is").
 function failReason(err: string): Brief['fail'] {
-  const code = (err.match(/sip status:?\s*(\d{3})/i) || err.match(/(4\d\d|5\d\d|6\d\d)/) || [])[1] || ''
+  const code = (err.match(/sip status:?\s*(\d{3})/i) || err.match(/\b(4\d\d|5\d\d|6\d\d)\b/) || [])[1] || ''
   const t: Record<string, [string, 'theirs' | 'ours' | 'network']> = {
     '486': ['Line busy', 'theirs'], '600': ['Line busy', 'theirs'],
     '480': ['Phone off or out of coverage', 'theirs'],
@@ -53,7 +53,7 @@ function brief(id: string, d: any): Brief {
       // They agreed a time: a booked call, not "undecided" (Z, 26 Oct 2026:
       // Glam 'N' Smile gave a slot for 10 am and it showed as call back).
       const summary = String(d?.analysis?.transcript_summary || '')
-      if (['connected', 'callback', 'interested'].includes(o) && /(agreed|scheduled|booked|confirmed|set up)[^.]{0,90}(call|callback|demo|meeting|appointment)|(call|callback|demo)[^.]{0,40}(scheduled|booked|confirmed)/i.test(summary)) return 'booked'
+      if (['connected', 'callback', 'interested'].includes(o) && /(agreed|scheduled|booked|confirmed|set up)[^.]{0,90}\b(call|callback|demo|meeting|appointment)\b|\b(call|callback|demo)\b[^.]{0,40}\b(scheduled|booked|confirmed)\b/i.test(summary)) return 'booked'
       return o
     })(),
     cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
@@ -62,7 +62,7 @@ function brief(id: string, d: any): Brief {
     // whether the owner / doctor / founder / manager was on the line.
     duration: typeof md.call_duration_secs === 'number' ? md.call_duration_secs : null,
     their_turns: (Array.isArray(d?.transcript) ? d.transcript : []).filter((t: any) => t.role === 'user' && /[a-z]{2,}/i.test(String(t.message || '')) && !/^\s*(hello|hi|hallo)[?!. ]*$/i.test(String(t.message || ''))).length,
-    owner: /(owner|founder|co-founder|director|proprietor|principal|doctor|managing|manager|partner|ceo|head)|dr\.? [a-z]/i.test(String(d?.analysis?.transcript_summary || '')),
+    owner: /\b(owner|founder|co-founder|director|proprietor|principal|doctor|managing|manager|partner|ceo|head)\b|\bdr\.? [a-z]/i.test(String(d?.analysis?.transcript_summary || '')),
     fail,
     opener: dyn.opener_variant ? String(dyn.opener_variant) : null,
     why,
