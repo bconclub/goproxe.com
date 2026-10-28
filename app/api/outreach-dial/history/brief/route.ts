@@ -50,10 +50,9 @@ function brief(id: string, d: any): Brief {
       const o = callEvidence(d).outcome
       const said = (Array.isArray(d?.transcript) ? d.transcript : []).filter((t: any) => t.role === 'user').map((t: any) => String(t.message || '')).join(' ')
       if (o !== 'failed' && o !== 'in_progress' && BOT_LINE.test(said)) return 'automated'
-      // They agreed a time: a booked call, not "undecided" (Z, 26 Oct 2026:
-      // Glam 'N' Smile gave a slot for 10 am and it showed as call back).
-      const summary = String(d?.analysis?.transcript_summary || '')
-      if (['connected', 'callback', 'interested'].includes(o) && /(agreed|scheduled|booked|confirmed|set up)[^.]{0,90}\b(call|callback|demo|meeting|appointment)\b|\b(call|callback|demo)\b[^.]{0,40}\b(scheduled|booked|confirmed)\b/i.test(summary)) return 'booked'
+      // Booked is decided by PROXe holding a real booking (the dashboard checks
+      // that), never guessed from the AI summary: "callback scheduled" was
+      // tagging busy people as booked (Z, 28 Oct 2026).
       return o
     })(),
     cost_usd: typeof md.cost_fiat === 'number' ? md.cost_fiat : null,
