@@ -186,11 +186,53 @@ const NUMBERS: [string, string][] = [
   ["99", "calls and visits booked"],
 ];
 
+/**
+ * Live "By the numbers" from PROXe Core (Z, 29 Oct 2026): goproxe.com
+ * /api/pitch-numbers adds up every brand's /api/public/stats (last 90 days).
+ * The snapshot above is the fallback while it loads or if it fails.
+ */
+type BrandStats = { leads: number; messages: number; customerMessages: number; answered: number; medianReplyMs: number | null; opportunities: number; booked: number };
+type Nums = {
+  total: { leads: number; messages: number; answeredPct: number | null; medianReplyS: number | null; opportunities: number; booked: number };
+  brands: Record<string, BrandStats>;
+};
+const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+const pct = (p: number) => (p >= 99.5 ? "~100%" : `${Math.round(p)}%`);
+const secs = (s: number) => `${Math.max(1, Math.round(s))}s`;
+
+function liveNumbers(n: Nums | null): [string, string][] {
+  if (!n) return NUMBERS;
+  const t = n.total;
+  return [
+    [fmt(t.leads), "leads handled"],
+    [fmt(t.messages), "messages"],
+    [t.answeredPct != null ? pct(t.answeredPct) : "~100%", "of customer messages answered"],
+    [t.medianReplyS != null ? secs(t.medianReplyS) : "7s", "median reply time"],
+    [fmt(t.opportunities), "opportunities created"],
+    [fmt(t.booked), "calls and visits booked"],
+  ];
+}
+
+/** An edge card's tiles, live when that brand reported; same labels as the snapshot. */
+function liveBrandStats(brand: string, fallback: [string, string][] | undefined, n: Nums | null): [string, string][] | undefined {
+  const b = n?.brands?.[brand];
+  if (!fallback || !b) return fallback;
+  return fallback.map(([v, label]) => {
+    const l = label.replace(/\u00ad/g, "");
+    if (l === "leads") return [fmt(b.leads), label];
+    if (l === "opportunities") return [fmt(b.opportunities), label];
+    if (l === "meetings booked") return [fmt(b.booked), label];
+    if (l === "answered") return [b.customerMessages ? pct((b.answered / b.customerMessages) * 100) : v, label];
+    if (l === "median reply") return [b.medianReplyMs ? secs(b.medianReplyMs / 1000) : v, label];
+    return [v, label];
+  });
+}
+
 // ── the cards ──
 
 /** On-demand cards: not in the main run, opened from a hub card (the edge cases). */
 export type ExtraGroup = { key: string; label: string; cards: string[] };
-type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; setOrb: (b: boolean) => void; started: boolean; start: () => void; extras: ExtraGroup[]; openExtra: (key: string) => void; openCard: (key: string) => void }) => React.ReactNode };
+type Slide = { key: string; hero?: boolean; label: string; render: (p: { on: boolean; live: Live | null; nums: Nums | null; setOrb: (b: boolean) => void; started: boolean; start: () => void; extras: ExtraGroup[]; openExtra: (key: string) => void; openCard: (key: string) => void }) => React.ReactNode };
 
 const SLIDES: Slide[] = [
   {
@@ -426,8 +468,9 @@ const SLIDES: Slide[] = [
   // One card per edge case: the brand's photo on top, its colour throughout.
   ...BUILT.map((r, i): Slide => ({
     key: `built-${r.brand}`, label: `Edge cases · ${i + 1} of ${BUILT.length}`,
-    render: ({ on, openCard }) => {
+    render: ({ on, openCard, nums }) => {
       const b = BRANDS[r.brand];
+      const stats = liveBrandStats(r.brand, r.stats, nums);
       return (
         <div className="relative flex h-full flex-col">
           <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl" style={{ minHeight: 180, boxShadow: `0 0 0 1px color-mix(in srgb, ${b.color} 35%, transparent)` }}>
@@ -447,9 +490,9 @@ const SLIDES: Slide[] = [
             <p className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${on ? "pitch-in" : "opacity-0"}`} style={{ color: b.color, animationDelay: "200ms" }}>Built on PROXe · {b.tag}</p>
             <h2 className={`mt-1.5 text-balance text-[25px] font-semibold leading-[1.08] tracking-[-0.025em] text-white sm:text-[28px] ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "320ms" }}>{r.title}</h2>
             <p className={`mt-2.5 text-[14.5px] leading-relaxed text-white/70 ${on ? "pitch-in" : "opacity-0"}`} style={{ animationDelay: "460ms" }}>{r.what}</p>
-            {r.stats && (
+            {stats && (
               <Stagger on={on} className="mt-3 grid grid-cols-4 gap-1.5" step={350}>
-                {r.stats.map(([n, l]) => (
+                {stats.map(([n, l]) => (
                   <div key={l} className="h-full rounded-xl bg-white/[0.06] px-2 py-2" style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${b.color} 30%, transparent)` }}>
                     <span className="block text-[17px] font-bold leading-none tracking-[-0.02em] tabular-nums" style={{ color: b.color }}>{n}</span>
                     <span className="mt-1 block text-[10.5px] leading-tight text-white/55">{l}</span>
@@ -457,7 +500,7 @@ const SLIDES: Slide[] = [
                 ))}
               </Stagger>
             )}
-            {r.stats && <p className="mt-1.5 text-[10.5px] text-white/40">Last 90 days</p>}
+            {stats && <p className="mt-1.5 text-[10.5px] text-white/40">Last 90 days</p>}
             <button type="button" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); openCard("edges"); }}
               className={`mt-3 flex items-center gap-1.5 self-start rounded-full bg-white/[0.08] px-3.5 py-2 text-[12.5px] font-medium text-white/85 transition-colors hover:bg-white/[0.14]`}>
               <ArrowLeft size={14} /> All edge cases
@@ -490,7 +533,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "numbers", label: "By the numbers",
-    render: ({ on }) => (
+    render: ({ on, nums }) => { const NUMBERS = liveNumbers(nums); return (
       <>
         <Headline>The last 90 days, across our brands.</Headline>
         <Body>Straight from their PROXe dashboards.</Body>
@@ -511,7 +554,7 @@ const SLIDES: Slide[] = [
           </div>
         </div>
       </>
-    ),
+    ); },
   },
   {
     key: "proof", label: "What changed",
@@ -973,6 +1016,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
   const [card, setCard] = useState({ w: 380, step: 300, narrow: false });
   const [reduced, setReduced] = useState(false);
   const [live, setLive] = useState<Live | null>(null);
+  const [nums, setNums] = useState<Nums | null>(null);
   const [held, setHeld] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [orb, setOrb] = useState(false);
@@ -1031,6 +1075,12 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, [go, index, embed, onClose]);
+
+  useEffect(() => {
+    // "By the numbers" and the edge cards: live from every brand's PROXe.
+    if (!slides.some((s) => s.key === "numbers" || s.key.startsWith("built-"))) return;
+    fetch("/api/pitch-numbers").then((r) => (r.ok ? r.json() : null)).then((j) => j?.ok && setNums(j)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     // Only the plan and round cards need live numbers.
@@ -1418,7 +1468,7 @@ export function PitchDeck({ variant = "page", only, extras = [], onExpand, onClo
                 </div>
               )}
 
-              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, setOrb, started, extras, openCard: (k) => { const at = slides.findIndex((x) => x.key === k); if (at < 0) return; track("button_click", { label: `pitch_open_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, openExtra: (k) => { const at = coreN + extraCards.findIndex((x) => x.group === k); track("button_click", { label: `pitch_extra_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
+              <Fit deps={[card.w, live === null, current]}>{s.render({ on: current, live, nums, setOrb, started, extras, openCard: (k) => { const at = slides.findIndex((x) => x.key === k); if (at < 0) return; track("button_click", { label: `pitch_open_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, openExtra: (k) => { const at = coreN + extraCards.findIndex((x) => x.group === k); track("button_click", { label: `pitch_extra_${k}`, location: variant }); if (onExpand) onExpand(at); else go(at); }, start: () => { if (onExpand) { track("button_click", { label: "pitch_expand_play", location: variant }); onExpand(i); return; } setStarted(true); setUnlocked(true); setHeld(false); track("pitch_start", { variant }); } })}</Fit>
 
               {/* Side cards sink back, but stay visible as more to come */}
               <div className="pointer-events-none absolute inset-0 rounded-[28px]"
