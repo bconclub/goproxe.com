@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'dpdp-act-whatsapp-customer-chats-small-business',
+    title: "DPDP Act and your WhatsApp chats: a 6-question check",
+    dek: "India's data protection law is back in the news. If your clinic, academy or service business keeps customer chats, here is a plain six-question check.",
+    date: '2026-10-27',
+    thumbnail: '/blog/dpdp-act-whatsapp-customer-chats-small-business.png',
+    trade: 'product',
+    wordCount: 900,
+    related: ['the-group-chat-is-not-the-desk', 'the-spreadsheet-is-not-the-desk', 'saving-the-contact-is-not-done', 'one-memory-every-channel', 'handoff-without-starting-over'],
+  },
+  {
     slug: 'fewer-google-clicks-every-enquiry-counts',
     title: 'Google clicks are falling. What to do with the ones you get',
     dek: 'AI answers on Google mean fewer clicks to your site. If you run a clinic, academy or service business, here is how to treat every visitor who still comes.',
