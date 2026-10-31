@@ -22,10 +22,22 @@ export default function ThankYouContent() {
   const returned = params?.get('checkout') === 'success'
   const status = params?.get('status')?.toLowerCase() ?? null
   const confirmed = !status || status === 'succeeded' || status === 'active'
-  const paid = returned && confirmed
-  const unpaid = returned && !confirmed
+  const paymentId = params?.get('payment_id') || null
+  const subscriptionId = params?.get('subscription_id') || null
+  /**
+   * What Dodo itself says, polled while the bank decides. Wins over the URL:
+   * static /buy links return the buyer before a UPI request is confirmed
+   * (31 Oct: "invalid QR code", then this page). null = no id on the URL or
+   * the check failed, so the URL status is all we have.
+   */
+  const [verified, setVerified] = useState<
+    'checking' | 'paid' | 'processing' | 'failed' | 'unpaid' | null
+  >(returned && (paymentId || subscriptionId) ? 'checking' : null)
+  const paid = returned && (verified ? verified === 'paid' : confirmed)
+  const unpaid = returned && !paid
   /** Still with the bank: retrying now could double-charge, so no resume button. */
-  const processing = unpaid && status === 'processing'
+  const processing =
+    unpaid && (verified ? verified === 'checking' || verified === 'processing' : status === 'processing')
   /**
    * The payment's own id, whichever of these Dodo appends to the return URL.
    * GA4 and Google Ads dedupe purchases on transaction_id; without one, every
@@ -40,13 +52,39 @@ export default function ThankYouContent() {
   const [firstName, setFirstName] = useState('')
   const [booking, setBooking] = useState<LocalBooking | null>(null)
   const viewedRef = useRef(false)
+  const purchaseRef = useRef(false)
+
+  useEffect(() => {
+    if (!returned || (!paymentId && !subscriptionId)) return
+    let stopped = false
+    let tries = 0
+    const query = new URLSearchParams()
+    if (paymentId) query.set('payment_id', paymentId)
+    if (subscriptionId) query.set('subscription_id', subscriptionId)
+    const check = async () => {
+      let next: typeof verified = null
+      try {
+        const res = await fetch(`/api/checkout/verify?${query.toString()}`, { cache: 'no-store' })
+        if (res.ok) next = (await res.json()).state ?? null
+      } catch {
+        // Fall through to the URL status.
+      }
+      if (stopped) return
+      setVerified(next)
+      // UPI can sit with the bank for minutes: keep looking for 5 minutes.
+      if (next === 'processing' && ++tries < 60) setTimeout(check, 5000)
+    }
+    check()
+    return () => {
+      stopped = true
+    }
+  }, [returned, paymentId, subscriptionId])
 
   useEffect(() => {
     const user = getStoredUser('proxe')
     setFirstName(user?.name?.trim().split(' ')[0] ?? '')
     setBooking(getStoredBooking('proxe'))
-    if (viewedRef.current) return
-    viewedRef.current = true
+    if (verified === 'checking') return
     const meta = {
       has_name: Boolean(user?.name),
       has_booking: Boolean(getStoredBooking('proxe')),
@@ -55,10 +93,18 @@ export default function ThankYouContent() {
     // trackPurchase so Meta receives the real subscription amount in the
     // buyer's own currency (Purchase with no value reports as zero revenue,
     // which makes every campaign look like it earned nothing).
-    if (paid) trackPurchase(meta, transactionId)
-    else if (unpaid) track('checkout_incomplete', { ...meta, status: status ?? 'unknown' })
+    // Separate guards: a buyer can go processing → paid on this same page.
+    if (paid) {
+      if (purchaseRef.current) return
+      purchaseRef.current = true
+      trackPurchase(meta, transactionId)
+      return
+    }
+    if (viewedRef.current) return
+    viewedRef.current = true
+    if (unpaid) track('checkout_incomplete', { ...meta, status: verified ?? status ?? 'unknown' })
     else track('demo_booked', meta)
-  }, [paid, unpaid, status, transactionId])
+  }, [paid, unpaid, status, verified, transactionId])
 
 
   const resumeQuery = new URLSearchParams()
@@ -78,8 +124,8 @@ export default function ThankYouContent() {
           </h1>
           <p className={styles.subtitle}>
             {processing
-              ? <>Your bank is still confirming the payment. This usually takes a few minutes. We&rsquo;ll email you once it&rsquo;s through.</>
-              : <>Your card or UPI wasn&rsquo;t confirmed, so PROXe isn&rsquo;t active yet and nothing was charged. Finish the payment to start.</>}
+              ? <>Your bank is still confirming the payment. This usually takes a few minutes. Please don&rsquo;t pay again. This page updates by itself.</>
+              : <>Your card or UPI wasn&rsquo;t confirmed, so PROXe isn&rsquo;t active yet. If money left your account, your bank returns it automatically. Please try again.</>}
           </p>
           {!processing && (
             <a href={resumeHref} className={styles.cta}>Complete payment</a>
