@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'hinglish-voice-notes-ai-customer-replies',
+    title: "Will an AI understand your customers' Hinglish?",
+    dek: "Customers send Hinglish voice notes and call in a mix of Hindi and English. A plain 10-message test for service businesses before an AI answers for you.",
+    date: '2026-10-30',
+    thumbnail: '/blog/hinglish-voice-notes-ai-customer-replies.png',
+    trade: 'product',
+    wordCount: 841,
+    related: ['fast-voice-ai-still-needs-the-right-answers', 'should-your-ai-caller-say-its-an-ai', 'dont-invent-the-price', 'a-voice-note-dump-is-not-a-reply', 'handoff-without-starting-over'],
+  },
+  {
     slug: 'dpdp-act-whatsapp-customer-chats-small-business',
     title: "DPDP Act and your WhatsApp chats: a 6-question check",
     dek: "India's data protection law is back in the news. If your clinic, academy or service business keeps customer chats, here is a plain six-question check.",
