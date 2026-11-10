@@ -20,6 +20,35 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Razorpay keys live as repo secrets and are written into the server's
+      # .env.local before the build, so a key change is one secret + one run.
+      # A secret that is not set leaves the server's value alone. Nothing here
+      # prints a value.
+      - name: Sync Razorpay keys to the server
+        continue-on-error: true
+        uses: appleboy/ssh-action@v1
+        env:
+          RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+          RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+          RAZORPAY_WEBHOOK_SECRET: ${{ secrets.RAZORPAY_WEBHOOK_SECRET }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: RAZORPAY_KEY_ID,RAZORPAY_KEY_SECRET,RAZORPAY_WEBHOOK_SECRET
+          script: |
+            f=/var/www/goproxe/.env.local
+            [ -f "$f" ] || exit 0
+            for k in RAZORPAY_KEY_ID RAZORPAY_KEY_SECRET RAZORPAY_WEBHOOK_SECRET; do
+              v="$(printenv "$k" || true)"
+              [ -z "$v" ] && continue
+              grep -v "^$k=" "$f" > "$f.rzp" || true
+              echo "$k=$v" >> "$f.rzp"
+              cat "$f.rzp" > "$f"
+              rm -f "$f.rzp"
+              echo "set $k"
+            done
+
       - name: Deploy via SSH
         id: ssh1
         continue-on-error: true
