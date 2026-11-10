@@ -6,6 +6,7 @@ import {
   shouldTryRazorpayAfterDodo,
   loadBillingStatus,
 } from '../../../lib/razorpay'
+import { buildOffer, findSwitch, isSwitched, stopDodo } from '../../../lib/billing/switch'
 
 /**
  * Billing status for one subscription, read by the PROXe brand dashboards.
@@ -81,6 +82,26 @@ export async function GET(request: Request) {
 
   try {
     const sub = await client.subscriptions.retrieve(subscriptionId)
+
+    // A plan being moved to Razorpay (see lib/billing/switch). Once the client
+    // has approved the Razorpay mandate, that subscription IS their plan: answer
+    // with it, and make sure Dodo takes nothing more. A lookup failure must not
+    // take the status down, so it degrades to the plain Dodo answer.
+    const moved = await findSwitch(subscriptionId).catch((err) => {
+      console.error('[api/billing/status] switch lookup', subscriptionId, (err as { status?: number })?.status)
+      return null
+    })
+    if (isSwitched(moved)) {
+      await stopDodo(client, sub).catch((err) =>
+        console.error('[api/billing/status] could not stop Dodo after switch', subscriptionId, err)
+      )
+      try {
+        const payload = await loadBillingStatus(moved!.id, getSiteUrl(url.origin))
+        return NextResponse.json({ ...payload, switched_from: subscriptionId }, { headers })
+      } catch (err) {
+        console.error('[api/billing/status] switched plan unreadable', moved!.id, (err as { status?: number })?.status)
+      }
+    }
     const [product, payments] = await Promise.all([
       client.products.retrieve(sub.product_id).catch(() => null),
       client.payments.list({ subscription_id: subscriptionId, page_size: 25 }).catch(() => null),
@@ -215,6 +236,8 @@ export async function GET(request: Request) {
         // on_hold / past_due: money is owed (see payment_state for the bar).
         needs_payment: needsPayment,
         pay_url: `${getSiteUrl(url.origin)}/pay/${encodeURIComponent(subscriptionId)}`,
+        // Present only when this plan can move to Razorpay; the dashboard decides when to show it.
+        switch_offer: buildOffer(sub, needsPayment, moved),
       },
       { headers }
     )

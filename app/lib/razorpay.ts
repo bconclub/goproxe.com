@@ -255,6 +255,10 @@ export function createSubscription(input: {
   /** Where Razorpay sends its own emails/SMS (payment failed, change card). */
   notifyEmail?: string | null
   notifyPhone?: string | null
+  /** Unix seconds of the first charge. Omitted = charged at authorisation. */
+  startAt?: number | null
+  /** false = Razorpay sends the customer nothing; we show the link ourselves. */
+  customerNotify?: boolean
 }): Promise<RazorpaySubscription> {
   const notify = {
     ...(input.notifyEmail ? { notify_email: input.notifyEmail } : {}),
@@ -264,10 +268,26 @@ export function createSubscription(input: {
     plan_id: input.planId,
     total_count: input.totalCount ?? SUBSCRIPTION_TOTAL_COUNT,
     quantity: input.quantity ?? 1,
-    customer_notify: true,
+    customer_notify: input.customerNotify ?? true,
+    ...(input.startAt ? { start_at: input.startAt } : {}),
     ...(Object.keys(notify).length ? { notify_info: notify } : {}),
     ...(input.notes && Object.keys(input.notes).length ? { notes: input.notes } : {}),
   })
+}
+
+/**
+ * Every subscription on the account, newest first. Razorpay has no filter on
+ * notes, so callers filter in memory; 100 a page, capped at 5 pages.
+ */
+export async function listSubscriptions(): Promise<RazorpaySubscription[]> {
+  const out: RazorpaySubscription[] = []
+  for (let skip = 0; skip < 500; skip += 100) {
+    const res = await call<{ items?: RazorpaySubscription[] }>('GET', `/subscriptions?count=100&skip=${skip}`)
+    const items = res.items ?? []
+    out.push(...items)
+    if (items.length < 100) break
+  }
+  return out
 }
 
 export function fetchSubscription(subscriptionId: string): Promise<RazorpaySubscription> {

@@ -10,6 +10,8 @@ import {
   type RazorpaySubscription,
   type RazorpayPayment,
 } from '../../../lib/razorpay'
+import { getDodoClient } from '../../../lib/dodo'
+import { stopDodo } from '../../../lib/billing/switch'
 import { recordBillingEvent, stampMetaSent } from '../../../lib/leadsSupabase'
 import { sendCapiEventResult, deriveEventId, matchKeys, type CapiEvent } from '../../../lib/metaCapi'
 
@@ -137,6 +139,26 @@ export async function POST(request: Request) {
   }
 
   const notes = notesOf(sub)
+
+  // A client moving over from Dodo has just approved (or been charged on) the
+  // Razorpay plan: stop the Dodo plan now so it never bills again. The status
+  // route repeats this on every read, so a missed delivery is still covered.
+  const switchFrom = notes.switch_from || null
+  if (
+    switchFrom &&
+    (type === 'subscription.authenticated' || type === 'subscription.activated' || type === 'subscription.charged')
+  ) {
+    const dodo = getDodoClient()
+    if (dodo) {
+      try {
+        const old = await dodo.subscriptions.retrieve(switchFrom)
+        const did = await stopDodo(dodo, old)
+        if (did === 'stopped') console.log('[webhooks/razorpay] stopped Dodo plan after switch', switchFrom, sub?.id)
+      } catch (err) {
+        console.error('[webhooks/razorpay] could not stop Dodo plan after switch', switchFrom, err)
+      }
+    }
+  }
   const email = payment?.email?.trim() || notes.email || null
   const phone = payment?.contact?.trim() || notes.phone || null
   const paidAmount = typeof payment?.amount === 'number' ? payment.amount : null
@@ -194,7 +216,7 @@ export async function POST(request: Request) {
    * double it. The id is derived from the payment id, so a redelivery produces
    * the same id and Meta deduplicates.
    */
-  if (type === 'subscription.charged') {
+  if (type === 'subscription.charged' && !switchFrom) {
     const purchase = {
       eventName: 'Purchase',
       eventId: deriveEventId('purchase', String(payment?.id ?? sub?.id ?? eventId)),
