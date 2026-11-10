@@ -215,6 +215,7 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
 
   // ── webhook route ──────────────────────────────────────────────────────────
   const webhook = (env) => {
+    const stopped = [], dodo = { subscriptions: { retrieve: async (id) => ({ subscription_id: id, status: 'active' }) } }
     const recorded = [], capi = [], stamps = []
     const razorpay = rzp(env, async (url) => {
       if (String(url).includes('/invoices/inv_sub')) return Response.json({ id: 'inv_sub', subscription_id: SUB.id })
@@ -224,6 +225,8 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
     })
     const route = load('app/api/webhooks/razorpay/route.ts', {
       'next/server': N, '../../../lib/razorpay': razorpay,
+      '../../../lib/dodo': { getDodoClient: () => dodo },
+      '../../../lib/billing/switch': { stopDodo: async (c, old) => { stopped.push(old.subscription_id); return 'stopped' } },
       '../../../lib/leadsSupabase': { recordBillingEvent: async (i) => { recorded.push(i); return { ok: true, leadId: 'lead_1' } }, stampMetaSent: async (...a) => { stamps.push(a) } },
       '../../../lib/metaCapi': { deriveEventId: (k, id) => k + ':' + id, matchKeys: () => ['em'], sendCapiEventResult: async (e) => { capi.push(e); return { sent: false, error: 'no_token', item: null } } },
     })
@@ -234,10 +237,54 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
         headers: { 'x-razorpay-signature': signature ?? sign(body), ...(eventId ? { 'x-razorpay-event-id': eventId } : {}) },
       }))
     }
-    return { post, recorded, capi, stamps }
+    return { post, recorded, capi, stamps, stopped }
   }
   const charged = { entity: 'event', event: 'subscription.charged', created_at: 1760000200, payload: { subscription: { entity: SUB }, payment: { entity: { ...pay('captured'), id: 'pay_first', email: 'buyer@example.com', contact: '+919876543210' } } } }
 
+  {
+    const sw = (env = KEYS, subs = []) => load('app/lib/billing/switch.ts', {
+      '../razorpay': { ...rzp(env), listSubscriptions: async () => subs },
+      './pricing': pricing, '../dodo': { INCLUDED_SEATS: 2 },
+    }, { Map, Set, Number, Math })
+    const soon = new Date(Date.now() + 5 * 24 * 3600_000).toISOString()
+    const dodoSub = (o = {}) => ({ subscription_id: 'sub_dodo_old', status: 'active', currency: 'USD', next_billing_date: soon, cancel_at_next_billing_date: false, addons: [], customer: { email: 'a@b.c', name: 'A' }, ...o })
+    await check('switch offer: INR plan gets subtotal + 18% GST, starting on the Dodo renewal', async () => {
+      const o = sw().buildOffer(dodoSub(), 'INR', false, null)
+      assert.equal(o.subtotal_minor, 999900); assert.equal(o.tax_minor, 179982); assert.equal(o.total_minor, 1179882)
+      assert.equal(o.start_at, soon); assert.equal(o.pending_url, null)
+      assert.equal(sw().buildOffer(dodoSub({ addons: [{ quantity: 3 }] }), 'INR', false, null).seats, 5)
+    })
+    await check('switch offer: a plan that owes is charged at approval; USD, ending and unconfigured plans get none', async () => {
+      assert.equal(sw().buildOffer(dodoSub({ status: 'on_hold' }), 'INR', true, null).start_at, null)
+      assert.equal(sw().buildOffer(dodoSub(), 'USD', false, null), null)
+      assert.equal(sw().buildOffer(dodoSub(), null, false, null), null)
+      assert.equal(sw().buildOffer(dodoSub({ cancel_at_next_billing_date: true }), 'INR', false, null), null)
+      assert.equal(sw().buildOffer(dodoSub({ status: 'cancelled' }), 'INR', false, null), null)
+      assert.equal(sw({}).buildOffer(dodoSub(), 'INR', false, null), null)
+    })
+    await check('switch lookup: finds only this plan, prefers an approved one, skips dead and lapsed ones', async () => {
+      const later = Math.floor(Date.now() / 1000) + 86400, past = Math.floor(Date.now() / 1000) - 60
+      const mk = (id, status, from, start_at = later, created_at = 1) => ({ id, status, start_at, created_at, notes: { switch_from: from }, short_url: 'https://rzp.io/' + id })
+      const found = await sw(KEYS, [mk('sub_other', 'authenticated', 'sub_else'), mk('sub_dead', 'cancelled', 'sub_dodo_old'), mk('sub_lapsed', 'created', 'sub_dodo_old', past), mk('sub_wait', 'created', 'sub_dodo_old', later, 9), mk('sub_ok', 'authenticated', 'sub_dodo_old', later, 2)]).findSwitch('sub_dodo_old')
+      assert.equal(found.id, 'sub_ok')
+      const m = sw(KEYS, [mk('sub_wait', 'created', 'sub_dodo_old')])
+      const waiting = await m.findSwitch('sub_dodo_old')
+      assert.equal(m.isSwitched(waiting), false)
+      assert.equal(m.buildOffer(dodoSub(), 'INR', false, waiting).pending_url, 'https://rzp.io/sub_wait')
+      assert.equal(await sw(KEYS, []).findSwitch('sub_dodo_old'), null)
+    })
+    await check('stopDodo: active ends at the billing date, on hold is cancelled, already stopped is left alone', async () => {
+      const calls = [], client = { subscriptions: { update: async (id, body) => { calls.push([id, body]) } } }
+      const m = sw()
+      assert.equal(await m.stopDodo(client, dodoSub()), 'stopped')
+      assert.equal(calls[0][1].cancel_at_next_billing_date, true); assert.equal(calls[0][1].status, undefined)
+      assert.equal(await m.stopDodo(client, dodoSub({ status: 'on_hold' })), 'stopped')
+      assert.equal(calls[1][1].status, 'cancelled')
+      assert.equal(await m.stopDodo(client, dodoSub({ cancel_at_next_billing_date: true })), 'already')
+      assert.equal(await m.stopDodo(client, dodoSub({ status: 'cancelled' })), 'already')
+      assert.equal(calls.length, 2)
+    })
+  }
   await check('webhook: refuses when the secret is unset, even with keys', async () => {
     const { post, recorded } = webhook({ RAZORPAY_KEY_ID: 'a', RAZORPAY_KEY_SECRET: 'b' })
     assert.equal((await post(charged)).status, 500); assert.equal(recorded.length, 0)
@@ -247,6 +294,17 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
     assert.equal((await post(charged, { signature: sign('something else') })).status, 401)
     assert.equal((await post(charged, { signature: '' })).status, 401)
     assert.equal(recorded.length, 0)
+  })
+  await check('webhook: a plan moved from Dodo stops the Dodo plan on approval and is not a new Purchase', async () => {
+    const { post, capi, stopped } = webhook(KEYS)
+    const moved = { ...SUB, status: 'authenticated', notes: { ...SUB.notes, switch_from: 'sub_dodo_old' } }
+    const r = await post({ entity: 'event', event: 'subscription.authenticated', created_at: 1760000100, payload: { subscription: { entity: moved } } }, { eventId: 'evt_sw1' })
+    assert.equal(r.status, 200); assert.deepEqual(stopped, ['sub_dodo_old'])
+    await post({ ...charged, payload: { ...charged.payload, subscription: { entity: { ...moved, status: 'active' } } } }, { eventId: 'evt_sw2' })
+    await new Promise((res) => setTimeout(res, 5))
+    assert.equal(capi.length, 0)
+    const plain = webhook(KEYS)
+    await plain.post(charged); assert.equal(plain.stopped.length, 0)
   })
   await check('webhook: subscription.charged records the payer and sends one Purchase', async () => {
     const { post, recorded, capi } = webhook(KEYS)
@@ -295,8 +353,8 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
   })
 
   // ── billing status route ───────────────────────────────────────────────────
-  const statusRoute = (env, dodoClient) => {
-    const urls = []
+  const statusRoute = (env, dodoClient, moved = null) => {
+    const urls = [], stopped = []
     const razorpay = rzp(env, async (url) => {
       urls.push(String(url))
       const u = String(url)
@@ -311,8 +369,13 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
       'next/server': { NextResponse: Object.assign(function (b, i) { return new Response(b, i) }, { json: (b, i) => Response.json(b, i) }) },
       '../../../lib/razorpay': razorpay,
       '../../../lib/dodo': { getDodoClient: () => dodoClient, getSiteUrl: () => 'https://goproxe.com' },
+      '../../../lib/billing/switch': {
+        findSwitch: async () => moved, isSwitched: (m) => !!m && m.status !== 'created',
+        stopDodo: async (c, old) => { stopped.push(old.subscription_id); return 'stopped' },
+        buildOffer: (old, cur, owes, m) => (cur === 'INR' ? { total_minor: 1179882, start_at: owes ? null : old.next_billing_date, pending_url: m ? m.short_url : null } : null),
+      },
     })
-    return { get: (q) => route.GET(new Request('https://goproxe.com/api/billing/status?' + q)), urls }
+    return { get: (q) => route.GET(new Request('https://goproxe.com/api/billing/status?' + q)), urls, stopped }
   }
   const dodo404 = { subscriptions: { retrieve: async () => { throw Object.assign(Error('nf'), { status: 404 }) } } }
   await check('status: provider=razorpay returns the Razorpay subscription in the shared shape', async () => {
@@ -333,6 +396,18 @@ const pay = (status, extra = {}) => ({ id: 'pay_' + status, amount: 1179882, cur
     assert.equal((await b.get('subscription_id=' + SUB.id)).status, 503)
     assert.equal((await b.get('subscription_id=' + SUB.id + '&provider=razorpay')).status, 503)
     assert.equal((await b.get('subscription_id=nope')).status, 400)
+  })
+  await check('status: a Dodo plan shows the move offer until approved, then answers as the Razorpay plan and stops Dodo', async () => {
+    const old = { subscription_id: 'sub_dodo_old', product_id: 'p1', status: 'active', currency: 'INR', next_billing_date: '2026-11-24T08:00:00Z', previous_billing_date: null, cancel_at_next_billing_date: false, metadata: {}, recurring_pre_tax_amount: 999900 }
+    const dodo = { subscriptions: { retrieve: async () => old }, products: { retrieve: async () => ({ name: 'PROXe Core', price: { price: 999900, currency: 'INR' } }) }, payments: { list: async () => ({ items: [] }) } }
+    const before = statusRoute(KEYS, dodo, { ...SUB, status: 'created', short_url: 'https://rzp.io/wait' })
+    const b = await (await before.get('subscription_id=sub_dodo_old')).json()
+    assert.equal(b.subscription_id, 'sub_dodo_old'); assert.equal(b.switch_offer.total_minor, 1179882); assert.equal(b.switch_offer.pending_url, 'https://rzp.io/wait')
+    assert.equal(before.stopped.length, 0)
+    const after = statusRoute(KEYS, dodo, { ...SUB, status: 'authenticated' })
+    const a = await (await after.get('subscription_id=sub_dodo_old')).json()
+    assert.equal(a.provider, 'razorpay'); assert.equal(a.switched_from, 'sub_dodo_old'); assert.equal(a.subscription_id, SUB.id)
+    assert.deepEqual(after.stopped, ['sub_dodo_old'])
   })
   await check('status: an id Razorpay does not know is a 404', async () => {
     const { get } = statusRoute(KEYS, null)

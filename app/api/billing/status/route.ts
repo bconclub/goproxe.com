@@ -237,7 +237,7 @@ export async function GET(request: Request) {
         needs_payment: needsPayment,
         pay_url: `${getSiteUrl(url.origin)}/pay/${encodeURIComponent(subscriptionId)}`,
         // Present only when this plan can move to Razorpay; the dashboard decides when to show it.
-        switch_offer: buildOffer(sub, needsPayment, moved),
+        switch_offer: buildOffer(sub, plan?.currency, needsPayment, moved),
       },
       { headers }
     )

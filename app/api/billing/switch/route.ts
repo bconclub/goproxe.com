@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient } from '../../../lib/dodo'
 import { razorpayConfigured } from '../../../lib/razorpay'
-import { buildOffer, createSwitch, findSwitch, isSwitched } from '../../../lib/billing/switch'
+import { buildOffer, createSwitch, findSwitch, isSwitched, planCurrency } from '../../../lib/billing/switch'
 
 /**
  * POST /api/billing/switch  { subscription_id: <Dodo id>, brand? }
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     if (isSwitched(existing)) {
       return NextResponse.json({ ok: true, switched: true, subscriptionId: existing!.id, checkoutUrl: null })
     }
-    const offer = buildOffer(sub, String(sub.status) === 'on_hold', existing)
+    const offer = buildOffer(sub, await planCurrency(client, sub), String(sub.status) === 'on_hold', existing)
     if (!offer) return NextResponse.json({ ok: false, reason: 'not_eligible' }, { status: 409 })
 
     const rzp = existing ?? (await createSwitch(sub, offer, body?.brand?.trim().slice(0, 40) || null))

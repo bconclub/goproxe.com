@@ -62,6 +62,12 @@ export async function findSwitch(dodoSubscriptionId: string, fresh = false): Pro
 
 type DodoSub = Awaited<ReturnType<DodoPayments['subscriptions']['retrieve']>>
 
+/** The currency a Dodo plan is priced in, read from its product. */
+export async function planCurrency(client: DodoPayments, sub: DodoSub): Promise<string | null> {
+  const product = await client.products.retrieve(sub.product_id).catch(() => null)
+  return (product?.price as { currency?: string } | undefined)?.currency ?? null
+}
+
 function seatsOf(sub: DodoSub): number {
   const extra = (sub.addons ?? []).reduce((n, a) => n + (Number(a.quantity) || 0), 0)
   return INCLUDED_SEATS + extra
@@ -83,10 +89,18 @@ export interface SwitchOffer {
  * What the move would cost and when it would start, or null when this plan is
  * not one to move (not INR, already ending, Razorpay not set up).
  * `owesNow` = the Dodo plan has an unpaid period: Razorpay then charges at once.
+ * `currency` = the currency the plan is PRICED in (the Dodo product's price).
+ * `sub.currency` is not that: Dodo reports its own settlement currency there,
+ * so an INR plan reads as USD and would never be offered the move.
  */
-export function buildOffer(sub: DodoSub, owesNow: boolean, pending: RazorpaySubscription | null): SwitchOffer | null {
+export function buildOffer(
+  sub: DodoSub,
+  currency: string | null | undefined,
+  owesNow: boolean,
+  pending: RazorpaySubscription | null
+): SwitchOffer | null {
   if (!razorpayConfigured()) return null
-  if (String(sub.currency).toUpperCase() !== 'INR') return null
+  if (String(currency ?? '').toUpperCase() !== 'INR') return null
   const status = String(sub.status)
   if (status !== 'active' && status !== 'on_hold') return null
   if (sub.cancel_at_next_billing_date) return null
