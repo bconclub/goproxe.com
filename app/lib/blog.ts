@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'when-an-ai-assistant-calls-your-business',
+    title: "Gemini can call businesses to book. What will it find?",
+    dek: "Google's Gemini can phone businesses to book appointments for users. A plain checklist for clinics and service businesses on what that call should find.",
+    date: '2026-10-29',
+    thumbnail: '/blog/when-an-ai-assistant-calls-your-business.png',
+    trade: 'product',
+    wordCount: 823,
+    related: ['a-missed-call-is-still-a-lead', 'dont-invent-the-price', 'should-your-ai-caller-say-its-an-ai', 'one-memory-every-channel', 'handoff-without-starting-over'],
+  },
+  {
     slug: 'hinglish-voice-notes-ai-customer-replies',
     title: "Will an AI understand your customers' Hinglish?",
     dek: "Customers send Hinglish voice notes and call in a mix of Hindi and English. A plain 10-message test for service businesses before an AI answers for you.",
