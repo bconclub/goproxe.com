@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient, getSiteUrl } from '../../../lib/dodo'
+import {
+  explicitProvider,
+  razorpayConfigured,
+  shouldTryRazorpayAfterDodo,
+  fetchSubscription,
+  createSubscription,
+  findPayLink,
+  notesOf,
+  cleanNotes,
+} from '../../../lib/razorpay'
 
 /**
  * Resume an unfinished checkout.
@@ -12,6 +22,15 @@ import { getDodoClient, getSiteUrl } from '../../../lib/dodo'
  * GET /api/checkout/resume?payment_id=pay_… (or subscription_id=sub_…)
  * → 302 to a fresh hosted checkout for the same customer and plan. Anything we
  * cannot resolve falls back to the pricing section rather than erroring.
+ *
+ * Razorpay (`provider=razorpay`, or an id Dodo does not know: same rule as
+ * /api/billing/status):
+ *   created              → its own authorisation link, still valid.
+ *   authenticated/active → /thank-you, nothing to resume.
+ *   pending/halted       → the unpaid invoice's page.
+ *   cancelled/completed/expired cannot be restarted by Razorpay, so a NEW
+ *                          subscription is made on the same plan (same amount,
+ *                          same notes plus `resumed_from`) and its link opened.
  */
 
 export const runtime = 'nodejs'
@@ -21,11 +40,44 @@ export async function GET(request: Request) {
   const siteUrl = getSiteUrl(url.origin)
   const fallback = NextResponse.redirect(`${siteUrl}/#pricing`, 302)
 
+  const providerParam = url.searchParams.get('provider')
+  const requestedSub = url.searchParams.get('subscription_id')?.trim() || null
+  const razorpayResume = async () => {
+    try {
+      const sub = await fetchSubscription(requestedSub!)
+      if (sub.status === 'active' || sub.status === 'authenticated') {
+        return NextResponse.redirect(
+          `${siteUrl}/thank-you?checkout=success&provider=razorpay&subscription_id=${encodeURIComponent(sub.id)}`,
+          302
+        )
+      }
+      const link = await findPayLink(sub)
+      if (link) return NextResponse.redirect(link, 302)
+
+      const notes = notesOf(sub)
+      const fresh = await createSubscription({
+        planId: sub.plan_id,
+        quantity: sub.quantity || 1,
+        notes: cleanNotes({ ...notes, resumed_from: sub.id }),
+        notifyEmail: notes.email ?? null,
+        notifyPhone: notes.phone ?? null,
+      })
+      return fresh.short_url ? NextResponse.redirect(fresh.short_url, 302) : fallback
+    } catch (err) {
+      console.error('[api/checkout/resume] razorpay could not resume', requestedSub, (err as { status?: number })?.status)
+      return fallback
+    }
+  }
+  if (explicitProvider(providerParam) === 'razorpay') {
+    return requestedSub?.startsWith('sub_') && razorpayConfigured() ? razorpayResume() : fallback
+  }
+  const razorpayFallback = shouldTryRazorpayAfterDodo(providerParam, requestedSub)
+
   const client = getDodoClient()
-  if (!client) return fallback
+  if (!client) return razorpayFallback ? razorpayResume() : fallback
 
   try {
-    let subscriptionId = url.searchParams.get('subscription_id')?.trim() || null
+    let subscriptionId = requestedSub
     const paymentId = url.searchParams.get('payment_id')?.trim() || null
     if (!subscriptionId && paymentId) {
       const payment = await client.payments.retrieve(paymentId)
@@ -69,6 +121,7 @@ export async function GET(request: Request) {
     if (!session.checkout_url) return fallback
     return NextResponse.redirect(session.checkout_url, 302)
   } catch (err) {
+    if ((err as { status?: number })?.status === 404 && razorpayFallback) return razorpayResume()
     console.error('[api/checkout/resume] could not resume', err)
     return fallback
   }

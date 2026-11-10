@@ -24,8 +24,13 @@ export type Currency = 'INR' | 'USD'
  *                buyer self-assesses IGST and claims input credit on the same
  *                line, so it costs them nothing.
  * international  USD, outside Indian GST.
+ * gst            Razorpay INR checkouts only. There PROXe itself is the Indian
+ *                seller (no merchant of record), so 18% is added ON TOP in every
+ *                case, GSTIN or not. A GSTIN is only recorded so it prints on
+ *                the invoice and the buyer can claim input credit. Not in the
+ *                monorepo copy yet: mirror it there when core starts quoting.
  */
-export type TaxMode = 'b2c' | 'rcm' | 'international'
+export type TaxMode = 'b2c' | 'rcm' | 'international' | 'gst'
 
 export interface PricingConfig {
   gst_rate_bp: number
@@ -89,9 +94,9 @@ export function quote(input: QuoteInput): Quote {
   const seat_total = billable_seats * cfg.seat_price[currency]
   const subtotal = base + seat_total
 
-  // Only b2c levies anything. rcm is reverse charge, international is outside
+  // b2c and gst add 18% on top. rcm is reverse charge, international is outside
   // Indian GST entirely.
-  const tax_rate_bp = input.tax_mode === 'b2c' ? cfg.gst_rate_bp : 0
+  const tax_rate_bp = input.tax_mode === 'b2c' || input.tax_mode === 'gst' ? cfg.gst_rate_bp : 0
   const tax = applyBp(subtotal, tax_rate_bp)
 
   return {
@@ -114,9 +119,17 @@ export function quote(input: QuoteInput): Quote {
  *
  * A GSTIN only matters for an Indian supply. A foreign buyer typing one into the
  * box does not create an Indian reverse charge.
+ *
+ * `sellerChargesGst` is true when the INR checkout will run on Razorpay (its
+ * keys are set on the server): GST is then charged whatever the GSTIN says.
  */
-export function resolveTaxMode(market: 'inr' | 'usd', gstin?: string | null): TaxMode {
+export function resolveTaxMode(
+  market: 'inr' | 'usd',
+  gstin?: string | null,
+  sellerChargesGst = false
+): TaxMode {
   if (market !== 'inr') return 'international'
+  if (sellerChargesGst) return 'gst'
   return isPlausibleGstin(gstin) ? 'rcm' : 'b2c'
 }
 

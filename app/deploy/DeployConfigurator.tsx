@@ -42,7 +42,18 @@ const INCLUDED = [
   `${PRICING.included_seats} team seats included`,
 ]
 
-export default function DeployConfigurator({ initialMarket }: { initialMarket: Market }) {
+export default function DeployConfigurator({
+  initialMarket,
+  inrGstAlways = false,
+}: {
+  initialMarket: Market
+  /**
+   * True when INR checkout runs on Razorpay: PROXe is then the seller and 18%
+   * GST is on top whether or not a GSTIN is given (it only goes on the invoice).
+   * False keeps the Dodo behaviour, where a GSTIN means reverse charge.
+   */
+  inrGstAlways?: boolean
+}) {
   const router = useRouter()
   const [market] = useState<Market>(initialMarket)
   const seats = PRICING.included_seats
@@ -55,7 +66,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
   // A half-typed GSTIN must not flicker the total between two tax cases. It only
   // counts once it is a complete, well-formed number.
   const effectiveGstin = hasGst && isPlausibleGstin(gstin) ? gstin.trim().toUpperCase() : null
-  const taxMode = resolveTaxMode(market, effectiveGstin)
+  const taxMode = resolveTaxMode(market, effectiveGstin, inrGstAlways)
   const q = useMemo(() => quote({ seats, currency, tax_mode: taxMode }), [seats, currency, taxMode])
 
   const gstinTouched = hasGst && gstin.trim().length > 0
@@ -138,7 +149,11 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
               <div className={styles.gstHead}>
                 <div>
                   <h2 className={styles.gstTitle} id="gst-title">Have a GSTIN?</h2>
-                  <p className={styles.gstHint}>Add it only if you are GST registered.</p>
+                  <p className={styles.gstHint}>
+                    {inrGstAlways
+                      ? 'Add it to get a GST invoice you can claim input credit on.'
+                      : 'Add it only if you are GST registered.'}
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -172,7 +187,9 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
                   )}
                   {gstinValid && (
                     <p className={styles.goodText}>
-                      Your tax treatment is reflected in the total before payment.
+                      {inrGstAlways
+                        ? 'Your GSTIN will be on the invoice. 18% GST still applies.'
+                        : 'Your tax treatment is reflected in the total before payment.'}
                     </p>
                   )}
                 </>
@@ -191,7 +208,7 @@ export default function DeployConfigurator({ initialMarket }: { initialMarket: M
               <dt>PROXe Core</dt>
               <dd>{formatMoney(q.base, currency)}</dd>
             </div>
-            {q.tax_mode === 'b2c' && (
+            {(q.tax_mode === 'b2c' || q.tax_mode === 'gst') && (
               <div className={styles.line}>
                 <dt>
                   GST

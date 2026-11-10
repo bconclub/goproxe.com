@@ -1,10 +1,22 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient, getSiteUrl } from '../../../lib/dodo'
+import {
+  explicitProvider,
+  razorpayConfigured,
+  shouldTryRazorpayAfterDodo,
+  loadBillingStatus,
+} from '../../../lib/razorpay'
 
 /**
  * Billing status for one subscription, read by the PROXe brand dashboards.
  *
- * GET /api/billing/status?subscription_id=sub_…
+ * GET /api/billing/status?subscription_id=sub_…[&provider=razorpay]
+ *
+ * Dodo and Razorpay subscription ids both start with `sub_`. A dashboard whose
+ * subscription is on Razorpay sends `provider=razorpay`; the body has the same
+ * keys either way (plus `provider`). Without the param the id is looked up on
+ * Dodo as always, and only if Dodo does not know it (404, or Dodo is not
+ * configured) and the id has Razorpay's 19-character shape is Razorpay tried.
  *
  * The dashboards show a Billing page and a red "payment failed" bar from this.
  * They call here instead of Dodo because the Dodo key lives only on this server:
@@ -44,8 +56,28 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'subscription_id required' }, { status: 400, headers })
   }
 
+  const providerParam = url.searchParams.get('provider')
+  const razorpayStatus = async () => {
+    try {
+      return NextResponse.json(await loadBillingStatus(subscriptionId, getSiteUrl(url.origin)), { headers })
+    } catch (err) {
+      const upstream = (err as { status?: number })?.status
+      // Razorpay answers 400 to an id it does not recognise, as well as 404.
+      const status = upstream === 404 || upstream === 400 ? 404 : 502
+      if (status === 502) console.error('[api/billing/status] razorpay', subscriptionId, upstream)
+      return NextResponse.json({ error: status === 404 ? 'not_found' : 'upstream_error' }, { status, headers })
+    }
+  }
+  if (explicitProvider(providerParam) === 'razorpay') {
+    if (!razorpayConfigured()) return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+    return razorpayStatus()
+  }
+
   const client = getDodoClient()
-  if (!client) return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+  if (!client) {
+    if (shouldTryRazorpayAfterDodo(providerParam, subscriptionId)) return razorpayStatus()
+    return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+  }
 
   try {
     const sub = await client.subscriptions.retrieve(subscriptionId)
@@ -188,6 +220,7 @@ export async function GET(request: Request) {
     )
   } catch (err) {
     const status = (err as { status?: number })?.status === 404 ? 404 : 502
+    if (status === 404 && shouldTryRazorpayAfterDodo(providerParam, subscriptionId)) return razorpayStatus()
     if (status === 502) console.error('[api/billing/status]', subscriptionId, err)
     return NextResponse.json({ error: status === 404 ? 'not_found' : 'upstream_error' }, { status, headers })
   }

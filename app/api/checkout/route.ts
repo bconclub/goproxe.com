@@ -9,9 +9,18 @@ import {
   type Market,
 } from '../../lib/dodo'
 import { markCheckoutStarted } from '../../lib/leadsSupabase'
+import { razorpayConfigured, createPlan, createSubscription, cleanNotes } from '../../lib/razorpay'
+import { quote, formatMoney } from '../../lib/billing/pricing'
 
 /**
- * Checkout session → Dodo Payments.
+ * Checkout session → Razorpay (INR, when its keys are set) or Dodo Payments.
+ *
+ * PROVIDER CHOICE, in one place: market 'inr' AND `razorpayConfigured()`
+ * (RAZORPAY_KEY_ID + RAZORPAY_KEY_SECRET both set) → Razorpay subscription,
+ * `checkoutUrl` is its hosted authorisation link. Everything else (USD, or INR
+ * with no Razorpay keys) → the Dodo path below, untouched. A Razorpay failure
+ * does NOT fall back to Dodo: the two tax the sale differently, and the buyer
+ * was already shown Razorpay's total.
  *
  * The browser POSTs the plan the visitor picked; this server route opens a
  * hosted Dodo checkout and hands back the URL to redirect to. The API key stays
@@ -91,12 +100,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'bad_request' }, { status: 400 })
   }
 
+  const market: Market = body.market === 'usd' ? 'usd' : 'inr'
+  if (market === 'inr' && razorpayConfigured()) {
+    return razorpayCheckout(body)
+  }
+
   const client = getDodoClient()
   if (!client) {
     return NextResponse.json({ ok: false, reason: 'not_configured' })
   }
 
-  const market: Market = body.market === 'usd' ? 'usd' : 'inr'
   const coreProductId = getCoreProductId(market)
   if (!coreProductId) {
     console.error('[api/checkout] no Core product configured for market', market)
@@ -278,6 +291,89 @@ export async function POST(request: Request) {
     })
   } catch (err) {
     console.error('[api/checkout] session creation failed', err)
+    return NextResponse.json({ ok: false, reason: 'checkout_failed' }, { status: 502 })
+  }
+}
+
+/**
+ * INR on Razorpay.
+ *
+ * A Razorpay plan has one fixed amount, so each checkout gets its own plan for
+ * the exact monthly total and a subscription on it. PROXe is the seller here
+ * (Razorpay is not a merchant of record), so 18% GST is on top in every case;
+ * a GSTIN changes nothing about the amount and is recorded in `notes` for the
+ * invoice. All money is integer paise from `quote()`.
+ */
+async function razorpayCheckout(body: CheckoutPayload) {
+  const requestedSeats = Number.isFinite(body.seats) ? Math.floor(Number(body.seats)) : INCLUDED_SEATS
+  const q = quote({ seats: requestedSeats, currency: 'INR', tax_mode: 'gst' })
+
+  const email = body.email?.trim() || null
+  const name = body.name?.trim() || null
+  const phone = normalizeE164(body.phone, 'inr')
+  const gstin = isPlausibleGstin(body.gstin) ? body.gstin!.trim().toUpperCase() : null
+  const brandName = body.brandName?.trim() || null
+  const source = body.source?.trim() || 'goproxe_pricing'
+
+  const planName =
+    q.billable_seats > 0
+      ? `PROXe Core + ${q.billable_seats} extra seat${q.billable_seats === 1 ? '' : 's'}`
+      : 'PROXe Core'
+  const notes = cleanNotes({
+    market: 'inr',
+    seats: q.seats,
+    source,
+    tax_mode: 'gst',
+    subtotal_minor: q.subtotal,
+    gst_minor: q.tax,
+    total_minor: q.grand_total,
+    gstin,
+    brand_name: brandName,
+    email,
+    name,
+    phone,
+  })
+
+  try {
+    const plan = await createPlan({
+      name: planName,
+      description: `${formatMoney(q.subtotal, 'INR')} + 18% GST ${formatMoney(q.tax, 'INR')}, billed monthly`,
+      amountMinor: q.grand_total,
+      currency: 'INR',
+      period: 'monthly',
+      interval: 1,
+      notes,
+    })
+    const sub = await createSubscription({
+      planId: plan.id,
+      notes,
+      notifyEmail: email,
+      notifyPhone: phone,
+    })
+    if (!sub.short_url) {
+      console.error('[api/checkout] razorpay subscription created without a short_url', sub.id)
+      return NextResponse.json({ ok: false, reason: 'no_checkout_url' }, { status: 502 })
+    }
+
+    await markCheckoutStarted({
+      email,
+      sessionId: sub.id,
+      market: 'inr',
+      source: body.source ?? null,
+      provider: 'razorpay',
+    })
+
+    return NextResponse.json({
+      ok: true,
+      checkoutUrl: sub.short_url,
+      // Same key the Dodo path returns; for Razorpay it is the subscription id.
+      sessionId: sub.id,
+      provider: 'razorpay',
+      subscriptionId: sub.id,
+    })
+  } catch (err) {
+    const e = err as { status?: number; code?: string | null; message?: string }
+    console.error('[api/checkout] razorpay checkout failed', e?.status, e?.code, e?.message)
     return NextResponse.json({ ok: false, reason: 'checkout_failed' }, { status: 502 })
   }
 }

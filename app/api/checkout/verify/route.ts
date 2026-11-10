@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient } from '../../../lib/dodo'
+import {
+  explicitProvider,
+  razorpayConfigured,
+  shouldTryRazorpayAfterDodo,
+  fetchSubscription,
+  checkoutStateOf,
+} from '../../../lib/razorpay'
 
 /**
  * The real state of a checkout, asked of Dodo rather than read from the URL.
@@ -12,6 +19,11 @@ import { getDodoClient } from '../../../lib/dodo'
  * unconfirmed, and the status on the URL can't be trusted either way (31 Oct:
  * a buyer got "invalid QR code" and still landed on /thank-you).
  * Only state comes back, never the customer's details.
+ *
+ * Razorpay: add `provider=razorpay` with the subscription id. The state is the
+ * subscription's own (authenticated or active = paid). Without the param the
+ * id goes to Dodo first, then to Razorpay if Dodo does not know it (same rule
+ * as /api/billing/status).
  */
 
 export const runtime = 'nodejs'
@@ -32,8 +44,30 @@ export async function GET(request: Request) {
   if (!paymentId?.startsWith('pay_') && !subscriptionId?.startsWith('sub_')) {
     return NextResponse.json({ error: 'id required' }, { status: 400, headers })
   }
+  const providerParam = url.searchParams.get('provider')
+  const razorpayState = async () => {
+    try {
+      const sub = await fetchSubscription(subscriptionId!)
+      return NextResponse.json({ state: checkoutStateOf(sub.status) }, { headers })
+    } catch (err) {
+      console.error('[api/checkout/verify] razorpay', subscriptionId, (err as { status?: number })?.status)
+      return NextResponse.json({ error: 'upstream_error' }, { status: 502, headers })
+    }
+  }
+  if (explicitProvider(providerParam) === 'razorpay') {
+    if (!subscriptionId?.startsWith('sub_')) {
+      return NextResponse.json({ error: 'id required' }, { status: 400, headers })
+    }
+    if (!razorpayConfigured()) return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+    return razorpayState()
+  }
+  const razorpayFallback = !paymentId?.startsWith('pay_') && shouldTryRazorpayAfterDodo(providerParam, subscriptionId)
+
   const client = getDodoClient()
-  if (!client) return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+  if (!client) {
+    if (razorpayFallback) return razorpayState()
+    return NextResponse.json({ error: 'not_configured' }, { status: 503, headers })
+  }
 
   try {
     if (paymentId?.startsWith('pay_')) {
@@ -45,6 +79,7 @@ export async function GET(request: Request) {
     const payments = await client.payments.list({ subscription_id: subscriptionId!, page_size: 1 })
     return NextResponse.json({ state: stateOf(payments.items?.[0]?.status) }, { headers })
   } catch (err) {
+    if ((err as { status?: number })?.status === 404 && razorpayFallback) return razorpayState()
     console.error('[api/checkout/verify]', paymentId ?? subscriptionId, err)
     return NextResponse.json({ error: 'upstream_error' }, { status: 502, headers })
   }

@@ -22,8 +22,17 @@ export default function ThankYouContent() {
   const returned = params?.get('checkout') === 'success'
   const status = params?.get('status')?.toLowerCase() ?? null
   const confirmed = !status || status === 'succeeded' || status === 'active'
-  const paymentId = params?.get('payment_id') || null
-  const subscriptionId = params?.get('subscription_id') || null
+  /**
+   * Razorpay returns: our own links carry provider=razorpay&subscription_id=…,
+   * and Razorpay Checkout's callback appends razorpay_subscription_id /
+   * razorpay_payment_id. Either marks the return as Razorpay's. Its payment id
+   * is never sent to /api/checkout/verify (that id space is Dodo's there); the
+   * subscription's own state is what counts.
+   */
+  const rzpSubscriptionId = params?.get('razorpay_subscription_id') || null
+  const isRazorpay = params?.get('provider') === 'razorpay' || Boolean(rzpSubscriptionId)
+  const paymentId = isRazorpay ? null : params?.get('payment_id') || null
+  const subscriptionId = rzpSubscriptionId || params?.get('subscription_id') || null
   /**
    * What Dodo itself says, polled while the bank decides. Wins over the URL:
    * static /buy links return the buyer before a UPI request is confirmed
@@ -44,8 +53,9 @@ export default function ThankYouContent() {
    * refresh of this page was a brand new sale with brand new revenue.
    */
   const transactionId =
+    params?.get('razorpay_payment_id') ||
     params?.get('payment_id') ||
-    params?.get('subscription_id') ||
+    subscriptionId ||
     params?.get('transaction_id') ||
     undefined
 
@@ -61,6 +71,7 @@ export default function ThankYouContent() {
     const query = new URLSearchParams()
     if (paymentId) query.set('payment_id', paymentId)
     if (subscriptionId) query.set('subscription_id', subscriptionId)
+    if (isRazorpay) query.set('provider', 'razorpay')
     const check = async () => {
       let next: typeof verified = null
       try {
@@ -78,7 +89,7 @@ export default function ThankYouContent() {
     return () => {
       stopped = true
     }
-  }, [returned, paymentId, subscriptionId])
+  }, [returned, paymentId, subscriptionId, isRazorpay])
 
   useEffect(() => {
     const user = getStoredUser('proxe')
@@ -108,10 +119,11 @@ export default function ThankYouContent() {
 
 
   const resumeQuery = new URLSearchParams()
-  const resumePayment = params?.get('payment_id')
-  const resumeSub = params?.get('subscription_id')
+  const resumePayment = paymentId
+  const resumeSub = subscriptionId
   if (resumePayment) resumeQuery.set('payment_id', resumePayment)
   if (resumeSub) resumeQuery.set('subscription_id', resumeSub)
+  if (isRazorpay) resumeQuery.set('provider', 'razorpay')
   const resumeHref = `/api/checkout/resume?${resumeQuery.toString()}`
 
   if (unpaid) {

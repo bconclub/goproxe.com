@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getDodoClient, getSiteUrl } from '../../lib/dodo'
+import {
+  explicitProvider,
+  razorpayConfigured,
+  shouldTryRazorpayAfterDodo,
+  fetchSubscription,
+  findPayLink,
+} from '../../lib/razorpay'
 
 /**
  * A payment link that never expires, for one specific subscription.
@@ -20,6 +27,17 @@ import { getDodoClient, getSiteUrl } from '../../lib/dodo'
  * - anything else (pending, failed, cancelled, expired) has nothing to update,
  *   so it falls through to /api/checkout/resume: a fresh checkout for the same
  *   customer and plan.
+ *
+ * Razorpay: /pay/sub_…?provider=razorpay (the `pay_url` /api/billing/status
+ * returns for a Razorpay subscription; without the param the id goes to Dodo
+ * first and to Razorpay only if Dodo does not know it).
+ * - created → its authorisation link. Razorpay's links do not die in minutes,
+ *   so nothing is minted or cached.
+ * - pending / halted → the unpaid invoice's page; paying it reactivates THE
+ *   SAME subscription.
+ * - authenticated / active → nothing owed.
+ * - cancelled / completed / expired → /api/checkout/resume, which opens a new
+ *   subscription on the same plan.
  *
  * The subscription id is the only key, same as /api/checkout/resume: ids are
  * random and never published, and the worst an outsider can do is pay for
@@ -74,13 +92,44 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!subscriptionId?.startsWith('sub_')) return fallback
   if (PREVIEW_BOT.test(request.headers.get('user-agent') ?? '')) return previewPage()
 
+  const providerParam = url.searchParams.get('provider')
+  const razorpayPay = async () => {
+    try {
+      const sub = await fetchSubscription(subscriptionId)
+      if (sub.status === 'active' || sub.status === 'authenticated') {
+        return infoPage('Your PROXe subscription is active', 'Nothing is due right now. Your payments are up to date.')
+      }
+      const link = await findPayLink(sub)
+      if (link) return NextResponse.redirect(link, 302)
+      if (sub.status === 'pending' || sub.status === 'halted') {
+        // Owed, but Razorpay gave us no page to pay on. Never send a client who
+        // owes money to the pricing section.
+        return infoPage(
+          'Your payment needs attention',
+          'Your last PROXe payment did not go through. Razorpay has emailed you a link to update your payment method. If you cannot find it, write to brands@bconclub.com and we will sort it out.'
+        )
+      }
+      return NextResponse.redirect(
+        `${siteUrl}/api/checkout/resume?provider=razorpay&subscription_id=${encodeURIComponent(subscriptionId)}`,
+        302
+      )
+    } catch (err) {
+      console.error('[pay] razorpay could not open a payment page', subscriptionId, (err as { status?: number })?.status)
+      return fallback
+    }
+  }
+  if (explicitProvider(providerParam) === 'razorpay') {
+    return razorpayConfigured() ? razorpayPay() : fallback
+  }
+  const razorpayFallback = shouldTryRazorpayAfterDodo(providerParam, subscriptionId)
+
   const cached = minted.get(subscriptionId)
   if (cached && Date.now() - cached.at < REUSE_MS) {
     return NextResponse.redirect(cached.link, 302)
   }
 
   const client = getDodoClient()
-  if (!client) return fallback
+  if (!client) return razorpayFallback ? razorpayPay() : fallback
 
   try {
     const sub = await client.subscriptions.retrieve(subscriptionId)
@@ -119,6 +168,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         'Your bank is still confirming the payment. This can take up to 48 hours for UPI autopay. Please do not pay again; we will confirm once it clears.'
       )
     }
+    if ((err as { status?: number })?.status === 404 && razorpayFallback) return razorpayPay()
     console.error('[pay] could not mint a payment link', subscriptionId, err)
     return fallback
   }

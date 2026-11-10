@@ -217,6 +217,8 @@ export async function markCheckoutStarted(input: {
   sessionId?: string | null
   market?: string | null
   source?: string | null
+  /** Which provider's page the buyer was sent to. Defaults to Dodo. */
+  provider?: 'dodo' | 'razorpay'
 }): Promise<void> {
   const supabase = getSupabaseServiceClient()
   if (!supabase) return
@@ -249,7 +251,7 @@ export async function markCheckoutStarted(input: {
             checkout_session_id: input.sessionId ?? null,
             checkout_market: input.market ?? null,
             checkout_source: input.source ?? null,
-            provider: 'dodo',
+            provider: input.provider ?? 'dodo',
           },
         },
       })
@@ -918,6 +920,14 @@ export interface BillingEventInput {
   market?: string | null
   seats?: number | null
   occurredAt?: string | null
+  /** Defaults to Dodo. */
+  provider?: 'dodo' | 'razorpay'
+  /**
+   * Razorpay events do not all carry every field (payment.failed has no next
+   * billing date, subscription.pending no payment). When set, fields this event
+   * does not know are left as they are on the lead instead of being nulled.
+   */
+  keepUnknown?: boolean
 }
 
 /**
@@ -946,7 +956,7 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
   const email = trimOrNull(input.email)
   if (!email) return { ok: false, reason: 'no_match' }
 
-  const billing = {
+  const fullBilling = {
     status: input.status ?? null,
     last_event: input.eventType,
     last_event_at: input.occurredAt ?? new Date().toISOString(),
@@ -959,8 +969,11 @@ export async function recordBillingEvent(input: BillingEventInput): Promise<Supa
     next_billing_date: input.nextBillingDate ?? null,
     market: input.market ?? null,
     seats: input.seats ?? null,
-    provider: 'dodo',
+    provider: input.provider ?? 'dodo',
   }
+  const billing: Record<string, unknown> = input.keepUnknown
+    ? Object.fromEntries(Object.entries(fullBilling).filter(([, v]) => v !== null))
+    : fullBilling
   const won = input.status === 'active'
   // A payer whose payment did not go through (failed, on hold, pending) is
   // still past the offer, not a new lead: Proposal Sent. Samprasad (Zensquare,
