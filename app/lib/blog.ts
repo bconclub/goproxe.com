@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'whatsapp-usernames-customer-phone-number-hidden',
+    title: 'WhatsApp usernames: what if the number is hidden?',
+    dek: 'WhatsApp now lets people hide their phone number behind a username. What it means for your follow-up and what to do this week.',
+    date: '2026-11-02',
+    thumbnail: '/blog/whatsapp-usernames-customer-phone-number-hidden.png',
+    trade: 'product',
+    wordCount: 800,
+    related: ['one-memory-every-channel', 'follow-up-is-a-system', 'saving-the-contact-is-not-done', 'handoff-without-starting-over', 'dpdp-act-whatsapp-customer-chats-small-business'],
+  },
+  {
     slug: 'when-an-ai-assistant-calls-your-business',
     title: "Gemini can call businesses to book. What will it find?",
     dek: "Google's Gemini can phone businesses to book appointments for users. A plain checklist for clinics and service businesses on what that call should find.",
