@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'whatsapp-service-messages-now-cost-money-india',
+    title: 'WhatsApp now charges for replies in India. What to do?',
+    dek: 'From 1 October 2026, free-form WhatsApp replies on the Business Platform in India are billed after 1,000 a month. A plain checklist for owners.',
+    date: '2026-11-14',
+    thumbnail: '/blog/whatsapp-service-messages-now-cost-money-india.png',
+    trade: 'product',
+    wordCount: 1000,
+    related: ['what-to-measure-on-inbound', 'a-reminder-is-not-a-reply', 'a-broadcast-is-not-a-reply', 'one-memory-every-channel', 'handoff-without-starting-over'],
+  },
+  {
     slug: 'whatsapp-usernames-customer-phone-number-hidden',
     title: 'WhatsApp usernames: what if the number is hidden?',
     dek: 'WhatsApp now lets people hide their phone number behind a username. What it means for your follow-up and what to do this week.',
