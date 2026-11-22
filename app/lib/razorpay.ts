@@ -510,6 +510,8 @@ export function buildBillingStatus(input: {
     subtotal_minor: Number(notes.subtotal_minor) || null,
     tax_minor: Number(notes.gst_minor) || null,
     interval: mapInterval(plan?.period),
+    // 3 for a 3-month plan (Razorpay: monthly, interval 3).
+    interval_count: Number(plan?.interval) || 1,
     next_billing_date: ended ? null : isoFromUnix(sub.charge_at),
     previous_billing_date: isoFromUnix(sub.current_start),
     cancel_at_next_billing_date: false,

@@ -10,7 +10,7 @@ import {
 } from '../../lib/dodo'
 import { markCheckoutStarted } from '../../lib/leadsSupabase'
 import { razorpayConfigured, createPlan, createSubscription, cleanNotes } from '../../lib/razorpay'
-import { quote, formatMoney } from '../../lib/billing/pricing'
+import { formatMoney, parseTerm, termQuote, TERMS } from '../../lib/billing/pricing'
 
 /**
  * Checkout session → Razorpay (INR, when its keys are set) or Dodo Payments.
@@ -79,6 +79,8 @@ interface CheckoutPayload {
   gstin?: string
   /** Where the click came from, carried into Dodo metadata + the lead row. */
   source?: string
+  /** monthly (default) | quarterly | yearly. Non-monthly is Razorpay only. */
+  term?: string
 }
 
 /**
@@ -103,6 +105,10 @@ export async function POST(request: Request) {
   const market: Market = body.market === 'usd' ? 'usd' : 'inr'
   if (market === 'inr' && razorpayConfigured()) {
     return razorpayCheckout(body)
+  }
+  // 3-month and yearly terms exist only on Razorpay (INR).
+  if (parseTerm(body.term) !== 'monthly') {
+    return NextResponse.json({ ok: false, reason: 'term_not_offered' }, { status: 400 })
   }
 
   const client = getDodoClient()
@@ -306,7 +312,8 @@ export async function POST(request: Request) {
  */
 async function razorpayCheckout(body: CheckoutPayload) {
   const requestedSeats = Number.isFinite(body.seats) ? Math.floor(Number(body.seats)) : INCLUDED_SEATS
-  const q = quote({ seats: requestedSeats, currency: 'INR', tax_mode: 'gst' })
+  const term = parseTerm(body.term)
+  const q = termQuote({ seats: requestedSeats, term, tax_mode: 'gst' })
 
   const email = body.email?.trim() || null
   const name = body.name?.trim() || null
@@ -319,7 +326,9 @@ async function razorpayCheckout(body: CheckoutPayload) {
     q.billable_seats > 0
       ? `PROXe Core + ${q.billable_seats} extra seat${q.billable_seats === 1 ? '' : 's'}`
       : 'PROXe Core'
+  const termName = term === 'monthly' ? planName : `${planName} (${term === 'yearly' ? 'yearly' : '3 months'})`
   const notes = cleanNotes({
+    ...(term === 'monthly' ? {} : { term, months: q.months }),
     market: 'inr',
     seats: q.seats,
     source,
@@ -336,17 +345,20 @@ async function razorpayCheckout(body: CheckoutPayload) {
 
   try {
     const plan = await createPlan({
-      name: planName,
-      description: `${formatMoney(q.subtotal, 'INR')} + 18% GST ${formatMoney(q.tax, 'INR')}, billed monthly`,
+      name: termName,
+      description: `${formatMoney(q.subtotal, 'INR')} + 18% GST ${formatMoney(q.tax, 'INR')}, billed ${TERMS[term].label}`,
       amountMinor: q.grand_total,
       currency: 'INR',
-      period: 'monthly',
-      interval: 1,
+      // Razorpay has no quarterly period: 3 months is monthly with interval 3.
+      period: term === 'yearly' ? 'yearly' : 'monthly',
+      interval: term === 'quarterly' ? 3 : 1,
       notes,
     })
     const sub = await createSubscription({
       planId: plan.id,
       notes,
+      // Ten years of cycles whatever the term (120 monthly, 40 quarterly, 10 yearly).
+      ...(term === 'monthly' ? {} : { totalCount: term === 'yearly' ? 10 : 40 }),
       notifyEmail: email,
       notifyPhone: phone,
     })

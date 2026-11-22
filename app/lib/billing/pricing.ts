@@ -114,6 +114,36 @@ export function quote(input: QuoteInput): Quote {
 }
 
 /**
+ * Prepaid terms for INR Razorpay checkouts (Z, 22 Nov 2026): monthly at list
+ * price, 3 months at 10% off Core (₹8,999 a month), a year at 20% off Core
+ * (₹7,999 a month). Extra seats stay at list price. Billed once per term, GST
+ * on top. The PROXe dashboard Billing page shows the same numbers.
+ */
+export type BillingTerm = 'monthly' | 'quarterly' | 'yearly'
+
+export const TERMS: Record<BillingTerm, { months: number; core_monthly_inr: number; label: string }> = {
+  monthly: { months: 1, core_monthly_inr: 999_900, label: 'monthly' },
+  quarterly: { months: 3, core_monthly_inr: 899_900, label: 'every 3 months' },
+  yearly: { months: 12, core_monthly_inr: 799_900, label: 'yearly' },
+}
+
+export function parseTerm(raw: unknown): BillingTerm {
+  return raw === 'quarterly' || raw === 'yearly' ? raw : 'monthly'
+}
+
+/** One INR charge for a whole term. Monthly is exactly `quote()`. */
+export function termQuote(input: { seats: number; term: BillingTerm; tax_mode: TaxMode }): Quote & { term: BillingTerm; months: number } {
+  const q = quote({ seats: input.seats, currency: 'INR', tax_mode: input.tax_mode })
+  const t = TERMS[input.term]
+  if (input.term === 'monthly') return { ...q, term: 'monthly', months: 1 }
+  const base = t.core_monthly_inr * t.months
+  const seat_total = q.seat_total * t.months
+  const subtotal = base + seat_total
+  const tax = applyBp(subtotal, q.tax_rate_bp)
+  return { ...q, base, seat_total, subtotal, tax, grand_total: subtotal + tax, term: input.term, months: t.months }
+}
+
+/**
  * Which tax case applies. One function decides it, so the page, the checkout
  * route and the invoice can never disagree about what a buyer owes.
  *
