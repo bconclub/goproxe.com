@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-voice-agent-cuts-off-callers',
+    title: 'Will an AI voice agent talk over your customers?',
+    dek: 'Voice agents that cut callers off mid-number are a known problem. Five tests a clinic, academy or service owner can run on their own phone.',
+    date: '2026-11-22',
+    thumbnail: '/blog/ai-voice-agent-cuts-off-callers.png',
+    trade: 'product',
+    wordCount: 1020,
+    related: ['fast-voice-ai-still-needs-the-right-answers', 'should-your-ai-caller-say-its-an-ai', 'a-missed-call-is-still-a-lead', 'when-they-ask-for-a-person', 'handoff-without-starting-over'],
+  },
+  {
     slug: 'whatsapp-service-messages-now-cost-money-india',
     title: 'WhatsApp now charges for replies in India. What to do?',
     dek: 'From 1 October 2026, free-form WhatsApp replies on the Business Platform in India are billed after 1,000 a month. A plain checklist for owners.',
