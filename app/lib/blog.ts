@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-built-lead-tracker-who-can-see-it',
+    title: 'Your team built a lead tracker with AI. Who can open it?',
+    dek: 'Most Grok-built apps tested were open without a login, some holding patient data. Five checks before your enquiry data goes into an AI-built app.',
+    date: '2026-11-23',
+    thumbnail: '/blog/ai-built-lead-tracker-who-can-see-it.png',
+    trade: 'product',
+    wordCount: 1000,
+    related: ['dpdp-act-whatsapp-customer-chats-small-business', 'the-spreadsheet-is-not-the-desk', 'one-memory-every-channel', 'handoff-without-starting-over', 'follow-up-is-a-system'],
+  },
+  {
     slug: 'ai-voice-agent-cuts-off-callers',
     title: 'Will an AI voice agent talk over your customers?',
     dek: 'Voice agents that cut callers off mid-number are a known problem. Five tests a clinic, academy or service owner can run on their own phone.',
