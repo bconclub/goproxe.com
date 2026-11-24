@@ -18,6 +18,16 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'where-do-customer-chats-go-when-you-add-ai',
+    title: "Where do your customers' chats go when you add AI?",
+    dek: "A vendor behind a popular AI tool was breached and chat transcripts were taken. Six plain questions to ask before an AI reads your customers' enquiries.",
+    date: '2026-11-24',
+    thumbnail: '/blog/where-do-customer-chats-go-when-you-add-ai.png',
+    trade: 'product',
+    wordCount: 900,
+    related: ['dpdp-act-whatsapp-customer-chats-small-business', 'one-memory-every-channel', 'handoff-without-starting-over', 'dont-invent-the-price', 'the-group-chat-is-not-the-desk'],
+  },
+  {
     slug: 'ai-built-lead-tracker-who-can-see-it',
     title: 'Your team built a lead tracker with AI. Who can open it?',
     dek: 'Most Grok-built apps tested were open without a login, some holding patient data. Five checks before your enquiry data goes into an AI-built app.',
